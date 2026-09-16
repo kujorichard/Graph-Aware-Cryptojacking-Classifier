@@ -32,13 +32,5 @@ The contents of `ml/dataset/benign/` and `ml/dataset/cryptojacking/` are ignored
 4. Use `graph_ngrams/` to extract CFG- and DFG-guided n-grams and build vocabularies or feature matrices.
 5. Use the scripts and notebooks in `ml/` or `graph_aware_classifier/` to train, evaluate, explain, or run the stored Random Forest models.
 
-## Tests
 
-The disassembly graph-processing tests can be run from the `dissassembly/` directory:
-
-```text
-python test_reaching_defs.py
-python test_gcb_graph_input.py
-```
-
-Dependencies for the Python components are listed in `dissassembly/requirements.txt`.
+Dependencies for the Python Dissassembly components are listed in `dissassembly/requirements.txt`.
