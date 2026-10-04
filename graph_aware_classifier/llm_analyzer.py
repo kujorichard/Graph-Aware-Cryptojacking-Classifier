@@ -65,6 +65,38 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def _reported_token_count(value: Any) -> int | None:
+    """Return a non-negative integer token count when the backend reports one."""
+    if isinstance(value, bool):
+        return None
+    try:
+        count = int(value)
+    except (TypeError, ValueError):
+        return None
+    return count if count >= 0 else None
+
+
+def _token_usage_from_response(
+    response: Any,
+    input_field: str,
+    output_field: str,
+    source: str,
+) -> dict[str, int | str | None]:
+    """Normalize provider token usage from dict or SDK response objects."""
+    if isinstance(response, dict):
+        input_count = response.get(input_field)
+        output_count = response.get(output_field)
+    else:
+        input_count = getattr(response, input_field, None)
+        output_count = getattr(response, output_field, None)
+
+    return {
+        "input_tokens": _reported_token_count(input_count),
+        "output_tokens": _reported_token_count(output_count),
+        "source": source,
+    }
+
+
 # ═══════════════════════════════════════════════════════════════════════════
 # Configuration
 # ═══════════════════════════════════════════════════════════════════════════
@@ -250,6 +282,7 @@ def build_analysis_prompt(
     rf_prediction: int,
     rf_probability: float,
     evidence: list[dict[str, Any]],
+    function_disassembly: dict[str, list[str]] | None = None,
 ) -> str:
     """Construct the LLM analysis prompt with the evidence payload.
 
@@ -263,6 +296,8 @@ def build_analysis_prompt(
         ``predict_proba`` score for the predicted class.
     evidence:
         Output of :func:`build_evidence_payload`.
+    function_disassembly:
+        Complete disassembly lines keyed by functions referenced in *evidence*.
 
     Returns
     -------
@@ -324,6 +359,18 @@ def build_analysis_prompt(
             lines.append("  Functions : (no function context available)")
 
     # ── Instructions ──────────────────────────────────────────────────
+    if function_disassembly:
+        lines.extend([
+            "",
+            "=" * 60,
+            "SPOTTED FUNCTION DISASSEMBLY",
+            "=" * 60,
+        ])
+        for function_name, instructions in function_disassembly.items():
+            lines.append("")
+            lines.append(f"Function: {function_name}")
+            lines.extend(instructions)
+
     lines.append("")
     lines.append("=" * 60)
     lines.append("ANALYSIS INSTRUCTIONS")
@@ -342,8 +389,10 @@ def build_analysis_prompt(
     lines.append(
         "IMPORTANT: Your analysis must be grounded ONLY in the evidence "
         "provided above. Do not reference functions, API calls, or "
-        "behaviors not present in the evidence. Every claim must be "
-        "traceable to specific n-grams and functions listed above."
+        "behaviors not present in the evidence. Use the supplied function "
+        "disassembly to explain what the spotted code does. Every claim must "
+        "be traceable to specific n-grams, functions, or instructions listed "
+        "above."
     )
     lines.append("")
     lines.append("Respond with a single JSON object matching this schema:")
@@ -472,6 +521,11 @@ class LLMAnalyzer:
         self.config = config or LLMConfig.from_env()
         self.results_dir = Path(results_dir) if results_dir else _DEFAULT_RESULTS_DIR
         self.results_dir.mkdir(parents=True, exist_ok=True)
+        self._last_token_usage: dict[str, int | str | None] = {
+            "input_tokens": None,
+            "output_tokens": None,
+            "source": "unavailable",
+        }
 
         if self.config.backend == "claude" and not self.config.claude_api_key:
             logger.warning(
@@ -499,6 +553,12 @@ class LLMAnalyzer:
                 "temperature": self.config.temperature,
                 "num_predict": self.config.max_tokens,
             },
+        )
+        self._last_token_usage = _token_usage_from_response(
+            response,
+            input_field="prompt_eval_count",
+            output_field="eval_count",
+            source="ollama",
         )
 
         # Extract text from response (supports both Pydantic GenerateResponse and dict)
@@ -532,6 +592,12 @@ class LLMAnalyzer:
             temperature=self.config.temperature,
             system=_SYSTEM_PROMPT,
             messages=[{"role": "user", "content": prompt}],
+        )
+        self._last_token_usage = _token_usage_from_response(
+            response.usage,
+            input_field="input_tokens",
+            output_field="output_tokens",
+            source="claude",
         )
         return response.content[0].text
 
@@ -574,6 +640,7 @@ class LLMAnalyzer:
         rf_probability: float,
         top_features: list[dict[str, Any]],
         occurrences_path: str | Path,
+        function_disassembly: dict[str, list[str]] | None = None,
     ) -> dict[str, Any]:
         """Run the full LLM analysis pipeline on a single sample.
 
@@ -591,6 +658,9 @@ class LLMAnalyzer:
         occurrences_path:
             Path to the ``<binary>_vocabulary.json`` written by
             ``sample_transformer.transform_sample()``.
+        function_disassembly:
+            Full address/mnemonic/operand lines for functions associated with
+            the top SHAP n-grams.
 
         Returns
         -------
@@ -609,15 +679,25 @@ class LLMAnalyzer:
         logger.info("Starting LLM analysis for %s …", binary_name)
 
         # 1. Build evidence
-        evidence = build_evidence_payload(top_features, occurrences_path)
+        evidence = build_evidence_payload(
+            top_features,
+            occurrences_path,
+        )
 
         # 2. Build prompt
         prompt = build_analysis_prompt(
             binary_name, rf_prediction, rf_probability, evidence,
+            function_disassembly=function_disassembly,
         )
 
         # 3. Call LLM
+        self._last_token_usage = {
+            "input_tokens": None,
+            "output_tokens": None,
+            "source": "unavailable",
+        }
         raw_response = self._call_llm(prompt)
+        token_usage = dict(self._last_token_usage)
 
         # 4. Parse response
         try:
@@ -646,6 +726,8 @@ class LLMAnalyzer:
                 else self.config.ollama_model
             ),
             "evidence": evidence,
+            "function_disassembly": function_disassembly or {},
+            "token_usage": token_usage,
             "analysis": parsed,
             "raw_response": raw_response,
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
