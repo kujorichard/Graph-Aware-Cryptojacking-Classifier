@@ -51,7 +51,7 @@ except ImportError:  # pragma: no cover
 _MODULE_DIR = Path(__file__).resolve().parent
 _DEFAULT_RESULTS_DIR = _MODULE_DIR / "llm_results"
 _DEFAULT_ENV_PATH = _MODULE_DIR / ".env"
-ANALYSIS_PROMPT_VERSION = "shap-grounded-analysis-v1"
+ANALYSIS_PROMPT_VERSION = "shap-grounded-analysis-v2"
 
 __all__ = [
     "LLMConfig",
@@ -387,6 +387,14 @@ def build_analysis_prompt(
                  "inconclusive")
     lines.append("  • benign           — evidence does not support "
                  "cryptojacking")
+    lines.append("")
+    lines.append(
+        "Keep the JSON response concise: limit explanation to 250 words; "
+        "include at most 5 of the most relevant evidence_analysis items and "
+        "at most 5 short key_indicators; make each assessment one concise "
+        "sentence and recommended_action one concise sentence. Do not add "
+        "fields beyond the schema."
+    )
     lines.append("")
     lines.append(
         "IMPORTANT: Your analysis must be grounded ONLY in the evidence "

@@ -307,3 +307,27 @@ def test_prompt_includes_full_disassembly_for_shap_functions(tmp_path):
         )
     )
     assert saved_result["function_disassembly"] == disassembly
+
+
+def test_prompt_requests_concise_json_with_bounded_detail():
+    prompt = build_analysis_prompt(
+        binary_name="sample.exe",
+        rf_prediction=1,
+        rf_probability=0.9,
+        evidence=[],
+    )
+
+    assert "limit explanation to 250 words" in prompt
+    assert "at most 5 of the most relevant evidence_analysis items" in prompt
+    assert "at most 5 short key_indicators" in prompt
+    assert "each assessment one concise sentence" in prompt
+    assert "recommended_action one concise sentence" in prompt
+    for field_name in (
+        '"tier"',
+        '"explanation"',
+        '"evidence_analysis"',
+        '"confidence_score"',
+        '"key_indicators"',
+        '"recommended_action"',
+    ):
+        assert field_name in prompt
