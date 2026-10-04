@@ -16,6 +16,7 @@ See ``.env.example`` for the template.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
@@ -50,6 +51,7 @@ except ImportError:  # pragma: no cover
 _MODULE_DIR = Path(__file__).resolve().parent
 _DEFAULT_RESULTS_DIR = _MODULE_DIR / "llm_results"
 _DEFAULT_ENV_PATH = _MODULE_DIR / ".env"
+ANALYSIS_PROMPT_VERSION = "shap-grounded-analysis-v1"
 
 __all__ = [
     "LLMConfig",
@@ -127,7 +129,7 @@ class LLMConfig:
     temperature: float = 0.2
     """Sampling temperature — low for consistent, structured output."""
 
-    max_tokens: int = 4096
+    max_tokens: int = 8192
     """Maximum tokens in the LLM response."""
 
     max_retries: int = 3
@@ -159,7 +161,7 @@ class LLMConfig:
             claude_model=os.getenv("CLAUDE_MODEL", "claude-sonnet-4-20250514"),
             claude_api_key=os.getenv("ANTHROPIC_API_KEY", ""),
             temperature=float(os.getenv("LLM_TEMPERATURE", "0.2")),
-            max_tokens=int(os.getenv("LLM_MAX_TOKENS", "4096")),
+            max_tokens=int(os.getenv("LLM_MAX_TOKENS", "8192")),
             max_retries=int(os.getenv("LLM_MAX_RETRIES", "3")),
             retry_delay=float(os.getenv("LLM_RETRY_DELAY", "1.0")),
             timeout=float(os.getenv("LLM_TIMEOUT", "120.0")),
@@ -392,7 +394,9 @@ def build_analysis_prompt(
         "behaviors not present in the evidence. Use the supplied function "
         "disassembly to explain what the spotted code does. Every claim must "
         "be traceable to specific n-grams, functions, or instructions listed "
-        "above."
+        "above. In evidence_analysis, use only exact n-gram strings listed "
+        "under SHAP EVIDENCE. Do not estimate or invent SHAP values; the "
+        "pipeline will attach the authoritative contribution."
     )
     lines.append("")
     lines.append("Respond with a single JSON object matching this schema:")
@@ -477,26 +481,76 @@ def _extract_json(raw: str) -> dict[str, Any]:
     raise json.JSONDecodeError("No valid JSON found in LLM response", raw, 0)
 
 
-def _ensure_schema(parsed: dict[str, Any]) -> dict[str, Any]:
-    """Fill in missing keys with safe defaults."""
-    defaults: dict[str, Any] = {
-        "tier": "benign",
-        "explanation": "",
-        "evidence_analysis": [],
-        "confidence_score": 0.0,
-        "key_indicators": [],
-        "recommended_action": "Manual review required",
+def _validate_analysis_response(
+    parsed: dict[str, Any],
+    evidence: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Validate LLM structure and replace model-supplied SHAP values."""
+    if not isinstance(parsed, dict):
+        raise ValueError("LLM response must be a JSON object")
+
+    required_keys = {
+        "tier",
+        "explanation",
+        "evidence_analysis",
+        "confidence_score",
+        "key_indicators",
+        "recommended_action",
     }
-    for key, default in defaults.items():
-        parsed.setdefault(key, default)
+    missing_keys = required_keys - parsed.keys()
+    if missing_keys:
+        raise ValueError(f"Missing required response keys: {sorted(missing_keys)}")
 
-    # Normalise tier value
-    valid_tiers = {"high-confidence", "low-confidence", "benign"}
-    if parsed["tier"] not in valid_tiers:
-        logger.warning("Unexpected tier value '%s', defaulting to 'benign'", parsed["tier"])
-        parsed["tier"] = "benign"
+    if (
+        not isinstance(parsed["tier"], str)
+        or parsed["tier"] not in {"high-confidence", "low-confidence", "benign"}
+    ):
+        raise ValueError(f"Invalid tier value: {parsed['tier']!r}")
+    if not isinstance(parsed["explanation"], str) or not parsed["explanation"].strip():
+        raise ValueError("explanation must be a non-empty string")
 
+    confidence = parsed["confidence_score"]
+    if (
+        isinstance(confidence, bool)
+        or not isinstance(confidence, (int, float))
+        or not 0.0 <= confidence <= 1.0
+    ):
+        raise ValueError("confidence_score must be a number between 0 and 1")
+    if not isinstance(parsed["evidence_analysis"], list):
+        raise ValueError("evidence_analysis must be a list")
+    if not isinstance(parsed["key_indicators"], list) or not all(
+        isinstance(indicator, str) for indicator in parsed["key_indicators"]
+    ):
+        raise ValueError("key_indicators must be a list of strings")
+    if not isinstance(parsed["recommended_action"], str):
+        raise ValueError("recommended_action must be a string")
+
+    evidence_by_ngram = {item["ngram"]: item for item in evidence}
+    validated_items = []
+    for index, item in enumerate(parsed["evidence_analysis"]):
+        if not isinstance(item, dict):
+            raise ValueError(f"evidence_analysis[{index}] must be an object")
+        ngram = item.get("ngram")
+        if not isinstance(ngram, str) or ngram not in evidence_by_ngram:
+            raise ValueError(
+                f"evidence_analysis[{index}] references an unknown SHAP n-gram: "
+                f"{ngram!r}"
+            )
+        if not isinstance(item.get("assessment"), str):
+            raise ValueError(f"evidence_analysis[{index}].assessment must be a string")
+        validated_items.append({
+            **item,
+            "shap_contribution": evidence_by_ngram[ngram]["shap_value"],
+        })
+
+    parsed["evidence_analysis"] = validated_items
     return parsed
+
+
+def _response_value(response: Any, name: str) -> Any:
+    if isinstance(response, dict):
+        return response.get(name)
+    return getattr(response, name, None)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -525,6 +579,10 @@ class LLMAnalyzer:
             "input_tokens": None,
             "output_tokens": None,
             "source": "unavailable",
+        }
+        self._last_response_metadata: dict[str, Any] = {
+            "finish_reason": None,
+            "truncated": False,
         }
 
         if self.config.backend == "claude" and not self.config.claude_api_key:
@@ -560,6 +618,20 @@ class LLMAnalyzer:
             output_field="eval_count",
             source="ollama",
         )
+        finish_reason = _response_value(response, "done_reason")
+        done = _response_value(response, "done")
+        output_tokens = self._last_token_usage["output_tokens"]
+        self._last_response_metadata = {
+            "finish_reason": finish_reason,
+            "truncated": (
+                str(finish_reason).lower() in {"length", "max_tokens", "length_limit"}
+                or done is False
+                or (
+                    output_tokens is not None
+                    and output_tokens >= self.config.max_tokens
+                )
+            ),
+        }
 
         # Extract text from response (supports both Pydantic GenerateResponse and dict)
         text = ""
@@ -567,13 +639,6 @@ class LLMAnalyzer:
             text = response.response.strip()
         elif isinstance(response, dict) and response.get("response"):
             text = str(response["response"]).strip()
-
-        # If reasoning models (e.g. Qwen, DeepSeek) placed JSON inside thinking block, fallback to it
-        if not text:
-            if hasattr(response, "thinking") and response.thinking:
-                text = response.thinking.strip()
-            elif isinstance(response, dict) and response.get("thinking"):
-                text = str(response["thinking"]).strip()
 
         return text
 
@@ -599,6 +664,11 @@ class LLMAnalyzer:
             output_field="output_tokens",
             source="claude",
         )
+        finish_reason = getattr(response, "stop_reason", None)
+        self._last_response_metadata = {
+            "finish_reason": finish_reason,
+            "truncated": finish_reason == "max_tokens",
+        }
         return response.content[0].text
 
     def _call_llm(self, prompt: str) -> str:
@@ -689,6 +759,7 @@ class LLMAnalyzer:
             binary_name, rf_prediction, rf_probability, evidence,
             function_disassembly=function_disassembly,
         )
+        prompt_sha256 = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
 
         # 3. Call LLM
         self._last_token_usage = {
@@ -696,26 +767,53 @@ class LLMAnalyzer:
             "output_tokens": None,
             "source": "unavailable",
         }
-        raw_response = self._call_llm(prompt)
+        self._last_response_metadata = {
+            "finish_reason": None,
+            "truncated": False,
+        }
+        try:
+            raw_response = self._call_llm(prompt)
+            call_error = None
+        except Exception as exc:
+            logger.exception("LLM generation failed for %s", binary_name)
+            raw_response = ""
+            call_error = f"{type(exc).__name__}: {exc}"
         token_usage = dict(self._last_token_usage)
+        response_metadata = dict(self._last_response_metadata)
 
         # 4. Parse response
         try:
-            parsed = _extract_json(raw_response)
-            parsed = _ensure_schema(parsed)
-        except json.JSONDecodeError as exc:
-            logger.error("Could not parse LLM response: %s", exc)
-            parsed = _ensure_schema({
-                "tier": "benign",
-                "explanation": (
-                    "LLM response could not be parsed as JSON. "
-                    f"Raw output: {raw_response[:500]}"
-                ),
+            if call_error:
+                raise ValueError(f"LLM generation call failed: {call_error}")
+            if response_metadata["truncated"]:
+                raise ValueError(
+                    "LLM response reached its output limit "
+                    f"(finish_reason={response_metadata['finish_reason']!r})"
+                )
+            parsed = _validate_analysis_response(
+                _extract_json(raw_response),
+                evidence,
+            )
+            analysis_status = "completed"
+            failure_reason = None
+        except (json.JSONDecodeError, ValueError) as exc:
+            logger.error("LLM analysis response is unusable: %s", exc)
+            parsed = {
+                "tier": None,
+                "explanation": "LLM response is unusable and requires manual review.",
+                "evidence_analysis": [],
+                "confidence_score": None,
+                "key_indicators": [],
+                "recommended_action": "Manual review required",
                 "parse_error": str(exc),
-            })
+            }
+            analysis_status = "failed"
+            failure_reason = str(exc)
 
         # 5. Assemble final result
         result: dict[str, Any] = {
+            "status": analysis_status,
+            "failure_reason": failure_reason,
             "binary_name": binary_name,
             "rf_prediction": rf_prediction,
             "rf_probability": rf_probability,
@@ -725,9 +823,16 @@ class LLMAnalyzer:
                 if self.config.backend == "claude"
                 else self.config.ollama_model
             ),
+            "prompt_version": ANALYSIS_PROMPT_VERSION,
+            "prompt_sha256": prompt_sha256,
+            "generation_config": {
+                "temperature": self.config.temperature,
+                "max_tokens": self.config.max_tokens,
+            },
             "evidence": evidence,
             "function_disassembly": function_disassembly or {},
             "token_usage": token_usage,
+            "response_metadata": response_metadata,
             "analysis": parsed,
             "raw_response": raw_response,
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
