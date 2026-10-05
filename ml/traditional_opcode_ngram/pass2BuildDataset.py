@@ -13,7 +13,15 @@ def main() -> None:
     dataset_dir = baseline_dir.parent / "dataset"
     X_train, X_test, y_train, y_test = get_train_test_split(dataset_dir)
 
-    for n in NGRAM_SIZES:
+    print(
+        f"Pass 2: building train/test datasets for {len(NGRAM_SIZES)} n-gram sizes "
+        f"| train={len(X_train)} samples | test={len(X_test)} samples"
+    )
+    for ngram_index, n in enumerate(NGRAM_SIZES, start=1):
+        print(
+            f"\n[{ngram_index}/{len(NGRAM_SIZES)}] Building {n}gram datasets",
+            flush=True,
+        )
         vocabulary_path = (
             baseline_dir / "feature_datasets" / f"{n}gram" / "vocabulary.json"
         )
@@ -36,6 +44,8 @@ def main() -> None:
             vocabulary,
             baseline_dir / "feature_datasets",
         )
+
+    print("\nPass 2 complete: all train/test datasets are ready.", flush=True)
 
 
 if __name__ == "__main__":

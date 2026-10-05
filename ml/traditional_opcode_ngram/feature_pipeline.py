@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from collections import Counter
 from pathlib import Path
+import time
 from typing import Iterable
 
 import numpy as np
@@ -12,6 +13,17 @@ from sklearn.model_selection import train_test_split
 
 NGRAM_SIZES = (2, 3, 4)
 CLASS_DIRECTORIES = (("benign", 0), ("cryptojacking", 1))
+
+
+def _format_duration(seconds: float) -> str:
+    seconds = max(0, int(seconds))
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    if hours:
+        return f"{hours:d}h {minutes:02d}m"
+    if minutes:
+        return f"{minutes:d}m {seconds:02d}s"
+    return f"{seconds:d}s"
 
 
 def load_dataset_files(
@@ -81,11 +93,31 @@ def build_vocabulary(
     n: int,
 ) -> dict[tuple[str, ...], int]:
     """Build a deterministic vocabulary from the supplied samples."""
-    vocabulary = {
-        ngram
-        for path in paths
-        for ngram in iter_opcode_ngrams(path, n)
-    }
+    vocabulary: set[tuple[str, ...]] = set()
+    total = len(paths)
+    started_at = time.perf_counter()
+    report_every = max(1, total // 100)
+
+    print(f"Starting {n}gram vocabulary scan: {total} training samples")
+    for index, path in enumerate(paths, start=1):
+        vocabulary.update(iter_opcode_ngrams(path, n))
+
+        if (
+            index % report_every == 0
+            or index == total
+        ):
+            elapsed = time.perf_counter() - started_at
+            rate = index / elapsed if elapsed > 0 else 0.0
+            eta = (total - index) / rate if rate > 0 else 0.0
+            print(
+                f"{n}gram vocabulary: {index}/{total} "
+                f"({index / total:.1%}) | {len(vocabulary):,} unique "
+                f"| {rate:.2f} samples/sec "
+                f"| elapsed {_format_duration(elapsed)} "
+                f"| ETA {_format_duration(eta)}",
+                flush=True,
+            )
+
     return {
         ngram: feature_id
         for feature_id, ngram in enumerate(sorted(vocabulary))
@@ -179,6 +211,12 @@ def build_split(
     rows: list[dict[int, float]] = []
     batch_labels: list[int] = []
     batch_number = 0
+    total_samples = len(paths)
+    started_at = time.perf_counter()
+    print(
+        f"Starting {n}gram {split_name} feature generation: "
+        f"{total_samples} samples, batch size {batch_size}"
+    )
 
     for index, (path, label) in enumerate(zip(paths, labels), start=1):
         counts = Counter(
@@ -205,8 +243,18 @@ def build_split(
                 split_dir,
                 batch_number,
             )
+            elapsed = time.perf_counter() - started_at
+            rate = index / elapsed if elapsed > 0 else 0.0
+            eta = (total_samples - index) / rate if rate > 0 else 0.0
             print(
-                f"{n}gram {split_name}: processed {index}/{len(paths)}"
+                f"{n}gram {split_name}: "
+                f"{index}/{total_samples} "
+                f"({index / total_samples:.1%}) "
+                f"| batch {batch_number + 1} "
+                f"| {rate:.2f} samples/sec "
+                f"| elapsed {_format_duration(elapsed)} "
+                f"| ETA {_format_duration(eta)}",
+                flush=True,
             )
             rows = []
             batch_labels = []
