@@ -51,7 +51,7 @@ except ImportError:  # pragma: no cover
 _MODULE_DIR = Path(__file__).resolve().parent
 _DEFAULT_RESULTS_DIR = _MODULE_DIR / "llm_results"
 _DEFAULT_ENV_PATH = _MODULE_DIR / ".env"
-ANALYSIS_PROMPT_VERSION = "shap-grounded-analysis-v2"
+ANALYSIS_PROMPT_VERSION = "shap-grounded-analysis-v3"
 
 __all__ = [
     "LLMConfig",
@@ -340,18 +340,11 @@ def build_analysis_prompt(
         funcs = item.get("functions", [])
         if funcs:
             func_strs: list[str] = []
-            # Limit functions shown in prompt to keep size manageable;
-            # the full list is preserved in the saved evidence JSON.
+            # Keep prompt context compact; full address groups remain in the
+            # saved evidence JSON for traceability.
             max_funcs_in_prompt = 10
             for f in funcs[:max_funcs_in_prompt]:
-                addr_flat = [
-                    a for group in f["address_groups"] for a in group
-                ]
-                unique_addrs = sorted(set(addr_flat))
-                addr_display = ", ".join(unique_addrs[:6])
-                if len(unique_addrs) > 6:
-                    addr_display += f" … (+{len(unique_addrs) - 6} more)"
-                func_strs.append(f"{f['function']} (at {addr_display})")
+                func_strs.append(f["function"])
             if len(funcs) > max_funcs_in_prompt:
                 func_strs.append(
                     f"… (+{len(funcs) - max_funcs_in_prompt} more functions)"
@@ -371,7 +364,12 @@ def build_analysis_prompt(
         for function_name, instructions in function_disassembly.items():
             lines.append("")
             lines.append(f"Function: {function_name}")
-            lines.extend(instructions)
+            # Instruction addresses add little analytical value and can be
+            # repeated across large functions; preserve operands and targets.
+            lines.extend(
+                re.sub(r"^\s*0x[0-9a-fA-F]+:?\s*", "", instruction, count=1)
+                for instruction in instructions
+            )
 
     lines.append("")
     lines.append("=" * 60)

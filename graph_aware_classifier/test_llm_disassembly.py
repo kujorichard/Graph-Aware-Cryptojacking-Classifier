@@ -255,8 +255,16 @@ def test_prompt_includes_full_disassembly_for_shap_functions(tmp_path):
     )
     assert "SPOTTED FUNCTION DISASSEMBLY" in prompt
     assert prompt.count("Function: hash_worker") == 1
-    for instruction in disassembly["hash_worker"]:
+    assert "hash_worker (at " not in prompt
+    for instruction in (
+        "CALL 0x2000",
+        "PUSH RAX",
+        "MOV RAX, RBX",
+        "SUB RAX, 1",
+    ):
         assert instruction in prompt
+    for address in ("0x1000", "0x1005", "0x1010", "0x1014"):
+        assert address not in prompt
 
     analyzer = LLMAnalyzer(
         config=LLMConfig(max_retries=1),
@@ -291,10 +299,14 @@ def test_prompt_includes_full_disassembly_for_shap_functions(tmp_path):
             function_disassembly=disassembly,
         )
 
-    assert "0x1014 SUB RAX, 1" in llm_call.call_args.args[0]
+    assert "SUB RAX, 1" in llm_call.call_args.args[0]
+    assert "0x1014" not in llm_call.call_args.args[0]
     assert result["function_disassembly"] == disassembly
     assert result["status"] == "completed"
     assert result["analysis"]["evidence_analysis"] == []
+    assert result["evidence"][0]["functions"][0]["address_groups"] == [
+        ["0x1000", "0x1005"],
+    ]
     assert result["token_usage"] == {
         "input_tokens": None,
         "output_tokens": None,
