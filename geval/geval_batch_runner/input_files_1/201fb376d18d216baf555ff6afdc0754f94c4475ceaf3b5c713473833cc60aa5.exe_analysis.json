@@ -1,0 +1,269 @@
+{
+  "sample": {
+    "binary_name": "201fb376d18d216baf555ff6afdc0754f94c4475ceaf3b5c713473833cc60aa5.exe",
+    "source_name": "201fb376d18d216baf555ff6afdc0754f94c4475ceaf3b5c713473833cc60aa5.exe.json",
+    "source_path": "ml/dataset/cryptojacking/201fb376d18d216baf555ff6afdc0754f94c4475ceaf3b5c713473833cc60aa5.exe.json",
+    "split": "test",
+    "batch_number": 2,
+    "row_index_in_batch": 49,
+    "actual_label": 1,
+    "actual_class": "cryptojacking"
+  },
+  "random_forest": {
+    "ngram_size": 2,
+    "malware_probability": 0.975,
+    "predicted_class": 1,
+    "predicted_class_name": "Cryptojacking"
+  },
+  "shap": {
+    "top_feature_limit": 20,
+    "top_features": [
+      {
+        "feature_id": 3658,
+        "ngram": "POP SUB",
+        "value": 0.00010423452476970851,
+        "shap_value": 0.008977982775254056
+      },
+      {
+        "feature_id": 1742,
+        "ngram": "ADD ROR",
+        "value": 0.0017719869501888752,
+        "shap_value": 0.008846766501261682
+      },
+      {
+        "feature_id": 3676,
+        "ngram": "DEC PUSH",
+        "value": 0.0007557003409601748,
+        "shap_value": 0.008102942822674927
+      },
+      {
+        "feature_id": 1727,
+        "ngram": "MOV ROL",
+        "value": 0.00229315971955657,
+        "shap_value": 0.008003154368829675
+      },
+      {
+        "feature_id": 1384,
+        "ngram": "SUB SBB",
+        "value": 0.0007296417024917901,
+        "shap_value": 0.00785634477662976
+      },
+      {
+        "feature_id": 3688,
+        "ngram": "POP LEA",
+        "value": 0.0008599348366260529,
+        "shap_value": 0.007477597359445008
+      },
+      {
+        "feature_id": 3648,
+        "ngram": "MOVZX PUSH",
+        "value": 0.0005472312914207578,
+        "shap_value": 0.007313151542077972
+      },
+      {
+        "feature_id": 3720,
+        "ngram": "SBB INC",
+        "value": 7.817589357728139e-05,
+        "shap_value": 0.007275256530388328
+      },
+      {
+        "feature_id": 3604,
+        "ngram": "ADD PUSH",
+        "value": 0.0014592834049835801,
+        "shap_value": 0.006896090464799617
+      },
+      {
+        "feature_id": 2391,
+        "ngram": "PUSH CALL",
+        "value": 0.021889250725507736,
+        "shap_value": 0.006755307605820935
+      },
+      {
+        "feature_id": 3644,
+        "ngram": "POP CALL",
+        "value": 0.0032052118331193924,
+        "shap_value": 0.006417180879994668
+      },
+      {
+        "feature_id": 3625,
+        "ngram": "POP PUSH",
+        "value": 0.003570032538846135,
+        "shap_value": 0.006405456893900241
+      },
+      {
+        "feature_id": 7628,
+        "ngram": "BSWAP LEA",
+        "value": 0.00020846904953941703,
+        "shap_value": 0.006046556357041638
+      },
+      {
+        "feature_id": 3711,
+        "ngram": "POP ADD",
+        "value": 0.0004951140144839883,
+        "shap_value": 0.00599321836215592
+      },
+      {
+        "feature_id": 4213,
+        "ngram": "ADC SUB",
+        "value": 0.00018241042562294751,
+        "shap_value": 0.0058894040579009635
+      },
+      {
+        "feature_id": 3626,
+        "ngram": "PUSH RET",
+        "value": 2.605863119242713e-05,
+        "shap_value": 0.005618521351284347
+      },
+      {
+        "feature_id": 3856,
+        "ngram": "MOV SHRD",
+        "value": 0.0007035830640234053,
+        "shap_value": 0.005452501319161168
+      },
+      {
+        "feature_id": 2423,
+        "ngram": "SUB ADC",
+        "value": 0.0009120521135628223,
+        "shap_value": 0.005372657056869875
+      },
+      {
+        "feature_id": 2487,
+        "ngram": "MOVZX ROL",
+        "value": 0.00010423452476970851,
+        "shap_value": 0.005301290039104196
+      },
+      {
+        "feature_id": 3601,
+        "ngram": "CALL PUSH",
+        "value": 0.017980456352233887,
+        "shap_value": 0.005299088849750139
+      }
+    ],
+    "status": "completed"
+  },
+  "llm": {
+    "status": "completed",
+    "analysis": {
+      "tier": "high-confidence",
+      "explanation": "The Random Forest assigns 0.975 probability to the malware class, and all 20 top features push toward cryptojacking (SHAP +0.0053 to +0.0090). No single feature dominates, so the verdict rests on the combined pattern. Several n-grams are typical of hashing or multi-precision arithmetic code. Rotate-based sequences are ADD ROR (freq 0.001772, SHAP +0.008847), MOV ROL (freq 0.002293, SHAP +0.008003) and MOVZX ROL (SHAP +0.005301). Carry/borrow chains are SUB SBB (+0.007856), SBB INC (+0.007275), ADC SUB (+0.005889) and SUB ADC (+0.005373). Other arithmetic and byte-order sequences are MOV SHRD (+0.005453), a double-precision shift, and BSWAP LEA (+0.006047), a byte-order swap followed by address arithmetic. Together these resemble the bit-mixing and large-integer operations in hash and cipher routines, which proof-of-work mining relies on. The rotate n-grams are also relatively frequent (about 0.2% each), which suggests repeated use rather than incidental occurrence. The remaining features are generic stack and call patterns: PUSH CALL (freq 0.021889, +0.006755), CALL PUSH (freq 0.017980, +0.005299), POP CALL, POP PUSH, POP SUB, POP LEA, POP ADD, DEC PUSH, ADD PUSH, MOVZX PUSH and PUSH RET. These indicate compiled code with many calls and register save/restore, and they add smaller, less specific support. The evidence has limits. No function names or locations were provided, and the n-grams are not mining-specific, since rotates and carry chains also occur in legitimate crypto or compression code. The tier therefore rests on the strong model output plus the crypto-style arithmetic signature, not on direct proof of mining behavior.",
+      "evidence_analysis": [
+        {
+          "ngram": "POP SUB",
+          "shap_contribution": 0.008978,
+          "assessment": "Top-ranked feature but very rare (freq 0.000104). Likely a stack-restore followed by arithmetic, so it is not semantically specific. It may reflect an unusual code layout, such as an unrolled or obfuscated routine, that the model associates with the malware class."
+        },
+        {
+          "ngram": "ADD ROR",
+          "shap_contribution": 0.008847,
+          "assessment": "Addition followed by a right rotate is a classic ARX or hash-round construct (SHA-style mixing). At freq 0.001772 it suggests repeated hash or cipher round code, consistent with mining proof-of-work."
+        },
+        {
+          "ngram": "DEC PUSH",
+          "shap_contribution": 0.008103,
+          "assessment": "Loop-counter decrement followed by a push. This is generic control flow and gives only weak, indirect support."
+        },
+        {
+          "ngram": "MOV ROL",
+          "shap_contribution": 0.008003,
+          "assessment": "A load followed by a left rotate is another bit-mixing primitive. At freq 0.002293 it is the most frequent rotate pattern and supports the presence of hashing-style routines."
+        },
+        {
+          "ngram": "SUB SBB",
+          "shap_contribution": 0.007856,
+          "assessment": "A subtract-with-borrow chain is characteristic of multi-word (big-integer) arithmetic. It is consistent with crypto math but not exclusive to it."
+        },
+        {
+          "ngram": "POP LEA",
+          "shap_contribution": 0.007478,
+          "assessment": "Register restore followed by address computation. This is generic compiled-code behavior with a modest contribution."
+        },
+        {
+          "ngram": "MOVZX PUSH",
+          "shap_contribution": 0.007313,
+          "assessment": "Zero-extended byte or word load pushed to the stack. This suggests byte-level data handling and is non-specific."
+        },
+        {
+          "ngram": "SBB INC",
+          "shap_contribution": 0.007275,
+          "assessment": "Very rare (freq 0.000078) borrow-then-increment pattern. It points to carry-propagating arithmetic, which supports a multi-precision math interpretation."
+        },
+        {
+          "ngram": "ADD PUSH",
+          "shap_contribution": 0.006896,
+          "assessment": "Arithmetic followed by a push, common in argument setup. It is weakly informative on its own."
+        },
+        {
+          "ngram": "PUSH CALL",
+          "shap_contribution": 0.006755,
+          "assessment": "The most frequent feature (freq 0.021889), reflecting argument passing before calls. It is a generic code-structure signal, though its prevalence suggests call-heavy code."
+        },
+        {
+          "ngram": "POP CALL",
+          "shap_contribution": 0.006417,
+          "assessment": "Stack restore followed by a call. It is generic and adds only small cumulative support."
+        },
+        {
+          "ngram": "POP PUSH",
+          "shap_contribution": 0.006405,
+          "assessment": "Register shuffling through the stack. It is generic, with a minor contribution."
+        },
+        {
+          "ngram": "BSWAP LEA",
+          "shap_contribution": 0.006047,
+          "assessment": "Byte swapping is common in hash functions that handle endianness conversion (e.g., SHA/MD-family). Its pairing with LEA supports hash-style data processing."
+        },
+        {
+          "ngram": "POP ADD",
+          "shap_contribution": 0.005993,
+          "assessment": "Stack restore followed by arithmetic. It is generic and weakly informative."
+        },
+        {
+          "ngram": "ADC SUB",
+          "shap_contribution": 0.005889,
+          "assessment": "Add-with-carry adjacent to subtraction indicates carry-chain arithmetic, reinforcing the multi-precision math signal from SUB SBB and SUB ADC."
+        },
+        {
+          "ngram": "PUSH RET",
+          "shap_contribution": 0.005619,
+          "assessment": "Extremely rare (freq 0.000026). A push followed directly by a return can be an indirect control-transfer idiom sometimes seen in obfuscated or packed code. This is only suggestive given the lack of function context."
+        },
+        {
+          "ngram": "MOV SHRD",
+          "shap_contribution": 0.005453,
+          "assessment": "The double-precision shift is used in 64-bit-on-32-bit or big-number arithmetic and some hash implementations. It is consistent with compute-intensive numeric code."
+        },
+        {
+          "ngram": "SUB ADC",
+          "shap_contribution": 0.005373,
+          "assessment": "Subtract followed by add-with-carry reinforces the carry-chain arithmetic theme, with moderate frequency (0.000912)."
+        },
+        {
+          "ngram": "MOVZX ROL",
+          "shap_contribution": 0.005301,
+          "assessment": "A zero-extended byte load followed by a rotate suggests byte-oriented bit-mixing, as in cipher or hash round functions."
+        },
+        {
+          "ngram": "CALL PUSH",
+          "shap_contribution": 0.005299,
+          "assessment": "Generic call-return flow with a high frequency (0.017980). Structural rather than behavioral, with low specificity."
+        }
+      ],
+      "confidence_score": 0.8,
+      "key_indicators": [
+        "Rotate sequences (ADD ROR, MOV ROL, MOVZX ROL) consistent with hash and cipher round functions",
+        "Carry/borrow chains (SUB SBB, SBB INC, ADC SUB, SUB ADC) indicating multi-precision arithmetic",
+        "BSWAP LEA and MOV SHRD, typical of hash endianness handling and wide-integer shifts",
+        "Random Forest malware probability of 0.975 with all top-20 SHAP contributions positive",
+        "Rare stack-manipulation idioms (PUSH RET, POP SUB) possibly indicating obfuscation",
+        "No function-level attribution, so mining-specific behavior is inferred only from instruction patterns"
+      ],
+      "recommended_action": "Prioritize this sample for deeper analysis. Locate the code regions containing the rotate, BSWAP, SHRD and ADC/SBB sequences and check whether they implement a known hash or mining algorithm (constants, round structure, tight loops). Review the PUSH RET and POP SUB occurrences for packing or obfuscation. Corroborate with dynamic analysis (sustained CPU usage, network connections to mining pools or stratum-style traffic) and static strings or configuration data before final attribution. If the sample is on a live host, isolate it until confirmed."
+    },
+    "token_usage": {
+      "input_tokens": 1746,
+      "output_tokens": 3533,
+      "source": "claude"
+    },
+    "result_path": "graph_aware_classifier/llm_results/201fb376d18d216baf555ff6afdc0754f94c4475ceaf3b5c713473833cc60aa5.exe_llm_result.json"
+  }
+}

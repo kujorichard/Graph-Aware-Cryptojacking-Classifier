@@ -1,0 +1,269 @@
+{
+  "sample": {
+    "binary_name": "eedba0d4610926371c8ae3ae8203b7119160f28fcc5e37fb9579ad0fb86f95db.exe",
+    "source_name": "eedba0d4610926371c8ae3ae8203b7119160f28fcc5e37fb9579ad0fb86f95db.exe.json",
+    "source_path": "ml/dataset/cryptojacking/eedba0d4610926371c8ae3ae8203b7119160f28fcc5e37fb9579ad0fb86f95db.exe.json",
+    "split": "test",
+    "batch_number": 7,
+    "row_index_in_batch": 67,
+    "actual_label": 1,
+    "actual_class": "cryptojacking"
+  },
+  "random_forest": {
+    "ngram_size": 2,
+    "malware_probability": 1.0,
+    "predicted_class": 1,
+    "predicted_class_name": "Cryptojacking"
+  },
+  "shap": {
+    "top_feature_limit": 20,
+    "top_features": [
+      {
+        "feature_id": 1012,
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.017501878913636363
+      },
+      {
+        "feature_id": 946,
+        "ngram": "ADD POP",
+        "value": 0.0,
+        "shap_value": 0.01654103216323742
+      },
+      {
+        "feature_id": 3624,
+        "ngram": "MOV LEAVE",
+        "value": 0.0015649452107027173,
+        "shap_value": 0.015963838309050588
+      },
+      {
+        "feature_id": 3621,
+        "ngram": "LEAVE RET",
+        "value": 0.010954616591334343,
+        "shap_value": 0.012511520499060888
+      },
+      {
+        "feature_id": 1184,
+        "ngram": "SUB SHL",
+        "value": 0.009389671497046947,
+        "shap_value": 0.012498156632828727
+      },
+      {
+        "feature_id": 920,
+        "ngram": "PUSH SUB",
+        "value": 0.0,
+        "shap_value": 0.011426576341699822
+      },
+      {
+        "feature_id": 956,
+        "ngram": "TEST JZ",
+        "value": 0.0,
+        "shap_value": 0.010640048164309478
+      },
+      {
+        "feature_id": 9139,
+        "ngram": "MOV SYSCALL",
+        "value": 0.003912363201379776,
+        "shap_value": 0.010599260579515423
+      },
+      {
+        "feature_id": 944,
+        "ngram": "XOR CALL",
+        "value": 0.0,
+        "shap_value": 0.010099867729269622
+      },
+      {
+        "feature_id": 984,
+        "ngram": "TEST JS",
+        "value": 0.0,
+        "shap_value": 0.009906893212717413
+      },
+      {
+        "feature_id": 927,
+        "ngram": "XOR XOR",
+        "value": 0.0,
+        "shap_value": 0.008773373501620375
+      },
+      {
+        "feature_id": 923,
+        "ngram": "XOR MOV",
+        "value": 0.0015649452107027173,
+        "shap_value": 0.00819888709341068
+      },
+      {
+        "feature_id": 10814,
+        "ngram": "SYSCALL RET",
+        "value": 0.003912363201379776,
+        "shap_value": 0.007852329617470736
+      },
+      {
+        "feature_id": 1037,
+        "ngram": "MOV JZ",
+        "value": 0.0,
+        "shap_value": 0.007802635459570569
+      },
+      {
+        "feature_id": 971,
+        "ngram": "SHL ADD",
+        "value": 0.015649452805519104,
+        "shap_value": 0.00778656630941837
+      },
+      {
+        "feature_id": 967,
+        "ngram": "AND MOV",
+        "value": 0.0,
+        "shap_value": 0.0077862117419858715
+      },
+      {
+        "feature_id": 1170,
+        "ngram": "CMP CMOVZ",
+        "value": 0.0,
+        "shap_value": 0.007461512995909379
+      },
+      {
+        "feature_id": 949,
+        "ngram": "LEA CALL",
+        "value": 0.0,
+        "shap_value": 0.007410166873576276
+      },
+      {
+        "feature_id": 1045,
+        "ngram": "CALL ADD",
+        "value": 0.007824726402759552,
+        "shap_value": 0.006909920892491245
+      },
+      {
+        "feature_id": 1183,
+        "ngram": "XOR SHL",
+        "value": 0.0,
+        "shap_value": 0.006850725648617836
+      }
+    ],
+    "status": "completed"
+  },
+  "llm": {
+    "status": "completed",
+    "analysis": {
+      "tier": "low-confidence",
+      "explanation": "The Random Forest assigns a malware probability of 1.0, and all 20 top SHAP features push toward cryptojacking, but the n-gram evidence itself is mostly generic and does not point to cryptojacking specifically. The strongest contributors (CMOVZ MOV +0.0175, ADD POP +0.0165, MOV LEAVE +0.0160, LEAVE RET +0.0125) are ordinary compiler-generated function prologue/epilogue and stack-cleanup idioms. They are common in benign code, so they likely reflect the model's learned statistical association rather than a mining routine. Twelve of the 20 n-grams have a frequency of 0.000000, so their SHAP weight comes from absence or near-absence, and the evidence gives no function-level locations for them. Several features are consistent with bit-manipulation or hash-style arithmetic: SUB SHL (+0.0125, freq 0.0094), SHL ADD (+0.0078, freq 0.0156), XOR SHL (+0.0069), XOR XOR (+0.0088) and XOR MOV (+0.0082). These could fit mining-style hashing or obfuscation, but they are equally typical of general shift/mask code, and the three that occur at nonzero frequency do so only at low levels. MOV SYSCALL (+0.0106) and SYSCALL RET (+0.0079), both at 0.0039, indicate direct system-call stubs, which could suggest low-level OS interaction or evasion. The evidence does not say what the syscalls do. No evidence points to mining-specific behavior such as stratum networking, a hashing algorithm or resource-throttling logic. Overall, the model's output supports a malicious classification, but the cited n-grams alone are insufficient for a high-confidence cryptojacking call.",
+      "evidence_analysis": [
+        {
+          "ngram": "CMOVZ MOV",
+          "shap_contribution": 0.017502,
+          "assessment": "Conditional-move branchless selection followed by a move. Frequency is 0, so it contributes through absence. It could be associated with constant-time or branchless arithmetic, but it is not specific to mining."
+        },
+        {
+          "ngram": "ADD POP",
+          "shap_contribution": 0.016541,
+          "assessment": "Stack adjustment followed by register restore, a generic epilogue pattern. Frequency is 0, so there is no direct cryptojacking indication."
+        },
+        {
+          "ngram": "MOV LEAVE",
+          "shap_contribution": 0.015964,
+          "assessment": "Standard frame-teardown sequence at low frequency (0.001565). It is compiler boilerplate and weak evidence in isolation."
+        },
+        {
+          "ngram": "LEAVE RET",
+          "shap_contribution": 0.012512,
+          "assessment": "Typical function epilogue at frequency 0.010955. It shows ordinary compiled code structure and is not mining-specific."
+        },
+        {
+          "ngram": "SUB SHL",
+          "shap_contribution": 0.012498,
+          "assessment": "Subtraction followed by a shift, present at 0.00939. It is consistent with bitwise or index arithmetic that might appear in hashing loops, but it is generic."
+        },
+        {
+          "ngram": "PUSH SUB",
+          "shap_contribution": 0.011427,
+          "assessment": "Prologue-style stack frame allocation. Frequency is 0, so it is a weak, non-specific signal."
+        },
+        {
+          "ngram": "TEST JZ",
+          "shap_contribution": 0.01064,
+          "assessment": "Common zero-check branch. Frequency is 0, and it is generic control flow."
+        },
+        {
+          "ngram": "MOV SYSCALL",
+          "shap_contribution": 0.010599,
+          "assessment": "Loading a syscall number before a direct syscall instruction (freq 0.003912). This suggests direct kernel interaction, possibly evasion or a low-level runtime stub. The purpose is not evidenced."
+        },
+        {
+          "ngram": "XOR CALL",
+          "shap_contribution": 0.0101,
+          "assessment": "Register zeroing or XOR before a call. Frequency is 0, so it is a weak generic signal."
+        },
+        {
+          "ngram": "TEST JS",
+          "shap_contribution": 0.009907,
+          "assessment": "Sign-check branch. Frequency is 0 and it is generic control flow, with no specific cryptojacking inference."
+        },
+        {
+          "ngram": "XOR XOR",
+          "shap_contribution": 0.008773,
+          "assessment": "Consecutive XORs may indicate mixing, obfuscation or hash-like operations. Frequency is 0, so there is no direct support in this binary."
+        },
+        {
+          "ngram": "XOR MOV",
+          "shap_contribution": 0.008199,
+          "assessment": "XOR followed by a move at low frequency (0.001565). It may reflect zeroing idioms or data mixing and is non-specific."
+        },
+        {
+          "ngram": "SYSCALL RET",
+          "shap_contribution": 0.007852,
+          "assessment": "Syscall wrapper stub (freq 0.003912), which reinforces the direct-syscall pattern seen with MOV SYSCALL. The syscall's purpose is unknown from the evidence."
+        },
+        {
+          "ngram": "MOV JZ",
+          "shap_contribution": 0.007803,
+          "assessment": "Move followed by a conditional jump. Frequency is 0 and it is generic control flow."
+        },
+        {
+          "ngram": "SHL ADD",
+          "shap_contribution": 0.007787,
+          "assessment": "Shift-then-add at the highest frequency among the top n-grams (0.015649). It is consistent with address or index scaling and could also appear in arithmetic-heavy hashing, but it is not decisive."
+        },
+        {
+          "ngram": "AND MOV",
+          "shap_contribution": 0.007786,
+          "assessment": "Masking followed by a move. Frequency is 0 and it is a generic bit-manipulation idiom."
+        },
+        {
+          "ngram": "CMP CMOVZ",
+          "shap_contribution": 0.007462,
+          "assessment": "Compare feeding a conditional move. Frequency is 0 and it is non-specific."
+        },
+        {
+          "ngram": "LEA CALL",
+          "shap_contribution": 0.00741,
+          "assessment": "Address computation before a call. Frequency is 0 and it is a generic call-setup pattern."
+        },
+        {
+          "ngram": "CALL ADD",
+          "shap_contribution": 0.00691,
+          "assessment": "Call followed by stack cleanup (freq 0.007825). It is a standard calling-convention pattern."
+        },
+        {
+          "ngram": "XOR SHL",
+          "shap_contribution": 0.006851,
+          "assessment": "XOR plus shift is a building block of hash and cipher rounds, but the frequency is 0, so there is no direct support in this binary."
+        }
+      ],
+      "confidence_score": 0.55,
+      "key_indicators": [
+        "Random Forest malware probability of 1.0000, with all top-20 SHAP contributions positive",
+        "Direct-syscall stub pattern: MOV SYSCALL and SYSCALL RET, both at 0.003912",
+        "Shift/XOR/ADD arithmetic n-grams (SUB SHL, SHL ADD, XOR SHL, XOR XOR, XOR MOV) that could fit hash-style computation but are non-specific",
+        "Top-ranked features are largely generic prologue/epilogue and control-flow idioms (LEAVE RET, ADD POP, MOV LEAVE, TEST JZ)",
+        "12 of 20 top n-grams have zero frequency, and no function-level locations are provided",
+        "No mining-specific evidence in the provided n-grams"
+      ],
+      "recommended_action": "Treat the sample as suspicious and likely malicious given the model output, but do not confirm cryptojacking from these n-grams alone. Check dynamic and static artifacts for mining indicators such as pool or stratum network connections, high sustained CPU usage, and hashing-loop code. Inspect the functions containing MOV SYSCALL and SYSCALL RET to determine what the direct syscalls do, and locate the shift/XOR/ADD sequences to see whether they form a hashing routine. Run the sample in a sandbox and compare against known miner signatures before final classification."
+    },
+    "token_usage": {
+      "input_tokens": 1752,
+      "output_tokens": 3206,
+      "source": "claude"
+    },
+    "result_path": "graph_aware_classifier/llm_results/eedba0d4610926371c8ae3ae8203b7119160f28fcc5e37fb9579ad0fb86f95db.exe_llm_result.json"
+  }
+}
