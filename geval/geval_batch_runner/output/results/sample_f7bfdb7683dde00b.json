@@ -1,0 +1,232 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_f7bfdb7683dde00b",
+  "status": "success",
+  "source_sha256": "3a04bb2d133cfc76605d7e5dee9df14895bc75ce7ea2189e7d3bc46adb6b7dbe",
+  "input_sha256": "27928c1b43179f56dc361cc5966cbde3c89b3a7ff1fd81cc56b7fcf4aab73882",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "tcpview64.exe",
+      "source_name": "tcpview64.exe.json",
+      "source_path": "ml/dataset/benign/tcpview64.exe.json",
+      "split": "test",
+      "batch_number": 1,
+      "row_index_in_batch": 70,
+      "actual_label": 0,
+      "actual_class": "benign"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "tcpview64.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T14:10:18.531944+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T14:10:18.531982+00:00",
+      "error": null,
+      "request_sha256": "ee1e5c70790fad15a01d53db8507325d8ea7f0fb136784de005767351b3301d5",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm7mYQqzZiJ8GpKnoHqt",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the SHAP values and frequency ranges against the candidate's claims — the RF predicts class 1 with 0.67 probability, and the top 20 features all show positive SHAP contributions ranging roughly 0.0051 to 0.0089, matching what was stated; the n-gram frequencies (0.000045 to 0.002247) confirm these are mostly rare patterns.\n\nThere are several unsupported interpretive leaps here: the claim that XORPS zeroes a register assumes same-register usage without verification, the \"same string or memory routine\" inference rests on mere adjacency, and the \"LEA POP is a compiler epilogue artifact\" and \"bit-scan computes an offset after a vector match\" statements are asserted as fact when they're really speculative. The general claim that integer-heavy miners don't rely on this pattern also needs hedging given the low-confidence tier.\n\nI'm also flagging that several instruction pairs like \"PSRLDQ XORPS\" and \"VSUBSD VSUBSD\" are described as \"consecutive\" or \"followed by,\" which wrongly implies strict adjacency that graph-aware n-grams don't guarantee — this ordering assumption recurs throughout the report and should be called out each time it appears, alongside the overly certain \"compiler artifact with no cryptojacking significance\" claim.\n\nThe SHAP faithfulness check mostly holds up: directions and magnitudes align, and the \"no single feature dominates\" claim is accurate among the top-k shown, though unseen features remain an open gap. The \"despite the SHAP weight\" phrasing for XOR/NOP and LEA/POP softens an otherwise conflicting attribution, which I'll count as mildly faithful rather than outright contradictory, but the evidence never surfaces the unverified target-class assumption underlying the SHAP values — a limitation worth noting.\n\nTreating the feature values as \"relative frequencies\" is an unsupported semantic leap, since the evidence explicitly warns against interpreting them without upstream confirmation; that goes down as an unsupported claim, though it doesn't affect the SHAP direction/magnitude judgment, so I'll keep faithfulness at true overall. For scoring, technical accuracy lands around 3 given the numeric correctness offset by overreaches like the adjacency and frequency-semantics assumptions and the overly definitive \"compiler artifact\" framing, while coherence scores a 4 since the response stays consistent despite its length and repetition.\n\nRelevance is strong too, maybe a 4 since the explanation ties into the evidence well but leans on generic idiom discussion without fully acknowledging omitted features. Actionability also gets a 4, since the suggested next steps (provenance checks, function inspection, dynamic analysis) are sound and proportionate without fabricating indicators. I'm now cataloging the instruction and assembly indices for each path to keep track of which snippet corresponds to which evidence entry.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_f7bfdb7683dde00b\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP values, ranges and quoted frequencies match the evidence. Several interpretations overreach: adjacency is implied ('followed by', 'Consecutive'), n-gram values are asserted to be 'relative frequencies' although the artifact says their semantics are unconfirmed, and some idiom roles are stated with unwarranted certainty (e.g. LEA POP as a 'compiler artifact').\",\"coherence\":\"The summary, three themes, per-feature assessments, tier, confidence_score and recommendation all agree on an inconclusive verdict. The text is somewhat long and repetitive, but the confidence_score versus RF probability distinction is explained.\",\"cybersecurity_relevance\":\"It ties sample-specific n-grams to hash/cipher mixing versus benign string-scan and floating-point library alternatives, and it notes the lack of function or call context. It does not acknowledge that omitted features or the unverified target class limit the reading, and some idiom discussion is generic.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: verify provenance and hash, inspect functions containing ROR MOV and AND ROR, check whether the SSE and FMA code sits in library routines, then run sandbox or dynamic checks for CPU load and pool traffic. The steps are conditional and not presented as observed. Inspecting functions presumes context the artifact does not yet provide.\"},\"unsupported_claims\":[{\"quote\":\"relative frequencies from 0.000045 to 0.002247\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature value semantics are not established and the values should not be treated as raw counts. Calling them relative frequencies, and repeatedly reasoning from 'frequency', is an unconfirmed semantic assumption.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Consecutive AVX scalar double subtractions indicate floating-point numeric code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2\",\"reason\":\"Graph-aware n-grams need not be adjacent and no extraction or context evidence establishes adjacency; 'Consecutive' asserts it.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"This is a compiler artifact with no cryptojacking significance.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features/11\",\"reason\":\"The 'function epilogues' role is asserted with certainty, but there is no function context. The n-gram also has a positive SHAP contribution.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"XOR followed by NOP is likely register zeroing before padding or alignment. It carries no meaningful cryptojacking signal despite the SHAP weight.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/top_features/8\",\"reason\":\"The register-zeroing and padding purpose and the dismissal of the signal are inferred from mnemonics alone, with no operands or context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Register zeroing followed by a byte compare is part of the vectorized scan idiom seen with PCMPEQB PMOVMSKB and BSF. It most likely belongs to the same string or memory routine and not to a miner.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/top_features/6\",\"reason\":\"Operands, adjacency and shared-routine membership are not in the evidence. Linking this n-gram to the same routine as other n-grams is speculation, although it is hedged with 'most likely'.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"only moderately above the decision boundary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"No decision threshold is supplied, so 0.5 is assumed. The same assumption appears in the key_indicators entry 'only moderately above the threshold'.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive for the configured target class, and the candidate states this. Reported magnitudes, the +0.0051 to +0.0089 range, and the per-feature rounded values match the evidence. The candidate's discounting of some features is framed as its own interpretation. It does not note that the target class is an unverified configured assumption, and 'no single feature dominates' strictly applies only to the top-k subset.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"The SHAP baseline and full attributions are null, so omitted features cannot be assessed.\",\"Feature value semantics are unconfirmed, so they should not be treated as raw counts or relative frequencies.\",\"There are no occurrences, function context, operands or adjacency information.\",\"No decision threshold is supplied.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation is numerically faithful, appropriately cautious and well organized, and it ends with a proportionate verification plan. Its technical accuracy is held back by implied adjacency, treating values as relative frequencies, an assumed decision threshold, and some overly certain benign role attributions made without function context. SHAP direction and magnitude are represented faithfully.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7413,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4035,
+          "output_tokens_details": {
+            "thinking_tokens": 2088
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7413,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4035,
+        "output_tokens_details": {
+          "thinking_tokens": 2088
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_f7bfdb7683dde00b\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP values, ranges and quoted frequencies match the evidence. Several interpretations overreach: adjacency is implied ('followed by', 'Consecutive'), n-gram values are asserted to be 'relative frequencies' although the artifact says their semantics are unconfirmed, and some idiom roles are stated with unwarranted certainty (e.g. LEA POP as a 'compiler artifact').\",\"coherence\":\"The summary, three themes, per-feature assessments, tier, confidence_score and recommendation all agree on an inconclusive verdict. The text is somewhat long and repetitive, but the confidence_score versus RF probability distinction is explained.\",\"cybersecurity_relevance\":\"It ties sample-specific n-grams to hash/cipher mixing versus benign string-scan and floating-point library alternatives, and it notes the lack of function or call context. It does not acknowledge that omitted features or the unverified target class limit the reading, and some idiom discussion is generic.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: verify provenance and hash, inspect functions containing ROR MOV and AND ROR, check whether the SSE and FMA code sits in library routines, then run sandbox or dynamic checks for CPU load and pool traffic. The steps are conditional and not presented as observed. Inspecting functions presumes context the artifact does not yet provide.\"},\"unsupported_claims\":[{\"quote\":\"relative frequencies from 0.000045 to 0.002247\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature value semantics are not established and the values should not be treated as raw counts. Calling them relative frequencies, and repeatedly reasoning from 'frequency', is an unconfirmed semantic assumption.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Consecutive AVX scalar double subtractions indicate floating-point numeric code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2\",\"reason\":\"Graph-aware n-grams need not be adjacent and no extraction or context evidence establishes adjacency; 'Consecutive' asserts it.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"This is a compiler artifact with no cryptojacking significance.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features/11\",\"reason\":\"The 'function epilogues' role is asserted with certainty, but there is no function context. The n-gram also has a positive SHAP contribution.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"XOR followed by NOP is likely register zeroing before padding or alignment. It carries no meaningful cryptojacking signal despite the SHAP weight.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/top_features/8\",\"reason\":\"The register-zeroing and padding purpose and the dismissal of the signal are inferred from mnemonics alone, with no operands or context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Register zeroing followed by a byte compare is part of the vectorized scan idiom seen with PCMPEQB PMOVMSKB and BSF. It most likely belongs to the same string or memory routine and not to a miner.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/top_features/6\",\"reason\":\"Operands, adjacency and shared-routine membership are not in the evidence. Linking this n-gram to the same routine as other n-grams is speculation, although it is hedged with 'most likely'.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"only moderately above the decision boundary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"No decision threshold is supplied, so 0.5 is assumed. The same assumption appears in the key_indicators entry 'only moderately above the threshold'.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive for the configured target class, and the candidate states this. Reported magnitudes, the +0.0051 to +0.0089 range, and the per-feature rounded values match the evidence. The candidate's discounting of some features is framed as its own interpretation. It does not note that the target class is an unverified configured assumption, and 'no single feature dominates' strictly applies only to the top-k subset.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"The SHAP baseline and full attributions are null, so omitted features cannot be assessed.\",\"Feature value semantics are unconfirmed, so they should not be treated as raw counts or relative frequencies.\",\"There are no occurrences, function context, operands or adjacency information.\",\"No decision threshold is supplied.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation is numerically faithful, appropriately cautious and well organized, and it ends with a proportionate verification plan. Its technical accuracy is held back by implied adjacency, treating values as relative frequencies, an assumed decision threshold, and some overly certain benign role attributions made without function context. SHAP direction and magnitude are represented faithfully.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_f7bfdb7683dde00b",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability, SHAP values, ranges and quoted frequencies match the evidence. Several interpretations overreach: adjacency is implied ('followed by', 'Consecutive'), n-gram values are asserted to be 'relative frequencies' although the artifact says their semantics are unconfirmed, and some idiom roles are stated with unwarranted certainty (e.g. LEA POP as a 'compiler artifact').",
+      "coherence": "The summary, three themes, per-feature assessments, tier, confidence_score and recommendation all agree on an inconclusive verdict. The text is somewhat long and repetitive, but the confidence_score versus RF probability distinction is explained.",
+      "cybersecurity_relevance": "It ties sample-specific n-grams to hash/cipher mixing versus benign string-scan and floating-point library alternatives, and it notes the lack of function or call context. It does not acknowledge that omitted features or the unverified target class limit the reading, and some idiom discussion is generic.",
+      "actionable_utility": "The follow-up is concrete and proportionate: verify provenance and hash, inspect functions containing ROR MOV and AND ROR, check whether the SSE and FMA code sits in library routines, then run sandbox or dynamic checks for CPU load and pool traffic. The steps are conditional and not presented as observed. Inspecting functions presumes context the artifact does not yet provide."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "relative frequencies from 0.000045 to 0.002247",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature value semantics are not established and the values should not be treated as raw counts. Calling them relative frequencies, and repeatedly reasoning from 'frequency', is an unconfirmed semantic assumption.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Consecutive AVX scalar double subtractions indicate floating-point numeric code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/top_features/2",
+        "reason": "Graph-aware n-grams need not be adjacent and no extraction or context evidence establishes adjacency; 'Consecutive' asserts it.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "This is a compiler artifact with no cryptojacking significance.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/top_features/11",
+        "reason": "The 'function epilogues' role is asserted with certainty, but there is no function context. The n-gram also has a positive SHAP contribution.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "XOR followed by NOP is likely register zeroing before padding or alignment. It carries no meaningful cryptojacking signal despite the SHAP weight.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+        "evidence_reference": "/evidence/top_features/8",
+        "reason": "The register-zeroing and padding purpose and the dismissal of the signal are inferred from mnemonics alone, with no operands or context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Register zeroing followed by a byte compare is part of the vectorized scan idiom seen with PCMPEQB PMOVMSKB and BSF. It most likely belongs to the same string or memory routine and not to a miner.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+        "evidence_reference": "/evidence/top_features/6",
+        "reason": "Operands, adjacency and shared-routine membership are not in the evidence. Linking this n-gram to the same routine as other n-grams is speculation, although it is hedged with 'most likely'.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "only moderately above the decision boundary",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/rf_probability_class_1",
+        "reason": "No decision threshold is supplied, so 0.5 is assumed. The same assumption appears in the key_indicators entry 'only moderately above the threshold'.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are positive for the configured target class, and the candidate states this. Reported magnitudes, the +0.0051 to +0.0089 range, and the per-feature rounded values match the evidence. The candidate's discounting of some features is framed as its own interpretation. It does not note that the target class is an unverified configured assumption, and 'no single feature dominates' strictly applies only to the top-k subset.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "The SHAP baseline and full attributions are null, so omitted features cannot be assessed.",
+      "Feature value semantics are unconfirmed, so they should not be treated as raw counts or relative frequencies.",
+      "There are no occurrences, function context, operands or adjacency information.",
+      "No decision threshold is supplied.",
+      "The RF probability is not behavioral proof."
+    ],
+    "summary": "The explanation is numerically faithful, appropriately cautious and well organized, and it ends with a proportionate verification plan. Its technical accuracy is held back by implied adjacency, treating values as relative frequencies, an assumed decision threshold, and some overly certain benign role attributions made without function context. SHAP direction and magnitude are represented faithfully."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "relative frequencies from 0.000045 to 0.002247",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature value semantics are not established and the values should not be treated as raw counts. Calling them relative frequencies, and repeatedly reasoning from 'frequency', is an unconfirmed semantic assumption.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Consecutive AVX scalar double subtractions indicate floating-point numeric code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/top_features/2",
+      "reason": "Graph-aware n-grams need not be adjacent and no extraction or context evidence establishes adjacency; 'Consecutive' asserts it.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "This is a compiler artifact with no cryptojacking significance.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/top_features/11",
+      "reason": "The 'function epilogues' role is asserted with certainty, but there is no function context. The n-gram also has a positive SHAP contribution.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "XOR followed by NOP is likely register zeroing before padding or alignment. It carries no meaningful cryptojacking signal despite the SHAP weight.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+      "evidence_reference": "/evidence/top_features/8",
+      "reason": "The register-zeroing and padding purpose and the dismissal of the signal are inferred from mnemonics alone, with no operands or context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Register zeroing followed by a byte compare is part of the vectorized scan idiom seen with PCMPEQB PMOVMSKB and BSF. It most likely belongs to the same string or memory routine and not to a miner.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+      "evidence_reference": "/evidence/top_features/6",
+      "reason": "Operands, adjacency and shared-routine membership are not in the evidence. Linking this n-gram to the same routine as other n-grams is speculation, although it is hedged with 'most likely'.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "only moderately above the decision boundary",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/rf_probability_class_1",
+      "reason": "No decision threshold is supplied, so 0.5 is assumed. The same assumption appears in the key_indicators entry 'only moderately above the threshold'.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "tcpview64.exe_analysis.json"
+}

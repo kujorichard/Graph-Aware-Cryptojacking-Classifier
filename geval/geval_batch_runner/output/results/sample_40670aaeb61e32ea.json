@@ -1,0 +1,231 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_40670aaeb61e32ea",
+  "status": "success",
+  "source_sha256": "21a0f80453c6d87449661663d39689072fd916b9e468c4bc756bc48607b70995",
+  "input_sha256": "3553af962378907cf4e589b95bf895b45df1a305ac51a0ce467a433fb19bddbc",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "3bea8f120a6006083937a8a990c351f4784ce9f9ec8397345448f1f65da2d7ab.elf",
+      "source_name": "3bea8f120a6006083937a8a990c351f4784ce9f9ec8397345448f1f65da2d7ab.elf.json",
+      "source_path": "ml/dataset/cryptojacking/3bea8f120a6006083937a8a990c351f4784ce9f9ec8397345448f1f65da2d7ab.elf.json",
+      "split": "test",
+      "batch_number": 2,
+      "row_index_in_batch": 34,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "3bea8f120a6006083937a8a990c351f4784ce9f9ec8397345448f1f65da2d7ab.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:28:33.679488+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:28:33.679517+00:00",
+      "error": null,
+      "request_sha256": "1d15d9a7a9b3d49234c968522389c78d13be378efa6527e72753d86702003879",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfkz1W8sd2NCAVsmTZVsy",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the 0.99988 probability rounds correctly to 0.9999, and confirming the SHAP explanation's assumption that class 1 corresponds to cryptojacking holds up given the labeling convention used.\n\nThe claim about \"reported frequencies\" being all 0.000000 is an interpretive leap — the raw values are just 0.0, and whether they represent frequencies at all isn't established, so treating them that way (and recommending higher-precision re-extraction) is a bit unsupported. Similarly, the observation that no pattern is \"visibly concentrated\" draws an inference from values whose semantics aren't confirmed. The characterization of the n-grams as common two-instruction mnemonic pairs seems reasonable though somewhat generic, and the hedged note about which pairs loosely suggest bitwise/arithmetic mixing looks appropriately qualified.\n\nSeveral of the descriptions assert adjacency or control-flow relationships that extraction doesn't actually confirm — things like calling ADD/POP a stack cleanup epilogue, PUSH/SUB a function prologue, or XOR/CALL \"immediately before a call\" — these all overreach by assuming instruction ordering and proximity that isn't evidenced. The same issue applies to CALL/ADD as a post-call adjustment, LEA/CALL as address computation for a call argument, and CALL/XOR as post-call register manipulation; these should be flagged as unsupported behavioral claims. The claim that contributions are spread fairly evenly is roughly accurate for the top 20 values shown, though it omits that this is only a partial view, which is a minor omission rather than a real error.\n\nChecking the SHAP values for faithfulness — the directions and magnitudes for the various n-gram contributions line up correctly with what's reported, and framing \"all top n-grams push toward cryptojacking\" is faithful given the class assumption, though that assumption itself isn't called out as a caveat. There's also a small inconsistency between the \"low-confidence\" tier label and the 0.6 confidence score sitting right at the boundary. Overall this points toward a mid-level technical accuracy score, since the core SHAP reporting is faithful but the semantic interpretations keep introducing unsupported adjacency and control-flow claims.\n\nNow I'm identifying specific unsupported claims to flag with their JSON pointers — the explanation's assertion about frequencies all being zero, and several evidence_analysis entries (ADD POP as stack cleanup/epilogue, PUSH SUB as function prologue, XOR CALL as register-zeroing before a call, CALL ADD as post-call adjustment) that assert specific semantic roles without support from the actual evidence. I'm pulling exact quotes for each of these to cite precisely, along with the mild recommended-action claim about re-running feature extraction, and mapping each to its evidence reference before writing out the final single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_40670aaeb61e32ea\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.9999 vs 0.99988), SHAP signs, the +0.0063 to +0.0169 range and the quoted per-feature SHAP values all match the evidence. It overreaches by treating value 0.0 as 'frequencies' and by asserting adjacency-dependent roles (epilogue, prologue, 'immediately before a call') that the artifact cannot support.\",\"coherence\":\"The explanation is well organized, and the low-confidence tier agrees with the hedged assessments and the recommended action. Minor weaknesses are repetition of the 'generic' point across the 20 per-feature entries and a 0.6 confidence_score that is unexplained next to the 'low-confidence' tier.\",\"cybersecurity_relevance\":\"It ties the evidence to the cryptojacking question by flagging XOR/SHL/AND bit-mixing as only weakly suggestive, and it states benign alternatives (common compiler idioms). It also notes the missing function context. It is weakened by compiler-role narratives that rest on unsupported adjacency.\",\"actionable_utility\":\"The follow-up is concrete, feasible and proportionate: disassemble and locate the relevant functions, check strings, pool and wallet indicators, and sandbox CPU and network use. It is framed as verification and does not claim any of these as observed. The 'higher-precision frequencies' item rests on the unverified assumption that the values are rounded frequencies.\"},\"unsupported_claims\":[{\"quote\":\"The reported frequencies are all 0.000000, so no pattern is visibly concentrated in the binary.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values are not established as counts or frequencies. Inferring that nothing is concentrated in the binary from value 0.0 is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Typical stack cleanup at a function epilogue.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1\",\"reason\":\"No function context, occurrences or adjacency evidence shows where ADD POP occurs. An epilogue role is asserted without support.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A register-zeroing or mixing operation immediately before a call, a common argument-setup idiom.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2\",\"reason\":\"'Immediately before a call' and argument setup assume adjacency and control flow that the supplied evidence does not establish.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A post-call stack or pointer adjustment.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4\",\"reason\":\"This asserts a calling-convention role for this sample without occurrences, function context or adjacency evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Typical function prologue and stack frame allocation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/top_features/5\",\"reason\":\"A prologue role is asserted for PUSH SUB without function context or adjacency evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Re-run feature extraction with higher-precision frequencies and function-level attribution\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"This presumes the 0.0 values are rounded frequencies, which the artifact does not establish. The function-level attribution part is reasonable.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive for target class 1, and the cited values match the evidence within rounding. The 'no single dominant indicator' remark is consistent with the top-k subset. The class-1 target is a configured assumption, and the candidate does not flag that caveat.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption pending upstream verification.\",\"Feature value semantics are not established, so 0.0 cannot be treated as a frequency or count.\",\"No occurrences, function context, SHAP baseline or full attributions are available.\",\"The top-k subset cannot rule out omitted features that support benign.\",\"Adjacency and control flow between instructions are unknown.\"],\"summary\":\"The explanation reports probability and SHAP values faithfully and is appropriately cautious about cryptojacking. It is marred by unsupported assumptions about 0.0 values being frequencies and by several adjacency-based compiler-role assertions. Its recommended follow-up is concrete and proportionate.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6799,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3593,
+          "output_tokens_details": {
+            "thinking_tokens": 1874
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6799,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3593,
+        "output_tokens_details": {
+          "thinking_tokens": 1874
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_40670aaeb61e32ea\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.9999 vs 0.99988), SHAP signs, the +0.0063 to +0.0169 range and the quoted per-feature SHAP values all match the evidence. It overreaches by treating value 0.0 as 'frequencies' and by asserting adjacency-dependent roles (epilogue, prologue, 'immediately before a call') that the artifact cannot support.\",\"coherence\":\"The explanation is well organized, and the low-confidence tier agrees with the hedged assessments and the recommended action. Minor weaknesses are repetition of the 'generic' point across the 20 per-feature entries and a 0.6 confidence_score that is unexplained next to the 'low-confidence' tier.\",\"cybersecurity_relevance\":\"It ties the evidence to the cryptojacking question by flagging XOR/SHL/AND bit-mixing as only weakly suggestive, and it states benign alternatives (common compiler idioms). It also notes the missing function context. It is weakened by compiler-role narratives that rest on unsupported adjacency.\",\"actionable_utility\":\"The follow-up is concrete, feasible and proportionate: disassemble and locate the relevant functions, check strings, pool and wallet indicators, and sandbox CPU and network use. It is framed as verification and does not claim any of these as observed. The 'higher-precision frequencies' item rests on the unverified assumption that the values are rounded frequencies.\"},\"unsupported_claims\":[{\"quote\":\"The reported frequencies are all 0.000000, so no pattern is visibly concentrated in the binary.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values are not established as counts or frequencies. Inferring that nothing is concentrated in the binary from value 0.0 is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Typical stack cleanup at a function epilogue.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1\",\"reason\":\"No function context, occurrences or adjacency evidence shows where ADD POP occurs. An epilogue role is asserted without support.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A register-zeroing or mixing operation immediately before a call, a common argument-setup idiom.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2\",\"reason\":\"'Immediately before a call' and argument setup assume adjacency and control flow that the supplied evidence does not establish.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A post-call stack or pointer adjustment.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4\",\"reason\":\"This asserts a calling-convention role for this sample without occurrences, function context or adjacency evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Typical function prologue and stack frame allocation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/top_features/5\",\"reason\":\"A prologue role is asserted for PUSH SUB without function context or adjacency evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Re-run feature extraction with higher-precision frequencies and function-level attribution\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"This presumes the 0.0 values are rounded frequencies, which the artifact does not establish. The function-level attribution part is reasonable.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive for target class 1, and the cited values match the evidence within rounding. The 'no single dominant indicator' remark is consistent with the top-k subset. The class-1 target is a configured assumption, and the candidate does not flag that caveat.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption pending upstream verification.\",\"Feature value semantics are not established, so 0.0 cannot be treated as a frequency or count.\",\"No occurrences, function context, SHAP baseline or full attributions are available.\",\"The top-k subset cannot rule out omitted features that support benign.\",\"Adjacency and control flow between instructions are unknown.\"],\"summary\":\"The explanation reports probability and SHAP values faithfully and is appropriately cautious about cryptojacking. It is marred by unsupported assumptions about 0.0 values being frequencies and by several adjacency-based compiler-role assertions. Its recommended follow-up is concrete and proportionate.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_40670aaeb61e32ea",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability (0.9999 vs 0.99988), SHAP signs, the +0.0063 to +0.0169 range and the quoted per-feature SHAP values all match the evidence. It overreaches by treating value 0.0 as 'frequencies' and by asserting adjacency-dependent roles (epilogue, prologue, 'immediately before a call') that the artifact cannot support.",
+      "coherence": "The explanation is well organized, and the low-confidence tier agrees with the hedged assessments and the recommended action. Minor weaknesses are repetition of the 'generic' point across the 20 per-feature entries and a 0.6 confidence_score that is unexplained next to the 'low-confidence' tier.",
+      "cybersecurity_relevance": "It ties the evidence to the cryptojacking question by flagging XOR/SHL/AND bit-mixing as only weakly suggestive, and it states benign alternatives (common compiler idioms). It also notes the missing function context. It is weakened by compiler-role narratives that rest on unsupported adjacency.",
+      "actionable_utility": "The follow-up is concrete, feasible and proportionate: disassemble and locate the relevant functions, check strings, pool and wallet indicators, and sandbox CPU and network use. It is framed as verification and does not claim any of these as observed. The 'higher-precision frequencies' item rests on the unverified assumption that the values are rounded frequencies."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "The reported frequencies are all 0.000000, so no pattern is visibly concentrated in the binary.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature values are not established as counts or frequencies. Inferring that nothing is concentrated in the binary from value 0.0 is unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Typical stack cleanup at a function epilogue.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/top_features/1",
+        "reason": "No function context, occurrences or adjacency evidence shows where ADD POP occurs. An epilogue role is asserted without support.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "A register-zeroing or mixing operation immediately before a call, a common argument-setup idiom.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/top_features/2",
+        "reason": "'Immediately before a call' and argument setup assume adjacency and control flow that the supplied evidence does not establish.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "A post-call stack or pointer adjustment.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/top_features/4",
+        "reason": "This asserts a calling-convention role for this sample without occurrences, function context or adjacency evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Typical function prologue and stack frame allocation.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+        "evidence_reference": "/evidence/top_features/5",
+        "reason": "A prologue role is asserted for PUSH SUB without function context or adjacency evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Re-run feature extraction with higher-precision frequencies and function-level attribution",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "This presumes the 0.0 values are rounded frequencies, which the artifact does not establish. The function-level attribution part is reasonable.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are positive for target class 1, and the cited values match the evidence within rounding. The 'no single dominant indicator' remark is consistent with the top-k subset. The class-1 target is a configured assumption, and the candidate does not flag that caveat.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption pending upstream verification.",
+      "Feature value semantics are not established, so 0.0 cannot be treated as a frequency or count.",
+      "No occurrences, function context, SHAP baseline or full attributions are available.",
+      "The top-k subset cannot rule out omitted features that support benign.",
+      "Adjacency and control flow between instructions are unknown."
+    ],
+    "summary": "The explanation reports probability and SHAP values faithfully and is appropriately cautious about cryptojacking. It is marred by unsupported assumptions about 0.0 values being frequencies and by several adjacency-based compiler-role assertions. Its recommended follow-up is concrete and proportionate."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "The reported frequencies are all 0.000000, so no pattern is visibly concentrated in the binary.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature values are not established as counts or frequencies. Inferring that nothing is concentrated in the binary from value 0.0 is unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Typical stack cleanup at a function epilogue.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/top_features/1",
+      "reason": "No function context, occurrences or adjacency evidence shows where ADD POP occurs. An epilogue role is asserted without support.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "A register-zeroing or mixing operation immediately before a call, a common argument-setup idiom.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/top_features/2",
+      "reason": "'Immediately before a call' and argument setup assume adjacency and control flow that the supplied evidence does not establish.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "A post-call stack or pointer adjustment.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/top_features/4",
+      "reason": "This asserts a calling-convention role for this sample without occurrences, function context or adjacency evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Typical function prologue and stack frame allocation.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+      "evidence_reference": "/evidence/top_features/5",
+      "reason": "A prologue role is asserted for PUSH SUB without function context or adjacency evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Re-run feature extraction with higher-precision frequencies and function-level attribution",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "This presumes the 0.0 values are rounded frequencies, which the artifact does not establish. The function-level attribution part is reasonable.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "3bea8f120a6006083937a8a990c351f4784ce9f9ec8397345448f1f65da2d7ab.elf_analysis.json"
+}

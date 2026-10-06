@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_b17dfcea986bdb19",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.99,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.0171578011296765
+      },
+      {
+        "ngram": "PUSH MOV",
+        "value": 0.05263157933950424,
+        "shap_value": 0.014713832775628296
+      },
+      {
+        "ngram": "ADD POP",
+        "value": 0.0,
+        "shap_value": 0.013542649618687458
+      },
+      {
+        "ngram": "PUSH RET",
+        "value": 0.05263157933950424,
+        "shap_value": 0.01322931425221176
+      },
+      {
+        "ngram": "POP PUSH",
+        "value": 0.05263157933950424,
+        "shap_value": 0.01106781501232692
+      },
+      {
+        "ngram": "MOV TEST",
+        "value": 0.05263157933950424,
+        "shap_value": -0.010813372256278812
+      },
+      {
+        "ngram": "CALL ADD",
+        "value": 0.0,
+        "shap_value": 0.009340845989876825
+      },
+      {
+        "ngram": "XOR MOV",
+        "value": 0.0,
+        "shap_value": 0.009309792268125833
+      },
+      {
+        "ngram": "PUSH POP",
+        "value": 0.05263157933950424,
+        "shap_value": 0.009294789683967995
+      },
+      {
+        "ngram": "XOR CALL",
+        "value": 0.0,
+        "shap_value": 0.00925790986636721
+      },
+      {
+        "ngram": "MOV PUSH",
+        "value": 0.05263157933950424,
+        "shap_value": 0.009027969043253788
+      },
+      {
+        "ngram": "POP ADD",
+        "value": 0.05263157933950424,
+        "shap_value": 0.008789786245058008
+      },
+      {
+        "ngram": "PUSH SUB",
+        "value": 0.0,
+        "shap_value": 0.00810935367823946
+      },
+      {
+        "ngram": "AND MOV",
+        "value": 0.0,
+        "shap_value": 0.007960499739360104
+      },
+      {
+        "ngram": "TEST JZ",
+        "value": 0.0,
+        "shap_value": 0.00773881669189509
+      },
+      {
+        "ngram": "XOR XOR",
+        "value": 0.0,
+        "shap_value": 0.007560418353892502
+      },
+      {
+        "ngram": "MOV JZ",
+        "value": 0.0,
+        "shap_value": 0.007311860104439321
+      },
+      {
+        "ngram": "LEA CALL",
+        "value": 0.0,
+        "shap_value": 0.007226742039120728
+      },
+      {
+        "ngram": "SUB MOV",
+        "value": 0.0,
+        "shap_value": 0.007215292063478127
+      },
+      {
+        "ngram": "XOR CMOVNZ",
+        "value": 0.0,
+        "shap_value": 0.007121807987510738
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest assigns 0.99 probability of malware, but the supplied evidence does not independently support a high-confidence cryptojacking call. Nineteen of the top 20 n-grams push toward cryptojacking, but their SHAP contributions are small and evenly spread (+0.007 to +0.017). No single feature dominates. Every n-gram is a generic, compiler-generated instruction pair (PUSH MOV, PUSH RET, POP PUSH, ADD POP, XOR MOV, TEST JZ, LEA CALL, etc.) that appears in almost any x86 binary. None is a crypto-specific pattern such as rotate/shift/XOR-heavy round functions, SIMD or AES instructions, or tight arithmetic loops. Many of the top features (CMOVZ MOV, ADD POP, CALL ADD, XOR MOV, XOR CALL, PUSH SUB, AND MOV, TEST JZ, XOR XOR, MOV JZ, LEA CALL, SUB MOV, XOR CMOVNZ) have a relative frequency of 0.000000, so their positive SHAP values reflect the absence of these patterns, which the model associates with the malware class. This probably indicates a small or unusual binary with limited code diversity, such as a packed, stub-like or minimal executable, rather than observed mining behavior. The features that are present (PUSH MOV, PUSH RET, POP PUSH, PUSH POP, MOV PUSH, POP ADD, each at 0.052632) are prologue/epilogue and stack-manipulation sequences. They suggest a very small code body and are not specific to mining. MOV TEST (-0.010813) points toward benign. The evidence also contains no function names, API references or mining-specific instruction signatures. The classifier's high score is therefore plausibly driven by structural or size artifacts, and the evidence is inconclusive for cryptojacking specifically.",
+    "evidence_analysis": [
+      {
+        "ngram": "CMOVZ MOV",
+        "shap_contribution": 0.017158,
+        "assessment": "Top contributor, but frequency is 0, so it reflects absence. Conditional moves are not diagnostic of mining on their own, and the signal looks like a model artifact."
+      },
+      {
+        "ngram": "PUSH MOV",
+        "shap_contribution": 0.014714,
+        "assessment": "Standard function prologue pattern, present at low frequency (0.0526). It is generic and not mining-specific, and suggests a small code body."
+      },
+      {
+        "ngram": "ADD POP",
+        "shap_contribution": 0.013543,
+        "assessment": "Absent from the binary (frequency 0). A stack cleanup/epilogue pair with no cryptographic meaning. The contribution comes from its absence."
+      },
+      {
+        "ngram": "PUSH RET",
+        "shap_contribution": 0.013229,
+        "assessment": "Present at 0.0526. Unusual adjacency that may indicate tiny stub functions or obfuscation or packing, but it is not conclusive for mining."
+      },
+      {
+        "ngram": "POP PUSH",
+        "shap_contribution": 0.011068,
+        "assessment": "Stack manipulation sequence present at low frequency. It is generic and could reflect register save/restore in a small binary."
+      },
+      {
+        "ngram": "MOV TEST",
+        "shap_contribution": -0.010813,
+        "assessment": "The only benign-leaning feature. A common pattern of ordinary conditional checks, and it partly offsets the malware signal."
+      },
+      {
+        "ngram": "CALL ADD",
+        "shap_contribution": 0.009341,
+        "assessment": "Absent. A call followed by stack cleanup is generic, so the contribution reflects the absence of typical cdecl call patterns."
+      },
+      {
+        "ngram": "XOR MOV",
+        "shap_contribution": 0.00931,
+        "assessment": "Absent. XOR is often relevant to hashing or obfuscation, but with zero frequency it gives no evidence of mining computation."
+      },
+      {
+        "ngram": "PUSH POP",
+        "shap_contribution": 0.009295,
+        "assessment": "Present at low frequency. A register shuffling idiom with no mining specificity."
+      },
+      {
+        "ngram": "XOR CALL",
+        "shap_contribution": 0.009258,
+        "assessment": "Absent. No evidence of XOR-based argument zeroing before calls, and no crypto-specific implication."
+      },
+      {
+        "ngram": "MOV PUSH",
+        "shap_contribution": 0.009028,
+        "assessment": "Present at 0.0526. A generic argument-setup pattern."
+      },
+      {
+        "ngram": "POP ADD",
+        "shap_contribution": 0.00879,
+        "assessment": "Present at low frequency. Generic stack/register manipulation with no mining significance."
+      },
+      {
+        "ngram": "PUSH SUB",
+        "shap_contribution": 0.008109,
+        "assessment": "Absent. Related to stack frame setup, so the contribution reflects absence, not behavior."
+      },
+      {
+        "ngram": "AND MOV",
+        "shap_contribution": 0.00796,
+        "assessment": "Absent. Bit masking could relate to hashing, but with zero frequency it provides no support."
+      },
+      {
+        "ngram": "TEST JZ",
+        "shap_contribution": 0.007739,
+        "assessment": "Absent. A common branch-on-condition pattern. Its absence suggests limited control flow, which is unremarkable on its own."
+      },
+      {
+        "ngram": "XOR XOR",
+        "shap_contribution": 0.00756,
+        "assessment": "Absent. Consecutive XORs are sometimes seen in crypto or register-zeroing code, but with zero frequency there is no observed evidence."
+      },
+      {
+        "ngram": "MOV JZ",
+        "shap_contribution": 0.007312,
+        "assessment": "Absent. A generic conditional-branch pattern with no mining specificity."
+      },
+      {
+        "ngram": "LEA CALL",
+        "shap_contribution": 0.007227,
+        "assessment": "Absent. Typical argument address setup before a call. Nothing here indicates mining behavior."
+      },
+      {
+        "ngram": "SUB MOV",
+        "shap_contribution": 0.007215,
+        "assessment": "Absent. Generic arithmetic/data movement pair with no diagnostic value."
+      },
+      {
+        "ngram": "XOR CMOVNZ",
+        "shap_contribution": 0.007122,
+        "assessment": "Absent. A branchless conditional pattern sometimes seen in optimized or crypto code, but its zero frequency means no observed support."
+      }
+    ],
+    "confidence_score": 0.4,
+    "key_indicators": [
+      "Model probability of 0.99 for malware, but no individual feature contributes more than +0.017",
+      "19 of 20 top features push toward cryptojacking, though all are generic instruction pairs",
+      "Most positive-SHAP n-grams have zero frequency, so the signal comes from absence of patterns",
+      "Present n-grams (PUSH MOV, PUSH RET, POP PUSH, PUSH POP, MOV PUSH, POP ADD) are stack and prologue idioms, not mining-specific",
+      "MOV TEST contributes -0.010813 toward benign",
+      "No crypto-specific instruction patterns or function-level evidence in the provided data"
+    ],
+    "recommended_action": "Treat as suspicious but unconfirmed. Perform manual or dynamic analysis to check for packing or obfuscation, which the small code footprint and the PUSH RET pattern could indicate. Inspect imports, strings and network behavior for mining pool connections (e.g., stratum), and monitor sustained CPU usage in a sandbox. Do not label as cryptojacking from this n-gram evidence alone."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

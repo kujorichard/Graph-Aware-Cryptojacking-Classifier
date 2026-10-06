@@ -1,0 +1,230 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_8a5d2d4d464c2813",
+  "status": "success",
+  "source_sha256": "40995d734b2e539c7fb10a2c87449d60ebfa1d4dfe50f73994917f3ca6364aa3",
+  "input_sha256": "7a662864df856fe3ed227b288fbb5a1dc052fe2ba2b752680a426ff9641c2061",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "82f39fb649587c9d1ab9bb15ec839fe27d4c4f81524e49be1b21a43cd8747f7c.exe",
+      "source_name": "82f39fb649587c9d1ab9bb15ec839fe27d4c4f81524e49be1b21a43cd8747f7c.exe.json",
+      "source_path": "ml/dataset/cryptojacking/82f39fb649587c9d1ab9bb15ec839fe27d4c4f81524e49be1b21a43cd8747f7c.exe.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 43,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "82f39fb649587c9d1ab9bb15ec839fe27d4c4f81524e49be1b21a43cd8747f7c.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:58:44.663746+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:58:44.663774+00:00",
+      "error": null,
+      "request_sha256": "0fc6dbd34ac3dbd3c67e2194422a45f82231bdc99ce08766e7e3adbffcc15a2d",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm2JzvCvWav9AebJdGc6",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the random forest's prediction of 1.0 probability, looking at how the top 20 features all show positive SHAP values ranging from 0.0007 to 0.0786, and cross-referencing specific arithmetic-flavored bigram frequencies like CDQ-MOV, LEA-IDIV, and SUB-SBB against the candidate's claimed ranges.\n\nThe candidate's framing of these as \"frequencies\" is a mild overreach since the feature value semantics were never established as raw counts. I'm also noting that the explanation assumes adjacency for n-grams like CALL-RET (interpreting it as a call immediately followed by a return), when the underlying rule for graph-aware n-grams doesn't guarantee that adjacency — so that inference about thin wrapper/stub functions is unsupported by the evidence as given.\n\nChecking \"LEA IDIV\" adjacency and \"SUB SBB\" multi-word arithmetic claims — the semantics are plausible but overstated. SHAP values are generally rounded and faithful in direction/magnitude, though I'm being too loose equating magnitude with frequency, and the \"unambiguous\" framing ignores that random forest probabilities aren't calibrated.\n\nThe claim about top-20 scope not containing hashing-style instructions checks out as accurately scoped, and the recommended quarantine action seems proportionate overall.\n\nScoring: I'd put technical accuracy around 3 given the adjacency inferences and frequency semantics issues, though well hedged. Coherence around 4 due to some repetition between explanation and evidence_analysis sections, relevance around 4, and actionability around 4.\n\nNow I'm cataloging unsupported claims with their exact paths and quotes — starting with the assessment that a call immediately followed by a return suggests a thin wrapper or stub function fitting unusual control flow, flagged at the evidence_analysis/0/assessment path as an unsupported behavioral inference.\n\nI'm also flagging the push-followed-by-return claim as suggesting indirect-jump or return-address manipulation, the heavy push/call argument-staging density claim with low unestablished values, and considering whether to include the sign-extension-before-division adjacency claim or the LEA/IDIV arithmetic-feeding-division claim instead. I'll also note the \"most frequent listed pattern\" value as an unsupported certainty claim around its semantics.\n\nI'm narrowing down to around six items total, including the return-value setup before returning and the high-frequency call/argument-set-up sequence, each tied back to their evidence references.\n\n",
+            "signature": "CAQSiisKEAgSGAI4AUIIdGhpbmtpbmcSDA2YHXZD9uWQ95IILRoMNEzmPD4FeWBtB6KRIjBGYKcT+tNhP8LRFubfY66bfPpJV++Xw8GGWo7UVzG222FZQlrJ6wJd1j1bRY/JezAqpyqCo7MUXkMKkjt1omLd80sZHf6i+ndFssE8nJV9F9DNMwOkRGOb8H6IcoX0DlkZhUq7dAzUjJYLuITnZw3/hUq9dRMSwI+Tl5Jft1UBwZnRtZrbB7Q+3GYvJNOlGaY4KiC0CUvuBLCo93teY0jHeAU0qINEFRdpGrMmKexzcnvNKKOX6qBDxt9oXG9lY3wDtBGIRCFzU6bohpmZc7EpD0WPSbRSo9tvLZ2L0a9hFWA3M5lSDuEaQ46bsBwNYYP+hYTSgAu1CsGYMdEpCseJXjTQ5Jj+yQxIyMvBbutrjInSaoja1rz+v+I36mQDpXxxT30m7pX7yYclBwbqS8sR2lLVx8SbGUeedYXO4Ip59liC7cu9L4IGgBcY+QS4WiwQoStyOPew2tD8Eb9woE+pWMv+5G4lHXQ4z7VOxPgPMuGUQgFQO4MiFMy/tT9mMrv/AS1e57bkWnHoeQbc+Wm59x7hg1HKAZD0nFQQkV0Wkxy+5Qvgmxrg3TLXBdMIXGVvO0Pn6AONxvAyf/bYv84gPKVj1RJ+o6XKspajK1VsSbs979j+LxW3FjOePc+ddDYyaxd5/RvljrX7sjT2Wk1gWapMWWiAEpoHYn3xPDcditLWXHfYar2A/Pdr8/tWV5t3WOqOKlztfSp36shuCJ09wdbsMVaq4NeyYVL/928sJwvvJRpJ9oOHE6GFjs5wco+ksMh6iSPy+5w+nR9hXVoQN9TYjyslkZ1tTjU5/BY5H4DaDHpdGGzZ6wCzMJu1gxRRCqkdKGEy+WEmURwq65WKP7uwjJ9YMHCY4PztIMxu6FtLgpuyo7S6WBorF04+6/p+VK/rTRksJGjOtmDEsOvY616hAlio9uKvKAH92QA4c8eAY/qEXTMmLAz/l91jV9N2weG+1yySaD6DFUcZ2gXw9bDUBgLO80kBmgA0oSVpATPQ4AOtE2Ai2fo7XP5X7e6jy0afnxNYksLAECOSB7xkUi8RX782W8zQaKt3eASVNgT1Lb6aO3hEECZzkAsz9FrDytrznClDKyn5wlQ4Wmv4jFtGT50fjZbbpldi60fS6OrbhGHFfcB8bLjokZmDNZGN+w1d97z+fPB5DNL7/ztFI4cXPuEKwBjaX3RT/qTRTM0AcqBwtFTuvQHF1geopERptO7IpdYYpqf7HaEJ7R8ThlqpuN39MMCp8kLYb/mjymDUO22kflctOmx1v1bysZrDBvjOkR3j6h20RY2K6hku2Zo/cLHrQNjmkMML3ZEO7DKV4OVIQC9lyuCIUS6Z4WsGfEA/vjM6bYzea92xDn82dx8E4Sw4go22ybvhx29DidhS468gc1lUmn9GwR/5kOQ5mhS2Byol35npTih3U5Uqc53NuQZWHZd7DM8fdc5O2D+GC0S6i+sln2+gBZQDmBmzUdEo++nMqWaSRxG7Y5xNMBPZlm7Eu2wpGdPfmdlQy5AyCoZu1hvQPQAokHeumfnoE45TB+juvkqbJZbKn3+2AfkMnKTFgBsp4ndI4m6vSaqEtLIKtm8zspFLvCstMmQvPBNMfshG55lzj899kq6lUF/VUus/R5lOEcSg9T+VmQzSFFP7rca77nEevPDe2eSb3O2nDXNkV0Pk1ssNm7N2mokcrsvPRXXMshhNUk/kISZUsE7dSeZBWwvQeTfcCvKmKXiEp/wttlxO64yuhE3s21aFafFCGcruuEbnpTP+vT0WP+o1SQBh8znUDsEAdIT9owZ7m87PcGwut3Q+ruCV81kvAqaT/K9vNXsHUYvBkzJd8tiD5eZo14XiSX0n2hci4f4yyx65Nd3KGr33IglC++8TeKZ/x6RtC7llVcN88qSOGcyhf9ZowjJiZxiuUk6gDvoD7ehtEbODYPnm5CfkZErAlS40mCc+TdTvPIqfS92e9QcjeZJSGPh+9BNNo/aOwrWaWM6kYH5WeWLJcSOh8EUTrCMb88FslVKr0ZswXXdsxhVgeaWiRnLsvpYiVhOHb1hEy6CpPvUjAfDw7wNYFKVKNdbTIqYbcsYaY0tW5+yAXfNPNdtDLMAE7UpNTa7pvoow4kRs33m8jvbbrofWf8U7B/lVQ62csle6l1DiJH5FD+KiLN4NqgVCMWFEmYWVEOOyeFTiyvXTCuaEMdO+4woMnwNmiJ3wPe4itp/zEvihPk8VcDHbDY3zTiuHgsekN5V3XjGDehJ9m4ySlCbtIZ0Eo6KphvnFc5rZU0QTaFNgEg80CmUULWAZtMOuZhUe9f32S22fFjOrlF84K+F3kjNh7mZqJ4Q5uZAvC0c1CJJ0TEr8o4B7EDSItuSMyPRd8f3GgdUIbQ0h59H16t+ydj9rKU8lqL4Li/36rztq2oI4RmNq8GzdDYXyxLgEtIgNtKPOPCCl7Rqtj+QnOYUy0Lk4nFnWD9rOyDAuKS1oEvxVf61tSb27u+ll8DaYg4Ex8VUVufGrAN6H2fc/bF6Y6Hcu/y2x+fT3Ioy1Ca2r9a+upJ5s3piAPoZcGhPtFpvPh98kD9jF33Os4WDuZzOJFq7nhNLVoNnHYitZT5QWUB4DIp6IXpieuHVcqCC/e0xd9xG/q4lJuM0F2bQ3TTIPDAM6lBd/ek94SmwIlgF0eji+Po3cyDxg3Cnpgy2iHj4W/p2keEmYTXBwZBAJbfxC2mVACmP33zlmPoJR7SczYUzTzmrGyVr7CLYr0eIVATe1owATg4cLAa4oaB0b3/vSa9tXPz+yA3JzZ5TrAcEsT+Q0vyy4JlEb8u7LPoti0CWY+wPE04QTlWCeHAxgd1dqtoCTqrNU/60BEabPoS4x/UXKP/NatoYZTXqO6a63QAwxLC1f7XQ6AXfl3YVPSCh1JX5wkosu6AclkxTJdg+1K9riJgP0MKL8CEncZ2gOEvLXXTDujGvKjibvgbKiMdwQSXKT6W1T3vhojGqeJbhlcB0+E/OBS/56nP0wljOtHnEcvIfHwxRKGinvw7fTIajmDy7qFkhCK/UpgcMo6NxvX1wllbCjEi7vilvlo2idrG8Gyf37HeIPATD6V4J06ONoWw0NDEfhDX6mUr2+BgEhBpfIY+c6j11xLGQ1Jm9CUzT1hEspbyU/FjoEWXY3Z9dwt0Ovc18UQg3ym8+4bEkK+F8PVu6YoZsfdAxtSNPpv0+6I+pMu9/dhnYZjb84RGtA8ggoYyIDgmP3PKWyA8jbQMhWmBi7VmRJllT3rXEHaa0ANfME/yUb1zCE1Xdc4WkG838+DgVqPRWKUYisQOz7TdgLPMa0WBpAghJ8u9Eyp0msxEKK36CEecsCmduRX+H/RX6lfJrJvmo9yHC1XkErFFNGJz6lSyRWJweC+CGUEgrugCpoNZgNXEwn6D4SFTg3JWwXxRBtrEi32hW/36Gf0zVZIZmKhR5kNa5kCT5ZGetBpysuz0jZT7KRz069CJTEIkZ1UK6aZLVPkVJ69jwy9J0MUuIQQowy1kIRfpgVy56v2jc6oJ0QExv84VUn6Q+WjCKYGr1wNejZxfNezy+tjgVGWp5fjN75vNd6zNseqwFUl2dAMJdXmCVZ+LN8VefBYMnuJH+8ldewSIR9pcScBN+zAEF8LfF/+tHCJdcLyiCGWJXHgw/qB5k+aAF2A8n4sMjPSBaNfSzzziSQCFQb7ql2HIITkEomiCQrUPBN47Bs/HdkXrNBD1uI9VK+MnbCf8OxRmL2uOZiKXLrrveBP6O0G06e+4C+4g43J8V3YiwCQUjohG3+NgPvgjuhL5sRP88hdJtOK5uV9rn7D6rVvozrEDILr+WQuDkeft25xN7+eg3PdKzsbJhemmEQnqcn6wIxMSOF1AFUamB5HLsfD346KmYE760I19cgYcrvO090gmOpM+V4c955BxelvdvNmT97iBnxR5gi3hhCcVCUdO1xY8gmObBFri8FWDtH3AEjLy7ncqekk68CVbOBIolvC9AfgYDjW1ZZI4S7olNiuyj2/D+7/JBY9qEIdZympq/rz+7OyxXlEmEfSyXljeJRAbtuazt1ALNBk5zODHhdpL7VI3ZN2swkc9wktNz/hY0VZrbmtfmS/+CLVZsDQI+PDAj0z2TeHx8hYbumAYQnw3Py+cF1t1+ZcrSUXFBrFvL9bZOVpPnUTOZgXDfGawiWg9ZloGcYTJJzrIQsw9tMZLlysgbiq9U7lgCq8Pb7AHSrOV9NV8eAe8QF8E3BsIvT3GDdhM3hu9FLa2iAH877Pb+YFd0GL5oCl1fQbGRZPbh0ZK58m9jUN2W3BxWE53tOJpYbPBH+DCkmPZlGSZQ2yuyLFD7oTLRT7RnHIrh+Q6YQfNgNPGNAX3W5H6ke+kD63QrqSgCkex/ZmWNxkkSb7PMp6FXeJM5kFpAKDKMBr9HeDd1wa+PRizF86HfLfDNluURzpfgm0OwLY5/AQx7hzjgVriVllImy81BtpzFWrFG0rKdlmlQrv/PC/WBMEpfAsd7A81iXsDofvVpGzlRS05kcJ8aOUN7amKfdlRtv+dB4f97N2wWSCrAmQQNe6Xuf6FmEDhFkpWR2rQt/JuJvOTBq14HEoXO22DekJqoEVLqPl4jYvbIvoKlm7ZioxIap34L4KH03FyyJUicl8a1AN4qlCS+fyAHAmk2JMIqVj+DEwH9lQ91E1IexBkEfcVQENF6ihewr4orddzgGpN6T63uKpLswdDOBcDTsbvxVSdca/yBXARorGKEMjGilHfZBWkxZYLyMzwvn5B/CObDIicM1SpnXs4QFi4MVPWc8yKiF5CtstHI6AR7DiU+53FZHM4U8Izy6ukRnt82GbnnvCHQk6SruvLaneq4L8d/b+r6byGTMpMfl51BFYnWwteVFkhtbuYFj5fZ1Y/9vRpDwZLxtjtJIyVNdM5lzP/uAiaRkQfv9I0CGrWMPMHc8zaxRFQ++Ismc9NPhu+Ik8xrFRfgMn7m5HzCZ59b+H5bn0heQgEupAa4NvGNXx/ky3GiKBfZ6SlVyg7BxXGIuTcvbYvQnPReJ5KkAitwOADl3OcvZ1uZ1UwLJQMegOnrXd+mbN3AxLaabjLQ8QBG8m32hag4oGTyGLJwCNsm/ltuwBelhyZ6Bkw1lkXRoi5zE6HURUEJujpvNCSEJJdPzpRB26soKzE2aesa4PQy7CjQSG7zxC74uFqWfd5UsFepuaHSt9uZBXrgT9xwwpQMqWYOyuq97/Ufm67pbE9puRjTwi1s2F2xdYklNj6QeRMa1Y8f1aKIlcU2pxqVfci3QM0jIKZUeDYlbY4crOqcG9tqJlrabngJMHhrNYNb4/qLGii8WzJgqPP/KihRnXCjUdUxcaGmC0fd/pNCq16409q4gFE8XAAVPB0T59BwnJTwxc4zDxRDIGSslYE46zVNzGOI/FZZvkL+9XEm47xOzjhyWbP5LDljEc1T8k+IVihWi76o6qM9L7DvUnN+xckt60sV6AGzsW3rNV++Hhk+8HzKxkSFsZ5Uo/gzzsKXm3+P0Pud8Z1W+ZkVPESXBBc35uNCb5oY52kR5d+BpoEMYOz8I7xmwcvtiC2/WDVYax7a8LQbeu2eSw+VYQzu2rgNeAzllBPYDgHoZMzthqu789Ff2YKcKluEegFJjIG5A03F1m7KemcEKFZip/vpMm0n85fTcw6Vu5XGA6E7y18+Ru6Yk8dw0xpHOSkDhCZooy99IokjeRbbVR9GmEqoOmLGl+JynYekCR97IETYvPxoBYSyjYERIBFOt5Ijd2LTyLUEVofpU+/5HdtWf1I04kZ5UUZWwrjykSoC9oVQsxpOsnz3iFazECx2J+lOisQlMwFFRZOsHk51F1SlRsC3MuKN5tfjXftQ0TA0sP24riKtn4jLCx/kVkqDOdFgFrmsDHHC4nRQvztaVjVQ0srBXjpICbARDVb1rBtVfZYvFelbMBGFc5mCBMuFGpb7sDRHI/AEur97tCkgtBRefnxC/EAJgRC/YP+VfxBFgsyEZC4rp+4qcJmO2XX+3R8S63cUvLCgDSjG7n/4c4zT7pXrBTbVQU8H98n1dI7blVgiIdTj52M0PggFGAM7v8ZQ0xtkSqI2ydS5jGSxAaYuwlYy6J7tkdadH0e5dHKvo+nufStbF9TorAV8CdRbLrcrcrCylCM18lKHYSxtwiE0JZKHjTYcttKG3AjgVsdfGwDF3PdIeod6/XERHymuY5RZckn9Dbvwf5ap+UedfjunZ2UVMSp9sHBuvAWSaU0RD2Mp8lLjpMDtyuDMjFIqTpsdnDOqN7jf01L/wiq5sXcEjq+i8sc84RLTtEZveJrgbTpR3xWZvr2rub/7pR701XNiHbHPyrEIRQts2t0LsTcT3SLWiCEfTwl5GxvRSD/Q3PdOvL363Be5EknVTnvLfPAVjIXkQ0Saajh8GTRijUWrYQwgydjlcCk/MzHxwjmvff4dvqJ9X1KC2ZAj0stanMUPJQDSBzj31xT4MekjqjbRkOzi9PSVwbc94Zn4cRoUVvHX5YGgaSykHjX4D2wCnYEaiEXq9zLR+4LyBzNyARFDHqwh/oB04M5R888nrLFVlAMA901rzX3+N8tJs6V27VlO6oM37CSPjNYSF4WHA/c8xyfZpUnISaLSJRocDci8aDUnQ2v5xBMW2fdN9Q7DKnmgiDzyZ7pUezKxeOsQ8oVP4HgCRGoTIKKSTORoa8tKUixMhdkc0CRY8a5kDES/UfPkKtFOIATIA7aQLydlt6QGyY2fBw+WNYtW9JoThpCw/8YBjzobJShJF4GnSwSqGwDUNhhDfT2CpKnuKQ8aFVl8Q4eCrcVhrPYo7JkK2HtJ+dJm1DeET4gXVCKO3jbejh3SUyAF2kQIT8WQtq8aeNc746go8IHBWA8m/x97ke4lEOoSg4gCX1ql/SgQ2rHlNH31GGfIDkiNYV1woLv4+PJcSQWjPUu5/H3ry01hVNUULHE8nEvOGul2VGFxuGXd7BCxE+iC3hxJc/G6gDUO0q+3C7RVvMsLP9n/kGzg3Xy64BtXk/g+XuZWrF4ZcTNssWTdBomkV2tjS4JEPU9nnKSbDQfBgcYnpWlEva6VLvS1QMcqItj76vY4h/hVxRuILaJKzdWqtkB6MFJDbvPJq+OJ9Ygs9eKp+NUPhRvCCeCpHLk7EMfhXUN/4yiuSpXztnaGaZOxZ/QKUVEGyLaF0+iI64UjF8LJGc+HtW421Fr1iOgHVYShSJz1AwFd4lLeRQszpFkCdxf4Jgrdauz9UZuT3kMpHBFN6N/ewCGymm2dk0tBQts4YAQ=="
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_8a5d2d4d464c2813\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, the all-positive SHAP signs, the SHAP magnitudes and the bigram names match the evidence. The tier and the no-cryptojacking-confirmation conclusion are properly limited. Several per-feature interpretations assume adjacent instructions (CALL RET as 'a call immediately followed by a return'). Feature values are also treated as 'frequencies' although the artifact says their semantics are not established.\",\"coherence\":\"The argument runs cleanly from the model signal, to the thin cryptojacking evidence, to the low-confidence tier, to the follow-up actions, and the tier agrees with the recommendation. The per-feature table repeats the summary, and a few phrases ('Heavy push/call argument-staging density') clash with the candidate's own 'generic' framing.\",\"cybersecurity_relevance\":\"It ties the top n-grams to the cryptojacking question, correctly notes that no mining-specific sequences appear in the top 20, and notes that function and occurrence context is missing. It also names benign alternatives such as ordinary compiled code. It does not discuss specific benign software categories, and some packing or obfuscation talk rests on weak evidence.\",\"actionable_utility\":\"Recommendations are concrete and proportionate: check for packing or obfuscation, locate functions containing the arithmetic n-grams, run a sandbox for compute-heavy loops, mining-pool connections and CPU usage, and quarantine until then. They are framed as checks, not observed behavior. The suggestion to locate functions is only loosely supported because no occurrences or function context were supplied.\"},\"unsupported_claims\":[{\"quote\":\"A call immediately followed by a return suggests thin wrapper or stub functions, which fits unusual or obfuscated control flow.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/occurrences; /evidence/function_context\",\"reason\":\"No occurrence or adjacency evidence is supplied. Graph-aware n-grams need not be adjacent, so wrapper/stub functions and obfuscated control flow are not established.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A push followed by a return is an indirect-jump or return-address manipulation idiom.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/occurrences; /evidence/top_features/1\",\"reason\":\"This asserts a specific idiom for the sample without extraction or context evidence of adjacency or control flow.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Heavy push/call argument-staging density: PUSH CALL, CALL PUSH, MOV PUSH, LEA PUSH\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Feature values are low (about 0.04 to 0.08) and their semantics are not established as counts or density, so 'heavy density' and 'argument staging' are unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The most frequent listed pattern (0.078612).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says not to treat values as raw counts or frequencies without upstream confirmation; the candidate labels them frequencies.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Address or arithmetic computation feeding an integer division.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Data flow into IDIV and instruction adjacency are inferred from a bigram name alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Return-value setup before returning.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Assumes a MOV that sets a return value immediately before RET, which is not supported by supplied context.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The candidate accurately reports positive SHAP direction for all 20 listed features, the range of about +0.0087 to +0.0175, the ordering, and CALL RET as the strongest contributor within the top-k subset. It does not claim omitted features are benign or reconstruct the probability from the subset. The 'frequency' labels concern feature-value semantics, not SHAP direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No occurrences, function context or full attributions, and the SHAP baseline is null, so adjacency, control flow and omitted-feature effects cannot be verified.\",\"Feature value semantics are unestablished, so the values cannot be treated as counts or frequencies.\",\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"RF probability 1.0 is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation is faithful on SHAP and appropriately cautious (low-confidence tier, cryptojacking unconfirmed), with sound follow-up checks. It loses accuracy through several adjacency-based per-feature interpretations and by treating feature values as frequencies.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6972,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3868,
+          "output_tokens_details": {
+            "thinking_tokens": 1983
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6972,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3868,
+        "output_tokens_details": {
+          "thinking_tokens": 1983
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_8a5d2d4d464c2813\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, the all-positive SHAP signs, the SHAP magnitudes and the bigram names match the evidence. The tier and the no-cryptojacking-confirmation conclusion are properly limited. Several per-feature interpretations assume adjacent instructions (CALL RET as 'a call immediately followed by a return'). Feature values are also treated as 'frequencies' although the artifact says their semantics are not established.\",\"coherence\":\"The argument runs cleanly from the model signal, to the thin cryptojacking evidence, to the low-confidence tier, to the follow-up actions, and the tier agrees with the recommendation. The per-feature table repeats the summary, and a few phrases ('Heavy push/call argument-staging density') clash with the candidate's own 'generic' framing.\",\"cybersecurity_relevance\":\"It ties the top n-grams to the cryptojacking question, correctly notes that no mining-specific sequences appear in the top 20, and notes that function and occurrence context is missing. It also names benign alternatives such as ordinary compiled code. It does not discuss specific benign software categories, and some packing or obfuscation talk rests on weak evidence.\",\"actionable_utility\":\"Recommendations are concrete and proportionate: check for packing or obfuscation, locate functions containing the arithmetic n-grams, run a sandbox for compute-heavy loops, mining-pool connections and CPU usage, and quarantine until then. They are framed as checks, not observed behavior. The suggestion to locate functions is only loosely supported because no occurrences or function context were supplied.\"},\"unsupported_claims\":[{\"quote\":\"A call immediately followed by a return suggests thin wrapper or stub functions, which fits unusual or obfuscated control flow.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/occurrences; /evidence/function_context\",\"reason\":\"No occurrence or adjacency evidence is supplied. Graph-aware n-grams need not be adjacent, so wrapper/stub functions and obfuscated control flow are not established.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A push followed by a return is an indirect-jump or return-address manipulation idiom.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/occurrences; /evidence/top_features/1\",\"reason\":\"This asserts a specific idiom for the sample without extraction or context evidence of adjacency or control flow.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Heavy push/call argument-staging density: PUSH CALL, CALL PUSH, MOV PUSH, LEA PUSH\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Feature values are low (about 0.04 to 0.08) and their semantics are not established as counts or density, so 'heavy density' and 'argument staging' are unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The most frequent listed pattern (0.078612).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says not to treat values as raw counts or frequencies without upstream confirmation; the candidate labels them frequencies.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Address or arithmetic computation feeding an integer division.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Data flow into IDIV and instruction adjacency are inferred from a bigram name alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Return-value setup before returning.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Assumes a MOV that sets a return value immediately before RET, which is not supported by supplied context.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The candidate accurately reports positive SHAP direction for all 20 listed features, the range of about +0.0087 to +0.0175, the ordering, and CALL RET as the strongest contributor within the top-k subset. It does not claim omitted features are benign or reconstruct the probability from the subset. The 'frequency' labels concern feature-value semantics, not SHAP direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No occurrences, function context or full attributions, and the SHAP baseline is null, so adjacency, control flow and omitted-feature effects cannot be verified.\",\"Feature value semantics are unestablished, so the values cannot be treated as counts or frequencies.\",\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"RF probability 1.0 is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation is faithful on SHAP and appropriately cautious (low-confidence tier, cryptojacking unconfirmed), with sound follow-up checks. It loses accuracy through several adjacency-based per-feature interpretations and by treating feature values as frequencies.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_8a5d2d4d464c2813",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability, the all-positive SHAP signs, the SHAP magnitudes and the bigram names match the evidence. The tier and the no-cryptojacking-confirmation conclusion are properly limited. Several per-feature interpretations assume adjacent instructions (CALL RET as 'a call immediately followed by a return'). Feature values are also treated as 'frequencies' although the artifact says their semantics are not established.",
+      "coherence": "The argument runs cleanly from the model signal, to the thin cryptojacking evidence, to the low-confidence tier, to the follow-up actions, and the tier agrees with the recommendation. The per-feature table repeats the summary, and a few phrases ('Heavy push/call argument-staging density') clash with the candidate's own 'generic' framing.",
+      "cybersecurity_relevance": "It ties the top n-grams to the cryptojacking question, correctly notes that no mining-specific sequences appear in the top 20, and notes that function and occurrence context is missing. It also names benign alternatives such as ordinary compiled code. It does not discuss specific benign software categories, and some packing or obfuscation talk rests on weak evidence.",
+      "actionable_utility": "Recommendations are concrete and proportionate: check for packing or obfuscation, locate functions containing the arithmetic n-grams, run a sandbox for compute-heavy loops, mining-pool connections and CPU usage, and quarantine until then. They are framed as checks, not observed behavior. The suggestion to locate functions is only loosely supported because no occurrences or function context were supplied."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "A call immediately followed by a return suggests thin wrapper or stub functions, which fits unusual or obfuscated control flow.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/occurrences; /evidence/function_context",
+        "reason": "No occurrence or adjacency evidence is supplied. Graph-aware n-grams need not be adjacent, so wrapper/stub functions and obfuscated control flow are not established.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "A push followed by a return is an indirect-jump or return-address manipulation idiom.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/occurrences; /evidence/top_features/1",
+        "reason": "This asserts a specific idiom for the sample without extraction or context evidence of adjacency or control flow.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Heavy push/call argument-staging density: PUSH CALL, CALL PUSH, MOV PUSH, LEA PUSH",
+        "candidate_path": "/candidate_analysis/key_indicators/3",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "Feature values are low (about 0.04 to 0.08) and their semantics are not established as counts or density, so 'heavy density' and 'argument staging' are unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "The most frequent listed pattern (0.078612).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says not to treat values as raw counts or frequencies without upstream confirmation; the candidate labels them frequencies.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Address or arithmetic computation feeding an integer division.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Data flow into IDIV and instruction adjacency are inferred from a bigram name alone.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Return-value setup before returning.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Assumes a MOV that sets a return value immediately before RET, which is not supported by supplied context.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "The candidate accurately reports positive SHAP direction for all 20 listed features, the range of about +0.0087 to +0.0175, the ordering, and CALL RET as the strongest contributor within the top-k subset. It does not claim omitted features are benign or reconstruct the probability from the subset. The 'frequency' labels concern feature-value semantics, not SHAP direction or magnitude.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No occurrences, function context or full attributions, and the SHAP baseline is null, so adjacency, control flow and omitted-feature effects cannot be verified.",
+      "Feature value semantics are unestablished, so the values cannot be treated as counts or frequencies.",
+      "SHAP target class 1 is a configured assumption pending upstream verification.",
+      "RF probability 1.0 is not behavioral proof of cryptojacking."
+    ],
+    "summary": "The explanation is faithful on SHAP and appropriately cautious (low-confidence tier, cryptojacking unconfirmed), with sound follow-up checks. It loses accuracy through several adjacency-based per-feature interpretations and by treating feature values as frequencies."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "A call immediately followed by a return suggests thin wrapper or stub functions, which fits unusual or obfuscated control flow.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/occurrences; /evidence/function_context",
+      "reason": "No occurrence or adjacency evidence is supplied. Graph-aware n-grams need not be adjacent, so wrapper/stub functions and obfuscated control flow are not established.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "A push followed by a return is an indirect-jump or return-address manipulation idiom.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/occurrences; /evidence/top_features/1",
+      "reason": "This asserts a specific idiom for the sample without extraction or context evidence of adjacency or control flow.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Heavy push/call argument-staging density: PUSH CALL, CALL PUSH, MOV PUSH, LEA PUSH",
+      "candidate_path": "/candidate_analysis/key_indicators/3",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "Feature values are low (about 0.04 to 0.08) and their semantics are not established as counts or density, so 'heavy density' and 'argument staging' are unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The most frequent listed pattern (0.078612).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says not to treat values as raw counts or frequencies without upstream confirmation; the candidate labels them frequencies.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Address or arithmetic computation feeding an integer division.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Data flow into IDIV and instruction adjacency are inferred from a bigram name alone.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Return-value setup before returning.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Assumes a MOV that sets a return value immediately before RET, which is not supported by supplied context.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "82f39fb649587c9d1ab9bb15ec839fe27d4c4f81524e49be1b21a43cd8747f7c.exe_analysis.json"
+}

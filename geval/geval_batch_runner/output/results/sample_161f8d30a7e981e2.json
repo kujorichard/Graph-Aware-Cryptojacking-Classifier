@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_161f8d30a7e981e2",
+  "status": "success",
+  "source_sha256": "81fa0c9326fc632b20e266c951aee726995437632d78dd50e954ffc598cf4048",
+  "input_sha256": "02e53e0a576d312cc9bfcb31e559b8bac6ecb9bde2ec148a9b61ef5409cdf998",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "da2d172c8d2c8e6d53a457e6991aaaf5805e16fa216749a4c87d757050db2903.exe",
+      "source_name": "da2d172c8d2c8e6d53a457e6991aaaf5805e16fa216749a4c87d757050db2903.exe.json",
+      "source_path": "ml/dataset/cryptojacking/da2d172c8d2c8e6d53a457e6991aaaf5805e16fa216749a4c87d757050db2903.exe.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 56,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "da2d172c8d2c8e6d53a457e6991aaaf5805e16fa216749a4c87d757050db2903.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:38:34.906736+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:38:34.906763+00:00",
+      "error": null,
+      "request_sha256": "79752f36866ebd430d7ab2e61894b6c41ad2f69dbdd435ba8dafa429fab03dc4",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm5MCFjbVUwknRMnAyRJ",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF model's output carefully: it predicts class 1 with 0.94 probability, and the top 20 SHAP features all push positively, ranging roughly from +0.0054 to +0.0108, consistent with the claim that it's pointing toward cryptojacking/malware.\n\nThe candidate's framing of LEA CALL, XOR CALL, and CMOVZ MOV as \"frequency 0.000, not meaningfully present\" seems like an overreach — the feature semantics (frequency vs. raw count) aren't firmly established, and dismissing zero-valued features as mere \"model artifacts\" ignores that absence of an n-gram can still be legitimate evidence in a Random Forest/SHAP context. The claim that \"all observed frequencies are very low (at most 0.001852)\" does check out against the data, but the underlying assumption about what \"frequency\" means hasn't been verified.\n\nThe assertion that the model's 0.94 probability comes from \"many small additive contributions rather than a few strong signals\" is also unsupported — only the top-k features are visible, the baseline is unknown, and there's no way to confirm whether any omitted feature carries a larger weight than what's shown. Similarly, claims about instruction adjacency (e.g., \"add followed by rotate-right\") overreach, since graph-aware n-grams don't require adjacent instructions and shouldn't be assumed to.\n\nSUB SBB being flagged as top contributor seems right, and SBB INC combining carry/borrow with increment makes sense too. Grouping ADD OR and CDQ MOV under \"stack handling and calling conventions\" seems a bit off though, since those aren't really stack-related operations.\n\nThe low-confidence tier with a 0.5 score lines up with the hedged framing despite the 0.94 random forest probability, and treating that probability as supportive rather than conclusive proof is the right instinct. The recommended action—static analysis of the hashing loop, strings, wallet addresses, network behavior, sandboxing, CPU profiling, and comparison against known crypto library routines, with escalation only if artifacts are found—is concrete and proportionate.\n\nOn technical accuracy, I'm weighing whether the zero-frequency dismissal of three SHAP-contributing features as artifacts is a real overreach, along with the adjacency claims. The central conclusion—that suspicion isn't fully established—holds up and is well hedged, so the overreaches feel moderate rather than severe, landing me around a 3 or possibly 4.\n\nFor coherence, the writing stays clear and consistent despite some repetition between the evidence analysis and explanation sections, so I'd give that a 4, with the low-confidence tier feeling appropriate to the hedged tone. On relevance, it does consider benign alternatives like crypto libraries, compression, and checksums while flagging missing evidence, which is strong—maybe a 5, though the artifact dismissal issue nudges me toward a 4 instead.\n\nFor actionability I'd give 4. On SHAP faithfulness, the direction and magnitude of contributions seem correctly represented, but there's a real discrepancy: calling zero-valued feature contributions \"model artifacts\" and \"not interpretable as evidence\" mischaracterizes what SHAP actually shows—a positive contribution from an absent feature means its absence pushes toward class 1, which isn't an artifact at all. The hedged \"probably\" language softens this somewhat, so I'm inclined to still count this as broadly faithful since the core issue is interpretation rather than direction or magnitude error.\n\nThe claim that the 0.94 probability \"comes from many small additive contributions\" is also unverifiable without knowing the baseline and full feature attributions, so I'll flag that as unsupported certainty while still marking overall SHAP faithfulness as true given the signs and magnitudes check out.\n\nI'm also noting a second unsupported claim about adjacent opposing rotations being a bit-mixing signature of hash/cipher code, cross-checking it against the instruction pair index to confirm the rotation patterns actually appear in the data.\n\nFor zero-frequency features, I'm deciding how to categorize claims like \"frequency is 0.000, so there's no observed presence\" — these seem to overstate certainty beyond what the SHAP values support, so I'm leaning toward unsupported_certainty or possibly shap_misrepresentation depending on whether the claim is about model artifacts versus actual absence of evidence.\n\nNext I'm looking at the explanation claim about the model's high probability deriving from many small additive contributions rather than a few strong signals — since only top-k attributions exist and baseline/full attributions are null, this reads as shap_misrepresentation. Then I'm sorting through several candidate phrases about carry/borrow chains and add-rotate-right patterns being characteristic of certain arithmetic operations, trying to pick which one best represents the combined claim.\n\nAlso noting the \"add followed by rotate-right\" pattern as another hash/cipher signal worth quoting. Then I need to flag the evidence limitations — no occurrence counts, no function context, unclear feature semantics, and the unverified target class assumption as a baseline concern.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_161f8d30a7e981e2\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The 0.94 probability, the all-positive SHAP signs, the +0.0054 to +0.0108 range and the 0.001852 maximum value are correct, and the conclusion is properly limited to suspicion. However, it asserts adjacency and sequencing (e.g. 'Adjacent opposing rotations'), treats zero-valued n-grams as 'not meaningfully present' and 'model artifacts' although feature-value semantics are unconfirmed, and says the probability comes from many small contributions without full attributions.\",\"coherence\":\"Observations, interpretation, the low-confidence tier and the recommended action are consistent, and the benign and generic alternatives are clearly separated. The explanation and evidence_analysis repeat each other somewhat.\",\"cybersecurity_relevance\":\"It ties the specific n-grams to hashing and big-integer hypotheses, names benign alternatives (crypto libraries, compression, checksums), and notes that no API, string or network evidence was supplied. It does not flag the unconfirmed target class or feature semantics, and it dismisses the zero-valued features too readily.\",\"actionable_utility\":\"The follow-up is concrete, conditional and proportionate: look for a hashing loop, pool strings, wallet addresses and network use, run a sandbox for CPU and outbound connections, compare against crypto library routines, and escalate only on mining-specific artifacts. It is not explicitly prioritized and omits checking upstream extraction, target class and feature semantics.\"},\"unsupported_claims\":[{\"quote\":\"Adjacent opposing rotations are a bit-mixing signature of hash and cipher code\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/top_features/17 and /evidence/occurrences\",\"reason\":\"Adjacency or order of ROL and ROR is not established; occurrences and function context are empty, and graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Add followed by rotate-right is characteristic of hash and cipher rounds, so it mildly supports compute-heavy hashing.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2 and /evidence/function_context\",\"reason\":\"It assumes sequential adjacency and a hashing-round context that the supplied evidence does not show.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Generic loop-counter and stack code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features/18 and /evidence/function_context\",\"reason\":\"Loop-counter use for DEC PUSH is inferred without any control-flow or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"LEA CALL, XOR CALL and CMOVZ MOV have a frequency of 0.000, so they are not meaningfully present in this binary's counts, and their SHAP contributions probably reflect model artifacts.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics and /evidence/top_features/12,14,15\",\"reason\":\"The artifact says feature values must not be treated as raw counts or frequencies without upstream confirmation. A zero value with a positive SHAP contribution can reflect the model's use of absence, so calling it an 'artifact' is speculative.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The model's high probability comes from many small additive contributions rather than a few strong signals.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/shap_baseline and /evidence/full_attributions\",\"reason\":\"Baseline and full attributions are null, so the composition of the 0.94 probability cannot be established from a top-20 subset.\",\"category\":\"shap_misrepresentation\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP direction (all positive for configured class 1) and magnitude range are reported accurately, and the top contributor is correctly identified. The interpretive overreach about zero-valued features and the origin of the probability is listed under unsupported_claims.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Target class 1 is a configured assumption that upstream extraction has not verified.\",\"Feature-value semantics are not established, so 'frequency' and 'counts' cannot be assumed.\",\"Occurrences and function context are empty, so adjacency, loops and the presence of crypto routines cannot be verified.\",\"SHAP baseline and full attributions are null, and the top-k positive subset cannot show what omitted features contribute.\",\"No strings, APIs or network indicators were supplied.\"],\"summary\":\"The explanation is well hedged, correctly refuses to equate RF probability with confirmed cryptojacking, and offers sensible follow-up. It loses accuracy by implying adjacency, calling zero-valued features artifacts, and asserting how the probability is composed without full attributions.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6922,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 5714,
+          "output_tokens_details": {
+            "thinking_tokens": 3937
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6922,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 5714,
+        "output_tokens_details": {
+          "thinking_tokens": 3937
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_161f8d30a7e981e2\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The 0.94 probability, the all-positive SHAP signs, the +0.0054 to +0.0108 range and the 0.001852 maximum value are correct, and the conclusion is properly limited to suspicion. However, it asserts adjacency and sequencing (e.g. 'Adjacent opposing rotations'), treats zero-valued n-grams as 'not meaningfully present' and 'model artifacts' although feature-value semantics are unconfirmed, and says the probability comes from many small contributions without full attributions.\",\"coherence\":\"Observations, interpretation, the low-confidence tier and the recommended action are consistent, and the benign and generic alternatives are clearly separated. The explanation and evidence_analysis repeat each other somewhat.\",\"cybersecurity_relevance\":\"It ties the specific n-grams to hashing and big-integer hypotheses, names benign alternatives (crypto libraries, compression, checksums), and notes that no API, string or network evidence was supplied. It does not flag the unconfirmed target class or feature semantics, and it dismisses the zero-valued features too readily.\",\"actionable_utility\":\"The follow-up is concrete, conditional and proportionate: look for a hashing loop, pool strings, wallet addresses and network use, run a sandbox for CPU and outbound connections, compare against crypto library routines, and escalate only on mining-specific artifacts. It is not explicitly prioritized and omits checking upstream extraction, target class and feature semantics.\"},\"unsupported_claims\":[{\"quote\":\"Adjacent opposing rotations are a bit-mixing signature of hash and cipher code\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/top_features/17 and /evidence/occurrences\",\"reason\":\"Adjacency or order of ROL and ROR is not established; occurrences and function context are empty, and graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Add followed by rotate-right is characteristic of hash and cipher rounds, so it mildly supports compute-heavy hashing.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2 and /evidence/function_context\",\"reason\":\"It assumes sequential adjacency and a hashing-round context that the supplied evidence does not show.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Generic loop-counter and stack code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features/18 and /evidence/function_context\",\"reason\":\"Loop-counter use for DEC PUSH is inferred without any control-flow or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"LEA CALL, XOR CALL and CMOVZ MOV have a frequency of 0.000, so they are not meaningfully present in this binary's counts, and their SHAP contributions probably reflect model artifacts.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics and /evidence/top_features/12,14,15\",\"reason\":\"The artifact says feature values must not be treated as raw counts or frequencies without upstream confirmation. A zero value with a positive SHAP contribution can reflect the model's use of absence, so calling it an 'artifact' is speculative.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The model's high probability comes from many small additive contributions rather than a few strong signals.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/shap_baseline and /evidence/full_attributions\",\"reason\":\"Baseline and full attributions are null, so the composition of the 0.94 probability cannot be established from a top-20 subset.\",\"category\":\"shap_misrepresentation\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP direction (all positive for configured class 1) and magnitude range are reported accurately, and the top contributor is correctly identified. The interpretive overreach about zero-valued features and the origin of the probability is listed under unsupported_claims.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Target class 1 is a configured assumption that upstream extraction has not verified.\",\"Feature-value semantics are not established, so 'frequency' and 'counts' cannot be assumed.\",\"Occurrences and function context are empty, so adjacency, loops and the presence of crypto routines cannot be verified.\",\"SHAP baseline and full attributions are null, and the top-k positive subset cannot show what omitted features contribute.\",\"No strings, APIs or network indicators were supplied.\"],\"summary\":\"The explanation is well hedged, correctly refuses to equate RF probability with confirmed cryptojacking, and offers sensible follow-up. It loses accuracy by implying adjacency, calling zero-valued features artifacts, and asserting how the probability is composed without full attributions.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_161f8d30a7e981e2",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The 0.94 probability, the all-positive SHAP signs, the +0.0054 to +0.0108 range and the 0.001852 maximum value are correct, and the conclusion is properly limited to suspicion. However, it asserts adjacency and sequencing (e.g. 'Adjacent opposing rotations'), treats zero-valued n-grams as 'not meaningfully present' and 'model artifacts' although feature-value semantics are unconfirmed, and says the probability comes from many small contributions without full attributions.",
+      "coherence": "Observations, interpretation, the low-confidence tier and the recommended action are consistent, and the benign and generic alternatives are clearly separated. The explanation and evidence_analysis repeat each other somewhat.",
+      "cybersecurity_relevance": "It ties the specific n-grams to hashing and big-integer hypotheses, names benign alternatives (crypto libraries, compression, checksums), and notes that no API, string or network evidence was supplied. It does not flag the unconfirmed target class or feature semantics, and it dismisses the zero-valued features too readily.",
+      "actionable_utility": "The follow-up is concrete, conditional and proportionate: look for a hashing loop, pool strings, wallet addresses and network use, run a sandbox for CPU and outbound connections, compare against crypto library routines, and escalate only on mining-specific artifacts. It is not explicitly prioritized and omits checking upstream extraction, target class and feature semantics."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Adjacent opposing rotations are a bit-mixing signature of hash and cipher code",
+        "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+        "evidence_reference": "/evidence/top_features/17 and /evidence/occurrences",
+        "reason": "Adjacency or order of ROL and ROR is not established; occurrences and function context are empty, and graph-aware n-grams need not be adjacent.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Add followed by rotate-right is characteristic of hash and cipher rounds, so it mildly supports compute-heavy hashing.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/top_features/2 and /evidence/function_context",
+        "reason": "It assumes sequential adjacency and a hashing-round context that the supplied evidence does not show.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Generic loop-counter and stack code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+        "evidence_reference": "/evidence/top_features/18 and /evidence/function_context",
+        "reason": "Loop-counter use for DEC PUSH is inferred without any control-flow or context evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "LEA CALL, XOR CALL and CMOVZ MOV have a frequency of 0.000, so they are not meaningfully present in this binary's counts, and their SHAP contributions probably reflect model artifacts.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics and /evidence/top_features/12,14,15",
+        "reason": "The artifact says feature values must not be treated as raw counts or frequencies without upstream confirmation. A zero value with a positive SHAP contribution can reflect the model's use of absence, so calling it an 'artifact' is speculative.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "The model's high probability comes from many small additive contributions rather than a few strong signals.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/shap_baseline and /evidence/full_attributions",
+        "reason": "Baseline and full attributions are null, so the composition of the 0.94 probability cannot be established from a top-20 subset.",
+        "category": "shap_misrepresentation"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP direction (all positive for configured class 1) and magnitude range are reported accurately, and the top contributor is correctly identified. The interpretive overreach about zero-valued features and the origin of the probability is listed under unsupported_claims.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Target class 1 is a configured assumption that upstream extraction has not verified.",
+      "Feature-value semantics are not established, so 'frequency' and 'counts' cannot be assumed.",
+      "Occurrences and function context are empty, so adjacency, loops and the presence of crypto routines cannot be verified.",
+      "SHAP baseline and full attributions are null, and the top-k positive subset cannot show what omitted features contribute.",
+      "No strings, APIs or network indicators were supplied."
+    ],
+    "summary": "The explanation is well hedged, correctly refuses to equate RF probability with confirmed cryptojacking, and offers sensible follow-up. It loses accuracy by implying adjacency, calling zero-valued features artifacts, and asserting how the probability is composed without full attributions."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Adjacent opposing rotations are a bit-mixing signature of hash and cipher code",
+      "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+      "evidence_reference": "/evidence/top_features/17 and /evidence/occurrences",
+      "reason": "Adjacency or order of ROL and ROR is not established; occurrences and function context are empty, and graph-aware n-grams need not be adjacent.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Add followed by rotate-right is characteristic of hash and cipher rounds, so it mildly supports compute-heavy hashing.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/top_features/2 and /evidence/function_context",
+      "reason": "It assumes sequential adjacency and a hashing-round context that the supplied evidence does not show.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Generic loop-counter and stack code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+      "evidence_reference": "/evidence/top_features/18 and /evidence/function_context",
+      "reason": "Loop-counter use for DEC PUSH is inferred without any control-flow or context evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "LEA CALL, XOR CALL and CMOVZ MOV have a frequency of 0.000, so they are not meaningfully present in this binary's counts, and their SHAP contributions probably reflect model artifacts.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics and /evidence/top_features/12,14,15",
+      "reason": "The artifact says feature values must not be treated as raw counts or frequencies without upstream confirmation. A zero value with a positive SHAP contribution can reflect the model's use of absence, so calling it an 'artifact' is speculative.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "The model's high probability comes from many small additive contributions rather than a few strong signals.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/shap_baseline and /evidence/full_attributions",
+      "reason": "Baseline and full attributions are null, so the composition of the 0.94 probability cannot be established from a top-20 subset.",
+      "category": "shap_misrepresentation"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "da2d172c8d2c8e6d53a457e6991aaaf5805e16fa216749a4c87d757050db2903.exe_analysis.json"
+}

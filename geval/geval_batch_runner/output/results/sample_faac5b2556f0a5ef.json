@@ -1,0 +1,190 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_faac5b2556f0a5ef",
+  "status": "success",
+  "source_sha256": "f25f1e5c6ea1edd0e86c26e485c67035bd694e7220d7dc2b73d6b2abd87b1b7f",
+  "input_sha256": "af57f0f9ebc61c4f703d65670b7c6f7c8b7265ccd65262798f205595b252a086",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "ac868493f7f305788a1934fe39bef7808ee3746fc7d97754ec223f19bbe06273.exe",
+      "source_name": "ac868493f7f305788a1934fe39bef7808ee3746fc7d97754ec223f19bbe06273.exe.json",
+      "source_path": "ml/dataset/cryptojacking/ac868493f7f305788a1934fe39bef7808ee3746fc7d97754ec223f19bbe06273.exe.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 75,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "ac868493f7f305788a1934fe39bef7808ee3746fc7d97754ec223f19bbe06273.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:16:28.703216+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:16:28.703246+00:00",
+      "error": null,
+      "request_sha256": "9b72665f7ba864bdc7ef6664b42c2a5bcbc0b2a91d52aee01e9f1cdee121dfff",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm3fSKqtMjf8LUrkZtuS",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm weighing the evidence carefully: the RF prediction with probability 1.0 and the SHAP values for all top 20 n-gram features being positive seem to support a cryptojacking classification, but I need to flag that the target class assumption for SHAP and the exact label mapping for \"MALWARE\" haven't been independently verified.\n\nI'm cross-checking each listed n-gram frequency and SHAP value against the source data — things like MOVDQA PAND, MOV MOVZX, SHRD BT, and the rest all line up correctly with proper rounding. I do notice one potential overreach: describing MOVDQA PAND as \"followed by\" implies strict adjacency, but since these are graph-aware n-grams, the features may not require the instructions to be directly sequential, so that phrasing could be slightly misleading.\n\nI note the explanation appropriately hedges with \"consistent with\" language and lands on a low-confidence tier (0.55, inconclusive), which is good calibration given RF probability alone isn't behavioral proof. Remaining unsupported bits are minor: assuming adjacency between instruction pairs implies co-occurrence, and treating the SHAP feature value as a literal frequency without acknowledging feature-value semantics or top-k limitations.\n\nScoring: technical accuracy around 4 for the adjacency/frequency overreach, coherence 4 given some repetition between sections, relevance 4 since it considers benign SIMD alternatives but doesn't fully explore legitimate crypto/compression use cases, and actionability 4 for recommending disassembly and sandbox monitoring without strict prioritization.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_faac5b2556f0a5ef\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 1.0, all 20 SHAP values and the quoted frequencies match the evidence within rounding. The mnemonic semantics are generally correct and mostly hedged. Minor overreach: adjacency is implied and the values are treated as frequencies, and MOV SHRD is said to show 'presence' of wide-integer arithmetic.\",\"coherence\":\"The summary, per-n-gram assessments, key indicators and action are consistent with the low-confidence tier and 0.55 confidence. Some repetition between the long explanation and evidence_analysis lowers it slightly.\",\"cybersecurity_relevance\":\"It ties the SIMD, rotate/add and SHRD clusters to a hashing or mining hypothesis. It also notes benign SIMD use, compiler idioms, and the absence of function names, APIs or strings. It does not discuss benign crypto or compression libraries explicitly.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: disassemble the functions containing the SIMD, ROL/ADD and SHRD sequences, check PUSH RET for packing, and run a sandbox watching sustained CPU use and pool-style traffic. It is not explicitly prioritized, and 'treat as suspicious and escalate' is slightly generic.\"},\"unsupported_claims\":[{\"quote\":\"Pairs with SHRD BT, reinforcing the presence of wide-integer shift arithmetic that could belong to cryptographic or big-number code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features (MOV SHRD, SHRD BT); /evidence/occurrences is empty\",\"reason\":\"The bigram names alone do not establish that the two n-grams co-occur in the same code or that wide-integer arithmetic is present. The 'could belong' hedge only partly softens this.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Aligned SIMD load followed by a bitwise AND, at a relatively high frequency (0.0087).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Graph-aware n-grams need not be adjacent, and no extraction context is supplied. The artifact also says not to treat feature values as raw counts or frequencies without upstream confirmation.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Very rare in this binary.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The feature value semantics are not established, so the value 5.5e-05 cannot be read as rarity within the binary.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are reported with positive sign toward the configured class 1, and magnitudes match within rounding. The ordering and the claim that all top-20 are positive are correct. The explanation does not claim omitted features are benign and does not treat RF probability as behavioral proof.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption and was not verified upstream.\",\"Only the top 20 features are given; omitted features, the SHAP baseline and full attributions are unavailable.\",\"Feature value semantics are unestablished, so 'frequency' readings are uncertain.\",\"There are no occurrences, function context, APIs, strings or adjacency/control-flow information.\",\"The class label mapping is not stated in the evidence, so reading class 1 as MALWARE/cryptojacking is an assumption.\",\"The candidate does not explicitly mention the target-class assumption or the top-k limitation.\"],\"summary\":\"The explanation is accurate on numbers and SHAP direction, appropriately calibrated (low-confidence, inconclusive), and offers sensible verification steps. Minor overreach comes from implied adjacency, frequency interpretation and the 'presence' of wide-integer arithmetic.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7167,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3444,
+          "output_tokens_details": {
+            "thinking_tokens": 1997
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7167,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3444,
+        "output_tokens_details": {
+          "thinking_tokens": 1997
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_faac5b2556f0a5ef\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 1.0, all 20 SHAP values and the quoted frequencies match the evidence within rounding. The mnemonic semantics are generally correct and mostly hedged. Minor overreach: adjacency is implied and the values are treated as frequencies, and MOV SHRD is said to show 'presence' of wide-integer arithmetic.\",\"coherence\":\"The summary, per-n-gram assessments, key indicators and action are consistent with the low-confidence tier and 0.55 confidence. Some repetition between the long explanation and evidence_analysis lowers it slightly.\",\"cybersecurity_relevance\":\"It ties the SIMD, rotate/add and SHRD clusters to a hashing or mining hypothesis. It also notes benign SIMD use, compiler idioms, and the absence of function names, APIs or strings. It does not discuss benign crypto or compression libraries explicitly.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: disassemble the functions containing the SIMD, ROL/ADD and SHRD sequences, check PUSH RET for packing, and run a sandbox watching sustained CPU use and pool-style traffic. It is not explicitly prioritized, and 'treat as suspicious and escalate' is slightly generic.\"},\"unsupported_claims\":[{\"quote\":\"Pairs with SHRD BT, reinforcing the presence of wide-integer shift arithmetic that could belong to cryptographic or big-number code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features (MOV SHRD, SHRD BT); /evidence/occurrences is empty\",\"reason\":\"The bigram names alone do not establish that the two n-grams co-occur in the same code or that wide-integer arithmetic is present. The 'could belong' hedge only partly softens this.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Aligned SIMD load followed by a bitwise AND, at a relatively high frequency (0.0087).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Graph-aware n-grams need not be adjacent, and no extraction context is supplied. The artifact also says not to treat feature values as raw counts or frequencies without upstream confirmation.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Very rare in this binary.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The feature value semantics are not established, so the value 5.5e-05 cannot be read as rarity within the binary.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are reported with positive sign toward the configured class 1, and magnitudes match within rounding. The ordering and the claim that all top-20 are positive are correct. The explanation does not claim omitted features are benign and does not treat RF probability as behavioral proof.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption and was not verified upstream.\",\"Only the top 20 features are given; omitted features, the SHAP baseline and full attributions are unavailable.\",\"Feature value semantics are unestablished, so 'frequency' readings are uncertain.\",\"There are no occurrences, function context, APIs, strings or adjacency/control-flow information.\",\"The class label mapping is not stated in the evidence, so reading class 1 as MALWARE/cryptojacking is an assumption.\",\"The candidate does not explicitly mention the target-class assumption or the top-k limitation.\"],\"summary\":\"The explanation is accurate on numbers and SHAP direction, appropriately calibrated (low-confidence, inconclusive), and offers sensible verification steps. Minor overreach comes from implied adjacency, frequency interpretation and the 'presence' of wide-integer arithmetic.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_faac5b2556f0a5ef",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability 1.0, all 20 SHAP values and the quoted frequencies match the evidence within rounding. The mnemonic semantics are generally correct and mostly hedged. Minor overreach: adjacency is implied and the values are treated as frequencies, and MOV SHRD is said to show 'presence' of wide-integer arithmetic.",
+      "coherence": "The summary, per-n-gram assessments, key indicators and action are consistent with the low-confidence tier and 0.55 confidence. Some repetition between the long explanation and evidence_analysis lowers it slightly.",
+      "cybersecurity_relevance": "It ties the SIMD, rotate/add and SHRD clusters to a hashing or mining hypothesis. It also notes benign SIMD use, compiler idioms, and the absence of function names, APIs or strings. It does not discuss benign crypto or compression libraries explicitly.",
+      "actionable_utility": "The follow-up is concrete and proportionate: disassemble the functions containing the SIMD, ROL/ADD and SHRD sequences, check PUSH RET for packing, and run a sandbox watching sustained CPU use and pool-style traffic. It is not explicitly prioritized, and 'treat as suspicious and escalate' is slightly generic."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Pairs with SHRD BT, reinforcing the presence of wide-integer shift arithmetic that could belong to cryptographic or big-number code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/top_features (MOV SHRD, SHRD BT); /evidence/occurrences is empty",
+        "reason": "The bigram names alone do not establish that the two n-grams co-occur in the same code or that wide-integer arithmetic is present. The 'could belong' hedge only partly softens this.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Aligned SIMD load followed by a bitwise AND, at a relatively high frequency (0.0087).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "Graph-aware n-grams need not be adjacent, and no extraction context is supplied. The artifact also says not to treat feature values as raw counts or frequencies without upstream confirmation.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Very rare in this binary.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The feature value semantics are not established, so the value 5.5e-05 cannot be read as rarity within the binary.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are reported with positive sign toward the configured class 1, and magnitudes match within rounding. The ordering and the claim that all top-20 are positive are correct. The explanation does not claim omitted features are benign and does not treat RF probability as behavioral proof.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption and was not verified upstream.",
+      "Only the top 20 features are given; omitted features, the SHAP baseline and full attributions are unavailable.",
+      "Feature value semantics are unestablished, so 'frequency' readings are uncertain.",
+      "There are no occurrences, function context, APIs, strings or adjacency/control-flow information.",
+      "The class label mapping is not stated in the evidence, so reading class 1 as MALWARE/cryptojacking is an assumption.",
+      "The candidate does not explicitly mention the target-class assumption or the top-k limitation."
+    ],
+    "summary": "The explanation is accurate on numbers and SHAP direction, appropriately calibrated (low-confidence, inconclusive), and offers sensible verification steps. Minor overreach comes from implied adjacency, frequency interpretation and the 'presence' of wide-integer arithmetic."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Pairs with SHRD BT, reinforcing the presence of wide-integer shift arithmetic that could belong to cryptographic or big-number code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/top_features (MOV SHRD, SHRD BT); /evidence/occurrences is empty",
+      "reason": "The bigram names alone do not establish that the two n-grams co-occur in the same code or that wide-integer arithmetic is present. The 'could belong' hedge only partly softens this.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Aligned SIMD load followed by a bitwise AND, at a relatively high frequency (0.0087).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "Graph-aware n-grams need not be adjacent, and no extraction context is supplied. The artifact also says not to treat feature values as raw counts or frequencies without upstream confirmation.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Very rare in this binary.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The feature value semantics are not established, so the value 5.5e-05 cannot be read as rarity within the binary.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "ac868493f7f305788a1934fe39bef7808ee3746fc7d97754ec223f19bbe06273.exe_analysis.json"
+}

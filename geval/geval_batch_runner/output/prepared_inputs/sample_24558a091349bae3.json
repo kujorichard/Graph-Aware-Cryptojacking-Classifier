@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_24558a091349bae3",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 1.0,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "POP SUB",
+        "value": 0.008928571827709675,
+        "shap_value": 0.016184363877318805
+      },
+      {
+        "ngram": "XOR ADC",
+        "value": 0.008928571827709675,
+        "shap_value": 0.011963688849913475
+      },
+      {
+        "ngram": "POP LEA",
+        "value": 0.008928571827709675,
+        "shap_value": 0.011853676881441323
+      },
+      {
+        "ngram": "SUB PUSH",
+        "value": 0.013392857275903225,
+        "shap_value": 0.011494549027366591
+      },
+      {
+        "ngram": "ADD POP",
+        "value": 0.0,
+        "shap_value": 0.010349434868398545
+      },
+      {
+        "ngram": "CALL PUSH",
+        "value": 0.013392857275903225,
+        "shap_value": 0.010223537233808049
+      },
+      {
+        "ngram": "ADD PUSH",
+        "value": 0.013392857275903225,
+        "shap_value": 0.010163302928428451
+      },
+      {
+        "ngram": "ADD ADC",
+        "value": 0.008928571827709675,
+        "shap_value": 0.010023162119214677
+      },
+      {
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.008958573007984366
+      },
+      {
+        "ngram": "POP PUSH",
+        "value": 0.1026785746216774,
+        "shap_value": 0.008821894829072478
+      },
+      {
+        "ngram": "POP CALL",
+        "value": 0.01785714365541935,
+        "shap_value": 0.008691506599967553
+      },
+      {
+        "ngram": "POP TEST",
+        "value": 0.004464285913854837,
+        "shap_value": 0.008652203622640494
+      },
+      {
+        "ngram": "POP ADD",
+        "value": 0.01785714365541935,
+        "shap_value": 0.008332414045309312
+      },
+      {
+        "ngram": "MOV ADC",
+        "value": 0.004464285913854837,
+        "shap_value": 0.008280310757049835
+      },
+      {
+        "ngram": "POP MOV",
+        "value": 0.03125,
+        "shap_value": 0.008196324227489967
+      },
+      {
+        "ngram": "PUSH SUB",
+        "value": 0.0,
+        "shap_value": 0.008012231893789159
+      },
+      {
+        "ngram": "ADC SUB",
+        "value": 0.004464285913854837,
+        "shap_value": 0.007748119858220676
+      },
+      {
+        "ngram": "PUSH POP",
+        "value": 0.0892857164144516,
+        "shap_value": 0.007441767753135966
+      },
+      {
+        "ngram": "POP XOR",
+        "value": 0.004464285913854837,
+        "shap_value": 0.006966492417372632
+      },
+      {
+        "ngram": "XOR CALL",
+        "value": 0.0,
+        "shap_value": 0.0068641199578734925
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "high-confidence",
+    "explanation": "The Random Forest classified this binary as malware with probability 1.0000, and all 20 of the top n-grams push toward cryptojacking. No counter-evidence appears in the list. However, the individual SHAP values are small (+0.0069 to +0.0162) and spread evenly, so no single feature is decisive. The verdict rests on the combined weight of many modest signals. The strongest are POP SUB (+0.016184), XOR ADC (+0.011964), POP LEA (+0.011854), SUB PUSH (+0.011495), ADD POP (+0.010349), CALL PUSH (+0.010224), ADD PUSH (+0.010163) and ADD ADC (+0.010023). The carry-propagating arithmetic pairs XOR ADC, ADD ADC, MOV ADC and ADC SUB are consistent with multi-word arithmetic or mixing/hashing loops, which are typical of mining proof-of-work code. They are not unique to it, though, since big-integer math in benign code produces them too. The most frequent n-grams are stack-management sequences: POP PUSH (0.102679) and PUSH POP (0.089286). They suggest many small functions with heavy register save and restore, or unrolled code. The evidence contains no function names, API calls or strings, so I cannot tie any pattern to a specific mining routine or to network behavior such as pool communication. Several n-grams (ADD POP, CMOVZ MOV, PUSH SUB, XOR CALL) have a frequency of 0.000000 yet carry positive SHAP values. This means the model is also using their absence, or near-absence, as a signal. I therefore treat the classification as statistically strong but not independently corroborated by semantic evidence. Because the model output is unanimous and the arithmetic-heavy patterns fit mining workloads, I assign high-confidence, with the caveat that the evidence is purely statistical.",
+    "evidence_analysis": [
+      {
+        "ngram": "POP SUB",
+        "shap_contribution": 0.016184,
+        "assessment": "The largest contributor. It marks a stack restore followed directly by arithmetic, often at function epilogue/prologue boundaries or in tight compute routines. It is not specific to mining but contributes most to the model's verdict."
+      },
+      {
+        "ngram": "XOR ADC",
+        "shap_contribution": 0.011964,
+        "assessment": "XOR followed by add-with-carry is typical of mixing and multi-precision arithmetic in hashing and PoW algorithms. It is suggestive of mining-style computation."
+      },
+      {
+        "ngram": "POP LEA",
+        "shap_contribution": 0.011854,
+        "assessment": "A register restore followed by address computation. It indicates compiled-code structure and is weakly indicative, but the model weights it toward cryptojacking."
+      },
+      {
+        "ngram": "SUB PUSH",
+        "shap_contribution": 0.011495,
+        "assessment": "Arithmetic followed by a push, such as stack frame setup or spilling intermediate values. It is consistent with register-heavy computational routines."
+      },
+      {
+        "ngram": "ADD POP",
+        "shap_contribution": 0.010349,
+        "assessment": "Observed frequency is 0.000000 but SHAP is positive, so the model is using its absence or rarity in this binary as a signal. Not directly interpretable as behavior."
+      },
+      {
+        "ngram": "CALL PUSH",
+        "shap_contribution": 0.010224,
+        "assessment": "A call followed by a push, reflecting function-call-dense control flow. It is a generic structural pattern with modest support."
+      },
+      {
+        "ngram": "ADD PUSH",
+        "shap_contribution": 0.010163,
+        "assessment": "Arithmetic followed by a push, consistent with computation feeding into stack-based argument passing or spilling."
+      },
+      {
+        "ngram": "ADD ADC",
+        "shap_contribution": 0.010023,
+        "assessment": "A classic multi-word addition pair, used in big-integer and cryptographic arithmetic. It supports a compute-intensive hashing profile."
+      },
+      {
+        "ngram": "CMOVZ MOV",
+        "shap_contribution": 0.008959,
+        "assessment": "Frequency is 0.000000 and the SHAP is positive, so the signal comes from absence. Conditional moves are used for branchless logic in crypto code, but this cannot be confirmed here."
+      },
+      {
+        "ngram": "POP PUSH",
+        "shap_contribution": 0.008822,
+        "assessment": "The most frequent pattern in the list (0.102679). It reflects heavy stack save/restore activity, possibly from obfuscated or packed code or many small routines. Weak individually."
+      },
+      {
+        "ngram": "POP CALL",
+        "shap_contribution": 0.008692,
+        "assessment": "A register restore immediately followed by a call. A structural pattern that adds modest support."
+      },
+      {
+        "ngram": "POP TEST",
+        "shap_contribution": 0.008652,
+        "assessment": "A restore followed by a flag test, indicating conditional control flow after stack operations. Low specificity."
+      },
+      {
+        "ngram": "POP ADD",
+        "shap_contribution": 0.008332,
+        "assessment": "A restore followed by arithmetic. It adds to the pattern of stack and arithmetic interleaving."
+      },
+      {
+        "ngram": "MOV ADC",
+        "shap_contribution": 0.00828,
+        "assessment": "A move followed by add-with-carry, consistent with multi-word arithmetic in hashing or big-number routines."
+      },
+      {
+        "ngram": "POP MOV",
+        "shap_contribution": 0.008196,
+        "assessment": "A common epilogue/data-movement pattern at 0.031250 frequency. A modest contributor with little semantic weight."
+      },
+      {
+        "ngram": "PUSH SUB",
+        "shap_contribution": 0.008012,
+        "assessment": "Frequency is 0.000000. The signal comes from absence of this typical frame-setup pairing, which may reflect an unusual code layout."
+      },
+      {
+        "ngram": "ADC SUB",
+        "shap_contribution": 0.007748,
+        "assessment": "A carry-chain arithmetic transition, again suggestive of extended-precision computation."
+      },
+      {
+        "ngram": "PUSH POP",
+        "shap_contribution": 0.007442,
+        "assessment": "A frequent pattern (0.089286) indicating immediate save/restore sequences. Together with POP PUSH it points to unusual stack-heavy code, but it is not conclusive."
+      },
+      {
+        "ngram": "POP XOR",
+        "shap_contribution": 0.006966,
+        "assessment": "A restore followed by XOR, which may indicate register zeroing or the start of a mixing operation. Low specificity."
+      },
+      {
+        "ngram": "XOR CALL",
+        "shap_contribution": 0.006864,
+        "assessment": "Frequency is 0.000000. Its contribution comes from absence, and no behavioral interpretation is possible from this evidence."
+      }
+    ],
+    "confidence_score": 0.85,
+    "key_indicators": [
+      "Random Forest malware probability of 1.0000",
+      "All 20 top n-grams have positive SHAP toward cryptojacking, with none opposing",
+      "Carry-chain arithmetic n-grams (XOR ADC, ADD ADC, MOV ADC, ADC SUB) consistent with hashing or big-integer computation",
+      "Heavy stack save/restore patterns (POP PUSH at 0.102679, PUSH POP at 0.089286)",
+      "Several top features (ADD POP, CMOVZ MOV, PUSH SUB, XOR CALL) contribute through absence at 0.000000 frequency",
+      "No function names, API calls or strings in the evidence, so the verdict rests on statistical patterns alone"
+    ],
+    "recommended_action": "Treat the sample as likely cryptojacking malware and prioritize it for confirmation. Disassemble the ELF and locate the functions with ADC/XOR/ADD carry-chain sequences to check for hashing or PoW loops. Examine strings and network indicators for mining pool or stratum connectivity. Run it in a sandbox to observe CPU utilization and outbound connections. Check for packing or obfuscation, given the high frequency of POP PUSH and PUSH POP. Isolate affected hosts and block related indicators until the analysis is complete."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

@@ -1,0 +1,174 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_924994f3e852cfd3",
+  "status": "success",
+  "source_sha256": "a446a21bdea701850d84b15cad77f8fbdf8cab521fe9365ed07246cf1c59eb9f",
+  "input_sha256": "2425e8de83534b47fd4a44c22cd6f67d7625be22020a97321c5230139f2530de",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "3559470d1dc6eb5c171bb6041c69b9916c702a7a8c9646fad0762045c4169d5b.elf",
+      "source_name": "3559470d1dc6eb5c171bb6041c69b9916c702a7a8c9646fad0762045c4169d5b.elf.json",
+      "source_path": "ml/dataset/cryptojacking/3559470d1dc6eb5c171bb6041c69b9916c702a7a8c9646fad0762045c4169d5b.elf.json",
+      "split": "test",
+      "batch_number": 1,
+      "row_index_in_batch": 4,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "3559470d1dc6eb5c171bb6041c69b9916c702a7a8c9646fad0762045c4169d5b.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:25:39.803208+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:25:39.803240+00:00",
+      "error": null,
+      "request_sha256": "b481ea88c3553e966d34580b5c39c184641c5832813ee7eb2c40d4ef69cd332c",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkyngmihN6M5N1mJadvN",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the evidence: the model predicts class 1 with 0.99988 probability, and all top 20 SHAP features show positive contribution with a feature value of 0.0 — but since feature value semantics aren't established, I shouldn't assume that means the n-gram is literally absent; the claim that \"frequency 0.000000 means none is measurably present\" is an unsupported interpretation.\n\nI'm also noting the candidate mislabels \"value\" as \"frequency,\" and the overreach in concluding these features are \"not present\" in the binary. The claim about SHAP target class assuming \"cryptojacking\" without caveating that it's a configured assumption is a minor issue. The \"no single dominant signature\" claim is reasonably supported by the top-k SHAP spread (ratio about 2.7), though omitted features are unknown. I'm now verifying the individual SHAP values against the reported figures — CMOVZ/MOV, ADD/POP, XOR/CALL, TEST/JZ, CALL/ADD, PUSH/SUB — checking each against the expected numbers.\n\nI'm confirming the remaining SHAP values (XOR MOV, TEST JS, XOR XOR, AND MOV, MOV JZ, XOR CMOVNZ, LEA CALL, SUB MOV, XOR SHL, CMP CMOVZ, CMP JL, CALL XOR, SUB LEA, MOV LEA) all match, and that the direction/magnitude claims are faithful overall, aside from the frequency/value semantic slip. I'm also assessing whether the suggested validation steps (comparing n-gram profiles against benign binaries) and the generic instruction-level interpretations (e.g., register zeroing before calls) are reasonable and appropriately hedged.\n\nI'm noting that the model's score should be treated as a strong but independently unconfirmed malicious signal, and that the candidate's treatment of zero-valued features as \"none measurably present\" glosses over the odd fact that absence can still push the SHAP value toward malicious classification — a nuance it doesn't flag, along with the unstated target-class assumption. Weighing all this, I'm landing on a technical accuracy score of around 3-4, given the recurring frequency misinterpretation threading through the key indicators and assessment sections.\n\nI'm settling on coherence around 4 due to some repetitive generic phrasing, confidence calibration around 4 since the 0.45 \"low-confidence\" label fits an inconclusive case, relevance at 4, and actionability at 4 since the recommended steps (locate code regions, sandbox testing, CPU monitoring, benign comparison) are concrete but lack prioritization. For unsupported claims, I'm flagging the statement that zero frequency means an n-gram is \"not measurably present in the binary,\" tying it to the feature-value-semantics evidence, and leaning toward categorizing it as \"other\" rather than a cleaner existing category, alongside a similar claim about frequencies and function context.\n\nI'll also note that the assumption all 20 n-grams point toward cryptojacking is technically supported under the configured premise but goes unflagged as an assumption worth surfacing in limitations rather than as an unsupported claim. Now I'm assembling this into the final single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_924994f3e852cfd3\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability (0.9999 vs 0.99988), SHAP signs and magnitudes, and generic instruction semantics are correct. But the candidate treats the 0.0 feature values as 'frequency' and concludes 'none is measurably present in the binary', while the evidence says value semantics are not established.\",\"coherence\":\"The explanation, evidence table, tier (low-confidence), confidence 0.45 and recommendation all agree on 'inconclusive'. There is some repetition of the 'generic' point across n-gram entries.\",\"cybersecurity_relevance\":\"It ties the evidence to the cryptojacking question, notes the lack of function context, and offers benign alternatives (ordinary compiler output). The zero-value reading is partly mis-framed, and the configured SHAP target-class assumption is never mentioned.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: locate the code regions, look for hash/arithmetic loops, run a sandbox with CPU monitoring, and compare against benign binaries. The steps are conditional and invent no indicators, but they are not prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a reported frequency of 0.000000, so none is measurably present in the binary at the given precision.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact reports 'value' and explicitly says not to treat it as raw counts or frequencies. Inferring absence from the binary is unsupported.\",\"category\":\"other\"},{\"quote\":\"All reported frequencies are 0.000000 and no function locations are listed, so the patterns cannot be tied to specific code\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The 'frequency' label repeats the unestablished value semantics. The lack of function context is supported, but the frequency framing is not.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values match the evidence within rounding and are positive for target class 1. The stated range +0.016850 to +0.006300 is accurate, and the candidate does not claim features beyond the top-k.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification, and the candidate does not flag it.\",\"Feature value semantics are unestablished, so the 0.0 values cannot be read as counts or absence.\",\"No SHAP baseline, full attributions, occurrences or function context are available.\",\"Omitted features beyond the top 20 are unknown.\"],\"summary\":\"The explanation is well organized, SHAP-faithful and appropriately cautious about cryptojacking, with sensible follow-up. Its main flaw is reading the 0.0 feature values as frequencies that show the n-grams are absent, which the artifact does not establish.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6771,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2975,
+          "output_tokens_details": {
+            "thinking_tokens": 1914
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6771,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2975,
+        "output_tokens_details": {
+          "thinking_tokens": 1914
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_924994f3e852cfd3\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability (0.9999 vs 0.99988), SHAP signs and magnitudes, and generic instruction semantics are correct. But the candidate treats the 0.0 feature values as 'frequency' and concludes 'none is measurably present in the binary', while the evidence says value semantics are not established.\",\"coherence\":\"The explanation, evidence table, tier (low-confidence), confidence 0.45 and recommendation all agree on 'inconclusive'. There is some repetition of the 'generic' point across n-gram entries.\",\"cybersecurity_relevance\":\"It ties the evidence to the cryptojacking question, notes the lack of function context, and offers benign alternatives (ordinary compiler output). The zero-value reading is partly mis-framed, and the configured SHAP target-class assumption is never mentioned.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: locate the code regions, look for hash/arithmetic loops, run a sandbox with CPU monitoring, and compare against benign binaries. The steps are conditional and invent no indicators, but they are not prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a reported frequency of 0.000000, so none is measurably present in the binary at the given precision.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact reports 'value' and explicitly says not to treat it as raw counts or frequencies. Inferring absence from the binary is unsupported.\",\"category\":\"other\"},{\"quote\":\"All reported frequencies are 0.000000 and no function locations are listed, so the patterns cannot be tied to specific code\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The 'frequency' label repeats the unestablished value semantics. The lack of function context is supported, but the frequency framing is not.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values match the evidence within rounding and are positive for target class 1. The stated range +0.016850 to +0.006300 is accurate, and the candidate does not claim features beyond the top-k.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification, and the candidate does not flag it.\",\"Feature value semantics are unestablished, so the 0.0 values cannot be read as counts or absence.\",\"No SHAP baseline, full attributions, occurrences or function context are available.\",\"Omitted features beyond the top 20 are unknown.\"],\"summary\":\"The explanation is well organized, SHAP-faithful and appropriately cautious about cryptojacking, with sensible follow-up. Its main flaw is reading the 0.0 feature values as frequencies that show the n-grams are absent, which the artifact does not establish.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_924994f3e852cfd3",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability (0.9999 vs 0.99988), SHAP signs and magnitudes, and generic instruction semantics are correct. But the candidate treats the 0.0 feature values as 'frequency' and concludes 'none is measurably present in the binary', while the evidence says value semantics are not established.",
+      "coherence": "The explanation, evidence table, tier (low-confidence), confidence 0.45 and recommendation all agree on 'inconclusive'. There is some repetition of the 'generic' point across n-gram entries.",
+      "cybersecurity_relevance": "It ties the evidence to the cryptojacking question, notes the lack of function context, and offers benign alternatives (ordinary compiler output). The zero-value reading is partly mis-framed, and the configured SHAP target-class assumption is never mentioned.",
+      "actionable_utility": "The follow-up is concrete and proportionate: locate the code regions, look for hash/arithmetic loops, run a sandbox with CPU monitoring, and compare against benign binaries. The steps are conditional and invent no indicators, but they are not prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Every n-gram has a reported frequency of 0.000000, so none is measurably present in the binary at the given precision.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact reports 'value' and explicitly says not to treat it as raw counts or frequencies. Inferring absence from the binary is unsupported.",
+        "category": "other"
+      },
+      {
+        "quote": "All reported frequencies are 0.000000 and no function locations are listed, so the patterns cannot be tied to specific code",
+        "candidate_path": "/candidate_analysis/key_indicators/2",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The 'frequency' label repeats the unestablished value semantics. The lack of function context is supported, but the frequency framing is not.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values match the evidence within rounding and are positive for target class 1. The stated range +0.016850 to +0.006300 is accurate, and the candidate does not claim features beyond the top-k.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that needs upstream verification, and the candidate does not flag it.",
+      "Feature value semantics are unestablished, so the 0.0 values cannot be read as counts or absence.",
+      "No SHAP baseline, full attributions, occurrences or function context are available.",
+      "Omitted features beyond the top 20 are unknown."
+    ],
+    "summary": "The explanation is well organized, SHAP-faithful and appropriately cautious about cryptojacking, with sensible follow-up. Its main flaw is reading the 0.0 feature values as frequencies that show the n-grams are absent, which the artifact does not establish."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Every n-gram has a reported frequency of 0.000000, so none is measurably present in the binary at the given precision.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact reports 'value' and explicitly says not to treat it as raw counts or frequencies. Inferring absence from the binary is unsupported.",
+      "category": "other"
+    },
+    {
+      "quote": "All reported frequencies are 0.000000 and no function locations are listed, so the patterns cannot be tied to specific code",
+      "candidate_path": "/candidate_analysis/key_indicators/2",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The 'frequency' label repeats the unestablished value semantics. The lack of function context is supported, but the frequency framing is not.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "3559470d1dc6eb5c171bb6041c69b9916c702a7a8c9646fad0762045c4169d5b.elf_analysis.json"
+}

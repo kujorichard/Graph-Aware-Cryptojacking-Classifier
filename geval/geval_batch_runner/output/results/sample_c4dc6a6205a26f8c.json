@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_c4dc6a6205a26f8c",
+  "status": "success",
+  "source_sha256": "a925559ffb49471c9a10d99441bbd6b20d988251412226626db34c6560416fa4",
+  "input_sha256": "8fd1be163f9479053e1bee4e4d531b1ad2d11b4f105b0e3c098d24402386f1ba",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "bf8b6b4846ad542696304b6d7e339d2c1425cd27aa61ac48df08c1de2dc4fabb.elf",
+      "source_name": "bf8b6b4846ad542696304b6d7e339d2c1425cd27aa61ac48df08c1de2dc4fabb.elf.json",
+      "source_path": "ml/dataset/cryptojacking/bf8b6b4846ad542696304b6d7e339d2c1425cd27aa61ac48df08c1de2dc4fabb.elf.json",
+      "split": "test",
+      "batch_number": 3,
+      "row_index_in_batch": 26,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "bf8b6b4846ad542696304b6d7e339d2c1425cd27aa61ac48df08c1de2dc4fabb.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:26:44.482255+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:26:44.482293+00:00",
+      "error": null,
+      "request_sha256": "12af07e6e14270d1c02911bc956bcc4c373c7d22adf8ca76c714962ad422343b",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm4SpoCUTCKgUz6RRb4R",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF prediction of 1 with full probability and all-positive SHAP values across the top features, but I notice the candidate is treating feature values as literal frequencies when the semantics of those values were never actually established—that's an unsupported leap I need to flag.\n\nThe ELF format mention and recommendation to check it isn't grounded in the evidence either, so that's another assumption slipping in unmarked. The SHA-256 pivot is conditionally framed so it's less problematic, but the claim that \"all 20 top SHAP features push toward cryptojacking\" relies on an unstated class-mapping assumption, and calling the pattern \"consistent and not driven by a single outlier\" overreaches since only the top 20 of possibly many features were examined. The mnemonic-based claim about \"hash or cipher inner loops\" is hedged somewhat but still edges past what raw mnemonics alone can establish.\n\nI'm also noticing inconsistency around XOR followed by CALL: it's treated as adjacency-based evidence of bitwise mixing typical of hash/cipher routines in one place, then reinterpreted as generic register-zeroing before a call elsewhere — these two readings aren't reconciled, and the adjacency assumption itself isn't justified since the n-gram features may not require adjacent instructions. The further leap that these contributions \"probably reflect the model's learned association with cryptojacker families\" is speculative even with \"probably\" attached, and the note about this possibly being a multi-architecture sample or feature-space artifact is appropriately hedged but still unresolved. Overall there's a tension between the \"high-confidence\" framing and the stated 0.7 confidence with caveats about not being absolute.\n\nI'm checking whether \"none individually diagnostic\" squares with recommending blocking and isolating hosts at a high-confidence tier — that action feels disproportionate given the RF probability alone isn't behavioral proof, so this reads as overreach. Then I'm verifying the SHAP value claims against the actual numbers: the signs, magnitudes, and ranges all check out, including the highest-ranked n-gram, the lowest nonzero ARM values, and the specific instruction pairs cited, all matching their reported figures correctly. I'm now looking at which x86-style n-grams show essentially zero rounded frequency, including the XOR-CALL pair.\n\nI also notice the candidate treats uppercase mnemonics as x86 and lowercase as ARM without evidence support — plausible but unsupported, worth flagging as a limitation.\n\nFor scoring: technical accuracy around 3 given the frequency/presence conflation; coherence around 4 given mostly clear writing with a minor inconsistency; cybersecurity relevance around 3-4 since it links to mining behavior and notes limits but misses benign alternatives like legitimate crypto libraries.\n\nFor actionable utility, the steps are concrete — strings, architecture identification, hot loops, sandboxing, hash pivoting — but some assumptions (like specific instruction sequences existing) aren't fully justified, so the actions aren't well-prioritized.\n\nNow I'm cataloging unsupported claims in the candidate analysis, each tied to a JSON pointer: the explanation's claim that certain features are \"actually present in the binary\" and the follow-up claim that they're \"therefore absent or extremely rare\" both lack proper evidence backing and reference the feature_value_semantics evidence incorrectly.\n\nI'm also flagging the recommendation to \"check the ELF for embedded mining pool URLs\" since the ELF format assertion isn't supported by the evidence, and the claim about \"x86 XOR followed by a call, commonly register zeroing before a call\" which I can trace to n-gram index 4 among the adjacency evidence entries, alongside the unsupported assertion that this pattern is \"typical of hash or cipher inner loops.\"\n\nI'm also weighing whether to include the hedged claim about \"ARM XOR followed by subtraction is typical of hash-round or cipher mixing arithmetic,\" the compare-and-jump loop-bound idiom, and the certainty language around \"high but not absolute\" confidence resting on the model's unanimous probability signal — leaning toward skipping most of these as either too hedged or not clearly unsupported, but possibly including the certainty claim given the limited top-20 feature scope.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_c4dc6a6205a26f8c\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":3,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, SHAP signs, magnitudes and listed values are reported correctly. However, the explanation treats feature values as frequencies and concludes n-grams are 'actually present' or 'absent', which the evidence says is not established. It also gives several mnemonic-based hash/cipher/loop interpretations and an adjacency-based 'register zeroing' reading without context.\",\"coherence\":\"The explanation is well organized, moving from model signal to themes, ARM versus x86 handling, limits and recommendations. Minor inconsistency: XOR CALL and CALL XOR are listed as hash/cipher mixing, then described as generic register-zeroing idioms. The 'high-confidence' tier also sits somewhat awkwardly beside the admission that no n-gram is diagnostic.\",\"cybersecurity_relevance\":\"It is sample-specific and ties the n-grams to mining-related checks (pool URLs, wallets, stratum, CPU use). It also acknowledges missing symbols and that the n-grams are generic. It does not discuss relevant benign alternatives such as legitimate crypto, compression or hashing code. Its mining-theme reading leans on mnemonic inference.\",\"actionable_utility\":\"The follow-ups are concrete and feasible: string and config inspection, architecture identification, locating hot loops, sandbox CPU and network observation, and hash pivoting. They are linked to evidence gaps and phrased as checks. They are not prioritized, 'Check the ELF' assumes a file format not in the evidence, and 'Block and isolate' is somewhat aggressive given the admitted lack of diagnostic evidence.\"},\"unsupported_claims\":[{\"quote\":\"so they are actually present in the binary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says value semantics are not established and values should not be treated as raw counts. Presence is therefore asserted with unsupported certainty.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"They are therefore absent or extremely rare\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"A value of 0.0 is read as absence or rarity in the binary, though the meaning of the values is not confirmed upstream.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"x86 XOR followed by a call, commonly register zeroing before a call.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4; /evidence/occurrences; /evidence/function_context\",\"reason\":\"Adjacency, operands and the register-zeroing purpose are inferred without occurrences or function context. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Several n-grams point to bitwise mixing and arithmetic typical of hash or cipher inner loops\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/occurrences\",\"reason\":\"Mnemonic pairs alone do not establish hash or cipher routines or loops. No context, occurrences or control flow were supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Check the ELF for embedded mining pool URLs or wallet addresses\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence (no file format or architecture metadata)\",\"reason\":\"The ELF container format is asserted without any supplied evidence of it.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive for the configured target class 1, the stated range (+0.0044 to +0.0102) matches the data, and the cited per-feature values match within rounding. The candidate does not flag that the target-class mapping is a configured assumption, and 'not driven by a single outlier' covers only the top-20 subset. It does not claim anything about omitted features.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature value semantics are not established, so 'frequency' and 'present/absent' readings are unverified.\",\"SHAP target class is a configured assumption, and the class 1 to malware/cryptojacking mapping is not independently verified.\",\"No occurrences, function context, symbols, baseline or full attributions were supplied, so adjacency, loops, algorithms and architecture cannot be confirmed.\",\"The top-20 positive SHAP subset cannot rule out omitted features pushing toward benign.\",\"Reading uppercase mnemonics as x86 and lowercase as ARM/Thumb is an inference from naming, not supplied metadata.\"],\"summary\":\"The numbers and SHAP directions are faithful, and the limits and follow-ups are mostly reasonable. The explanation overreaches by treating feature values as presence/frequency, giving unsupported hash/cipher and register-zeroing readings, and assuming an ELF format. It also omits benign alternatives, so accuracy and relevance are moderate while coherence and actionability are fairly good.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7182,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 5133,
+          "output_tokens_details": {
+            "thinking_tokens": 3324
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7182,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 5133,
+        "output_tokens_details": {
+          "thinking_tokens": 3324
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_c4dc6a6205a26f8c\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":3,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, SHAP signs, magnitudes and listed values are reported correctly. However, the explanation treats feature values as frequencies and concludes n-grams are 'actually present' or 'absent', which the evidence says is not established. It also gives several mnemonic-based hash/cipher/loop interpretations and an adjacency-based 'register zeroing' reading without context.\",\"coherence\":\"The explanation is well organized, moving from model signal to themes, ARM versus x86 handling, limits and recommendations. Minor inconsistency: XOR CALL and CALL XOR are listed as hash/cipher mixing, then described as generic register-zeroing idioms. The 'high-confidence' tier also sits somewhat awkwardly beside the admission that no n-gram is diagnostic.\",\"cybersecurity_relevance\":\"It is sample-specific and ties the n-grams to mining-related checks (pool URLs, wallets, stratum, CPU use). It also acknowledges missing symbols and that the n-grams are generic. It does not discuss relevant benign alternatives such as legitimate crypto, compression or hashing code. Its mining-theme reading leans on mnemonic inference.\",\"actionable_utility\":\"The follow-ups are concrete and feasible: string and config inspection, architecture identification, locating hot loops, sandbox CPU and network observation, and hash pivoting. They are linked to evidence gaps and phrased as checks. They are not prioritized, 'Check the ELF' assumes a file format not in the evidence, and 'Block and isolate' is somewhat aggressive given the admitted lack of diagnostic evidence.\"},\"unsupported_claims\":[{\"quote\":\"so they are actually present in the binary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says value semantics are not established and values should not be treated as raw counts. Presence is therefore asserted with unsupported certainty.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"They are therefore absent or extremely rare\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"A value of 0.0 is read as absence or rarity in the binary, though the meaning of the values is not confirmed upstream.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"x86 XOR followed by a call, commonly register zeroing before a call.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4; /evidence/occurrences; /evidence/function_context\",\"reason\":\"Adjacency, operands and the register-zeroing purpose are inferred without occurrences or function context. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Several n-grams point to bitwise mixing and arithmetic typical of hash or cipher inner loops\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/occurrences\",\"reason\":\"Mnemonic pairs alone do not establish hash or cipher routines or loops. No context, occurrences or control flow were supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Check the ELF for embedded mining pool URLs or wallet addresses\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence (no file format or architecture metadata)\",\"reason\":\"The ELF container format is asserted without any supplied evidence of it.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive for the configured target class 1, the stated range (+0.0044 to +0.0102) matches the data, and the cited per-feature values match within rounding. The candidate does not flag that the target-class mapping is a configured assumption, and 'not driven by a single outlier' covers only the top-20 subset. It does not claim anything about omitted features.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature value semantics are not established, so 'frequency' and 'present/absent' readings are unverified.\",\"SHAP target class is a configured assumption, and the class 1 to malware/cryptojacking mapping is not independently verified.\",\"No occurrences, function context, symbols, baseline or full attributions were supplied, so adjacency, loops, algorithms and architecture cannot be confirmed.\",\"The top-20 positive SHAP subset cannot rule out omitted features pushing toward benign.\",\"Reading uppercase mnemonics as x86 and lowercase as ARM/Thumb is an inference from naming, not supplied metadata.\"],\"summary\":\"The numbers and SHAP directions are faithful, and the limits and follow-ups are mostly reasonable. The explanation overreaches by treating feature values as presence/frequency, giving unsupported hash/cipher and register-zeroing readings, and assuming an ELF format. It also omits benign alternatives, so accuracy and relevance are moderate while coherence and actionability are fairly good.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_c4dc6a6205a26f8c",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 3,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability, SHAP signs, magnitudes and listed values are reported correctly. However, the explanation treats feature values as frequencies and concludes n-grams are 'actually present' or 'absent', which the evidence says is not established. It also gives several mnemonic-based hash/cipher/loop interpretations and an adjacency-based 'register zeroing' reading without context.",
+      "coherence": "The explanation is well organized, moving from model signal to themes, ARM versus x86 handling, limits and recommendations. Minor inconsistency: XOR CALL and CALL XOR are listed as hash/cipher mixing, then described as generic register-zeroing idioms. The 'high-confidence' tier also sits somewhat awkwardly beside the admission that no n-gram is diagnostic.",
+      "cybersecurity_relevance": "It is sample-specific and ties the n-grams to mining-related checks (pool URLs, wallets, stratum, CPU use). It also acknowledges missing symbols and that the n-grams are generic. It does not discuss relevant benign alternatives such as legitimate crypto, compression or hashing code. Its mining-theme reading leans on mnemonic inference.",
+      "actionable_utility": "The follow-ups are concrete and feasible: string and config inspection, architecture identification, locating hot loops, sandbox CPU and network observation, and hash pivoting. They are linked to evidence gaps and phrased as checks. They are not prioritized, 'Check the ELF' assumes a file format not in the evidence, and 'Block and isolate' is somewhat aggressive given the admitted lack of diagnostic evidence."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "so they are actually present in the binary",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says value semantics are not established and values should not be treated as raw counts. Presence is therefore asserted with unsupported certainty.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "They are therefore absent or extremely rare",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "A value of 0.0 is read as absence or rarity in the binary, though the meaning of the values is not confirmed upstream.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "x86 XOR followed by a call, commonly register zeroing before a call.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/top_features/4; /evidence/occurrences; /evidence/function_context",
+        "reason": "Adjacency, operands and the register-zeroing purpose are inferred without occurrences or function context. Graph-aware n-grams need not be adjacent.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Several n-grams point to bitwise mixing and arithmetic typical of hash or cipher inner loops",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; /evidence/occurrences",
+        "reason": "Mnemonic pairs alone do not establish hash or cipher routines or loops. No context, occurrences or control flow were supplied.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Check the ELF for embedded mining pool URLs or wallet addresses",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "/evidence (no file format or architecture metadata)",
+        "reason": "The ELF container format is asserted without any supplied evidence of it.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are positive for the configured target class 1, the stated range (+0.0044 to +0.0102) matches the data, and the cited per-feature values match within rounding. The candidate does not flag that the target-class mapping is a configured assumption, and 'not driven by a single outlier' covers only the top-20 subset. It does not claim anything about omitted features.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Feature value semantics are not established, so 'frequency' and 'present/absent' readings are unverified.",
+      "SHAP target class is a configured assumption, and the class 1 to malware/cryptojacking mapping is not independently verified.",
+      "No occurrences, function context, symbols, baseline or full attributions were supplied, so adjacency, loops, algorithms and architecture cannot be confirmed.",
+      "The top-20 positive SHAP subset cannot rule out omitted features pushing toward benign.",
+      "Reading uppercase mnemonics as x86 and lowercase as ARM/Thumb is an inference from naming, not supplied metadata."
+    ],
+    "summary": "The numbers and SHAP directions are faithful, and the limits and follow-ups are mostly reasonable. The explanation overreaches by treating feature values as presence/frequency, giving unsupported hash/cipher and register-zeroing readings, and assuming an ELF format. It also omits benign alternatives, so accuracy and relevance are moderate while coherence and actionability are fairly good."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "so they are actually present in the binary",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says value semantics are not established and values should not be treated as raw counts. Presence is therefore asserted with unsupported certainty.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "They are therefore absent or extremely rare",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "A value of 0.0 is read as absence or rarity in the binary, though the meaning of the values is not confirmed upstream.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "x86 XOR followed by a call, commonly register zeroing before a call.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/top_features/4; /evidence/occurrences; /evidence/function_context",
+      "reason": "Adjacency, operands and the register-zeroing purpose are inferred without occurrences or function context. Graph-aware n-grams need not be adjacent.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Several n-grams point to bitwise mixing and arithmetic typical of hash or cipher inner loops",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; /evidence/occurrences",
+      "reason": "Mnemonic pairs alone do not establish hash or cipher routines or loops. No context, occurrences or control flow were supplied.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Check the ELF for embedded mining pool URLs or wallet addresses",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "/evidence (no file format or architecture metadata)",
+      "reason": "The ELF container format is asserted without any supplied evidence of it.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "bf8b6b4846ad542696304b6d7e339d2c1425cd27aa61ac48df08c1de2dc4fabb.elf_analysis.json"
+}

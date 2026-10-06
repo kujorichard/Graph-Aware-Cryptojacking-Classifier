@@ -1,0 +1,231 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_70322e26c7d5508b",
+  "status": "success",
+  "source_sha256": "d3ee07fcc5a4d6b05ae2095f21ff50ad44361a831e79efaa04ec5c6673e9a9e2",
+  "input_sha256": "08e573d5ce50a10afa3ac481a0bb38908157646b3e0f56f1c0f4f04a47a6baf2",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "ec141b4e1d603702f50d323d382bca4060950d8a4b5034a064096ff4f00fcdb2.elf",
+      "source_name": "ec141b4e1d603702f50d323d382bca4060950d8a4b5034a064096ff4f00fcdb2.elf.json",
+      "source_path": "ml/dataset/cryptojacking/ec141b4e1d603702f50d323d382bca4060950d8a4b5034a064096ff4f00fcdb2.elf.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 65,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "ec141b4e1d603702f50d323d382bca4060950d8a4b5034a064096ff4f00fcdb2.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T14:00:36.565611+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T14:00:36.565639+00:00",
+      "error": null,
+      "request_sha256": "4268531c9316fe068d3eb04bc57653c495d9a92acac37281e95d6287dc8cabab",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm72czyErYXMBoWLvXoz",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm weighing how to phrase the claim about the Random Forest's 0.745 probability output, being careful not to overstate what \"malware probability\" means given the assumed target class, and noting that the top 20 SHAP features are all positive but their raw semantics aren't confirmed.\n\nLooking closer at the low-frequency n-grams, I'm flagging that interpreting a value like 0.000333 as \"roughly one occurrence\" is an unsupported leap since we haven't confirmed these are raw counts. I'm also noting that features with exactly 0.0 value but positive SHAP contributions shouldn't be dismissed as \"not backed by observed presence\" — in SHAP, absence of a feature can legitimately drive a prediction, so framing that as doubtful misrepresents how SHAP works.\n\nI'm also catching several places where adjacency between instructions is being assumed (like \"consecutive PXOR\" or \"shift followed by zero-check branch\") when the rules specify these n-grams don't need to be adjacent — that's an inference I shouldn't make without evidence. The semantic descriptions for things like LEA/STOSQ.REP as a bulk memory fill, or PUSH/CMP as a generic prologue, are reasonable but phrased with more certainty (\"indicates\", \"typical of\") than the evidence actually supports.\n\nI'm checking the SHAP values against what's reported — PXOR MOVUPS at +0.0207 with frequency 0.002664, PXOR PXOR at +0.0174, SUB PXOR at +0.0085, PXOR MOV at +0.0082 — these numbers line up correctly, and PXOR MOVUPS being called the most frequent SIMD pattern checks out since the others sit at 0.000333.\n\nThe model probability of 0.745 reads as moderate rather than decisive, matching the confidence score of 0.5 and low-confidence tier. I'm flagging that treating unconfirmed mining behavior as \"likely false positive\" is overly strong, since missing evidence isn't the same as benign evidence, and noting that absence of crypto-primitive indicators like rotate-heavy or AES instructions only holds within the top-k features examined — it can't rule out an omitted feature.\n\nOn faithfulness, the SHAP directions and magnitudes seem correct, but I'm questioning the interpretive claim that a zero-value feature with positive SHAP is \"doubtful,\" since that misreads SHAP semantics — a zero value can still contribute meaningfully. I'd lean toward marking the explanation as faithful on direction and magnitude despite that overreach.\n\nI should flag the \"roughly one occurrence\" claim as about feature values rather than SHAP itself, placing it under unsupported claims rather than shap_misrepresentation since that category implies unfaithfulness. For scoring: technical accuracy around 3 given the occurrence count and zero-frequency interpretation issues, coherence around 4 since it's clear despite some repetition across sections, relevance around 4, and actionable around 4 since the conclusions are concrete even with the \"likely false positive\" framing.\n\nI'm noting three n-grams with zero observed frequency but positive SHAP values, flagging their contributions as unsupported by actual presence. I'm cross-checking the exact wording about PXOR zeroing patterns, the absence of crypto-primitive indicators, the carry-flag branch, and the benign buffer-zeroing explanation to make sure each quote matches the source text precisely before drafting a concise final assessment.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_70322e26c7d5508b\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP signs, magnitudes and n-gram names match the evidence. However, it converts feature values into 'roughly one occurrence' counts, treats zero-valued features as unbacked, and infers adjacency, all of which the evidence does not establish.\",\"coherence\":\"The tier, hedged interpretation and recommended action are consistent and easy to follow. The explanation, per-feature list and key indicators repeat each other considerably.\",\"cybersecurity_relevance\":\"It ties the SIMD/PXOR and REP STOSQ signals to hashing or scratchpad initialization and to benign zeroing and buffer-init alternatives. It also states clearly that function context and API evidence are missing.\",\"actionable_utility\":\"Concrete and proportionate steps: locate the functions, check large allocations and loops, look for pool/stratum strings, and monitor CPU and network in a sandbox. The 'likely false positive' fallback if mining is unconfirmed is somewhat strong given the thin evidence.\"},\"unsupported_claims\":[{\"quote\":\"almost all n-grams occur at very low frequency (about 0.000333, or roughly one occurrence)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values must not be treated as raw counts without upstream confirmation, so 'roughly one occurrence' is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It is equally typical of benign buffer zeroing, and it occurs only about once.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1/value\",\"reason\":\"The value 0.000333 is not established as an occurrence count, so 'only about once' is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Three n-grams (MOV JZ, XOR CALL, MOV POP) have frequency 0.000000 yet carry positive SHAP, so their contribution is not backed by observed presence and is of doubtful value.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/13/value\",\"reason\":\"Value semantics are unconfirmed, and a zero or absent feature value can legitimately carry SHAP attribution. Dismissing the contribution as doubtful overreaches.\",\"category\":\"other\"},{\"quote\":\"there are no distinctive crypto-primitive indicators such as rotate-heavy or AES-instruction sequences\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions\",\"reason\":\"Only the top 20 features are available, so the absence of crypto-primitive indicators cannot be asserted for the whole sample.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Consecutive PXOR instructions are typical of register zeroing or XOR mixing of vector state.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Adjacency or consecutiveness cannot be inferred without extraction or context evidence, and no occurrences are supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Address computation followed by a carry-flag branch.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"It assumes direct sequential ordering of the n-gram instructions without supplied context.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are reported as positive toward target class 1, and the magnitudes and ranking match the evidence within tolerance. The caveat is that zero-valued features are interpreted as doubtful, an interpretive overreach rather than a misstatement of SHAP direction or size.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature value semantics are unconfirmed, so values cannot be treated as counts or frequencies.\",\"Occurrences, function context, SHAP baseline and full attributions are absent.\",\"The top-20 subset cannot show that omitted features do not support the benign class.\",\"The target class 1 mapping is a configured assumption that needs upstream verification.\",\"RF probability is not behavioral proof.\"],\"summary\":\"The explanation is cautious and well organized, with accurate SHAP signs and magnitudes and a useful sandbox and static follow-up plan. It is weakened by treating feature values as occurrence counts, dismissing zero-valued positive-SHAP features, inferring adjacency, and asserting the absence of crypto-primitive indicators from a top-k subset.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7131,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4585,
+          "output_tokens_details": {
+            "thinking_tokens": 2907
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7131,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4585,
+        "output_tokens_details": {
+          "thinking_tokens": 2907
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_70322e26c7d5508b\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP signs, magnitudes and n-gram names match the evidence. However, it converts feature values into 'roughly one occurrence' counts, treats zero-valued features as unbacked, and infers adjacency, all of which the evidence does not establish.\",\"coherence\":\"The tier, hedged interpretation and recommended action are consistent and easy to follow. The explanation, per-feature list and key indicators repeat each other considerably.\",\"cybersecurity_relevance\":\"It ties the SIMD/PXOR and REP STOSQ signals to hashing or scratchpad initialization and to benign zeroing and buffer-init alternatives. It also states clearly that function context and API evidence are missing.\",\"actionable_utility\":\"Concrete and proportionate steps: locate the functions, check large allocations and loops, look for pool/stratum strings, and monitor CPU and network in a sandbox. The 'likely false positive' fallback if mining is unconfirmed is somewhat strong given the thin evidence.\"},\"unsupported_claims\":[{\"quote\":\"almost all n-grams occur at very low frequency (about 0.000333, or roughly one occurrence)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values must not be treated as raw counts without upstream confirmation, so 'roughly one occurrence' is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It is equally typical of benign buffer zeroing, and it occurs only about once.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1/value\",\"reason\":\"The value 0.000333 is not established as an occurrence count, so 'only about once' is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Three n-grams (MOV JZ, XOR CALL, MOV POP) have frequency 0.000000 yet carry positive SHAP, so their contribution is not backed by observed presence and is of doubtful value.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/13/value\",\"reason\":\"Value semantics are unconfirmed, and a zero or absent feature value can legitimately carry SHAP attribution. Dismissing the contribution as doubtful overreaches.\",\"category\":\"other\"},{\"quote\":\"there are no distinctive crypto-primitive indicators such as rotate-heavy or AES-instruction sequences\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions\",\"reason\":\"Only the top 20 features are available, so the absence of crypto-primitive indicators cannot be asserted for the whole sample.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Consecutive PXOR instructions are typical of register zeroing or XOR mixing of vector state.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Adjacency or consecutiveness cannot be inferred without extraction or context evidence, and no occurrences are supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Address computation followed by a carry-flag branch.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"It assumes direct sequential ordering of the n-gram instructions without supplied context.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are reported as positive toward target class 1, and the magnitudes and ranking match the evidence within tolerance. The caveat is that zero-valued features are interpreted as doubtful, an interpretive overreach rather than a misstatement of SHAP direction or size.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature value semantics are unconfirmed, so values cannot be treated as counts or frequencies.\",\"Occurrences, function context, SHAP baseline and full attributions are absent.\",\"The top-20 subset cannot show that omitted features do not support the benign class.\",\"The target class 1 mapping is a configured assumption that needs upstream verification.\",\"RF probability is not behavioral proof.\"],\"summary\":\"The explanation is cautious and well organized, with accurate SHAP signs and magnitudes and a useful sandbox and static follow-up plan. It is weakened by treating feature values as occurrence counts, dismissing zero-valued positive-SHAP features, inferring adjacency, and asserting the absence of crypto-primitive indicators from a top-k subset.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_70322e26c7d5508b",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, SHAP signs, magnitudes and n-gram names match the evidence. However, it converts feature values into 'roughly one occurrence' counts, treats zero-valued features as unbacked, and infers adjacency, all of which the evidence does not establish.",
+      "coherence": "The tier, hedged interpretation and recommended action are consistent and easy to follow. The explanation, per-feature list and key indicators repeat each other considerably.",
+      "cybersecurity_relevance": "It ties the SIMD/PXOR and REP STOSQ signals to hashing or scratchpad initialization and to benign zeroing and buffer-init alternatives. It also states clearly that function context and API evidence are missing.",
+      "actionable_utility": "Concrete and proportionate steps: locate the functions, check large allocations and loops, look for pool/stratum strings, and monitor CPU and network in a sandbox. The 'likely false positive' fallback if mining is unconfirmed is somewhat strong given the thin evidence."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "almost all n-grams occur at very low frequency (about 0.000333, or roughly one occurrence)",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature values must not be treated as raw counts without upstream confirmation, so 'roughly one occurrence' is unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "It is equally typical of benign buffer zeroing, and it occurs only about once.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/top_features/1/value",
+        "reason": "The value 0.000333 is not established as an occurrence count, so 'only about once' is unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Three n-grams (MOV JZ, XOR CALL, MOV POP) have frequency 0.000000 yet carry positive SHAP, so their contribution is not backed by observed presence and is of doubtful value.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/13/value",
+        "reason": "Value semantics are unconfirmed, and a zero or absent feature value can legitimately carry SHAP attribution. Dismissing the contribution as doubtful overreaches.",
+        "category": "other"
+      },
+      {
+        "quote": "there are no distinctive crypto-primitive indicators such as rotate-heavy or AES-instruction sequences",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/full_attributions",
+        "reason": "Only the top 20 features are available, so the absence of crypto-primitive indicators cannot be asserted for the whole sample.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Consecutive PXOR instructions are typical of register zeroing or XOR mixing of vector state.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Adjacency or consecutiveness cannot be inferred without extraction or context evidence, and no occurrences are supplied.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Address computation followed by a carry-flag branch.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "It assumes direct sequential ordering of the n-gram instructions without supplied context.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are reported as positive toward target class 1, and the magnitudes and ranking match the evidence within tolerance. The caveat is that zero-valued features are interpreted as doubtful, an interpretive overreach rather than a misstatement of SHAP direction or size.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Feature value semantics are unconfirmed, so values cannot be treated as counts or frequencies.",
+      "Occurrences, function context, SHAP baseline and full attributions are absent.",
+      "The top-20 subset cannot show that omitted features do not support the benign class.",
+      "The target class 1 mapping is a configured assumption that needs upstream verification.",
+      "RF probability is not behavioral proof."
+    ],
+    "summary": "The explanation is cautious and well organized, with accurate SHAP signs and magnitudes and a useful sandbox and static follow-up plan. It is weakened by treating feature values as occurrence counts, dismissing zero-valued positive-SHAP features, inferring adjacency, and asserting the absence of crypto-primitive indicators from a top-k subset."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "almost all n-grams occur at very low frequency (about 0.000333, or roughly one occurrence)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature values must not be treated as raw counts without upstream confirmation, so 'roughly one occurrence' is unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "It is equally typical of benign buffer zeroing, and it occurs only about once.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/top_features/1/value",
+      "reason": "The value 0.000333 is not established as an occurrence count, so 'only about once' is unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Three n-grams (MOV JZ, XOR CALL, MOV POP) have frequency 0.000000 yet carry positive SHAP, so their contribution is not backed by observed presence and is of doubtful value.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/13/value",
+      "reason": "Value semantics are unconfirmed, and a zero or absent feature value can legitimately carry SHAP attribution. Dismissing the contribution as doubtful overreaches.",
+      "category": "other"
+    },
+    {
+      "quote": "there are no distinctive crypto-primitive indicators such as rotate-heavy or AES-instruction sequences",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/full_attributions",
+      "reason": "Only the top 20 features are available, so the absence of crypto-primitive indicators cannot be asserted for the whole sample.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Consecutive PXOR instructions are typical of register zeroing or XOR mixing of vector state.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Adjacency or consecutiveness cannot be inferred without extraction or context evidence, and no occurrences are supplied.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Address computation followed by a carry-flag branch.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "It assumes direct sequential ordering of the n-gram instructions without supplied context.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "ec141b4e1d603702f50d323d382bca4060950d8a4b5034a064096ff4f00fcdb2.elf_analysis.json"
+}

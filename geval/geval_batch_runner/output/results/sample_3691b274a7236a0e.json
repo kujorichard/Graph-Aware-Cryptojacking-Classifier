@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_3691b274a7236a0e",
+  "status": "success",
+  "source_sha256": "e0b92d036aab3ac53ed36cd7ae9056da1dd9df997a7b33fbfbd2080a19fa8607",
+  "input_sha256": "7e55d49bad7142614eff2b82fa097e8f6790601b9a14ceca1089c2cf591c76b1",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "bbc1b5249adc492901d16a4473f613e78e08d131afba844fe96a87f7373398ba.elf",
+      "source_name": "bbc1b5249adc492901d16a4473f613e78e08d131afba844fe96a87f7373398ba.elf.json",
+      "source_path": "ml/dataset/cryptojacking/bbc1b5249adc492901d16a4473f613e78e08d131afba844fe96a87f7373398ba.elf.json",
+      "split": "test",
+      "batch_number": 6,
+      "row_index_in_batch": 69,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "bbc1b5249adc492901d16a4473f613e78e08d131afba844fe96a87f7373398ba.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:24:29.235402+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:24:29.235432+00:00",
+      "error": null,
+      "request_sha256": "4f26e8e901d4ae2ec1dd00859f03c668c839df4e85a7cb0f6c82bfe9154a84f3",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm4GrnEGiPWUgg7u1CEX",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF prediction confidence and verifying the SHAP feature ranges and opcode pair frequencies match the candidate's claims, confirming each value lines up correctly.\n\nMore concerning though are several unsupported adjacency claims — phrases like \"a call immediately followed by a return\" or \"addition followed by a rotate-right\" treat graph-aware n-grams as if they imply literal instruction adjacency, which isn't established. I'm also flagging the PXOR/MOVAPS and MOV/LEAVE semantic interpretations as hedged but still somewhat speculative inferences about SIMD zeroing or frame-pointer-based code.\n\nBeyond that, the claim about a \"diffuse statistical signal\" from small SHAP values isn't really supportable without the full attribution set — that's another mild overstatement. And the response never flags the assumption baked into treating class 1 as cryptojacking/malware, which should be made explicit.\n\nOverall I'd score this moderately well: solid technical accuracy, decent coherence despite the low-confidence tier pairing with a 0.55 score, strong cybersecurity relevance since it offers benign alternatives like math libraries or compression routines, though it doesn't fully address feature-value semantic uncertainty or omitted features. I'd lean toward a 4 across most dimensions, with actionable next steps like disassembling and localizing the flagged opcode sequences.\n\nNow I'm going through the unsupported claims by their evidence paths — mapping each opcode-pair index (PXOR, CALL PUSH, CALL RET, POP XOR, etc.) to specific assessment entries, starting with the claim that a CALL immediately followed by RET suggests a thin wrapper or tail-style function, which lacks supporting evidence.\n\nI continue cataloging a few more flagged claims: the hedged \"INC PUSH\" interpretation about loop handling, the overly-certain language describing a \"diffuse statistical signal\" without unpacking the omitted features, and the unsupported claim about MOV LEAVE indicating frame-pointer-based code. I note I'll likely skip the \"strong signal is real\" remark and the unverified frequency semantics as lower priority.\n\nChecking SHAP faithfulness overall, the direction and magnitude line up numerically, though the interpretive framing of diffuse top-k values and the ranking language need a caveat rather than outright rejection. Now I'm ready to assemble the findings into the final JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_3691b274a7236a0e\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP range (+0.0068 to +0.0134), n-gram names and quoted values match the evidence, and mining claims are hedged. Deductions: it infers adjacency (\\\"A call immediately followed by a return\\\") and frame-pointer code from non-adjacent graph n-grams, and it calls the signal \\\"diffuse\\\" from a top-20 subset.\",\"coherence\":\"The explanation, per-feature assessments, indicators, tier and actions agree: a low-confidence tier, a strong prior, and no confirmation without more evidence. Per-feature entries are somewhat repetitive, and the 0.55 confidence score is not tied to the RF probability.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to hashing and compute-heavy code, names benign alternatives (math, compression, runtime library, compiler idioms), and notes the absence of function names, APIs and constants. It does not mention that the feature-value semantics, omitted features and SHAP baseline are unknown.\",\"actionable_utility\":\"Recommended steps are concrete and proportionate: locate the functions containing PXOR MOVAPS, ADD ROR, DIV MUL and MOV FLD, look for stratum or pool strings and config data, run a sandbox for CPU use and outbound connections, and compare against known miner families. They are conditional and not presented as observed. Prioritization and purpose are only implicit.\"},\"unsupported_claims\":[{\"quote\":\"A call immediately followed by a return suggests thin wrapper or tail-style functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"top_features[2] CALL RET; occurrences and function_context are empty\",\"reason\":\"Adjacency and function structure are inferred from an n-gram name with no extraction context. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Standard function epilogue pattern, indicating frame-pointer-based code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"top_features[10] MOV LEAVE; no function context supplied\",\"reason\":\"A sample-specific claim about frame-pointer code and epilogue placement is asserted without disassembly or context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Small individual SHAP values (max +0.0134) indicate a diffuse statistical signal rather than a single decisive feature\",\"candidate_path\":\"/candidate_analysis/key_indicators/4\",\"evidence_reference\":\"full_attributions is null; shap_baseline is null; scope_notes say omitted features are unknown\",\"reason\":\"Only the top 20 features are available, so the distribution of attribution across all features, and thus diffuseness, cannot be established.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Counter increment followed by a push, possibly loop or iteration handling.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"top_features[18] INC PUSH; no occurrences or function context\",\"reason\":\"Adjacency and a loop interpretation are suggested without control-flow evidence. This is hedged but still speculative.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Most of the high-frequency n-grams (CALL PUSH at 0.0380, PUSH CALL at 0.0386, LEA PUSH at 0.0147, ADD PUSH at 0.0122, SUB PUSH at 0.0066)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation\",\"reason\":\"Feature values are treated as frequencies, and the \\\"high-frequency\\\" and \\\"very rare\\\" labels rest on them, though their semantics are unconfirmed. The numbers themselves match the evidence.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive toward configured target class 1, and the stated range (+0.0068 to +0.0134) and individual magnitudes match the evidence within rounding. The ranking is also correct (PXOR MOVAPS highest, CALL PUSH and CALL RET next). It correctly describes the signal as a statistical fingerprint, not proof. The only concern is the top-k-based \\\"diffuse\\\" inference. The configured-target-class assumption is not mentioned.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function names, API calls, constants, occurrences or per-function locations were supplied.\",\"The SHAP target class is a configured assumption that still needs upstream verification.\",\"shap_baseline and full_attributions are null, so omitted features cannot be assessed.\",\"Feature value semantics (frequency versus count) are not established.\",\"RF probability 1.0 is not behavioral proof or calibrated confidence.\"],\"summary\":\"This is a well-hedged, mostly accurate explanation. SHAP direction and magnitudes are faithful, it concludes that mining cannot be confirmed from the evidence, and it proposes proportionate verification steps. Minor overreach comes from inferring adjacency and code structure from n-gram names and from calling the signal diffuse based on a top-k subset.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7109,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3752,
+          "output_tokens_details": {
+            "thinking_tokens": 1890
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7109,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3752,
+        "output_tokens_details": {
+          "thinking_tokens": 1890
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_3691b274a7236a0e\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP range (+0.0068 to +0.0134), n-gram names and quoted values match the evidence, and mining claims are hedged. Deductions: it infers adjacency (\\\"A call immediately followed by a return\\\") and frame-pointer code from non-adjacent graph n-grams, and it calls the signal \\\"diffuse\\\" from a top-20 subset.\",\"coherence\":\"The explanation, per-feature assessments, indicators, tier and actions agree: a low-confidence tier, a strong prior, and no confirmation without more evidence. Per-feature entries are somewhat repetitive, and the 0.55 confidence score is not tied to the RF probability.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to hashing and compute-heavy code, names benign alternatives (math, compression, runtime library, compiler idioms), and notes the absence of function names, APIs and constants. It does not mention that the feature-value semantics, omitted features and SHAP baseline are unknown.\",\"actionable_utility\":\"Recommended steps are concrete and proportionate: locate the functions containing PXOR MOVAPS, ADD ROR, DIV MUL and MOV FLD, look for stratum or pool strings and config data, run a sandbox for CPU use and outbound connections, and compare against known miner families. They are conditional and not presented as observed. Prioritization and purpose are only implicit.\"},\"unsupported_claims\":[{\"quote\":\"A call immediately followed by a return suggests thin wrapper or tail-style functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"top_features[2] CALL RET; occurrences and function_context are empty\",\"reason\":\"Adjacency and function structure are inferred from an n-gram name with no extraction context. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Standard function epilogue pattern, indicating frame-pointer-based code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"top_features[10] MOV LEAVE; no function context supplied\",\"reason\":\"A sample-specific claim about frame-pointer code and epilogue placement is asserted without disassembly or context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Small individual SHAP values (max +0.0134) indicate a diffuse statistical signal rather than a single decisive feature\",\"candidate_path\":\"/candidate_analysis/key_indicators/4\",\"evidence_reference\":\"full_attributions is null; shap_baseline is null; scope_notes say omitted features are unknown\",\"reason\":\"Only the top 20 features are available, so the distribution of attribution across all features, and thus diffuseness, cannot be established.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Counter increment followed by a push, possibly loop or iteration handling.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"top_features[18] INC PUSH; no occurrences or function context\",\"reason\":\"Adjacency and a loop interpretation are suggested without control-flow evidence. This is hedged but still speculative.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Most of the high-frequency n-grams (CALL PUSH at 0.0380, PUSH CALL at 0.0386, LEA PUSH at 0.0147, ADD PUSH at 0.0122, SUB PUSH at 0.0066)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation\",\"reason\":\"Feature values are treated as frequencies, and the \\\"high-frequency\\\" and \\\"very rare\\\" labels rest on them, though their semantics are unconfirmed. The numbers themselves match the evidence.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive toward configured target class 1, and the stated range (+0.0068 to +0.0134) and individual magnitudes match the evidence within rounding. The ranking is also correct (PXOR MOVAPS highest, CALL PUSH and CALL RET next). It correctly describes the signal as a statistical fingerprint, not proof. The only concern is the top-k-based \\\"diffuse\\\" inference. The configured-target-class assumption is not mentioned.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function names, API calls, constants, occurrences or per-function locations were supplied.\",\"The SHAP target class is a configured assumption that still needs upstream verification.\",\"shap_baseline and full_attributions are null, so omitted features cannot be assessed.\",\"Feature value semantics (frequency versus count) are not established.\",\"RF probability 1.0 is not behavioral proof or calibrated confidence.\"],\"summary\":\"This is a well-hedged, mostly accurate explanation. SHAP direction and magnitudes are faithful, it concludes that mining cannot be confirmed from the evidence, and it proposes proportionate verification steps. Minor overreach comes from inferring adjacency and code structure from n-gram names and from calling the signal diffuse based on a top-k subset.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_3691b274a7236a0e",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, SHAP range (+0.0068 to +0.0134), n-gram names and quoted values match the evidence, and mining claims are hedged. Deductions: it infers adjacency (\"A call immediately followed by a return\") and frame-pointer code from non-adjacent graph n-grams, and it calls the signal \"diffuse\" from a top-20 subset.",
+      "coherence": "The explanation, per-feature assessments, indicators, tier and actions agree: a low-confidence tier, a strong prior, and no confirmation without more evidence. Per-feature entries are somewhat repetitive, and the 0.55 confidence score is not tied to the RF probability.",
+      "cybersecurity_relevance": "It ties the sample's n-grams to hashing and compute-heavy code, names benign alternatives (math, compression, runtime library, compiler idioms), and notes the absence of function names, APIs and constants. It does not mention that the feature-value semantics, omitted features and SHAP baseline are unknown.",
+      "actionable_utility": "Recommended steps are concrete and proportionate: locate the functions containing PXOR MOVAPS, ADD ROR, DIV MUL and MOV FLD, look for stratum or pool strings and config data, run a sandbox for CPU use and outbound connections, and compare against known miner families. They are conditional and not presented as observed. Prioritization and purpose are only implicit."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "A call immediately followed by a return suggests thin wrapper or tail-style functions.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "top_features[2] CALL RET; occurrences and function_context are empty",
+        "reason": "Adjacency and function structure are inferred from an n-gram name with no extraction context. Graph-aware n-grams need not be adjacent.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Standard function epilogue pattern, indicating frame-pointer-based code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+        "evidence_reference": "top_features[10] MOV LEAVE; no function context supplied",
+        "reason": "A sample-specific claim about frame-pointer code and epilogue placement is asserted without disassembly or context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Small individual SHAP values (max +0.0134) indicate a diffuse statistical signal rather than a single decisive feature",
+        "candidate_path": "/candidate_analysis/key_indicators/4",
+        "evidence_reference": "full_attributions is null; shap_baseline is null; scope_notes say omitted features are unknown",
+        "reason": "Only the top 20 features are available, so the distribution of attribution across all features, and thus diffuseness, cannot be established.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Counter increment followed by a push, possibly loop or iteration handling.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+        "evidence_reference": "top_features[18] INC PUSH; no occurrences or function context",
+        "reason": "Adjacency and a loop interpretation are suggested without control-flow evidence. This is hedged but still speculative.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Most of the high-frequency n-grams (CALL PUSH at 0.0380, PUSH CALL at 0.0386, LEA PUSH at 0.0147, ADD PUSH at 0.0122, SUB PUSH at 0.0066)",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation",
+        "reason": "Feature values are treated as frequencies, and the \"high-frequency\" and \"very rare\" labels rest on them, though their semantics are unconfirmed. The numbers themselves match the evidence.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are positive toward configured target class 1, and the stated range (+0.0068 to +0.0134) and individual magnitudes match the evidence within rounding. The ranking is also correct (PXOR MOVAPS highest, CALL PUSH and CALL RET next). It correctly describes the signal as a statistical fingerprint, not proof. The only concern is the top-k-based \"diffuse\" inference. The configured-target-class assumption is not mentioned.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No function names, API calls, constants, occurrences or per-function locations were supplied.",
+      "The SHAP target class is a configured assumption that still needs upstream verification.",
+      "shap_baseline and full_attributions are null, so omitted features cannot be assessed.",
+      "Feature value semantics (frequency versus count) are not established.",
+      "RF probability 1.0 is not behavioral proof or calibrated confidence."
+    ],
+    "summary": "This is a well-hedged, mostly accurate explanation. SHAP direction and magnitudes are faithful, it concludes that mining cannot be confirmed from the evidence, and it proposes proportionate verification steps. Minor overreach comes from inferring adjacency and code structure from n-gram names and from calling the signal diffuse based on a top-k subset."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "A call immediately followed by a return suggests thin wrapper or tail-style functions.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "top_features[2] CALL RET; occurrences and function_context are empty",
+      "reason": "Adjacency and function structure are inferred from an n-gram name with no extraction context. Graph-aware n-grams need not be adjacent.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Standard function epilogue pattern, indicating frame-pointer-based code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+      "evidence_reference": "top_features[10] MOV LEAVE; no function context supplied",
+      "reason": "A sample-specific claim about frame-pointer code and epilogue placement is asserted without disassembly or context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Small individual SHAP values (max +0.0134) indicate a diffuse statistical signal rather than a single decisive feature",
+      "candidate_path": "/candidate_analysis/key_indicators/4",
+      "evidence_reference": "full_attributions is null; shap_baseline is null; scope_notes say omitted features are unknown",
+      "reason": "Only the top 20 features are available, so the distribution of attribution across all features, and thus diffuseness, cannot be established.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Counter increment followed by a push, possibly loop or iteration handling.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+      "evidence_reference": "top_features[18] INC PUSH; no occurrences or function context",
+      "reason": "Adjacency and a loop interpretation are suggested without control-flow evidence. This is hedged but still speculative.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Most of the high-frequency n-grams (CALL PUSH at 0.0380, PUSH CALL at 0.0386, LEA PUSH at 0.0147, ADD PUSH at 0.0122, SUB PUSH at 0.0066)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation",
+      "reason": "Feature values are treated as frequencies, and the \"high-frequency\" and \"very rare\" labels rest on them, though their semantics are unconfirmed. The numbers themselves match the evidence.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "bbc1b5249adc492901d16a4473f613e78e08d131afba844fe96a87f7373398ba.elf_analysis.json"
+}

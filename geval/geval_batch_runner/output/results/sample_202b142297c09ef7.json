@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_202b142297c09ef7",
+  "status": "success",
+  "source_sha256": "6336b5014d709272560f47b04063c17078541b3cdd44bdae52a85534da1e402a",
+  "input_sha256": "278f2385dd2a25f181cbbd244cd8f52212e2b6f633f1757ff704b20585cd80f9",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "20dcf6d45f17d62279183276675ea33876e6846d3fdc09285e78e9819882b97e.exe",
+      "source_name": "20dcf6d45f17d62279183276675ea33876e6846d3fdc09285e78e9819882b97e.exe.json",
+      "source_path": "ml/dataset/cryptojacking/20dcf6d45f17d62279183276675ea33876e6846d3fdc09285e78e9819882b97e.exe.json",
+      "split": "test",
+      "batch_number": 4,
+      "row_index_in_batch": 33,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "20dcf6d45f17d62279183276675ea33876e6846d3fdc09285e78e9819882b97e.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:17:53.372570+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:17:53.372596+00:00",
+      "error": null,
+      "request_sha256": "42a2a6e63395f8d1ee1641a757a03ecd4fe0584a01239ea6f6262fad74151266",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkyCJZoQxk7743gmFosA",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the evidence closely: the random forest predicts class 1 with probability 1.0, and the SHAP analysis shows all 20 top features pushing positively toward that same class, which I'm treating as the cryptojacking/malware label. I want to make sure the claim about \"probability of 1.0\" and \"all features supporting cryptojacking\" is accurately grounded in these numbers before stating it as fact.\n\nI also notice twelve zero-valued features in the list (like CMOVZ MOV, ADD POP, PUSH SUB, etc.), and I'm verifying each against the raw data—they all check out as zero. But I'm wary of the candidate's interpretation calling these \"relative frequencies\" or treating zero as \"absence,\" since feature value semantics aren't actually established here, and in tree-based SHAP a zero value can still carry a legitimate positive contribution rather than implying the pattern is simply missing from the binary.\n\nThe claim that MOV SYSCALL and SYSCALL RET pairs \"indicate direct system-call stubs\" also feels like overreach, since graph-aware n-grams don't require adjacency and there's no supporting context, though it's softened with \"point to.\" I'm checking that SHL ADD has the highest SHAP value among the listed features (0.015649 vs. 0.010955 for LEAVE RET) and confirming that's accurate, while treating the \"spread evenly\" and \"no dominant signature\" claims as mild since they only reflect the top-k features shown.\n\nThe ADD POP stack-cleanup explanation claims \"atypical code layout\" without evidence, so I'm flagging that as unsupported speculation, while the LEAVE RET compiler explanation is properly hedged. The low-confidence tier at 0.55 with probability 1.0 seems internally consistent and explained reasonably, and the recommendation to treat the sample as likely malicious is acceptable since it's appropriately hedged against over-interpreting the RF probability as direct behavioral proof. The recommended actions (dynamic analysis, strings inspection) are reasonably conditional, though the response under-explores benign alternatives like legitimate binaries using syscall stubs (Go, musl), and I'm also checking that the SHAP signs and magnitudes are consistent and faithfully represented.\n\nI'm verifying the SHAP values and frequency figures all check out numerically, so the quantitative attributions are faithful. The interpretive claim that contributions \"come from absence\" isn't really supported by SHAP semantics given the baseline, so I'm treating that as an unsupported causal interpretation layered on top of otherwise accurate SHAP magnitudes and directions—faithful on the numbers, but the narrative framing overreaches a bit.\n\nScoring: technical accuracy around 3-4 since the core numbers hold but several interpretive overreach, coherence 4, relevance 4, actionability 4. I'm starting to compile a list of unsupported claims with their paths, like the \"relative frequency of 0.000000\" claim tied to feature value semantics, categorizing it as \"other\" since it doesn't fit a cleaner bucket.\n\nI'm going through the remaining unsupported claims — the SHAP-absence inference, the syscall stub interpretations, and the atypical code layout assertion — mapping each to its path and categorizing them as unsupported_certainty or unsupported_behavior depending on how speculative they are, while deciding to skip the \"Absent from the binary\" fragment since it's redundant. I'm cross-checking the evidence_analysis indices against their instruction pairs to make sure each assessment lines up with the right mnemonic before finalizing everything into a single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_202b142297c09ef7\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, n-gram names, SHAP signs and rounded magnitudes, the 12 zero-valued features and the SHL ADD maximum are all correct. It overreaches by calling the values 'relative frequency' and 'absent' when the artifact says value semantics are not established, and by inferring syscall stubs and an 'atypical code layout' without context.\",\"coherence\":\"The explanation is well organized and consistent. It states the limits of the evidence, the tier and confidence match, and the recommendations follow from the gaps. It is somewhat repetitive between the summary and the per-feature list.\",\"cybersecurity_relevance\":\"It ties sample-specific features such as MOV SYSCALL, SYSCALL RET and the shift/XOR patterns to mining and hashing questions. It correctly notes the lack of API, function and constant evidence. Benign alternatives for the syscall stubs are only touched on as 'common compiler output'.\",\"actionable_utility\":\"The follow-ups are concrete, feasible and conditional: sandbox CPU and pool/Stratum traffic, hashing loops and constants, syscall stubs, and wallet/pool strings. They are not prioritized, and 'likely malicious' leans on RF output alone.\"},\"unsupported_claims\":[{\"quote\":\"Most of the top features have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature value semantics are not established and must not be treated as raw counts; 'relative frequency' is an assumed meaning.\",\"category\":\"other\"},{\"quote\":\"Their SHAP contributions therefore come from the absence of these patterns, which is a weak and indirect signal.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/shap_baseline\",\"reason\":\"The SHAP baseline is null and the value semantics are unconfirmed, so attributing the positive SHAP contributions causally to absence is stated with more certainty than the evidence supports.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"which indicate direct system-call stubs\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/7\",\"reason\":\"No occurrence, function context or adjacency evidence exists; n-gram names alone do not establish syscall stubs.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Together they point to small syscall wrapper stubs, which are a notable but non-specific trait.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/12/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"Function context and occurrences are empty and graph-aware n-grams need not be adjacent, so wrapper stubs are inferred without support.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"the contribution reflects an atypical code layout rather than observed behavior\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1\",\"reason\":\"No evidence about code layout or what the model learned is supplied; this is a speculative sample-specific explanation.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are reported as positive toward the configured class 1 with correctly rounded magnitudes, and the range of about 0.007 to 0.018 is accurate. The unsupported part is the causal 'absence' interpretation, not the sign or size.\",\"discrepancies\":[]},\"evidence_limitations\":[\"SHAP target class 1 is a configured assumption that needs upstream verification.\",\"Only the top 20 features are provided; omitted features, the SHAP baseline and full attributions are unavailable.\",\"Feature value semantics are not established, so zero values cannot be confirmed as absence.\",\"Occurrences and function context are empty, so adjacency, control flow and function-level behavior cannot be assessed.\",\"No API, string, constant or dynamic evidence is supplied.\"],\"summary\":\"The explanation reports the numbers and SHAP directions accurately and appropriately declines to confirm cryptojacking. It loses accuracy by assuming 'relative frequency'/absence semantics and by inferring syscall stubs and code layout without context. The follow-up actions are sound, feasible and conditional.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6764,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4255,
+          "output_tokens_details": {
+            "thinking_tokens": 2702
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6764,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4255,
+        "output_tokens_details": {
+          "thinking_tokens": 2702
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_202b142297c09ef7\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, n-gram names, SHAP signs and rounded magnitudes, the 12 zero-valued features and the SHL ADD maximum are all correct. It overreaches by calling the values 'relative frequency' and 'absent' when the artifact says value semantics are not established, and by inferring syscall stubs and an 'atypical code layout' without context.\",\"coherence\":\"The explanation is well organized and consistent. It states the limits of the evidence, the tier and confidence match, and the recommendations follow from the gaps. It is somewhat repetitive between the summary and the per-feature list.\",\"cybersecurity_relevance\":\"It ties sample-specific features such as MOV SYSCALL, SYSCALL RET and the shift/XOR patterns to mining and hashing questions. It correctly notes the lack of API, function and constant evidence. Benign alternatives for the syscall stubs are only touched on as 'common compiler output'.\",\"actionable_utility\":\"The follow-ups are concrete, feasible and conditional: sandbox CPU and pool/Stratum traffic, hashing loops and constants, syscall stubs, and wallet/pool strings. They are not prioritized, and 'likely malicious' leans on RF output alone.\"},\"unsupported_claims\":[{\"quote\":\"Most of the top features have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature value semantics are not established and must not be treated as raw counts; 'relative frequency' is an assumed meaning.\",\"category\":\"other\"},{\"quote\":\"Their SHAP contributions therefore come from the absence of these patterns, which is a weak and indirect signal.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/shap_baseline\",\"reason\":\"The SHAP baseline is null and the value semantics are unconfirmed, so attributing the positive SHAP contributions causally to absence is stated with more certainty than the evidence supports.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"which indicate direct system-call stubs\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/7\",\"reason\":\"No occurrence, function context or adjacency evidence exists; n-gram names alone do not establish syscall stubs.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Together they point to small syscall wrapper stubs, which are a notable but non-specific trait.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/12/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"Function context and occurrences are empty and graph-aware n-grams need not be adjacent, so wrapper stubs are inferred without support.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"the contribution reflects an atypical code layout rather than observed behavior\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1\",\"reason\":\"No evidence about code layout or what the model learned is supplied; this is a speculative sample-specific explanation.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are reported as positive toward the configured class 1 with correctly rounded magnitudes, and the range of about 0.007 to 0.018 is accurate. The unsupported part is the causal 'absence' interpretation, not the sign or size.\",\"discrepancies\":[]},\"evidence_limitations\":[\"SHAP target class 1 is a configured assumption that needs upstream verification.\",\"Only the top 20 features are provided; omitted features, the SHAP baseline and full attributions are unavailable.\",\"Feature value semantics are not established, so zero values cannot be confirmed as absence.\",\"Occurrences and function context are empty, so adjacency, control flow and function-level behavior cannot be assessed.\",\"No API, string, constant or dynamic evidence is supplied.\"],\"summary\":\"The explanation reports the numbers and SHAP directions accurately and appropriately declines to confirm cryptojacking. It loses accuracy by assuming 'relative frequency'/absence semantics and by inferring syscall stubs and code layout without context. The follow-up actions are sound, feasible and conditional.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_202b142297c09ef7",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, n-gram names, SHAP signs and rounded magnitudes, the 12 zero-valued features and the SHL ADD maximum are all correct. It overreaches by calling the values 'relative frequency' and 'absent' when the artifact says value semantics are not established, and by inferring syscall stubs and an 'atypical code layout' without context.",
+      "coherence": "The explanation is well organized and consistent. It states the limits of the evidence, the tier and confidence match, and the recommendations follow from the gaps. It is somewhat repetitive between the summary and the per-feature list.",
+      "cybersecurity_relevance": "It ties sample-specific features such as MOV SYSCALL, SYSCALL RET and the shift/XOR patterns to mining and hashing questions. It correctly notes the lack of API, function and constant evidence. Benign alternatives for the syscall stubs are only touched on as 'common compiler output'.",
+      "actionable_utility": "The follow-ups are concrete, feasible and conditional: sandbox CPU and pool/Stratum traffic, hashing loops and constants, syscall stubs, and wallet/pool strings. They are not prioritized, and 'likely malicious' leans on RF output alone."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Most of the top features have a relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature value semantics are not established and must not be treated as raw counts; 'relative frequency' is an assumed meaning.",
+        "category": "other"
+      },
+      {
+        "quote": "Their SHAP contributions therefore come from the absence of these patterns, which is a weak and indirect signal.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/shap_baseline",
+        "reason": "The SHAP baseline is null and the value semantics are unconfirmed, so attributing the positive SHAP contributions causally to absence is stated with more certainty than the evidence supports.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "which indicate direct system-call stubs",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/7",
+        "reason": "No occurrence, function context or adjacency evidence exists; n-gram names alone do not establish syscall stubs.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Together they point to small syscall wrapper stubs, which are a notable but non-specific trait.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/12/assessment",
+        "evidence_reference": "/evidence/function_context",
+        "reason": "Function context and occurrences are empty and graph-aware n-grams need not be adjacent, so wrapper stubs are inferred without support.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "the contribution reflects an atypical code layout rather than observed behavior",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/top_features/1",
+        "reason": "No evidence about code layout or what the model learned is supplied; this is a speculative sample-specific explanation.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are reported as positive toward the configured class 1 with correctly rounded magnitudes, and the range of about 0.007 to 0.018 is accurate. The unsupported part is the causal 'absence' interpretation, not the sign or size.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "SHAP target class 1 is a configured assumption that needs upstream verification.",
+      "Only the top 20 features are provided; omitted features, the SHAP baseline and full attributions are unavailable.",
+      "Feature value semantics are not established, so zero values cannot be confirmed as absence.",
+      "Occurrences and function context are empty, so adjacency, control flow and function-level behavior cannot be assessed.",
+      "No API, string, constant or dynamic evidence is supplied."
+    ],
+    "summary": "The explanation reports the numbers and SHAP directions accurately and appropriately declines to confirm cryptojacking. It loses accuracy by assuming 'relative frequency'/absence semantics and by inferring syscall stubs and code layout without context. The follow-up actions are sound, feasible and conditional."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Most of the top features have a relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature value semantics are not established and must not be treated as raw counts; 'relative frequency' is an assumed meaning.",
+      "category": "other"
+    },
+    {
+      "quote": "Their SHAP contributions therefore come from the absence of these patterns, which is a weak and indirect signal.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/shap_baseline",
+      "reason": "The SHAP baseline is null and the value semantics are unconfirmed, so attributing the positive SHAP contributions causally to absence is stated with more certainty than the evidence supports.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "which indicate direct system-call stubs",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/7",
+      "reason": "No occurrence, function context or adjacency evidence exists; n-gram names alone do not establish syscall stubs.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Together they point to small syscall wrapper stubs, which are a notable but non-specific trait.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/12/assessment",
+      "evidence_reference": "/evidence/function_context",
+      "reason": "Function context and occurrences are empty and graph-aware n-grams need not be adjacent, so wrapper stubs are inferred without support.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "the contribution reflects an atypical code layout rather than observed behavior",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/top_features/1",
+      "reason": "No evidence about code layout or what the model learned is supplied; this is a speculative sample-specific explanation.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "20dcf6d45f17d62279183276675ea33876e6846d3fdc09285e78e9819882b97e.exe_analysis.json"
+}

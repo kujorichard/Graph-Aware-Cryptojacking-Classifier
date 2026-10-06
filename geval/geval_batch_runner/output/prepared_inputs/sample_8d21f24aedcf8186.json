@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_8d21f24aedcf8186",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.57,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "POR PCMPEQB",
+        "value": 2.8815537007176317e-05,
+        "shap_value": 0.006797142550378293
+      },
+      {
+        "ngram": "CPUID CMP",
+        "value": 1.4407768503588159e-05,
+        "shap_value": 0.006513657223182629
+      },
+      {
+        "ngram": "PSRLDQ XORPS",
+        "value": 0.0004322330642025918,
+        "shap_value": 0.006444816061894274
+      },
+      {
+        "ngram": "BSF MOV",
+        "value": 5.7631074014352635e-05,
+        "shap_value": 0.0061813126500144325
+      },
+      {
+        "ngram": "MOV VPCMPEQB",
+        "value": 1.4407768503588159e-05,
+        "shap_value": 0.005533374675077415
+      },
+      {
+        "ngram": "ADD OR.LOCK",
+        "value": 1.4407768503588159e-05,
+        "shap_value": 0.005516749027736221
+      },
+      {
+        "ngram": "BSF SUB",
+        "value": 5.7631074014352635e-05,
+        "shap_value": 0.00544921835650351
+      },
+      {
+        "ngram": "AND SUB",
+        "value": 0.000605126260779798,
+        "shap_value": 0.0054217155450064745
+      },
+      {
+        "ngram": "VPADDQ VMOVQ",
+        "value": 1.4407768503588159e-05,
+        "shap_value": 0.005187598771203098
+      },
+      {
+        "ngram": "VSUBSD VSUBSD",
+        "value": 1.4407768503588159e-05,
+        "shap_value": 0.005036539060515554
+      },
+      {
+        "ngram": "NEG OR",
+        "value": 2.8815537007176317e-05,
+        "shap_value": 0.004909747908493811
+      },
+      {
+        "ngram": "PUNPCKLBW PSHUFD",
+        "value": 2.8815537007176317e-05,
+        "shap_value": 0.00477058828804748
+      },
+      {
+        "ngram": "MOVAPD SUBSD",
+        "value": 1.4407768503588159e-05,
+        "shap_value": 0.0047045250835953956
+      },
+      {
+        "ngram": "ADD VMOVNTDQ",
+        "value": 0.00020170876814518124,
+        "shap_value": 0.004537401261228409
+      },
+      {
+        "ngram": "OR NOT",
+        "value": 1.4407768503588159e-05,
+        "shap_value": 0.004494031541073039
+      },
+      {
+        "ngram": "PMOVMSKB TEST",
+        "value": 0.00015848546172492206,
+        "shap_value": 0.00434735575641917
+      },
+      {
+        "ngram": "LEA CDQ",
+        "value": 5.7631074014352635e-05,
+        "shap_value": 0.004101691138269439
+      },
+      {
+        "ngram": "XORPS PCMPEQB",
+        "value": 0.00014407768321689218,
+        "shap_value": 0.004001083365540197
+      },
+      {
+        "ngram": "LEA POP",
+        "value": 5.7631074014352635e-05,
+        "shap_value": 0.0039156193899534735
+      },
+      {
+        "ngram": "MOV DEC",
+        "value": 0.0012822913704439998,
+        "shap_value": 0.0037542303885422226
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest predicts MALWARE with a probability of only 0.57, which is barely above the decision boundary. All 20 top n-grams push toward cryptojacking, but each SHAP contribution is small (+0.0038 to +0.0068) and no single feature dominates. The evidence lists no functions, API calls, or other context, so the n-grams cannot be tied to any specific routine. Several n-grams are SIMD/vector instruction sequences: POR PCMPEQB, PSRLDQ XORPS, MOV VPCMPEQB, VPADDQ VMOVQ, VSUBSD VSUBSD, PUNPCKLBW PSHUFD, MOVAPD SUBSD, ADD VMOVNTDQ, PMOVMSKB TEST, and XORPS PCMPEQB. These could fit compute-intensive hashing or mining loops (vectorized arithmetic, shuffles, non-temporal stores). They are also typical of optimized runtime library code such as vectorized string and memory routines. PCMPEQB, PMOVMSKB, and BSF are the standard pattern for SIMD strlen/memchr implementations. CPUID CMP suggests CPU feature detection, which miners use to choose an optimized code path, but compilers and C runtimes also use it to dispatch to AVX or SSE variants. ADD OR.LOCK suggests an atomic operation, which is common in any multithreaded code. The remaining n-grams (BSF SUB, AND SUB, NEG OR, OR NOT, LEA CDQ, LEA POP, MOV DEC) are generic integer and bit-manipulation sequences with no specific link to mining. All frequencies are very low (mostly about 0.00001 to 0.0006), so these patterns are rare in the binary. Overall the evidence is consistent with cryptojacking but also with benign optimized library code, and it is inconclusive.",
+    "evidence_analysis": [
+      {
+        "ngram": "POR PCMPEQB",
+        "shap_contribution": 0.006797,
+        "assessment": "SIMD compare and logical-OR sequence. It is typical of vectorized byte scanning (strlen/memchr-style), but could also appear in vectorized compute code. Weak and ambiguous."
+      },
+      {
+        "ngram": "CPUID CMP",
+        "shap_contribution": 0.006514,
+        "assessment": "CPU feature detection followed by a comparison. Miners use this to select optimized code paths, but runtimes use it for SIMD dispatch as well. Mildly suggestive, not specific."
+      },
+      {
+        "ngram": "PSRLDQ XORPS",
+        "shap_contribution": 0.006445,
+        "assessment": "Byte shift and XOR on SIMD registers, seen in vectorized mixing or hashing-like operations. It is also common in compiler-generated vector code. Highest-frequency SIMD feature (0.000432) but still ambiguous."
+      },
+      {
+        "ngram": "BSF MOV",
+        "shap_contribution": 0.006181,
+        "assessment": "Bit-scan-forward, usually used after PMOVMSKB to find a match position in optimized string routines. Points to library code more than mining."
+      },
+      {
+        "ngram": "MOV VPCMPEQB",
+        "shap_contribution": 0.005533,
+        "assessment": "AVX2 byte comparison, likely part of an AVX-optimized string or memory routine. It indicates AVX use but is not mining-specific."
+      },
+      {
+        "ngram": "ADD OR.LOCK",
+        "shap_contribution": 0.005517,
+        "assessment": "Atomic locked OR operation, indicating thread synchronization. It is common in multithreaded programs and not specific to miners."
+      },
+      {
+        "ngram": "BSF SUB",
+        "shap_contribution": 0.005449,
+        "assessment": "Bit-scan with a subtraction, the usual pointer or index calculation in vectorized scanning routines. Consistent with benign runtime code."
+      },
+      {
+        "ngram": "AND SUB",
+        "shap_contribution": 0.005422,
+        "assessment": "Generic integer arithmetic and masking, such as alignment calculations. Little discriminative meaning."
+      },
+      {
+        "ngram": "VPADDQ VMOVQ",
+        "shap_contribution": 0.005188,
+        "assessment": "AVX 64-bit integer vector addition followed by a move. It could be wide arithmetic in compute kernels, but the frequency is very low and no context is given."
+      },
+      {
+        "ngram": "VSUBSD VSUBSD",
+        "shap_contribution": 0.005037,
+        "assessment": "Consecutive AVX scalar double subtractions, indicating floating-point math. Not characteristic of typical integer-heavy mining hash loops. Ambiguous."
+      },
+      {
+        "ngram": "NEG OR",
+        "shap_contribution": 0.00491,
+        "assessment": "Generic bit manipulation with no specific link to mining."
+      },
+      {
+        "ngram": "PUNPCKLBW PSHUFD",
+        "shap_contribution": 0.004771,
+        "assessment": "SIMD unpack and shuffle, used for data rearrangement. Appears in memset/memcpy-style and compute code alike."
+      },
+      {
+        "ngram": "MOVAPD SUBSD",
+        "shap_contribution": 0.004705,
+        "assessment": "Floating-point move and subtract, general numeric code. Weak indicator."
+      },
+      {
+        "ngram": "ADD VMOVNTDQ",
+        "shap_contribution": 0.004537,
+        "assessment": "AVX non-temporal store, typically used for large memory copies or fills. It may suggest large-buffer handling but is common in optimized memcpy."
+      },
+      {
+        "ngram": "OR NOT",
+        "shap_contribution": 0.004494,
+        "assessment": "Generic bitwise logic that appears in many contexts. Not specific."
+      },
+      {
+        "ngram": "PMOVMSKB TEST",
+        "shap_contribution": 0.004347,
+        "assessment": "Extracts a SIMD comparison mask and tests it, the classic vectorized string-search pattern. Suggests runtime library routines."
+      },
+      {
+        "ngram": "LEA CDQ",
+        "shap_contribution": 0.004102,
+        "assessment": "Address calculation followed by sign extension, typical compiler output for signed arithmetic or division. Not diagnostic."
+      },
+      {
+        "ngram": "XORPS PCMPEQB",
+        "shap_contribution": 0.004001,
+        "assessment": "Zeroing a register and then comparing, a common idiom at the start of vectorized scan loops. Consistent with benign code."
+      },
+      {
+        "ngram": "LEA POP",
+        "shap_contribution": 0.003916,
+        "assessment": "Function epilogue or stack handling pattern with no mining-specific meaning."
+      },
+      {
+        "ngram": "MOV DEC",
+        "shap_contribution": 0.003754,
+        "assessment": "Generic loop-counter pattern. Highest frequency of the group (0.001282) but not discriminative."
+      }
+    ],
+    "confidence_score": 0.4,
+    "key_indicators": [
+      "Model probability of 0.57 is only marginally above the decision threshold",
+      "All 20 top n-grams have small, similar positive SHAP values (+0.0038 to +0.0068), with no dominant feature",
+      "Many SIMD/AVX n-grams (PCMPEQB, VPCMPEQB, VPADDQ, VMOVNTDQ) that fit both vectorized compute and optimized library routines",
+      "CPUID CMP suggests CPU feature detection, which is ambiguous",
+      "ADD OR.LOCK indicates atomic operations or multithreading, which is not specific to mining",
+      "Very low n-gram frequencies and no function-level context in the evidence"
+    ],
+    "recommended_action": "Treat as suspicious but unconfirmed. Perform dynamic or sandbox analysis to check for sustained CPU usage, mining pool connections, and Stratum-protocol traffic. Locate the functions containing the SIMD, CPUID, and atomic-operation n-grams to determine whether they are runtime library code or hashing loops. Cross-check with static indicators such as embedded pool addresses, wallet strings, and known miner signatures, and with threat intelligence on the file hash before reaching a final verdict."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

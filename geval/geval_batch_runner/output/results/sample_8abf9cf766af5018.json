@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_8abf9cf766af5018",
+  "status": "success",
+  "source_sha256": "3e8ec87d1df0072e0b86b7ec2833535793dfb248ab10e397735a8d76e44b394c",
+  "input_sha256": "932306a2394beff280c1880ae662293b89c1df24a73b8547758606d58812da6e",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "c982c57e6e25fc3a6d573fa0baaf8f686d85745e0aec6f978c913d6044dfa047.exe",
+      "source_name": "c982c57e6e25fc3a6d573fa0baaf8f686d85745e0aec6f978c913d6044dfa047.exe.json",
+      "source_path": "ml/dataset/cryptojacking/c982c57e6e25fc3a6d573fa0baaf8f686d85745e0aec6f978c913d6044dfa047.exe.json",
+      "split": "test",
+      "batch_number": 2,
+      "row_index_in_batch": 6,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "c982c57e6e25fc3a6d573fa0baaf8f686d85745e0aec6f978c913d6044dfa047.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:31:50.255408+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:31:50.255435+00:00",
+      "error": null,
+      "request_sha256": "33818bf3a8e01007810ead98c5dae329409019d451674ab84bb24a113d2d9bc0",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm4qNADChFaP8e6y8H4d",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm double-checking the SHAP value claims and confirming the top-20 n-grams all push toward the cryptojacking classification, but I'm flagging that the \"repeated add/rotate/xor sequences\" claim isn't actually supported by the data.\n\nI notice several unsupported adjacency and overreach assumptions: \"back-to-back\" and \"consecutive\" phrasing implies instruction adjacency that the n-gram features don't guarantee, and \"inner loops\" or \"mining workloads\" framing is speculative rather than established. The high-confidence tier at 0.9 is based on the RF probability but the text does appropriately hedge that this reflects instruction-mix similarity rather than confirmed mining behavior.\n\nI'm checking whether the 20 top n-grams cluster consistently — SIMD (7), rotate-related (8), SUB ADC (1), leaving 4 remainders like POP SUB and CALL PUSH — and the SHAP attributions do seem faithful in sign and magnitude, with the top contributor correctly identified. Still, I'm flagging that treating all 20 as uniformly pointing toward cryptojacking assumes the class label, and a positive top-k subset alone can't establish that conclusively.\n\nNow I'm scoring the overall response: technical accuracy around 3 since some interpretations (loop structure, instruction adjacency, \"typical of mining code\") overreach despite caveats, coherence around 4 with some repetition between explanation and evidence sections, relevance 4, and actionable guidance 4 — sandboxing and IOC checks are reasonable, though recommending blocking across endpoints feels slightly disproportionate and \"likely cryptojacking\" sounds overconfident. I'm now compiling the list of unsupported claims with their corresponding JSON pointers.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_8abf9cf766af5018\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, the SHAP signs and magnitudes, the top-feature ranking and the generic instruction semantics are reported correctly. Several interpretations overreach the evidence: adjacency ('Back-to-back', 'Consecutive'), repetition and loops, and 'performance-tuned mining code'. No occurrences, function context or established feature-value semantics support these. The explanation does state that no confirmed mining behavior exists and that generic crypto libraries could produce the same patterns.\",\"coherence\":\"The structure is clear: probability, SIMD cluster, rotate/arithmetic cluster, remaining generic n-grams, caveat, then action. The cluster counts are consistent with the 20 listed features. The per-feature evidence_analysis repeats the narrative explanation. The 'high-confidence' tier and 0.9 confidence_score sit somewhat awkwardly beside the stated lack of behavioral evidence.\",\"cybersecurity_relevance\":\"Every top n-gram is tied to a plausible hashing, cipher or big-integer interpretation relevant to cryptojacking. The text states that no API or function evidence was supplied and that generic crypto libraries are a benign alternative. It names no other benign alternatives, such as compression, media codecs or a legitimate crypto application, and it treats the n-gram semantics as more diagnostic than the evidence supports.\",\"actionable_utility\":\"The recommendations are concrete and feasible: sandbox detonation, monitoring CPU and network activity, locating the functions in a disassembler, checking for hash constants and extracting IOCs. They are tied to the evidence gaps of missing function and API context. 'Treat as likely cryptojacking malware' and the blanket block across endpoints lean toward premature certainty given the lack of behavioral evidence. The recommendations stay conditional on analysis results and invent no indicators.\"},\"unsupported_claims\":[{\"quote\":\"Repeated add/rotate/xor sequences are characteristic of ARX-style hash rounds and multi-word big-integer arithmetic.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences (empty); /evidence/function_context (empty); /evidence/feature_value_semantics\",\"reason\":\"Repetition and sequence structure are not established. Only individual n-gram SHAP values are supplied, with no occurrence counts, adjacency or control-flow context. XOR also appears only in the SIMD n-grams, not alongside the add/rotate ones.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"These suggest vectorized XOR, load/store, mask and 64-bit add operations typical of hashing or cipher inner loops, which fits mining workloads.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences (empty); /evidence/function_context (empty)\",\"reason\":\"Mnemonic pairs do not establish inner loops or an algorithm. The link to mining workloads is an inference without function or API context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Back-to-back aligned vector moves suggest block-wise data shuffling in vectorized compute loops, supporting an optimized hashing routine.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/scope_notes; /evidence/occurrences (empty)\",\"reason\":\"Adjacency and control flow are not provided, since graph-aware n-grams need not be adjacent. Compute loops and a hashing routine are inferred from the mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Consecutive SIMD XORs indicate dense bitwise mixing, as in cryptographic or hashing kernels.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/occurrences (empty); /evidence/feature_value_semantics\",\"reason\":\"The evidence does not show that the XORs are consecutive or dense. The feature value is tiny, and its meaning is unestablished.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"AVX XOR with unaligned vector moves points to an AVX-optimized hashing or cipher path, which is typical of performance-tuned mining code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/function_context (empty)\",\"reason\":\"The mnemonics do not establish an AVX-optimized hashing path or mining code. 'Points to' overstates what they show.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"SIMD XOR with unaligned vector stores or loads is consistent with vectorized state updates in hashing loops.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/14/assessment\",\"evidence_reference\":\"/evidence/occurrences (empty)\",\"reason\":\"Hashing loops are assumed with no loop or function evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Locate the functions containing the SIMD and rotate-heavy loops in a disassembler\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/function_context (empty)\",\"reason\":\"The wording presupposes that rotate-heavy loops exist. The evidence does not establish loops, and the instruction itself is only a follow-up suggestion.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Quoted SHAP values match the supplied values within display tolerance. The positive direction for the configured class 1 is correct, the range +0.0049 to +0.0096 is correct, and PXOR MOVAPS is correctly called the strongest contributor. The 'all 20 top n-grams' claim is limited to the top-k subset. The class 1 target is a configured assumption that the candidate does not flag. Omitted features and the baseline are unknown, and the candidate does not claim otherwise.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The shap_target_class is a configured assumption pending upstream verification, so the 'toward cryptojacking' reading depends on it.\",\"Occurrences, function context, API evidence and the SHAP baseline are absent.\",\"Feature value semantics are not established, and the values are tiny, so they should not be read as counts.\",\"The top-20 subset says nothing about omitted features, and the 20 SHAP values sum to only about 0.12 of an unknown total.\",\"RF probability is model output, not behavioral proof, and the n-gram adjacency or control-flow structure is unknown.\"],\"summary\":\"The explanation accurately reports the RF probability and SHAP values and acknowledges the missing function and API evidence and the possibility of generic crypto libraries. It overreaches by asserting adjacency, repetition, loops and mining-specific code from mnemonic pairs alone. Its recommended follow-up is concrete and feasible.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7066,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4194,
+          "output_tokens_details": {
+            "thinking_tokens": 1780
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7066,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4194,
+        "output_tokens_details": {
+          "thinking_tokens": 1780
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_8abf9cf766af5018\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, the SHAP signs and magnitudes, the top-feature ranking and the generic instruction semantics are reported correctly. Several interpretations overreach the evidence: adjacency ('Back-to-back', 'Consecutive'), repetition and loops, and 'performance-tuned mining code'. No occurrences, function context or established feature-value semantics support these. The explanation does state that no confirmed mining behavior exists and that generic crypto libraries could produce the same patterns.\",\"coherence\":\"The structure is clear: probability, SIMD cluster, rotate/arithmetic cluster, remaining generic n-grams, caveat, then action. The cluster counts are consistent with the 20 listed features. The per-feature evidence_analysis repeats the narrative explanation. The 'high-confidence' tier and 0.9 confidence_score sit somewhat awkwardly beside the stated lack of behavioral evidence.\",\"cybersecurity_relevance\":\"Every top n-gram is tied to a plausible hashing, cipher or big-integer interpretation relevant to cryptojacking. The text states that no API or function evidence was supplied and that generic crypto libraries are a benign alternative. It names no other benign alternatives, such as compression, media codecs or a legitimate crypto application, and it treats the n-gram semantics as more diagnostic than the evidence supports.\",\"actionable_utility\":\"The recommendations are concrete and feasible: sandbox detonation, monitoring CPU and network activity, locating the functions in a disassembler, checking for hash constants and extracting IOCs. They are tied to the evidence gaps of missing function and API context. 'Treat as likely cryptojacking malware' and the blanket block across endpoints lean toward premature certainty given the lack of behavioral evidence. The recommendations stay conditional on analysis results and invent no indicators.\"},\"unsupported_claims\":[{\"quote\":\"Repeated add/rotate/xor sequences are characteristic of ARX-style hash rounds and multi-word big-integer arithmetic.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences (empty); /evidence/function_context (empty); /evidence/feature_value_semantics\",\"reason\":\"Repetition and sequence structure are not established. Only individual n-gram SHAP values are supplied, with no occurrence counts, adjacency or control-flow context. XOR also appears only in the SIMD n-grams, not alongside the add/rotate ones.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"These suggest vectorized XOR, load/store, mask and 64-bit add operations typical of hashing or cipher inner loops, which fits mining workloads.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences (empty); /evidence/function_context (empty)\",\"reason\":\"Mnemonic pairs do not establish inner loops or an algorithm. The link to mining workloads is an inference without function or API context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Back-to-back aligned vector moves suggest block-wise data shuffling in vectorized compute loops, supporting an optimized hashing routine.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/scope_notes; /evidence/occurrences (empty)\",\"reason\":\"Adjacency and control flow are not provided, since graph-aware n-grams need not be adjacent. Compute loops and a hashing routine are inferred from the mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Consecutive SIMD XORs indicate dense bitwise mixing, as in cryptographic or hashing kernels.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/occurrences (empty); /evidence/feature_value_semantics\",\"reason\":\"The evidence does not show that the XORs are consecutive or dense. The feature value is tiny, and its meaning is unestablished.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"AVX XOR with unaligned vector moves points to an AVX-optimized hashing or cipher path, which is typical of performance-tuned mining code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/function_context (empty)\",\"reason\":\"The mnemonics do not establish an AVX-optimized hashing path or mining code. 'Points to' overstates what they show.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"SIMD XOR with unaligned vector stores or loads is consistent with vectorized state updates in hashing loops.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/14/assessment\",\"evidence_reference\":\"/evidence/occurrences (empty)\",\"reason\":\"Hashing loops are assumed with no loop or function evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Locate the functions containing the SIMD and rotate-heavy loops in a disassembler\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/function_context (empty)\",\"reason\":\"The wording presupposes that rotate-heavy loops exist. The evidence does not establish loops, and the instruction itself is only a follow-up suggestion.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Quoted SHAP values match the supplied values within display tolerance. The positive direction for the configured class 1 is correct, the range +0.0049 to +0.0096 is correct, and PXOR MOVAPS is correctly called the strongest contributor. The 'all 20 top n-grams' claim is limited to the top-k subset. The class 1 target is a configured assumption that the candidate does not flag. Omitted features and the baseline are unknown, and the candidate does not claim otherwise.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The shap_target_class is a configured assumption pending upstream verification, so the 'toward cryptojacking' reading depends on it.\",\"Occurrences, function context, API evidence and the SHAP baseline are absent.\",\"Feature value semantics are not established, and the values are tiny, so they should not be read as counts.\",\"The top-20 subset says nothing about omitted features, and the 20 SHAP values sum to only about 0.12 of an unknown total.\",\"RF probability is model output, not behavioral proof, and the n-gram adjacency or control-flow structure is unknown.\"],\"summary\":\"The explanation accurately reports the RF probability and SHAP values and acknowledges the missing function and API evidence and the possibility of generic crypto libraries. It overreaches by asserting adjacency, repetition, loops and mining-specific code from mnemonic pairs alone. Its recommended follow-up is concrete and feasible.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_8abf9cf766af5018",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability, the SHAP signs and magnitudes, the top-feature ranking and the generic instruction semantics are reported correctly. Several interpretations overreach the evidence: adjacency ('Back-to-back', 'Consecutive'), repetition and loops, and 'performance-tuned mining code'. No occurrences, function context or established feature-value semantics support these. The explanation does state that no confirmed mining behavior exists and that generic crypto libraries could produce the same patterns.",
+      "coherence": "The structure is clear: probability, SIMD cluster, rotate/arithmetic cluster, remaining generic n-grams, caveat, then action. The cluster counts are consistent with the 20 listed features. The per-feature evidence_analysis repeats the narrative explanation. The 'high-confidence' tier and 0.9 confidence_score sit somewhat awkwardly beside the stated lack of behavioral evidence.",
+      "cybersecurity_relevance": "Every top n-gram is tied to a plausible hashing, cipher or big-integer interpretation relevant to cryptojacking. The text states that no API or function evidence was supplied and that generic crypto libraries are a benign alternative. It names no other benign alternatives, such as compression, media codecs or a legitimate crypto application, and it treats the n-gram semantics as more diagnostic than the evidence supports.",
+      "actionable_utility": "The recommendations are concrete and feasible: sandbox detonation, monitoring CPU and network activity, locating the functions in a disassembler, checking for hash constants and extracting IOCs. They are tied to the evidence gaps of missing function and API context. 'Treat as likely cryptojacking malware' and the blanket block across endpoints lean toward premature certainty given the lack of behavioral evidence. The recommendations stay conditional on analysis results and invent no indicators."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Repeated add/rotate/xor sequences are characteristic of ARX-style hash rounds and multi-word big-integer arithmetic.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/occurrences (empty); /evidence/function_context (empty); /evidence/feature_value_semantics",
+        "reason": "Repetition and sequence structure are not established. Only individual n-gram SHAP values are supplied, with no occurrence counts, adjacency or control-flow context. XOR also appears only in the SIMD n-grams, not alongside the add/rotate ones.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "These suggest vectorized XOR, load/store, mask and 64-bit add operations typical of hashing or cipher inner loops, which fits mining workloads.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/occurrences (empty); /evidence/function_context (empty)",
+        "reason": "Mnemonic pairs do not establish inner loops or an algorithm. The link to mining workloads is an inference without function or API context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Back-to-back aligned vector moves suggest block-wise data shuffling in vectorized compute loops, supporting an optimized hashing routine.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+        "evidence_reference": "/scope_notes; /evidence/occurrences (empty)",
+        "reason": "Adjacency and control flow are not provided, since graph-aware n-grams need not be adjacent. Compute loops and a hashing routine are inferred from the mnemonics alone.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Consecutive SIMD XORs indicate dense bitwise mixing, as in cryptographic or hashing kernels.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/occurrences (empty); /evidence/feature_value_semantics",
+        "reason": "The evidence does not show that the XORs are consecutive or dense. The feature value is tiny, and its meaning is unestablished.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "AVX XOR with unaligned vector moves points to an AVX-optimized hashing or cipher path, which is typical of performance-tuned mining code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+        "evidence_reference": "/evidence/function_context (empty)",
+        "reason": "The mnemonics do not establish an AVX-optimized hashing path or mining code. 'Points to' overstates what they show.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "SIMD XOR with unaligned vector stores or loads is consistent with vectorized state updates in hashing loops.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/14/assessment",
+        "evidence_reference": "/evidence/occurrences (empty)",
+        "reason": "Hashing loops are assumed with no loop or function evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Locate the functions containing the SIMD and rotate-heavy loops in a disassembler",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "/evidence/function_context (empty)",
+        "reason": "The wording presupposes that rotate-heavy loops exist. The evidence does not establish loops, and the instruction itself is only a follow-up suggestion.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "Quoted SHAP values match the supplied values within display tolerance. The positive direction for the configured class 1 is correct, the range +0.0049 to +0.0096 is correct, and PXOR MOVAPS is correctly called the strongest contributor. The 'all 20 top n-grams' claim is limited to the top-k subset. The class 1 target is a configured assumption that the candidate does not flag. Omitted features and the baseline are unknown, and the candidate does not claim otherwise.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The shap_target_class is a configured assumption pending upstream verification, so the 'toward cryptojacking' reading depends on it.",
+      "Occurrences, function context, API evidence and the SHAP baseline are absent.",
+      "Feature value semantics are not established, and the values are tiny, so they should not be read as counts.",
+      "The top-20 subset says nothing about omitted features, and the 20 SHAP values sum to only about 0.12 of an unknown total.",
+      "RF probability is model output, not behavioral proof, and the n-gram adjacency or control-flow structure is unknown."
+    ],
+    "summary": "The explanation accurately reports the RF probability and SHAP values and acknowledges the missing function and API evidence and the possibility of generic crypto libraries. It overreaches by asserting adjacency, repetition, loops and mining-specific code from mnemonic pairs alone. Its recommended follow-up is concrete and feasible."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Repeated add/rotate/xor sequences are characteristic of ARX-style hash rounds and multi-word big-integer arithmetic.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/occurrences (empty); /evidence/function_context (empty); /evidence/feature_value_semantics",
+      "reason": "Repetition and sequence structure are not established. Only individual n-gram SHAP values are supplied, with no occurrence counts, adjacency or control-flow context. XOR also appears only in the SIMD n-grams, not alongside the add/rotate ones.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "These suggest vectorized XOR, load/store, mask and 64-bit add operations typical of hashing or cipher inner loops, which fits mining workloads.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/occurrences (empty); /evidence/function_context (empty)",
+      "reason": "Mnemonic pairs do not establish inner loops or an algorithm. The link to mining workloads is an inference without function or API context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Back-to-back aligned vector moves suggest block-wise data shuffling in vectorized compute loops, supporting an optimized hashing routine.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "evidence_reference": "/scope_notes; /evidence/occurrences (empty)",
+      "reason": "Adjacency and control flow are not provided, since graph-aware n-grams need not be adjacent. Compute loops and a hashing routine are inferred from the mnemonics alone.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Consecutive SIMD XORs indicate dense bitwise mixing, as in cryptographic or hashing kernels.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/occurrences (empty); /evidence/feature_value_semantics",
+      "reason": "The evidence does not show that the XORs are consecutive or dense. The feature value is tiny, and its meaning is unestablished.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "AVX XOR with unaligned vector moves points to an AVX-optimized hashing or cipher path, which is typical of performance-tuned mining code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+      "evidence_reference": "/evidence/function_context (empty)",
+      "reason": "The mnemonics do not establish an AVX-optimized hashing path or mining code. 'Points to' overstates what they show.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "SIMD XOR with unaligned vector stores or loads is consistent with vectorized state updates in hashing loops.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/14/assessment",
+      "evidence_reference": "/evidence/occurrences (empty)",
+      "reason": "Hashing loops are assumed with no loop or function evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Locate the functions containing the SIMD and rotate-heavy loops in a disassembler",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "/evidence/function_context (empty)",
+      "reason": "The wording presupposes that rotate-heavy loops exist. The evidence does not establish loops, and the instruction itself is only a follow-up suggestion.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "c982c57e6e25fc3a6d573fa0baaf8f686d85745e0aec6f978c913d6044dfa047.exe_analysis.json"
+}

@@ -1,0 +1,226 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_5ebbc51b6ded4a11",
+  "status": "success",
+  "source_sha256": "e9bb33c98490a871317eb76526db00943a5dc427c92834c211b4734baace0e75",
+  "input_sha256": "748474b0a3e6bbeba9f84dabc792672ff8f0a938a9255dd70718260e242116d3",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "ARM__32__lsb__unix-system-v__arm-linux-gnueabihf-gcc-5.4.0__O0__no-obf__unstripped__coreutils-8__copy_1_.30__id",
+      "source_name": "ARM__32__lsb__unix-system-v__arm-linux-gnueabihf-gcc-5.4.0__O0__no-obf__unstripped__coreutils-8__copy_1_.30__id.json",
+      "source_path": "ml/dataset/benign/ARM__32__lsb__unix-system-v__arm-linux-gnueabihf-gcc-5.4.0__O0__no-obf__unstripped__coreutils-8__copy_1_.30__id.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 1,
+      "actual_label": 0,
+      "actual_class": "benign"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "ARM__32__lsb__unix-system-v__arm-linux-gnueabihf-gcc-5.4.0__O0__no-obf__unstripped__coreutils-8__copy_1_.30__id",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:11:24.446141+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:11:24.446183+00:00",
+      "error": null,
+      "request_sha256": "835612d1edc779c50735286e15983c3c12ba56afe51a60a67d18e6562e96142c",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm3H1YiKTtnn3i4XeNZA",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_5ebbc51b6ded4a11\",\"scores\":{\"technical_accuracy\":2,\"coherence\":4,\"cybersecurity_relevance\":3,\"actionable_utility\":3},\"justifications\":{\"technical_accuracy\":\"Numbers and SHAP values are reported correctly, and the generic instruction semantics are mostly fine. However, the explanation asserts sample-specific context not in the evidence: a coreutils 'id' binary name, libc-style string routines, and CPU-feature dispatch. It also relies on the n-gram frequency as if it were an established value. These unsupported inferences drive a benign conclusion and a 'probable false positive' verdict.\",\"coherence\":\"Well organized and internally consistent: summary, per-feature assessment, indicators and action line up. The main flaw is that the confident benign narrative rests on evidence it does not have, and the 0.7 confidence is not tied to anything. It also describes the 0.545 score as 'barely above the decision boundary' without a stated threshold.\",\"cybersecurity_relevance\":\"It links the n-grams to cryptojacking questions, covering hash-kernel primitives, CPUID checks and the benign alternative of libc SIMD code. But it leans on an unsupported binary-identity premise and treats the absence of function context as support for benign. It does not state that missing evidence is not benign evidence, and it lets a top-20 subset stand in for the whole feature set.\",\"actionable_utility\":\"Verifying the hash against known-good builds, finding the function-level origin and looking for network indicators are feasible and proportionate. But the plan is premised on the binary being a coreutils 'id' build, which the evidence does not establish. The 'treat as likely benign' stance is premature, and it never asks to verify the binary's identity or the feature-value semantics.\"},\"unsupported_claims\":[{\"quote\":\"The binary name indicates a GNU coreutils 'id' utility, which fits the library-style vectorized string code seen here.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence contains no binary name or file metadata\",\"reason\":\"No binary name or identity is supplied, so the claim is invented sample-specific context. It is also used to support the benign conclusion.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Binary name indicates a coreutils 'id' utility, consistent with library-style SIMD code\",\"candidate_path\":\"/candidate_analysis/key_indicators/5\",\"evidence_reference\":\"/evidence has no metadata about the binary name\",\"reason\":\"Repeats the unsupported claim that the sample is a coreutils 'id' binary.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"which is how vectorized string and memory search routines such as strlen, memchr and strchr work.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context is empty; /evidence/occurrences is empty\",\"reason\":\"Mnemonic n-grams do not establish the presence of strlen/memchr/strchr routines. Without function context or adjacency evidence, this overreaches into asserted sample behavior.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Treat as likely benign and a probable false positive.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/scope_notes/1 and /evidence/full_attributions: null\",\"reason\":\"A top-k positive subset and missing context cannot establish benign status, so the stance is stronger than the evidence supports.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"CPUID/CMP is consistent with CPU-feature dispatch that selects among these routines.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context: []\",\"reason\":\"Asserts a dispatch role among specific routines without context. It is partly softened by 'consistent with', but it is tied to the unsupported libc premise.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"at low frequency and is not accompanied by the dense, repeated XOR/ROTATE/ADD sequences expected from hash kernels\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics: \\\"Not established by this artifact; do not treat as raw counts\\\"; /evidence/occurrences: []\",\"reason\":\"Treats feature values as frequencies, and the absence of dense hash sequences is asserted without full feature or occurrence data.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The values and rounding are accurate and all top-20 contributions are described as positive and small, which matches the supplied target-class-1 SHAP. The 'diffuse' description is correct for the top-k list. The explanation does overinterpret what the pattern means, but it does not misstate direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No occurrences, function context, binary name or metadata were supplied.\",\"feature_value_semantics are unconfirmed, so the values may not be raw frequencies.\",\"SHAP baseline and full attributions are null; the top-20 positive subset cannot rule out omitted features supporting benign.\",\"The SHAP target class is a configured assumption pending upstream verification.\",\"The RF probability is not behavioral proof and no decision threshold was provided.\"],\"summary\":\"The explanation is well structured and reports SHAP values accurately, but it invents the binary identity (coreutils 'id') and the libc string-routine context, and it reaches a confident 'likely benign / probable false positive' conclusion from mnemonics and a top-k subset alone. The follow-up checks are reasonable, but the premise behind them is unsupported.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7190,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 1919,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7190,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1919,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_5ebbc51b6ded4a11\",\"scores\":{\"technical_accuracy\":2,\"coherence\":4,\"cybersecurity_relevance\":3,\"actionable_utility\":3},\"justifications\":{\"technical_accuracy\":\"Numbers and SHAP values are reported correctly, and the generic instruction semantics are mostly fine. However, the explanation asserts sample-specific context not in the evidence: a coreutils 'id' binary name, libc-style string routines, and CPU-feature dispatch. It also relies on the n-gram frequency as if it were an established value. These unsupported inferences drive a benign conclusion and a 'probable false positive' verdict.\",\"coherence\":\"Well organized and internally consistent: summary, per-feature assessment, indicators and action line up. The main flaw is that the confident benign narrative rests on evidence it does not have, and the 0.7 confidence is not tied to anything. It also describes the 0.545 score as 'barely above the decision boundary' without a stated threshold.\",\"cybersecurity_relevance\":\"It links the n-grams to cryptojacking questions, covering hash-kernel primitives, CPUID checks and the benign alternative of libc SIMD code. But it leans on an unsupported binary-identity premise and treats the absence of function context as support for benign. It does not state that missing evidence is not benign evidence, and it lets a top-20 subset stand in for the whole feature set.\",\"actionable_utility\":\"Verifying the hash against known-good builds, finding the function-level origin and looking for network indicators are feasible and proportionate. But the plan is premised on the binary being a coreutils 'id' build, which the evidence does not establish. The 'treat as likely benign' stance is premature, and it never asks to verify the binary's identity or the feature-value semantics.\"},\"unsupported_claims\":[{\"quote\":\"The binary name indicates a GNU coreutils 'id' utility, which fits the library-style vectorized string code seen here.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence contains no binary name or file metadata\",\"reason\":\"No binary name or identity is supplied, so the claim is invented sample-specific context. It is also used to support the benign conclusion.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Binary name indicates a coreutils 'id' utility, consistent with library-style SIMD code\",\"candidate_path\":\"/candidate_analysis/key_indicators/5\",\"evidence_reference\":\"/evidence has no metadata about the binary name\",\"reason\":\"Repeats the unsupported claim that the sample is a coreutils 'id' binary.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"which is how vectorized string and memory search routines such as strlen, memchr and strchr work.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context is empty; /evidence/occurrences is empty\",\"reason\":\"Mnemonic n-grams do not establish the presence of strlen/memchr/strchr routines. Without function context or adjacency evidence, this overreaches into asserted sample behavior.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Treat as likely benign and a probable false positive.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/scope_notes/1 and /evidence/full_attributions: null\",\"reason\":\"A top-k positive subset and missing context cannot establish benign status, so the stance is stronger than the evidence supports.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"CPUID/CMP is consistent with CPU-feature dispatch that selects among these routines.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context: []\",\"reason\":\"Asserts a dispatch role among specific routines without context. It is partly softened by 'consistent with', but it is tied to the unsupported libc premise.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"at low frequency and is not accompanied by the dense, repeated XOR/ROTATE/ADD sequences expected from hash kernels\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics: \\\"Not established by this artifact; do not treat as raw counts\\\"; /evidence/occurrences: []\",\"reason\":\"Treats feature values as frequencies, and the absence of dense hash sequences is asserted without full feature or occurrence data.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The values and rounding are accurate and all top-20 contributions are described as positive and small, which matches the supplied target-class-1 SHAP. The 'diffuse' description is correct for the top-k list. The explanation does overinterpret what the pattern means, but it does not misstate direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No occurrences, function context, binary name or metadata were supplied.\",\"feature_value_semantics are unconfirmed, so the values may not be raw frequencies.\",\"SHAP baseline and full attributions are null; the top-20 positive subset cannot rule out omitted features supporting benign.\",\"The SHAP target class is a configured assumption pending upstream verification.\",\"The RF probability is not behavioral proof and no decision threshold was provided.\"],\"summary\":\"The explanation is well structured and reports SHAP values accurately, but it invents the binary identity (coreutils 'id') and the libc string-routine context, and it reaches a confident 'likely benign / probable false positive' conclusion from mnemonics and a top-k subset alone. The follow-up checks are reasonable, but the premise behind them is unsupported.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_5ebbc51b6ded4a11",
+    "scores": {
+      "technical_accuracy": 2,
+      "coherence": 4,
+      "cybersecurity_relevance": 3,
+      "actionable_utility": 3
+    },
+    "justifications": {
+      "technical_accuracy": "Numbers and SHAP values are reported correctly, and the generic instruction semantics are mostly fine. However, the explanation asserts sample-specific context not in the evidence: a coreutils 'id' binary name, libc-style string routines, and CPU-feature dispatch. It also relies on the n-gram frequency as if it were an established value. These unsupported inferences drive a benign conclusion and a 'probable false positive' verdict.",
+      "coherence": "Well organized and internally consistent: summary, per-feature assessment, indicators and action line up. The main flaw is that the confident benign narrative rests on evidence it does not have, and the 0.7 confidence is not tied to anything. It also describes the 0.545 score as 'barely above the decision boundary' without a stated threshold.",
+      "cybersecurity_relevance": "It links the n-grams to cryptojacking questions, covering hash-kernel primitives, CPUID checks and the benign alternative of libc SIMD code. But it leans on an unsupported binary-identity premise and treats the absence of function context as support for benign. It does not state that missing evidence is not benign evidence, and it lets a top-20 subset stand in for the whole feature set.",
+      "actionable_utility": "Verifying the hash against known-good builds, finding the function-level origin and looking for network indicators are feasible and proportionate. But the plan is premised on the binary being a coreutils 'id' build, which the evidence does not establish. The 'treat as likely benign' stance is premature, and it never asks to verify the binary's identity or the feature-value semantics."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "The binary name indicates a GNU coreutils 'id' utility, which fits the library-style vectorized string code seen here.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence contains no binary name or file metadata",
+        "reason": "No binary name or identity is supplied, so the claim is invented sample-specific context. It is also used to support the benign conclusion.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Binary name indicates a coreutils 'id' utility, consistent with library-style SIMD code",
+        "candidate_path": "/candidate_analysis/key_indicators/5",
+        "evidence_reference": "/evidence has no metadata about the binary name",
+        "reason": "Repeats the unsupported claim that the sample is a coreutils 'id' binary.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "which is how vectorized string and memory search routines such as strlen, memchr and strchr work.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/function_context is empty; /evidence/occurrences is empty",
+        "reason": "Mnemonic n-grams do not establish the presence of strlen/memchr/strchr routines. Without function context or adjacency evidence, this overreaches into asserted sample behavior.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Treat as likely benign and a probable false positive.",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "/scope_notes/1 and /evidence/full_attributions: null",
+        "reason": "A top-k positive subset and missing context cannot establish benign status, so the stance is stronger than the evidence supports.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "CPUID/CMP is consistent with CPU-feature dispatch that selects among these routines.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/function_context: []",
+        "reason": "Asserts a dispatch role among specific routines without context. It is partly softened by 'consistent with', but it is tied to the unsupported libc premise.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "at low frequency and is not accompanied by the dense, repeated XOR/ROTATE/ADD sequences expected from hash kernels",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics: \"Not established by this artifact; do not treat as raw counts\"; /evidence/occurrences: []",
+        "reason": "Treats feature values as frequencies, and the absence of dense hash sequences is asserted without full feature or occurrence data.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "The values and rounding are accurate and all top-20 contributions are described as positive and small, which matches the supplied target-class-1 SHAP. The 'diffuse' description is correct for the top-k list. The explanation does overinterpret what the pattern means, but it does not misstate direction or magnitude.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No occurrences, function context, binary name or metadata were supplied.",
+      "feature_value_semantics are unconfirmed, so the values may not be raw frequencies.",
+      "SHAP baseline and full attributions are null; the top-20 positive subset cannot rule out omitted features supporting benign.",
+      "The SHAP target class is a configured assumption pending upstream verification.",
+      "The RF probability is not behavioral proof and no decision threshold was provided."
+    ],
+    "summary": "The explanation is well structured and reports SHAP values accurately, but it invents the binary identity (coreutils 'id') and the libc string-routine context, and it reaches a confident 'likely benign / probable false positive' conclusion from mnemonics and a top-k subset alone. The follow-up checks are reasonable, but the premise behind them is unsupported."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "The binary name indicates a GNU coreutils 'id' utility, which fits the library-style vectorized string code seen here.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence contains no binary name or file metadata",
+      "reason": "No binary name or identity is supplied, so the claim is invented sample-specific context. It is also used to support the benign conclusion.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Binary name indicates a coreutils 'id' utility, consistent with library-style SIMD code",
+      "candidate_path": "/candidate_analysis/key_indicators/5",
+      "evidence_reference": "/evidence has no metadata about the binary name",
+      "reason": "Repeats the unsupported claim that the sample is a coreutils 'id' binary.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "which is how vectorized string and memory search routines such as strlen, memchr and strchr work.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/function_context is empty; /evidence/occurrences is empty",
+      "reason": "Mnemonic n-grams do not establish the presence of strlen/memchr/strchr routines. Without function context or adjacency evidence, this overreaches into asserted sample behavior.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Treat as likely benign and a probable false positive.",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "/scope_notes/1 and /evidence/full_attributions: null",
+      "reason": "A top-k positive subset and missing context cannot establish benign status, so the stance is stronger than the evidence supports.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "CPUID/CMP is consistent with CPU-feature dispatch that selects among these routines.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/function_context: []",
+      "reason": "Asserts a dispatch role among specific routines without context. It is partly softened by 'consistent with', but it is tied to the unsupported libc premise.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "at low frequency and is not accompanied by the dense, repeated XOR/ROTATE/ADD sequences expected from hash kernels",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics: \"Not established by this artifact; do not treat as raw counts\"; /evidence/occurrences: []",
+      "reason": "Treats feature values as frequencies, and the absence of dense hash sequences is asserted without full feature or occurrence data.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "ARM__32__lsb__unix-system-v__arm-linux-gnueabihf-gcc-5.4.0__O0__no-obf__unstripped__coreutils-8__copy_1_.30__id_analysis.json"
+}

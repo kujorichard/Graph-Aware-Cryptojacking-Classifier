@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_5a1f463b38898fa1",
+  "status": "success",
+  "source_sha256": "d03544f4ad992bd3eb0f93f7bdc8b9f8e4e41e3872bd029266993bffe25801c8",
+  "input_sha256": "a85c15c7bad93633f9cc12b05c05ff3a2f4c2805cbf7733fc0d145bae41b154b",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "cb17edd2f1497ec1f54b46d1aa36227b2d6b7a856f3e28771e3aee5e855485db.exe",
+      "source_name": "cb17edd2f1497ec1f54b46d1aa36227b2d6b7a856f3e28771e3aee5e855485db.exe.json",
+      "source_path": "ml/dataset/cryptojacking/cb17edd2f1497ec1f54b46d1aa36227b2d6b7a856f3e28771e3aee5e855485db.exe.json",
+      "split": "test",
+      "batch_number": 6,
+      "row_index_in_batch": 64,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "cb17edd2f1497ec1f54b46d1aa36227b2d6b7a856f3e28771e3aee5e855485db.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:32:51.195165+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:32:51.195194+00:00",
+      "error": null,
+      "request_sha256": "179de171b18dc1aad6099828b5e6917300d3662d50652f2d57459518550e374d",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm4urrUyMHPjbNd8RqZ7",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm weighing the evidence carefully: the RF model gives a 0.955 probability for class 1, with all 20 top features showing positive SHAP contributions. But I need to be cautious since the SHAP target class is a configured assumption, and the actual semantics of the feature values aren't firmly established — I shouldn't treat them as raw counts, and terms like \"frequency\" for values such as CALL PUSH may not be fully accurate either.\n\nThe candidate's claim that \"MOV PUSH\" is the highest-frequency n-gram holds among the top 20 but may overreach if applied to all n-grams broadly. The contribution range (+0.0066 to +0.0138) checks out as accurate and genuinely small and evenly spread, so \"no single feature dominates\" is a fair characterization. I also notice there's no mention of function names, locations, or tight-loop indicators in the evidence, which the candidate correctly points out is absent.\n\nI'm also flagging several interpretive leaps: calling CALL-RET adjacency \"thunks\" or \"unusual control flow\" assumes adjacency that the graph-aware n-gram method doesn't guarantee, and the same goes for interpreting stack-pointer cleanup or epilogue patterns as literal sequential code. The architecture assumption (\"32-bit code\", \"64-bit arithmetic emulation\") is unsupported by the evidence and should be treated as speculative rather than established fact.\n\nOn the SHAP side, I'm checking that directional signs and relative magnitudes line up correctly, and the top feature being POP XOR checks out, though I'm less certain about how \"frequency\" values should be semantically interpreted.\n\nThere's a minor inconsistency in the explanation though: it labels POP CALL, POP PUSH, and MOV LEAVE as \"high-frequency\" n-grams, but POP PUSH (0.0012) and MOV LEAVE (0.00035) actually have quite low values, so that characterization isn't quite accurate.\n\nFor technical accuracy, I'm weighing whether this lands at a 3 or 4. The core numerics and hedging are sound, but there are recurring minor overreaches — the frequency interpretation, adjacency assumptions, and the 32-bit claim. Since these are pervasive but low-impact and the conclusion stays appropriately hedged, I'll settle on a 4.\n\nFor coherence, it's mostly clear and consistent aside from a slight inconsistency in the \"high-frequency\" labeling, so a 4 feels right. Relevance deserves a 5 since it ties together evidence, limitations, and plausible alternatives like generic compiler patterns and packing, though I'm tempted toward 4 since those alternatives are addressed somewhat generically — I'll go with 5. For actionable utility, the suggestions are concrete (locate code, check the loop, strings, network, sandbox) but lack prioritization, so I'll give it a 4.\n\nNow I'm mapping out the specific evidence paths to cite — the explanation node, assessments for CALL/RET, SUB/PUSH, CMP/SHLD, MOV/ADC, MOV/PUSH instructions, and the feature value semantics reference.\n\nFormatting this all into a single-line JSON now...\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_5a1f463b38898fa1\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability (0.955), the all-positive SHAP signs, the +0.0066 to +0.0138 range and POP XOR as top feature match the evidence. Minor overreach: the n-gram values are repeatedly called frequencies/percentages, adjacency and prologue/epilogue roles are inferred, and a 32-bit target is assumed. The conclusion stays hedged and does not claim cryptojacking.\",\"coherence\":\"The summary, per-feature assessments, tier, confidence and recommendation agree: suspicious but not confirmable. Minor flaw: POP PUSH and MOV LEAVE are grouped with the \\\"high-frequency\\\" n-grams despite very small values.\",\"cybersecurity_relevance\":\"Ties this sample's rotate, carry and shift n-grams to hashing/big-number hypotheses and weighs them against generic compiler patterns and packing/obfuscation. It explicitly notes the missing function context, loop evidence and omitted-feature limits.\",\"actionable_utility\":\"Concrete, proportionate checks: locate the ADD ROR/CMP SHLD/MOV ADC/POP XOR code, test for a tight hashing loop, check packing, strings, mining-pool indicators and sandbox CPU behavior. These are conditional rather than observed, and they are not prioritized or ordered.\"},\"unsupported_claims\":[{\"quote\":\"CALL PUSH (freq 0.0336), PUSH CALL (0.0346), MOV PUSH (0.0448)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the value semantics are not established and should not be treated as raw counts. Calling them frequencies (and later percentages) is an unsupported interpretation.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A call directly followed by a return suggests thunks, tail wrappers or unusual control flow.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"No occurrences or function context are supplied, and graph-aware n-grams need not be adjacent, so direct adjacency and control-flow structure cannot be inferred.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Stack allocation followed by pushes, typical of function prologues.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Asserts prologue placement and adjacency for SUB PUSH without any extraction or location evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"SHLD is a double-precision shift used in multi-word or 64-bit arithmetic emulation on 32-bit code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/14/assessment\",\"evidence_reference\":\"/evidence/ngram_size\",\"reason\":\"The 32-bit target architecture is not established by the evidence and is assumed here (also in MOV ADC's \\\"32-bit targets\\\").\",\"category\":\"other\"},{\"quote\":\"Highest-frequency n-gram (4.5%). A ubiquitous argument-preparation pattern\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/full_attributions\",\"reason\":\"Only the top-20 subset is visible, so this cannot be called the highest overall. Prevalence is also inferred without confirmed value semantics.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs, ordering, rounded magnitudes and the narrow range are reported correctly, and the candidate does not claim omitted features or a baseline. Small caveats: it does not mention that the target class is a configured assumption, and it calls some features high-frequency using unconfirmed value semantics.\",\"discrepancies\":[]},\"evidence_limitations\":[\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"Feature value semantics are not established, so they cannot be treated as frequencies or counts.\",\"Occurrences and function context are empty, so adjacency, loops and function roles cannot be verified.\",\"Only the top 20 features are supplied. The baseline and full attributions are null, so omitted features cannot be ruled out.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"Numerically faithful and well hedged, with a correct refusal to confirm cryptojacking from n-grams alone. Minor overreach comes from treating values as frequencies and inferring adjacency, prologue roles and a 32-bit target. Follow-up actions are concrete and proportionate.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7013,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3593,
+          "output_tokens_details": {
+            "thinking_tokens": 1920
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7013,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3593,
+        "output_tokens_details": {
+          "thinking_tokens": 1920
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_5a1f463b38898fa1\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability (0.955), the all-positive SHAP signs, the +0.0066 to +0.0138 range and POP XOR as top feature match the evidence. Minor overreach: the n-gram values are repeatedly called frequencies/percentages, adjacency and prologue/epilogue roles are inferred, and a 32-bit target is assumed. The conclusion stays hedged and does not claim cryptojacking.\",\"coherence\":\"The summary, per-feature assessments, tier, confidence and recommendation agree: suspicious but not confirmable. Minor flaw: POP PUSH and MOV LEAVE are grouped with the \\\"high-frequency\\\" n-grams despite very small values.\",\"cybersecurity_relevance\":\"Ties this sample's rotate, carry and shift n-grams to hashing/big-number hypotheses and weighs them against generic compiler patterns and packing/obfuscation. It explicitly notes the missing function context, loop evidence and omitted-feature limits.\",\"actionable_utility\":\"Concrete, proportionate checks: locate the ADD ROR/CMP SHLD/MOV ADC/POP XOR code, test for a tight hashing loop, check packing, strings, mining-pool indicators and sandbox CPU behavior. These are conditional rather than observed, and they are not prioritized or ordered.\"},\"unsupported_claims\":[{\"quote\":\"CALL PUSH (freq 0.0336), PUSH CALL (0.0346), MOV PUSH (0.0448)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the value semantics are not established and should not be treated as raw counts. Calling them frequencies (and later percentages) is an unsupported interpretation.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A call directly followed by a return suggests thunks, tail wrappers or unusual control flow.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"No occurrences or function context are supplied, and graph-aware n-grams need not be adjacent, so direct adjacency and control-flow structure cannot be inferred.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Stack allocation followed by pushes, typical of function prologues.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Asserts prologue placement and adjacency for SUB PUSH without any extraction or location evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"SHLD is a double-precision shift used in multi-word or 64-bit arithmetic emulation on 32-bit code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/14/assessment\",\"evidence_reference\":\"/evidence/ngram_size\",\"reason\":\"The 32-bit target architecture is not established by the evidence and is assumed here (also in MOV ADC's \\\"32-bit targets\\\").\",\"category\":\"other\"},{\"quote\":\"Highest-frequency n-gram (4.5%). A ubiquitous argument-preparation pattern\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/full_attributions\",\"reason\":\"Only the top-20 subset is visible, so this cannot be called the highest overall. Prevalence is also inferred without confirmed value semantics.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs, ordering, rounded magnitudes and the narrow range are reported correctly, and the candidate does not claim omitted features or a baseline. Small caveats: it does not mention that the target class is a configured assumption, and it calls some features high-frequency using unconfirmed value semantics.\",\"discrepancies\":[]},\"evidence_limitations\":[\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"Feature value semantics are not established, so they cannot be treated as frequencies or counts.\",\"Occurrences and function context are empty, so adjacency, loops and function roles cannot be verified.\",\"Only the top 20 features are supplied. The baseline and full attributions are null, so omitted features cannot be ruled out.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"Numerically faithful and well hedged, with a correct refusal to confirm cryptojacking from n-grams alone. Minor overreach comes from treating values as frequencies and inferring adjacency, prologue roles and a 32-bit target. Follow-up actions are concrete and proportionate.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_5a1f463b38898fa1",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The probability (0.955), the all-positive SHAP signs, the +0.0066 to +0.0138 range and POP XOR as top feature match the evidence. Minor overreach: the n-gram values are repeatedly called frequencies/percentages, adjacency and prologue/epilogue roles are inferred, and a 32-bit target is assumed. The conclusion stays hedged and does not claim cryptojacking.",
+      "coherence": "The summary, per-feature assessments, tier, confidence and recommendation agree: suspicious but not confirmable. Minor flaw: POP PUSH and MOV LEAVE are grouped with the \"high-frequency\" n-grams despite very small values.",
+      "cybersecurity_relevance": "Ties this sample's rotate, carry and shift n-grams to hashing/big-number hypotheses and weighs them against generic compiler patterns and packing/obfuscation. It explicitly notes the missing function context, loop evidence and omitted-feature limits.",
+      "actionable_utility": "Concrete, proportionate checks: locate the ADD ROR/CMP SHLD/MOV ADC/POP XOR code, test for a tight hashing loop, check packing, strings, mining-pool indicators and sandbox CPU behavior. These are conditional rather than observed, and they are not prioritized or ordered."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "CALL PUSH (freq 0.0336), PUSH CALL (0.0346), MOV PUSH (0.0448)",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says the value semantics are not established and should not be treated as raw counts. Calling them frequencies (and later percentages) is an unsupported interpretation.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "A call directly followed by a return suggests thunks, tail wrappers or unusual control flow.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "No occurrences or function context are supplied, and graph-aware n-grams need not be adjacent, so direct adjacency and control-flow structure cannot be inferred.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Stack allocation followed by pushes, typical of function prologues.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Asserts prologue placement and adjacency for SUB PUSH without any extraction or location evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "SHLD is a double-precision shift used in multi-word or 64-bit arithmetic emulation on 32-bit code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/14/assessment",
+        "evidence_reference": "/evidence/ngram_size",
+        "reason": "The 32-bit target architecture is not established by the evidence and is assumed here (also in MOV ADC's \"32-bit targets\").",
+        "category": "other"
+      },
+      {
+        "quote": "Highest-frequency n-gram (4.5%). A ubiquitous argument-preparation pattern",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/full_attributions",
+        "reason": "Only the top-20 subset is visible, so this cannot be called the highest overall. Prevalence is also inferred without confirmed value semantics.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP signs, ordering, rounded magnitudes and the narrow range are reported correctly, and the candidate does not claim omitted features or a baseline. Small caveats: it does not mention that the target class is a configured assumption, and it calls some features high-frequency using unconfirmed value semantics.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "SHAP target class 1 is a configured assumption pending upstream verification.",
+      "Feature value semantics are not established, so they cannot be treated as frequencies or counts.",
+      "Occurrences and function context are empty, so adjacency, loops and function roles cannot be verified.",
+      "Only the top 20 features are supplied. The baseline and full attributions are null, so omitted features cannot be ruled out.",
+      "The RF probability is not behavioral proof of cryptojacking."
+    ],
+    "summary": "Numerically faithful and well hedged, with a correct refusal to confirm cryptojacking from n-grams alone. Minor overreach comes from treating values as frequencies and inferring adjacency, prologue roles and a 32-bit target. Follow-up actions are concrete and proportionate."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "CALL PUSH (freq 0.0336), PUSH CALL (0.0346), MOV PUSH (0.0448)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says the value semantics are not established and should not be treated as raw counts. Calling them frequencies (and later percentages) is an unsupported interpretation.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "A call directly followed by a return suggests thunks, tail wrappers or unusual control flow.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "No occurrences or function context are supplied, and graph-aware n-grams need not be adjacent, so direct adjacency and control-flow structure cannot be inferred.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Stack allocation followed by pushes, typical of function prologues.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Asserts prologue placement and adjacency for SUB PUSH without any extraction or location evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "SHLD is a double-precision shift used in multi-word or 64-bit arithmetic emulation on 32-bit code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/14/assessment",
+      "evidence_reference": "/evidence/ngram_size",
+      "reason": "The 32-bit target architecture is not established by the evidence and is assumed here (also in MOV ADC's \"32-bit targets\").",
+      "category": "other"
+    },
+    {
+      "quote": "Highest-frequency n-gram (4.5%). A ubiquitous argument-preparation pattern",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/full_attributions",
+      "reason": "Only the top-20 subset is visible, so this cannot be called the highest overall. Prevalence is also inferred without confirmed value semantics.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "cb17edd2f1497ec1f54b46d1aa36227b2d6b7a856f3e28771e3aee5e855485db.exe_analysis.json"
+}

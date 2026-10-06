@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_36b99299b89908bd",
+  "status": "success",
+  "source_sha256": "47afe39aac514ae356bfa1b88cba5e9969107f899ba2760a3739a7320bc3630c",
+  "input_sha256": "0c85fbbb910fe75f48fa90a8c9fb208b3b765ac58b11403b7eebba7723082cf6",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "df8f0f61a1af0f3768ea07700d60446969c4c6a95a1ecb131844bd6665c8c45a.exe",
+      "source_name": "df8f0f61a1af0f3768ea07700d60446969c4c6a95a1ecb131844bd6665c8c45a.exe.json",
+      "source_path": "ml/dataset/cryptojacking/df8f0f61a1af0f3768ea07700d60446969c4c6a95a1ecb131844bd6665c8c45a.exe.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 80,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "df8f0f61a1af0f3768ea07700d60446969c4c6a95a1ecb131844bd6665c8c45a.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:40:56.195157+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:40:56.195186+00:00",
+      "error": null,
+      "request_sha256": "3523182722f83f6513a7f3e375d2d50fffb50c83c33f052af539ef077cc0bfdb",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm5XcNLjSpzS53NxU5W4",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the candidate's claims against the evidence: the 0.595 probability being just above a 0.5 threshold seems reasonable though the boundary wasn't explicitly given, and the claim that all 20 top n-grams point toward cryptojacking relies on an assumption about which class SHAP values target.\n\nI also notice the candidate treats SHAP values and frequencies as if their semantics were established when they weren't—calling MOV MOVZX's value a \"frequency of 0.0225\" or NOP TEST's \"frequency of 0.000000\" is an unsupported interpretation. Similarly, several instruction-pair descriptions like \"PXOR MOVUPS\" and \"LEA JC\" assert adjacency (\"followed by\") and specific semantics (load vs. store) that aren't actually supported, since these are graph-aware n-grams that don't require true sequential adjacency.\n\nThe MOVSXD MOVSD interpretation as \"array-of-double access\" and LEA POP as \"function epilogue\" are both overreaching assumptions layered onto generic instruction pairs. The recommended actions (checking imports, strings, sandboxing, inspecting FP/SIMD routines) are reasonably framed and conditional, and the hedged claim about \"mining or hashing workload\" consistency is appropriately cautious even though FP-heavy patterns don't typically align with integer-heavy mining operations—so I'm landing around a 3-4 for technical accuracy given the correct core evidence but several unsupported interpretive leaps.\n\nFor coherence I'd give 4-5, though there's some redundancy between summary, evidence, and indicators. Relevance seems strong since it connects evidence limits and benign alternatives well, maybe 5, though it still treats frequency as semantic without full support.\n\nThe SHAP values look directionally and magnitude-wise faithful, with the NOP TEST figure checking out correctly, but the discrepancy is that frequency semantics isn't actually SHAP-derived, and the target class assumption isn't acknowledged — that should go in limitations. I'm flagging unsupported claims tied to specific JSON pointers for the PXOR MOVUPS, MOVSXD MOVSD, and LEA POP evidence entries, plus the frequency explanation pointer.\n\nI'm pulling exact quotes to cite: the register zeroing/unaligned store line, the sign-extended index/scalar double load line, the stack restore/epilogue line, and the frequency weakness statement about MOV MOVZX at 0.0225. I'll also include the \"only slightly above the decision boundary\" phrase since it lacks a stated threshold, then assemble everything into a single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_36b99299b89908bd\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, the 20 positive SHAP values, the +0.005 to +0.014 range and the NOP TEST zero value match the evidence. Several sample-specific interpretations go past it: adjacency and store direction, array-of-double access, epilogue context, and treating values as 'frequency'.\",\"coherence\":\"The explanation is well organized and consistent across the tier, key indicators, per-feature notes and action. Some repetition between the summary and the per-feature list keeps it from a 5.\",\"cybersecurity_relevance\":\"It ties the evidence to the cryptojacking question and states the missing context: no function-level data, APIs or strings. It also names plausible benign alternatives such as math, graphics and runtime library code, and avoids claiming mining behavior.\",\"actionable_utility\":\"Imports and strings (stratum or mining-pool indicators), sandbox CPU and network observation, and inspection of FP/SIMD routines are concrete, feasible, conditional and proportionate. The steps are not explicitly prioritized, and nothing ties them to the specific n-grams.\"},\"unsupported_claims\":[{\"quote\":\"Register zeroing followed by an unaligned vector store.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/occurrences (empty); /evidence/function_context (empty)\",\"reason\":\"The n-gram names do not show adjacency, operand direction or whether MOVUPS is a store rather than a load. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Sign-extended integer index followed by scalar double load. This is standard array-of-double access.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/15/assessment\",\"evidence_reference\":\"/evidence/top_features/15; /evidence/function_context (empty)\",\"reason\":\"Mnemonics alone do not establish an index, an array access or adjacency. No context supports this interpretation.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Address computation near a stack restore, usually function epilogue code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features/18; /evidence/function_context (empty)\",\"reason\":\"The claim of epilogue or stack-restore context is asserted without extraction or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Frequencies are very low for nearly all features, except MOV MOVZX at 0.0225\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states that feature values are not established as counts or frequencies and should not be treated as raw counts. The candidate treats them as frequencies and draws a conclusion about signal weakness.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"only slightly above the decision boundary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"No decision threshold is supplied. A 0.5 boundary is assumed, though it is plausible for a binary RF.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive and are reported as pushing toward the target class. The stated range (+0.005 to +0.014), the maximum of 0.0142 and the per-feature values match the evidence within display tolerance. The claim that no single feature is decisive is consistent with the small magnitudes, and the NOP TEST value matches. The configured-target-class assumption is not mentioned.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The target class for SHAP is a configured assumption; upstream extraction is unverified.\",\"Feature value semantics are not established, so 'frequency' and 'count' interpretations are unsupported.\",\"The SHAP baseline, the omitted features and the full attributions are unavailable, so benign-supporting omitted features cannot be excluded.\",\"There are no occurrences or function context, so adjacency, control flow and operand direction cannot be verified.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation is cautious, coherent and faithful to the SHAP signs and magnitudes, and its follow-up is actionable and conditional. It loses accuracy through several unsupported sample-specific micro-interpretations (adjacency, store direction, array access, epilogue context) and by treating the feature values as frequencies.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7003,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3560,
+          "output_tokens_details": {
+            "thinking_tokens": 1949
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7003,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3560,
+        "output_tokens_details": {
+          "thinking_tokens": 1949
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_36b99299b89908bd\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, the 20 positive SHAP values, the +0.005 to +0.014 range and the NOP TEST zero value match the evidence. Several sample-specific interpretations go past it: adjacency and store direction, array-of-double access, epilogue context, and treating values as 'frequency'.\",\"coherence\":\"The explanation is well organized and consistent across the tier, key indicators, per-feature notes and action. Some repetition between the summary and the per-feature list keeps it from a 5.\",\"cybersecurity_relevance\":\"It ties the evidence to the cryptojacking question and states the missing context: no function-level data, APIs or strings. It also names plausible benign alternatives such as math, graphics and runtime library code, and avoids claiming mining behavior.\",\"actionable_utility\":\"Imports and strings (stratum or mining-pool indicators), sandbox CPU and network observation, and inspection of FP/SIMD routines are concrete, feasible, conditional and proportionate. The steps are not explicitly prioritized, and nothing ties them to the specific n-grams.\"},\"unsupported_claims\":[{\"quote\":\"Register zeroing followed by an unaligned vector store.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/occurrences (empty); /evidence/function_context (empty)\",\"reason\":\"The n-gram names do not show adjacency, operand direction or whether MOVUPS is a store rather than a load. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Sign-extended integer index followed by scalar double load. This is standard array-of-double access.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/15/assessment\",\"evidence_reference\":\"/evidence/top_features/15; /evidence/function_context (empty)\",\"reason\":\"Mnemonics alone do not establish an index, an array access or adjacency. No context supports this interpretation.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Address computation near a stack restore, usually function epilogue code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features/18; /evidence/function_context (empty)\",\"reason\":\"The claim of epilogue or stack-restore context is asserted without extraction or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Frequencies are very low for nearly all features, except MOV MOVZX at 0.0225\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states that feature values are not established as counts or frequencies and should not be treated as raw counts. The candidate treats them as frequencies and draws a conclusion about signal weakness.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"only slightly above the decision boundary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"No decision threshold is supplied. A 0.5 boundary is assumed, though it is plausible for a binary RF.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive and are reported as pushing toward the target class. The stated range (+0.005 to +0.014), the maximum of 0.0142 and the per-feature values match the evidence within display tolerance. The claim that no single feature is decisive is consistent with the small magnitudes, and the NOP TEST value matches. The configured-target-class assumption is not mentioned.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The target class for SHAP is a configured assumption; upstream extraction is unverified.\",\"Feature value semantics are not established, so 'frequency' and 'count' interpretations are unsupported.\",\"The SHAP baseline, the omitted features and the full attributions are unavailable, so benign-supporting omitted features cannot be excluded.\",\"There are no occurrences or function context, so adjacency, control flow and operand direction cannot be verified.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation is cautious, coherent and faithful to the SHAP signs and magnitudes, and its follow-up is actionable and conditional. It loses accuracy through several unsupported sample-specific micro-interpretations (adjacency, store direction, array access, epilogue context) and by treating the feature values as frequencies.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_36b99299b89908bd",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The probability, the 20 positive SHAP values, the +0.005 to +0.014 range and the NOP TEST zero value match the evidence. Several sample-specific interpretations go past it: adjacency and store direction, array-of-double access, epilogue context, and treating values as 'frequency'.",
+      "coherence": "The explanation is well organized and consistent across the tier, key indicators, per-feature notes and action. Some repetition between the summary and the per-feature list keeps it from a 5.",
+      "cybersecurity_relevance": "It ties the evidence to the cryptojacking question and states the missing context: no function-level data, APIs or strings. It also names plausible benign alternatives such as math, graphics and runtime library code, and avoids claiming mining behavior.",
+      "actionable_utility": "Imports and strings (stratum or mining-pool indicators), sandbox CPU and network observation, and inspection of FP/SIMD routines are concrete, feasible, conditional and proportionate. The steps are not explicitly prioritized, and nothing ties them to the specific n-grams."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Register zeroing followed by an unaligned vector store.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/top_features/1; /evidence/occurrences (empty); /evidence/function_context (empty)",
+        "reason": "The n-gram names do not show adjacency, operand direction or whether MOVUPS is a store rather than a load. Graph-aware n-grams need not be adjacent.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Sign-extended integer index followed by scalar double load. This is standard array-of-double access.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/15/assessment",
+        "evidence_reference": "/evidence/top_features/15; /evidence/function_context (empty)",
+        "reason": "Mnemonics alone do not establish an index, an array access or adjacency. No context supports this interpretation.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Address computation near a stack restore, usually function epilogue code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+        "evidence_reference": "/evidence/top_features/18; /evidence/function_context (empty)",
+        "reason": "The claim of epilogue or stack-restore context is asserted without extraction or context evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Frequencies are very low for nearly all features, except MOV MOVZX at 0.0225",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states that feature values are not established as counts or frequencies and should not be treated as raw counts. The candidate treats them as frequencies and draws a conclusion about signal weakness.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "only slightly above the decision boundary",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/rf_probability_class_1",
+        "reason": "No decision threshold is supplied. A 0.5 boundary is assumed, though it is plausible for a binary RF.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are positive and are reported as pushing toward the target class. The stated range (+0.005 to +0.014), the maximum of 0.0142 and the per-feature values match the evidence within display tolerance. The claim that no single feature is decisive is consistent with the small magnitudes, and the NOP TEST value matches. The configured-target-class assumption is not mentioned.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The target class for SHAP is a configured assumption; upstream extraction is unverified.",
+      "Feature value semantics are not established, so 'frequency' and 'count' interpretations are unsupported.",
+      "The SHAP baseline, the omitted features and the full attributions are unavailable, so benign-supporting omitted features cannot be excluded.",
+      "There are no occurrences or function context, so adjacency, control flow and operand direction cannot be verified.",
+      "The RF probability is not behavioral proof of cryptojacking."
+    ],
+    "summary": "The explanation is cautious, coherent and faithful to the SHAP signs and magnitudes, and its follow-up is actionable and conditional. It loses accuracy through several unsupported sample-specific micro-interpretations (adjacency, store direction, array access, epilogue context) and by treating the feature values as frequencies."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Register zeroing followed by an unaligned vector store.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/top_features/1; /evidence/occurrences (empty); /evidence/function_context (empty)",
+      "reason": "The n-gram names do not show adjacency, operand direction or whether MOVUPS is a store rather than a load. Graph-aware n-grams need not be adjacent.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Sign-extended integer index followed by scalar double load. This is standard array-of-double access.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/15/assessment",
+      "evidence_reference": "/evidence/top_features/15; /evidence/function_context (empty)",
+      "reason": "Mnemonics alone do not establish an index, an array access or adjacency. No context supports this interpretation.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Address computation near a stack restore, usually function epilogue code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+      "evidence_reference": "/evidence/top_features/18; /evidence/function_context (empty)",
+      "reason": "The claim of epilogue or stack-restore context is asserted without extraction or context evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Frequencies are very low for nearly all features, except MOV MOVZX at 0.0225",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states that feature values are not established as counts or frequencies and should not be treated as raw counts. The candidate treats them as frequencies and draws a conclusion about signal weakness.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "only slightly above the decision boundary",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/rf_probability_class_1",
+      "reason": "No decision threshold is supplied. A 0.5 boundary is assumed, though it is plausible for a binary RF.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "df8f0f61a1af0f3768ea07700d60446969c4c6a95a1ecb131844bd6665c8c45a.exe_analysis.json"
+}

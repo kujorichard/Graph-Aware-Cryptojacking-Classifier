@@ -1,0 +1,198 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_9a02658c1342a2d6",
+  "status": "success",
+  "source_sha256": "8b075f8a537419bf11c9d86cc346112b3a5c95481df1a276c4b568525c3295a7",
+  "input_sha256": "f813085b2dc5085da9480da134dbb323567edccffc5d8b3a013920416f94a83e",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "a9303e3948a212476179499bf5e7aaf5df89fc490bf28c8ec15005bf8b023ee5.exe",
+      "source_name": "a9303e3948a212476179499bf5e7aaf5df89fc490bf28c8ec15005bf8b023ee5.exe.json",
+      "source_path": "ml/dataset/cryptojacking/a9303e3948a212476179499bf5e7aaf5df89fc490bf28c8ec15005bf8b023ee5.exe.json",
+      "split": "test",
+      "batch_number": 2,
+      "row_index_in_batch": 81,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "a9303e3948a212476179499bf5e7aaf5df89fc490bf28c8ec15005bf8b023ee5.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:15:07.028006+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:15:07.028033+00:00",
+      "error": null,
+      "request_sha256": "e702d75cb486a1c729794cda94277fafd961e595bc58b041ceacf457cc49392a",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm3ZRdk4j5PFoLK16ZWv",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_9a02658c1342a2d6\",\"scores\":{\"technical_accuracy\":4,\"coherence\":5,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 1.0, the 20 positive SHAP values, the 0.0068–0.0150 range and the n-gram values match the evidence. Instruction semantics are mostly correct and hedged. A few interpretations overreach slightly, such as 'indicates a frame-pointer-based compiler' and 'Argument pushing after a call returns'. 'These appear in almost any compiled Windows executable' is an unsupported generalization. The 'Very rare' and 'Common' labels depend on an unconfirmed meaning of the values.\",\"coherence\":\"The argument is well organized and consistent: strong RF signal, generic n-grams, weak arithmetic hints, and an inconclusive result, matching the low-confidence tier and the recommendations. The only issue is some repetition across the per-feature assessments.\",\"cybersecurity_relevance\":\"It ties this sample's n-grams to the cryptojacking question, looks at arithmetic and hash-like hints, and notes the absence of function or API context. It also raises packing/obfuscation as an alternative explanation. It does little to consider concrete benign software categories, and it treats the feature values as frequencies.\",\"actionable_utility\":\"Sandbox CPU and network checks, locating functions that contain the rare n-grams, checking for packing, and a conditional escalation criterion are concrete, feasible and tied to evidence gaps. The advice to 'treat the binary as suspicious' based on RF probability is somewhat blunt, and the actions are not prioritized.\"},\"unsupported_claims\":[{\"quote\":\"These appear in almost any compiled Windows executable and say nothing about mining behavior on their own.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence.top_features; feature_value_semantics; no OS/compiler/function context\",\"reason\":\"The claim of Windows ubiquity and the compiler-pattern identification are general knowledge, not supported by the artifact, which gives no platform or extraction context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"they occur at very low frequencies (0.000016, 0.000101 and 0.000848)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence.feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation\",\"reason\":\"Feature values are interpreted as frequencies although their semantics are explicitly unconfirmed. This is mild since the values are quoted correctly.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"It is generic and indicates a frame-pointer-based compiler.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"evidence.top_features MOV LEAVE; function_context empty\",\"reason\":\"Compiler or frame-pointer use is inferred from a bigram without any context. LEAVE itself does imply a frame pointer, but the compiler inference is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Argument pushing after a call returns, typical of cdecl or stdcall code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"evidence.occurrences empty; function_context empty\",\"reason\":\"Adjacency and sequence semantics (a push after a call returns) and the calling convention are asserted without extraction or context evidence. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The signs (all positive toward class 1), the range and the per-feature contributions match the supplied SHAP values within rounding. The candidate also avoids reading the top-k subset as exhaustive and calls the result inconclusive.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption pending upstream verification.\",\"Feature value semantics are unconfirmed, so frequency versus count readings are uncertain.\",\"There is no occurrence, function or API context, so adjacency, control flow and routine identity cannot be assessed.\",\"Only the top 20 features are given, with no baseline or full attributions, so omitted features cannot be ruled out.\",\"RF probability 1.0 is not behavioral proof.\"],\"summary\":\"A well-organized, appropriately cautious explanation with accurate numbers and faithful SHAP direction and magnitude. It loses a little accuracy on some context-free inferences (Windows ubiquity, compiler and calling convention, frequency semantics). Its follow-up actions are concrete and proportionate.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7135,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 1612,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7135,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1612,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_9a02658c1342a2d6\",\"scores\":{\"technical_accuracy\":4,\"coherence\":5,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 1.0, the 20 positive SHAP values, the 0.0068–0.0150 range and the n-gram values match the evidence. Instruction semantics are mostly correct and hedged. A few interpretations overreach slightly, such as 'indicates a frame-pointer-based compiler' and 'Argument pushing after a call returns'. 'These appear in almost any compiled Windows executable' is an unsupported generalization. The 'Very rare' and 'Common' labels depend on an unconfirmed meaning of the values.\",\"coherence\":\"The argument is well organized and consistent: strong RF signal, generic n-grams, weak arithmetic hints, and an inconclusive result, matching the low-confidence tier and the recommendations. The only issue is some repetition across the per-feature assessments.\",\"cybersecurity_relevance\":\"It ties this sample's n-grams to the cryptojacking question, looks at arithmetic and hash-like hints, and notes the absence of function or API context. It also raises packing/obfuscation as an alternative explanation. It does little to consider concrete benign software categories, and it treats the feature values as frequencies.\",\"actionable_utility\":\"Sandbox CPU and network checks, locating functions that contain the rare n-grams, checking for packing, and a conditional escalation criterion are concrete, feasible and tied to evidence gaps. The advice to 'treat the binary as suspicious' based on RF probability is somewhat blunt, and the actions are not prioritized.\"},\"unsupported_claims\":[{\"quote\":\"These appear in almost any compiled Windows executable and say nothing about mining behavior on their own.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence.top_features; feature_value_semantics; no OS/compiler/function context\",\"reason\":\"The claim of Windows ubiquity and the compiler-pattern identification are general knowledge, not supported by the artifact, which gives no platform or extraction context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"they occur at very low frequencies (0.000016, 0.000101 and 0.000848)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence.feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation\",\"reason\":\"Feature values are interpreted as frequencies although their semantics are explicitly unconfirmed. This is mild since the values are quoted correctly.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"It is generic and indicates a frame-pointer-based compiler.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"evidence.top_features MOV LEAVE; function_context empty\",\"reason\":\"Compiler or frame-pointer use is inferred from a bigram without any context. LEAVE itself does imply a frame pointer, but the compiler inference is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Argument pushing after a call returns, typical of cdecl or stdcall code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"evidence.occurrences empty; function_context empty\",\"reason\":\"Adjacency and sequence semantics (a push after a call returns) and the calling convention are asserted without extraction or context evidence. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The signs (all positive toward class 1), the range and the per-feature contributions match the supplied SHAP values within rounding. The candidate also avoids reading the top-k subset as exhaustive and calls the result inconclusive.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption pending upstream verification.\",\"Feature value semantics are unconfirmed, so frequency versus count readings are uncertain.\",\"There is no occurrence, function or API context, so adjacency, control flow and routine identity cannot be assessed.\",\"Only the top 20 features are given, with no baseline or full attributions, so omitted features cannot be ruled out.\",\"RF probability 1.0 is not behavioral proof.\"],\"summary\":\"A well-organized, appropriately cautious explanation with accurate numbers and faithful SHAP direction and magnitude. It loses a little accuracy on some context-free inferences (Windows ubiquity, compiler and calling convention, frequency semantics). Its follow-up actions are concrete and proportionate.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_9a02658c1342a2d6",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 5,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability 1.0, the 20 positive SHAP values, the 0.0068–0.0150 range and the n-gram values match the evidence. Instruction semantics are mostly correct and hedged. A few interpretations overreach slightly, such as 'indicates a frame-pointer-based compiler' and 'Argument pushing after a call returns'. 'These appear in almost any compiled Windows executable' is an unsupported generalization. The 'Very rare' and 'Common' labels depend on an unconfirmed meaning of the values.",
+      "coherence": "The argument is well organized and consistent: strong RF signal, generic n-grams, weak arithmetic hints, and an inconclusive result, matching the low-confidence tier and the recommendations. The only issue is some repetition across the per-feature assessments.",
+      "cybersecurity_relevance": "It ties this sample's n-grams to the cryptojacking question, looks at arithmetic and hash-like hints, and notes the absence of function or API context. It also raises packing/obfuscation as an alternative explanation. It does little to consider concrete benign software categories, and it treats the feature values as frequencies.",
+      "actionable_utility": "Sandbox CPU and network checks, locating functions that contain the rare n-grams, checking for packing, and a conditional escalation criterion are concrete, feasible and tied to evidence gaps. The advice to 'treat the binary as suspicious' based on RF probability is somewhat blunt, and the actions are not prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "These appear in almost any compiled Windows executable and say nothing about mining behavior on their own.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "evidence.top_features; feature_value_semantics; no OS/compiler/function context",
+        "reason": "The claim of Windows ubiquity and the compiler-pattern identification are general knowledge, not supported by the artifact, which gives no platform or extraction context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "they occur at very low frequencies (0.000016, 0.000101 and 0.000848)",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "evidence.feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation",
+        "reason": "Feature values are interpreted as frequencies although their semantics are explicitly unconfirmed. This is mild since the values are quoted correctly.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "It is generic and indicates a frame-pointer-based compiler.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "evidence.top_features MOV LEAVE; function_context empty",
+        "reason": "Compiler or frame-pointer use is inferred from a bigram without any context. LEAVE itself does imply a frame pointer, but the compiler inference is unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Argument pushing after a call returns, typical of cdecl or stdcall code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+        "evidence_reference": "evidence.occurrences empty; function_context empty",
+        "reason": "Adjacency and sequence semantics (a push after a call returns) and the calling convention are asserted without extraction or context evidence. Graph-aware n-grams need not be adjacent.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "The signs (all positive toward class 1), the range and the per-feature contributions match the supplied SHAP values within rounding. The candidate also avoids reading the top-k subset as exhaustive and calls the result inconclusive.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption pending upstream verification.",
+      "Feature value semantics are unconfirmed, so frequency versus count readings are uncertain.",
+      "There is no occurrence, function or API context, so adjacency, control flow and routine identity cannot be assessed.",
+      "Only the top 20 features are given, with no baseline or full attributions, so omitted features cannot be ruled out.",
+      "RF probability 1.0 is not behavioral proof."
+    ],
+    "summary": "A well-organized, appropriately cautious explanation with accurate numbers and faithful SHAP direction and magnitude. It loses a little accuracy on some context-free inferences (Windows ubiquity, compiler and calling convention, frequency semantics). Its follow-up actions are concrete and proportionate."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "These appear in almost any compiled Windows executable and say nothing about mining behavior on their own.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "evidence.top_features; feature_value_semantics; no OS/compiler/function context",
+      "reason": "The claim of Windows ubiquity and the compiler-pattern identification are general knowledge, not supported by the artifact, which gives no platform or extraction context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "they occur at very low frequencies (0.000016, 0.000101 and 0.000848)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "evidence.feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation",
+      "reason": "Feature values are interpreted as frequencies although their semantics are explicitly unconfirmed. This is mild since the values are quoted correctly.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "It is generic and indicates a frame-pointer-based compiler.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "evidence.top_features MOV LEAVE; function_context empty",
+      "reason": "Compiler or frame-pointer use is inferred from a bigram without any context. LEAVE itself does imply a frame pointer, but the compiler inference is unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Argument pushing after a call returns, typical of cdecl or stdcall code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+      "evidence_reference": "evidence.occurrences empty; function_context empty",
+      "reason": "Adjacency and sequence semantics (a push after a call returns) and the calling convention are asserted without extraction or context evidence. Graph-aware n-grams need not be adjacent.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "a9303e3948a212476179499bf5e7aaf5df89fc490bf28c8ec15005bf8b023ee5.exe_analysis.json"
+}

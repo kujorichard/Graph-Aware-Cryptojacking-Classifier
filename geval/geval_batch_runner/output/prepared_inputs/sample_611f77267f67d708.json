@@ -1,0 +1,237 @@
+{
+  "sample_id": "sample_611f77267f67d708",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.985,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "ADD ROR",
+        "value": 0.0005854210467077792,
+        "shap_value": 0.009626713311337727
+      },
+      {
+        "ngram": "MOVAPD DIVSD",
+        "value": 2.563887846918078e-06,
+        "shap_value": 0.008309412785543676
+      },
+      {
+        "ngram": "POP SUB",
+        "value": 2.7348136427463032e-05,
+        "shap_value": 0.008203094471681667
+      },
+      {
+        "ngram": "PXOR MOVAPS",
+        "value": 0.0006837034015916288,
+        "shap_value": 0.008020183697769613
+      },
+      {
+        "ngram": "POP LEA",
+        "value": 3.418517007958144e-05,
+        "shap_value": 0.007972717073121461
+      },
+      {
+        "ngram": "ADD FLD",
+        "value": 7.691663086006884e-06,
+        "shap_value": 0.007346929351549955
+      },
+      {
+        "ngram": "SUB ADC",
+        "value": 5.982404672977282e-06,
+        "shap_value": 0.006942890244649027
+      },
+      {
+        "ngram": "MOVDQA MOVAPS",
+        "value": 0.0019058232428506017,
+        "shap_value": 0.006839111543021113
+      },
+      {
+        "ngram": "PXOR MOVUPS",
+        "value": 0.0007469459669664502,
+        "shap_value": 0.006731523039046887
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "value": 0.0007298534037545323,
+        "shap_value": 0.006663572998534011
+      },
+      {
+        "ngram": "ROL AND",
+        "value": 8.717218588571995e-05,
+        "shap_value": 0.006513548267581825
+      },
+      {
+        "ngram": "ADD PUSH",
+        "value": 0.00013759531429968774,
+        "shap_value": 0.006503805625603301
+      },
+      {
+        "ngram": "ROL ADD",
+        "value": 0.0009204357047565281,
+        "shap_value": 0.0063510908645119275
+      },
+      {
+        "ngram": "MOV FLD",
+        "value": 2.13657312997384e-05,
+        "shap_value": 0.006236466418330467
+      },
+      {
+        "ngram": "MOV ROL",
+        "value": 0.00028031840338371694,
+        "shap_value": 0.006209792053304587
+      },
+      {
+        "ngram": "PXOR MOVDQA",
+        "value": 0.00024784248671494424,
+        "shap_value": 0.00604594475773705
+      },
+      {
+        "ngram": "PAND PXOR",
+        "value": 0.00013075827155262232,
+        "shap_value": 0.006022235101168678
+      },
+      {
+        "ngram": "BSWAP LEA",
+        "value": 1.5383326172013767e-05,
+        "shap_value": 0.006018704974515873
+      },
+      {
+        "ngram": "ADD MOVQ",
+        "value": 0.00032475910848006606,
+        "shap_value": 0.005691319125065422
+      },
+      {
+        "ngram": "SUB CMOVG",
+        "value": 1.4528697647619992e-05,
+        "shap_value": 0.005493477751332345
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "high-confidence",
+    "explanation": "The Random Forest classified this binary as MALWARE with probability 0.9850, and all 20 top SHAP features push toward cryptojacking (+0.0055 to +0.0096). No counter-evidence is present. The n-grams fall into three groups consistent with hashing and mining workloads. (1) Rotate/add/bswap integer mixing: ADD ROR (0.000585, +0.009627), ROL ADD (0.000920, +0.006351), ROL AND (+0.006514), MOV ROL (+0.006210) and BSWAP LEA (+0.006019). This is typical of ARX-style hash rounds and endian conversion in hash cores. (2) SIMD register clearing and shuffling: PXOR MOVAPS (+0.008020), PXOR MOVUPS (+0.006732), PXOR PXOR (+0.006664), PXOR MOVDQA (+0.006046), PAND PXOR (+0.006022), MOVDQA MOVAPS (0.001906, +0.006839) and ADD MOVQ (+0.005691). These suggest vectorized bulk state handling and bitwise mixing, as in memory-hard or hashing loops. (3) Low-frequency x87/SSE arithmetic and stack-related sequences: MOVAPD DIVSD (+0.008309), ADD FLD (+0.007347), MOV FLD (+0.006236), POP SUB (+0.008203), POP LEA (+0.007973), SUB ADC (+0.006943), ADD PUSH (+0.006504) and SUB CMOVG (+0.005493). These are less specific and could come from ordinary compiled code or runtime libraries, but their SHAP contributions are consistently positive. The evidence has no function-level attribution, so no specific routine can be named. The overall pattern of rotate-heavy integer mixing combined with dense SIMD XOR/AND operations, together with the model's high probability, supports a high-confidence cryptojacking assessment. It remains a statistical inference rather than direct proof.",
+    "evidence_analysis": [
+      {
+        "ngram": "ADD ROR",
+        "shap_contribution": 0.009627,
+        "assessment": "Top feature. Add followed by rotate-right is a core ARX/hash-round pattern used in cryptographic hashing, and its relatively high frequency (0.000585) is consistent with mining hash loops."
+      },
+      {
+        "ngram": "MOVAPD DIVSD",
+        "shap_contribution": 0.008309,
+        "assessment": "Very rare (0.000003) scalar double-precision division after an aligned move. It is not typical of hashing and may reflect auxiliary calculations such as hashrate or statistics, but it is a weak, ambiguous indicator."
+      },
+      {
+        "ngram": "POP SUB",
+        "shap_contribution": 0.008203,
+        "assessment": "Stack-restore followed by subtraction. It is generic compiler-generated code, but the high SHAP value suggests it is characteristic of this binary's code layout, which the model associates with malware."
+      },
+      {
+        "ngram": "PXOR MOVAPS",
+        "shap_contribution": 0.00802,
+        "assessment": "Register zeroing or XOR followed by an aligned 128-bit store/move. This is consistent with vectorized state initialization and buffer handling in hashing or memory-hard algorithms."
+      },
+      {
+        "ngram": "POP LEA",
+        "shap_contribution": 0.007973,
+        "assessment": "Low-frequency epilogue/address-computation sequence. It is generic, and its contribution comes from the model's learned association with this sample's code structure."
+      },
+      {
+        "ngram": "ADD FLD",
+        "shap_contribution": 0.007347,
+        "assessment": "x87 floating-point load after an add. Rare in modern hashing code, so it may point to supporting numeric code or a bundled library, and it adds modest weight toward malicious classification."
+      },
+      {
+        "ngram": "SUB ADC",
+        "shap_contribution": 0.006943,
+        "assessment": "Subtract followed by add-with-carry indicates multi-precision arithmetic, which appears in big-integer and cryptographic computation."
+      },
+      {
+        "ngram": "MOVDQA MOVAPS",
+        "shap_contribution": 0.006839,
+        "assessment": "Relatively frequent (0.001906) aligned 128-bit moves between SIMD registers. This suggests heavy vectorized data movement typical of optimized mining kernels."
+      },
+      {
+        "ngram": "PXOR MOVUPS",
+        "shap_contribution": 0.006732,
+        "assessment": "SIMD XOR followed by an unaligned 128-bit move, consistent with XOR-based mixing and block copying in hash and cipher implementations."
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "shap_contribution": 0.006664,
+        "assessment": "Consecutive SIMD XORs indicate dense bitwise mixing, as in AES-like or hash-state manipulation, and are a typical mining-workload signature."
+      },
+      {
+        "ngram": "ROL AND",
+        "shap_contribution": 0.006514,
+        "assessment": "Rotate-left followed by AND is consistent with bitwise round functions such as choice/majority operations in SHA- or Blake-style hashes."
+      },
+      {
+        "ngram": "ADD PUSH",
+        "shap_contribution": 0.006504,
+        "assessment": "Generic arithmetic followed by a stack push. It has little specificity on its own, and its contribution reflects overall code-pattern similarity to known malicious samples."
+      },
+      {
+        "ngram": "ROL ADD",
+        "shap_contribution": 0.006351,
+        "assessment": "Frequent (0.000920) rotate-then-add, complementary to ADD ROR and typical of ARX hash round structure."
+      },
+      {
+        "ngram": "MOV FLD",
+        "shap_contribution": 0.006236,
+        "assessment": "x87 load from memory. Like ADD FLD, it is a low-specificity numeric-code indicator that contributes modestly."
+      },
+      {
+        "ngram": "MOV ROL",
+        "shap_contribution": 0.00621,
+        "assessment": "Loading a value and then rotating it is consistent with loading hash state or message words and applying rotation-based mixing."
+      },
+      {
+        "ngram": "PXOR MOVDQA",
+        "shap_contribution": 0.006046,
+        "assessment": "SIMD XOR with an aligned 128-bit move, supporting the vectorized state-mixing pattern seen in other PXOR n-grams."
+      },
+      {
+        "ngram": "PAND PXOR",
+        "shap_contribution": 0.006022,
+        "assessment": "Packed AND followed by XOR is a bitwise masking and mixing pattern used in vectorized cryptographic primitives."
+      },
+      {
+        "ngram": "BSWAP LEA",
+        "shap_contribution": 0.006019,
+        "assessment": "Byte swap is used for endianness conversion in hash input and output handling. Paired with an address calculation, it fits hash-processing code."
+      },
+      {
+        "ngram": "ADD MOVQ",
+        "shap_contribution": 0.005691,
+        "assessment": "Integer add followed by a 64-bit SIMD/GPR move, consistent with 64-bit lane operations in hash computation."
+      },
+      {
+        "ngram": "SUB CMOVG",
+        "shap_contribution": 0.005493,
+        "assessment": "Subtract followed by a conditional move is branchless comparison logic. It could be used in constant-time or target-comparison code, but it is ambiguous."
+      }
+    ],
+    "confidence_score": 0.9,
+    "key_indicators": [
+      "Rotate-heavy ARX sequences (ADD ROR, ROL ADD, ROL AND, MOV ROL) typical of hash rounds",
+      "Dense SIMD XOR/AND/move patterns (PXOR, PAND, MOVDQA, MOVAPS, MOVUPS) suggesting vectorized hashing",
+      "BSWAP and SUB ADC indicating endianness handling and multi-precision arithmetic",
+      "All 20 top SHAP features push toward cryptojacking with no opposing evidence",
+      "Random Forest malware probability of 0.9850"
+    ],
+    "recommended_action": "Treat the sample as likely cryptojacking malware. Analyze it in a sandbox to confirm mining behavior (sustained CPU use, stratum or pool network connections, mining configuration). Disassemble the functions containing the rotate and PXOR clusters to identify the hash algorithm (for example CryptoNight or RandomX). Extract IOCs such as pool addresses and wallet IDs, and block the hash across endpoints. Because the evidence does not name specific functions, confirm with dynamic or static analysis before final attribution."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

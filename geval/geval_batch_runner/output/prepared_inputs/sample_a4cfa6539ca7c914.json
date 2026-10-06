@@ -1,0 +1,207 @@
+{
+  "sample_id": "sample_a4cfa6539ca7c914",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.5048837209302326,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "ADD POP",
+        "value": 0.007518797181546688,
+        "shap_value": -0.019317051964109617
+      },
+      {
+        "ngram": "MOV LEA",
+        "value": 0.04511278122663498,
+        "shap_value": -0.01690583233250144
+      },
+      {
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.015375445666657817
+      },
+      {
+        "ngram": "SUB MOV",
+        "value": 0.0,
+        "shap_value": 0.011577353974341814
+      },
+      {
+        "ngram": "XOR MOV",
+        "value": 0.0,
+        "shap_value": 0.011038331565082124
+      },
+      {
+        "ngram": "CALL ADD",
+        "value": 0.015037594363093376,
+        "shap_value": -0.010772378651861649
+      },
+      {
+        "ngram": "LEA MOV",
+        "value": 0.060150377452373505,
+        "shap_value": -0.010736306875863444
+      },
+      {
+        "ngram": "XOR CALL",
+        "value": 0.0,
+        "shap_value": 0.009071870941056064
+      },
+      {
+        "ngram": "PUSH SUB",
+        "value": 0.007518797181546688,
+        "shap_value": -0.008631419021611329
+      },
+      {
+        "ngram": "XOR XOR",
+        "value": 0.0,
+        "shap_value": 0.008352330327838525
+      },
+      {
+        "ngram": "SUB LEA",
+        "value": 0.0,
+        "shap_value": 0.007493247451579574
+      },
+      {
+        "ngram": "AND MOV",
+        "value": 0.0,
+        "shap_value": 0.007236942645808153
+      },
+      {
+        "ngram": "TEST JS",
+        "value": 0.0,
+        "shap_value": 0.007235642829962552
+      },
+      {
+        "ngram": "SUB CALL",
+        "value": 0.015037594363093376,
+        "shap_value": -0.007205648306754948
+      },
+      {
+        "ngram": "LEA CALL",
+        "value": 0.0,
+        "shap_value": 0.006776858892479491
+      },
+      {
+        "ngram": "CMP JZ",
+        "value": 0.007518797181546688,
+        "shap_value": -0.006616870961701972
+      },
+      {
+        "ngram": "MOV MOV",
+        "value": 0.37593984603881836,
+        "shap_value": -0.005708340208692572
+      },
+      {
+        "ngram": "XOR SHL",
+        "value": 0.0,
+        "shap_value": 0.00560253943776182
+      },
+      {
+        "ngram": "XOR CMOVNZ",
+        "value": 0.0,
+        "shap_value": 0.005251908288128217
+      },
+      {
+        "ngram": "MOV SUB",
+        "value": 0.007518797181546688,
+        "shap_value": -0.005211759348035435
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "benign",
+    "explanation": "The Random Forest probability of 0.5049 is essentially a coin flip, so the classifier output gives no meaningful support for cryptojacking. The SHAP evidence does not support a malicious verdict either. The n-grams pushing toward cryptojacking (CMOVZ MOV +0.015375, SUB MOV +0.011577, XOR MOV +0.011038, XOR CALL +0.009072, XOR XOR +0.008352, SUB LEA +0.007493, AND MOV +0.007237, TEST JS +0.007236, LEA CALL +0.006777, XOR SHL +0.005603, XOR CMOVNZ +0.005252) all have a frequency of 0.000000. They are absent from the binary, so they reflect the model's sensitivity to missing patterns, not observed behavior. In particular, no XOR-heavy or shift-based sequences, such as XOR XOR or XOR SHL, are present, and these are the kind of patterns that would be expected in hashing or mining loops. The n-grams actually present all push toward benign: ADD POP (-0.019317), MOV LEA (-0.016906, frequency 0.045113), CALL ADD (-0.010772), LEA MOV (-0.010736, frequency 0.060150), PUSH SUB (-0.008631), SUB CALL (-0.007206), CMP JZ (-0.006617), MOV MOV (-0.005708, frequency 0.375940) and MOV SUB (-0.005212). These are ordinary unoptimized compiler output: function prologues and epilogues, call setup and teardown, stack-frame handling, and data movement. This matches the binary name, which indicates a clang -O0 build of the util-linux fstrim utility. No function-level locations were provided, and no evidence of mining-specific computation is present. The evidence is consistent with a benign utility, and the borderline model score is likely a false-positive artifact.",
+    "evidence_analysis": [
+      {
+        "ngram": "ADD POP",
+        "shap_contribution": -0.019317,
+        "assessment": "Present at low frequency. This is a typical stack cleanup and epilogue pattern, and it is the strongest benign contributor."
+      },
+      {
+        "ngram": "MOV LEA",
+        "shap_contribution": -0.016906,
+        "assessment": "Common address-computation and data-movement pattern in unoptimized compiled code. It is benign and not tied to crypto computation."
+      },
+      {
+        "ngram": "CMOVZ MOV",
+        "shap_contribution": 0.015375,
+        "assessment": "Frequency is 0, so the pattern is absent. The positive SHAP value reflects the model's learned association, not observed behavior, and it provides no real evidence."
+      },
+      {
+        "ngram": "SUB MOV",
+        "shap_contribution": 0.011577,
+        "assessment": "Absent from the binary (frequency 0). It does not indicate mining activity here."
+      },
+      {
+        "ngram": "XOR MOV",
+        "shap_contribution": 0.011038,
+        "assessment": "Absent (frequency 0). XOR-based patterns can be associated with hashing, but none are present in this binary."
+      },
+      {
+        "ngram": "CALL ADD",
+        "shap_contribution": -0.010772,
+        "assessment": "Standard call followed by stack adjustment. It is typical benign compiler output."
+      },
+      {
+        "ngram": "LEA MOV",
+        "shap_contribution": -0.010736,
+        "assessment": "Relatively frequent (0.060150) address-load pattern that is typical of ordinary code and pushes toward benign."
+      },
+      {
+        "ngram": "XOR CALL",
+        "shap_contribution": 0.009072,
+        "assessment": "Frequency is 0, so the pattern is not observed. It is a non-informative positive contribution."
+      },
+      {
+        "ngram": "PUSH SUB",
+        "shap_contribution": -0.008631,
+        "assessment": "Function prologue and stack-frame allocation pattern. It is benign."
+      },
+      {
+        "ngram": "XOR XOR",
+        "shap_contribution": 0.008352,
+        "assessment": "Absent from the binary. Consecutive XOR operations would be of interest for cryptographic loops, but they are not present."
+      },
+      {
+        "ngram": "SUB CALL",
+        "shap_contribution": -0.007206,
+        "assessment": "Stack setup before a call. It is ordinary compiled code."
+      },
+      {
+        "ngram": "CMP JZ",
+        "shap_contribution": -0.006617,
+        "assessment": "Standard conditional branching, consistent with normal control flow."
+      },
+      {
+        "ngram": "MOV MOV",
+        "shap_contribution": -0.005708,
+        "assessment": "Very frequent (0.375940), as expected for -O0 code with heavy stack load and store traffic. It leans benign."
+      },
+      {
+        "ngram": "XOR SHL",
+        "shap_contribution": 0.005603,
+        "assessment": "Absent (frequency 0). Shift-and-XOR mixing is not observed, so no hashing-like evidence exists."
+      }
+    ],
+    "confidence_score": 0.8,
+    "key_indicators": [
+      "Model probability of 0.5049 is near the decision boundary and inconclusive",
+      "All 11 cryptojacking-leaning n-grams have frequency 0.000000 and are absent from the binary",
+      "Present n-grams (ADD POP, MOV LEA, LEA MOV, CALL ADD, MOV MOV) are standard unoptimized compiler patterns",
+      "No XOR/shift-heavy sequences observed that would suggest hashing or mining loops",
+      "Binary name indicates a clang -O0 util-linux fstrim build"
+    ],
+    "recommended_action": "Treat as likely false positive. Verify the binary's hash and provenance against the official util-linux 2.33 fstrim build. If provenance is confirmed, no further action is needed. Otherwise, a quick check of imports and network behavior would settle the question."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

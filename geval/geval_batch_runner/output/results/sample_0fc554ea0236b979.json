@@ -1,0 +1,260 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_0fc554ea0236b979",
+  "status": "success",
+  "source_sha256": "56f542c42d260e4187d8b43dd2fccb9be037e29f87ab457e49b210fc342ab8da",
+  "input_sha256": "6f2194dbd8e997a99635b903378910f0500573cd2ba7c56d31139cf331a16735",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "cac8f75b454179510700d7b1c5f38bddfd3cedff81b3100dab5f375d6d3cda01.exe",
+      "source_name": "cac8f75b454179510700d7b1c5f38bddfd3cedff81b3100dab5f375d6d3cda01.exe.json",
+      "source_path": "ml/dataset/cryptojacking/cac8f75b454179510700d7b1c5f38bddfd3cedff81b3100dab5f375d6d3cda01.exe.json",
+      "split": "test",
+      "batch_number": 2,
+      "row_index_in_batch": 86,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "cac8f75b454179510700d7b1c5f38bddfd3cedff81b3100dab5f375d6d3cda01.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:32:17.266802+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:32:17.266838+00:00",
+      "error": null,
+      "request_sha256": "c8c97ffb1ea2ee69dcd01e134b8413d18c3cd0e3a57c70aaabdf58a7fbe16175",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm4sMmCRzbyLvoa7Ltij",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the evidence carefully: the RF model predicts class 1 with 0.935 probability, and all 20 top features show small positive SHAP values ranging from +0.0054 to +0.0103, each nudging toward the cryptojacking classification. I want to be careful not to overstate the \"no single feature dominates\" claim, since that needs to be verified against the actual magnitude spread rather than assumed.\n\nI'm also flagging that treating the low feature values (0.00017–0.00224) as raw frequencies representing \"a small share of code\" is unsupported, since the semantics of these values haven't been established. Similarly, claims about \"inner loops,\" adjacency of rotate instructions, or a specific 32-bit architecture target for the sign-extension pattern are all inferences that go beyond what the mnemonic sequences alone can support.\n\nContinuing through the remaining features, I note CDQ MOV is misclassified as part of a \"carry chain\" cluster when CDQ is actually sign extension, and that speculative framing like \"post-call epilogue pattern\" or \"could suggest indirect jumps/obfuscation\" is appropriately hedged. The rotate-then-add pattern plausibly fits ARX-style hash rounds generically, though tying it specifically to CryptoNight is a stretch since that cipher relies on AES-NI and 64-bit multiplication rather than rotates, while Keccak's reliance on rotation is a better fit — overall this stays in the hedged, low-confidence tier appropriately.\n\nFor the SHAP faithfulness check, the signs, magnitudes, and rounding all line up correctly with the underlying values, but calling it a \"strongest cluster\" is ambiguous since that depends on whether we're summing contributions or counting items, and the claim that \"no single feature dominates\" slightly overreaches given the unknown baseline and omitted features — still, I'd call this faithful overall with a minor caveat on that interpretive leap.\n\nScoring this out: technical accuracy lands around 3 since the core numbers are right but there are several overreaches (32-bit targeting, adjacency assumptions, treating frequency as share-of-code, loop claims); coherence is a 4; relevance is a 4 given the links and acknowledged alternatives.\n\nI'm mapping the unsupported claims to their JSON pointers across the explanation and evidence_analysis entries (CDQ/MOV, ROL/ROR adjacency, MOV/SHRD 32-bit, the rotate/carry-chain loop phrasing in recommended_action), and cross-referencing them against the indexed instruction pairs like PUSH/RET, SUB/PUSH, SUB/ADC, MOVZX/PUSH, ADD/PUSH, and so on.\n\nNow I'm pulling the exact quotes I'll need to cite: the low-frequency statement about these sequences being a small share of code, the claim about 64-bit arithmetic on a 32-bit target, and the lines about these patterns fitting hash/cipher inner loops and proof-of-work mining, plus the note that adjacent opposing rotates suggest bit-mixing or cryptographic rotate-based primitives.\n\nI'll also consider including the POP TEST pattern as a post-call or epilogue followed by a flag test, keeping my total claims around six and tagging each with its evidence reference. Then I'll format everything as a single-line JSON object, sorting claims into categories like unsupported_behavior, other, and unsupported_certainty.\n\n",
+            "signature": "CAQShiwKEAgSGAI4AUIIdGhpbmtpbmcSDMPAT5po7BzI2FGZYxoMi47d5FjiLEzRvPZZIjCdkJmffTQEQFThnCQOYLW11jd/5mjkblAP7SaorggTkwQSH9LEU8YiFhppavelJ0kqoysheZOH54ui5EePO/f8iM/jr6kv6mJ0AAe/hy3WUFAS6J5a1uqou556HfosxQgRmtVXUMHNxNBK5iyY87Jqw78YUfx5ZlcpriSEEFJI2mZsQ2iip59lRYpUWD9QjS8E2Lv9+dsbL3GCyRycbIKLgPuc4P2RQmTMIFhxGmLmcH6vHstF11um/yGktjSaH4GRqrm95gnMy7/pNVavevIQKvgY3hTUSwBefAMJWQNpcZ0WpO700+44X/1VggWsQY+U7TcjeMRZm9rsl6cLonyJd9VY/eiMr0p3n8gFon8D06fjkPw7jbFRqzBeol+yVWm+AHeJ82EaAVPp4sLgv3YaPb9lZnhxsFI2TmovfYSOAKZbwE3LfPg+JcvHQJiOr5/SgW5CQ1kd0VdLHmZqXyaGKVjX1oucflZx6R2jQPyDqSd4DEIneKgP1NzT3TziFNa1CEXzKpNVIzFyKq8lzz1iWqUjlm1ErP6si6pbKCqSVbZt2Z4mDJmoJJwwe0PiiguHHehaRzeJPz1tktghW2HL2kbS2RW4ud9lH7DSXsQIz1xQN7JTqWd+GK/bFsxCL3uxzxYc1TFXxIGLtTybf8tfwfP8T0nRXKwXvNovEAz0kHLDSdM46eZePpbmx5XpLInT36h8FjAlPLiegRHSbC+mXNRgh4ln9DB5M1BByWEsJLmJKMLr9VrCYhEr4g2TtJAZx3q9uHV9dH+y/gQl/bITqFfVp+1/Gvh9/jD81yjbPU4r8nMa1a+kE2aaycel+SfuZQSSbvPAE32QAA4Vy484OumBgYJs3ytbDlIiJyGmymOWXHgCm+zywTL30/dB67Q21zILWGzKW+Hu+PKDAdxOlhMZKQtbUl+cynkeIfiYp52nMN9tqqzZk6+gNenYBKsnMuzx0qDhaPmDyv/YETtSiT9bgfq2TpHqLVN0RsiN9C24OTbqlM5Mg2o3zW/AGmXeKfYbX4bt04tmg9vkAn7Lk72NrnaBglg/fb7m1714TuWs6t4eITzetA0kAJJn0A9Lon3n8VC/Xo6AEtgHNyCKCwd+MZuvC2ICsDqecIhqJF9Ut8QV5v06CS7KP7h5cTSGkZKKsv0V+EgpDWFNc3r8q6JjxrFzW1WIJg81eIl5/tmPhGcknFx69lMjTd1najSaoax026E+4er/DLEp01RikpLnFfFzo2lxQ9UN+XtqMvXxDmvZNGzSZ+cLdIoedV0sLtKwPlDRtQU0aNL+O5PtxERBrfRwprs57OnntPUEvfQPpDgn7ol2A36ScloSnsFR34xSbNtwSt4ei/bbRoSufH3vM9NBnuwbLlCYs5RNyjcbXkFTTM5VuT6YdK8ZJRHK0gkdx7hERntalEkK3RrFYaFJvSEwjwhesvEI8U2XkAEBAjk0fQGd6PSP8kxHtm96fk9foOuu5+kCCUfJCj+toExAkqD36kLy9JgH/t4XnyHW7FMpstv4ztK2h5oV5o8KFR4C11R5XzLuL+MzZs5bfAVZdK2d/rwh7DaKy4JLOgxD0n0GX6L9wWrIn2//mlmr0RVUdESKnmXSPrfFqCb5Ki7Z7nJzsBKpJB+FdyDvNOeRhfpgf0N9DRKJTPYCfwVVIdxr/484s0LA8ZMUT0FsjSUQ1WuuoM7rrgBXalBgOHIw6PdLbfoHFs1G3GONdnrNfx8IDh4VFDkEcHlwwpPte0qtdYTtmZaM3zjJOkjgB8vYqml5Q27WZtuGNMacwHpvjgrbPRx/RDXOHBIHDaMSbeYA19I8JSeKwBgXcNMVlwNHcy6TrVsquKW3PRPaLvwD9+JB7hBeMwkUwwzKf45SFy9ad9ggNJQt85xhRnF6xCndIKrLGoRvK9anRgu49tGqX8Hl+6s759XgThs4WwfzZ8Oo0kSfq+PkdKdNMf7XgUni7LUXTOJaq1siVi5IQ2/suzzWRB/oUL+ON+evxcLTJrgEMuhOFsU2tLCHiXvXLQhR2KXYojnatiqvVr+5Jub89wJ6BdosctkfBzryUCHALiAC7KEHoyKRMkrseWsOlsGbuR3PvyNRqGrmRr3X1Em/Ub2aWm18k4uBPy9MDMcyfr8SSRO+wbYrKQkAZVa7Fg8O2RA2TltCshn/9QGYO3TFC6WMsF50Lt7Cbqw2sQ/VzPhKjOd9jhMNhsUlRU8imnOOchbnnJ6jCbellnTKl/nTWsoOOhPuJCyVaaUrHZ5hAhe1KeaO0Em9D/mli6AalwMIFKypwPepQLb91HpjCH6/BrRdRt1Df4ae+PT2dKE1V1W8nmILvhH5d5XZEyPpqA4XfLRjtdP2PHQMvi+7AXF6E1r2z30/ia3QdhZX7Nl3lMGTWkIe5pdUErqz0Rhd9SQ3jFA+taU4UraW7hPRMQ2JSy8b/YnOQh5fpfWDYm+rzfDKheOquGGbp/dnvEC+CS55DbMIWPcxILxxjb9jJg5nzWlEoeUOUpHrnuPL1fK1673uInTbFVxmGvk3pVwC1Kp1BhXS1fzyLp4XQWpillW7pyQ7U01yKTnQKdnVudmD9T0/odYSGtfHjmpDuL9szi6FlgIDVxbbmwlDXwFvhNIlJ4cyFVLKpU7e57NZRFMlsH4L6fkYnNC1oASLHC8AlPk05t/PqyiWD68GA43oEwFw000kuHMKps2LLYLeYFtsl/vth2pqtB6hvO13hUEK2BsKwr8uVOUm8iTeObsJqgWUg9vgn4AHwS+Ksbx6nvBruZbh/iWMtCZeS5BhR/ez7Wi1pK7k2hkkFS9sr7r8Ml+w6fOOh+n9NolmM9roCML49GSD0p0SZyb1ZcwmQPNAA+inxBL8GmrzywXrLESa72UyWKQDdwTjyZnxJWlHDaQzC9h8j1Ba9XyulmJ9Tl4Z3/ilPBAS7Z74Nc5aA/xRIf0Y0xpghnJTHhs3FSOhznoq8hwZYnx6xPQODs+c28It+zfj6QaXextTRGtrB2fw7h+Zh5Fwt+mOzpfttQ2kZ+OUeORrhTwQKDusHwFoXGa3PmDznEL5g9G+UD5uB4L3DFpRiPFr03yQCwjiGYqCQIGKTWUKblzHID7HH4sMIxFSeHfWqxcg7cfwmY+WCMJATANs1aeh/SFYOqX+HcMsjyJsrQze0Hh1KkNLc5Ty/t7FVhIfEaGsGHqFq/hrJgWF/J0abKAiG2ZlGUUkBhyEGKsiMXDM90daCA5cizyAdktUjL4ZdKdmt8y5T51xfMowtbfh9S8lFuPTk6MGEjSHwIxPNOUGjS0mMxYJCYT5QjzBLeSE3CFz69ClyHWmoY8z4qfdd7YTOb1zBv4u66phATq0gusCzRMmY0bvjRrJh2qPW9QPemSc5eIA0tFNOnQ7VPt7Q7/b92h1mq8jvn0Xlx196robspddiD/sNgFtuaXYFNYsV1VpADXATqpJL7k26UeNwrDlekU60j+kn++AfsnS7gPFmKUKdNo+LC9ld3WA3YBaswBEOKpsDxQWcRkAo0aCaR0QPcJLfFbXVNac6FNe/aCkz6nfWo7V/MmwhfOMR/SoH1mVMx9y1f+Yq8GO2/tDay3YdcYmZiq0wB6HKWLxpHPSEaDfhcwobf1OuGNvy5nozPe5pZs3AWRE4XNRD1Un3wpJ4Cu0BqdbCEmdvMnFmAfQ4w/4JUZ/7Kmd9fweLGSouekDtyU1e8rBd0hszcPnFt8rxfBdkh0m5hvEmwLRGSt2u/XNultNdZOzamxGwtxzBnTb28cz1QL0kwayUOKDmO/pj8r08RO3Gy4hipCHwBpC+fdpTPAd/U98gvlPYGbcY7LRfJGx4ezegODAehK8xehcqznSVFDoXGGmPofCMaIas0N+hJs63KbwuHjhhLWwxMFffATOLQgd112XKmY0iHUeDtsOm9nHF4LHJKKq6lDWZzfmCvEHjuHB9Elq7vVS613Dwk7DO0M22vddgNn4XE6pG5og5BQ2mKluZUSzCdtrbvD+KvUAucJpNAQupw4WEU4owVtbPpj8kI/1QXn6gxOC87y/qCawU3O23+rprZ0zvJKSacOLUJYouj9GiU4qP/hKpnK54h1dwbVyQzupPEkkknf7/qLL4j+pRRL7IijHxpsG3QwcaHgs1LcZQBflXemN76ggMx8i/DjBaFlaC/WKWqxEm5korsKKkiMoLIGuMq3YAmJJVdkeBMUQe7B3UbBXuDl2Gm4U7iO8AR7dA/mZtYh+lL9lYqCon+YPjRqkSWFwS6WgdcTHtRQXWU1jI6ltfY4orGmaBjlVADeuKTLMqNGnDI6FJiOE25txkullPlIPDuu2lRMqSY5ivR5lWva+Gug4OeY5tuMPCU7azHr2iUEbtpy/Jr+wNUivbm0PIchLQgW55XHEE01Sk1NnjyV7zShr7nKXCyNvIbBjE1ZvRIyzUOkGxLE7pD4QdqHC7bSpV+p3EIyCwa5a0g2b31WVxNo+Ow6LeSSngR2jw8+cgVnYXQXZjlIt2W9XF6SYKeD5bUZe4HyXudVYix1YIsCH4Uwz6CLj248XbF8ON/hT6/rHVFiopAB0P1zUSMbrkj4rzdZXBcAmbVMTwuzir7j04xoai1M5FnMhK0dSVX7DouwybFs2wDJbd00mjslzgoSTOravfub3dV8v/7pAeIGlVg4mlOmE8EcgJE2gMF6S/JDlN2sEvSdS85npT/CcTDm5qdZh3tMLdi35HpQ4tHaJNlfIkfn/GAEJ29BiY3Ssz0xpCk4OTzUr6SuoDMRLUJuEFhV/84WTjyYVu/XJpxaAUpRrviYQDZ9MYU/vINdKRb5nF0yYsvwTkE1vTqW2JTqOXeZFyBcr3fRd5L2pRQjUooDPAQoiDD/jCHKoRz34wzEclZJ5DKOxyAqUIOOFxbo3RruXXf4E0uxYObFP5KTRby0TqUOt5PPkBMz3DEbtsj44rCapLPid1m6BrrDHr2cMwXCS8dyoikci2hPqE2JykhZ5v7Yv9jzd9GI1pLv3zlZ/6Q70Ta72cT30gs+xfaMy6QBTlzKlp27bW9WepHSmOG2WfPitJPDevGUjdHSOCT+FLo7uC55dS2mEGq89RKLzKeVuMHieDhftFkvoCQ0IzWipgydUzje54U8JyRHpfUs0UBU/IkMVD2b04+r1wdxXo4yJe8tKlSc7e2/HY2by3Ig9rJhceL+LQNOyZcVG09PUPJ8c5c4ahODKxVe+b5pEQgv9+KJbi9fF4GoXP05yijZqSKCrMx8EwCZHwxiVubF5rs+39qekQWv7VXVQB7pA56oPQasPjF/UVvmMyoIVFL/dmhEVKK/ws5DrV2SCgh+v/+7RlVTeH1Y83uvv5XbJtUHyy5V0ViSE2m8KfuchPGt7vgQ6ahVl6cvV3GJ78B5Lp18Cv+zoA7isS7xNZablMCAkl/JG43+bYJ0QH6OUwHhU4yqpl2+YiOGs+AtT+gUbgGQKFs6hb11UseJC6NeVZeZJ0KctbkDilpQFyMeeacOnrvDbxwbI5xPQZbXJ0AFHY82ubvmgk2oGIB3bQjHRPFVtYrNpK26cV8KOkQhz2XcwgcrddZarU2Lf+iH88jQnlpYps2nrwhh7FroWpgPEE17RXtsCXsRkPVkM6qgksIqsYXALCQjzbhVrKNVdVyZaGuDJCdFVWKwjs3OIP/o4dmFOgwZWpGiVHQ37JCpRe89JQWo4R4oMpIPjhqXdPs28CjFyvPj3oYuu7PtkJtT5sWsSsdg5VpOy+k5rHO1utjpmnZNpUThIkBVFg0ucW1oTk41TjKVppMLNwH3n/1O7d84pt58go3xu2n9qqVl5/57O97DqCn3Lgz46XcAuc4Ywp3Qnu/1Ckh24uBNGlkxNnjj7iUeAVHCJEBG51Xj2ZzPMqoGw0MWsu3maGGlBA6uYJUO8XUMqL1jYKyXd+n9k1BMQv5vdol0T+4min5GsscZwGkt3nyYXvUynZK4H+Vh22acWRNzJqirSo59FXCVCRVOIIzf6x8hgJLCVds7uVcF1VLJOrrcvtH40p26aRpPv6HL2iPzbHJwxYdtaMzpqdCQ5JRBlyZvdWG6rsU8Ur/xA7gB8/6o75Q/z+Pu7mxz/Xn+qi+HlqnCXuk8XxoMf9aODIByVsbp5Lkfe4VO/dujods2Gdqr6cNQrGAIkZaXndQnJTtbmTvcCacTlkIRmHGK9px+lr/dOwKe0PvCue9C/1/JDQPOg4sx33lRZ0VU5XtAV/6CQPhraioa8nXUrTIyE204Sxj5IzZMCjXEAvNOgElSc+u+rOQBO9Gm3kJqMEL70S3JLyT31onQVVNM3cnEPCFU7WFmyRLP9c3JI1PztG+W/Lg/aUV0SCmARqqfQ+XFSK7ASoyRjGszQYC5Bi4TMgU5wfAA0jktSSU6aS7XAjejpPNiFvI9+YbL2OCoh0JgO8WB30q7RJgvBM7130QP1ilcnG3ZvWYdSLiVEyDO5E7NjxHUrpUOhSBxM7pSEU04DD/3HlzUe5/hDBrAPNVACJq4KUzJQpPpCAWrKFI6q3oya4XrcWyfKtdd06p2q3BlBg+9E/4UKcYuBoQqIMSivaFZIBCEVd4evSf3zBL9Mx6vFT1BUFDBkhvFvrIqGijmmfFbtnU2pMs53PRKmraM+n5KozGm34glFEsBHqnmCIDuVxHeyT/d3letr4jtUUez/ayVZTkN+S87yknh8HscmLeCWj7EscoN4ve/e3sl2aH9Yfi/eByJFvUZsJaVMl8q3v1olBbgpdIz5O16Pl4jntErbUZHaM0N3qR5JG5MKKR3emLpxUTDb9vWftqn7LxX8JLhI/noTi1bIRNgHCxdjhJEqkLWE/K2cCBzeIda9hTry+GHg8hxOC/rI/kOKOme3jxQicgor6H5E1LktqSW6p+6VQ8cak4rgqb6Z6MzerVhmdDV1vMKjWXmzpO+VCTMTIQa2VtlTIac0RTzTVDjrrdGVykzJwfDDQ0bUNX3V7Du1qNcZeWfkdnsgmDoCU6pvrCQ9NJgAeJ5quS7qIEL86+a8NpkO8kWjXFWKmfZ+syZ1m+X4n7tVYDv0vm/W8z0tS5mJpckd9TsLZW6BwLrUkro/RQ2fE8WQkHplEi6o2ltBMlLMpw+2HnN3E6VOT5eGbMOaUFBxlkxZTvtmeoopPfCOI8rqN5dA2YxMy2o7A7GAxynFZCuW+9ba+KSIqVxMHWJunwgptHuccFMzoodA34CsFlWOXDS+/ZLG92eLX7Bn4OZJWa867nOMAAKLNg1Fa2prmCH0taggl3n3YATGzK2Yp3HmGPbjZd31dFzDP34PiGJn75Hqfc51Zp2NAUFeZopFn6zB/6XxcOSppsQ1DYTgesAIXuB55qytJk8F9jWerqzQAKKRTg8SObvLEQvieMOkyNR+gu78zdpfn6ot0kbYs2Sa8+FbVsgja3nF5fM0jTc8FF2fcfgYgwcaTeYhXTAk+r3MWpCW/KLpGAE="
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_0fc554ea0236b979\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, top-k SHAP signs and magnitudes, and the frequency range are reported correctly, and the final low-confidence hedging is appropriate. Several interpretations overreach: a 32-bit target, adjacency, 'inner loops', and frequency read as share of code. CDQ MOV is also grouped as a carry chain.\",\"coherence\":\"Observations, clusters, per-feature assessments, tier and recommendations fit together. The 'low-confidence' tier matches the stated inability to separate a miner from legitimate crypto code. The text is somewhat repetitive between the explanation and the per-feature list.\",\"cybersecurity_relevance\":\"It ties the rotate, shift and carry-chain n-grams to hashing and proof-of-work questions. It names benign alternatives (legitimate crypto, compression, hashing libraries) and the absence of API, string, network and function evidence.\",\"actionable_utility\":\"Follow-up is concrete and proportionate: look for mining constants and Stratum/pool strings, check CPU use and persistence, locate the functions, examine PUSH RET sites, and sandbox the sample. These are framed as checks, not observed behavior. Some wording presumes loops and specific algorithm families that the evidence does not show.\"},\"unsupported_claims\":[{\"quote\":\"All frequencies are very low (0.00017 to 0.00224), so these sequences are a small share of the code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the values must not be treated as raw counts or frequencies without upstream confirmation. The numeric range is correct, but the inference about share of code is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"This pattern appears in big-integer or 64-bit arithmetic on a 32-bit target.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"No architecture, bitness or extraction context is supplied. A 32-bit target is asserted from mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"These are typical of hash and cipher inner loops, which fits proof-of-work mining code such as CryptoNight or SHA/Keccak-style routines.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"Mnemonic n-grams do not establish loops or specific algorithms. Function context and occurrences are empty, and there are no constants or APIs.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Adjacent opposing rotates suggest bit-mixing or rotate-based emulation, typical of cryptographic primitives and sometimes obfuscation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Graph-aware n-grams need not be adjacent, and no extraction or context evidence shows adjacency. Obfuscation is also not supported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Double-precision shift used for 64-bit shifts on 32-bit code or big-integer operations, which fits hashing or wide arithmetic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"This asserts a 32-bit code context and a purpose for the MOV SHRD n-gram without supporting context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Identify the functions that contain the rotate and carry-chain loops\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"This presupposes that loops exist, but no function-level or control-flow evidence was supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Post-call or epilogue pattern followed by a flag test.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/12/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"This gives a call or epilogue context for POP TEST without occurrence or function context.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 top n-grams are reported as positive toward target class 1, with matching rounded SHAP values and the correct +0.0054 to +0.0103 range. Direction and magnitude are not distorted. The 'no single feature dominates' remark is limited by the unknown baseline and omitted features, and the class assumption is not caveated.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"There is no SHAP baseline and no full attributions; omitted features are unknown.\",\"Feature value semantics are unconfirmed, so values cannot be read as counts or frequencies.\",\"There are no occurrences, function context, APIs, strings, network indicators or architecture information.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"Numeric reporting and SHAP direction and magnitude are accurate, and the low-confidence tier with its follow-up actions is reasonable. Technical accuracy is held back by unsupported inferences: 32-bit target, loops, adjacency, and frequency read as share of code.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7149,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3923,
+          "output_tokens_details": {
+            "thinking_tokens": 2029
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7149,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3923,
+        "output_tokens_details": {
+          "thinking_tokens": 2029
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_0fc554ea0236b979\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, top-k SHAP signs and magnitudes, and the frequency range are reported correctly, and the final low-confidence hedging is appropriate. Several interpretations overreach: a 32-bit target, adjacency, 'inner loops', and frequency read as share of code. CDQ MOV is also grouped as a carry chain.\",\"coherence\":\"Observations, clusters, per-feature assessments, tier and recommendations fit together. The 'low-confidence' tier matches the stated inability to separate a miner from legitimate crypto code. The text is somewhat repetitive between the explanation and the per-feature list.\",\"cybersecurity_relevance\":\"It ties the rotate, shift and carry-chain n-grams to hashing and proof-of-work questions. It names benign alternatives (legitimate crypto, compression, hashing libraries) and the absence of API, string, network and function evidence.\",\"actionable_utility\":\"Follow-up is concrete and proportionate: look for mining constants and Stratum/pool strings, check CPU use and persistence, locate the functions, examine PUSH RET sites, and sandbox the sample. These are framed as checks, not observed behavior. Some wording presumes loops and specific algorithm families that the evidence does not show.\"},\"unsupported_claims\":[{\"quote\":\"All frequencies are very low (0.00017 to 0.00224), so these sequences are a small share of the code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the values must not be treated as raw counts or frequencies without upstream confirmation. The numeric range is correct, but the inference about share of code is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"This pattern appears in big-integer or 64-bit arithmetic on a 32-bit target.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"No architecture, bitness or extraction context is supplied. A 32-bit target is asserted from mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"These are typical of hash and cipher inner loops, which fits proof-of-work mining code such as CryptoNight or SHA/Keccak-style routines.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"Mnemonic n-grams do not establish loops or specific algorithms. Function context and occurrences are empty, and there are no constants or APIs.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Adjacent opposing rotates suggest bit-mixing or rotate-based emulation, typical of cryptographic primitives and sometimes obfuscation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Graph-aware n-grams need not be adjacent, and no extraction or context evidence shows adjacency. Obfuscation is also not supported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Double-precision shift used for 64-bit shifts on 32-bit code or big-integer operations, which fits hashing or wide arithmetic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"This asserts a 32-bit code context and a purpose for the MOV SHRD n-gram without supporting context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Identify the functions that contain the rotate and carry-chain loops\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"This presupposes that loops exist, but no function-level or control-flow evidence was supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Post-call or epilogue pattern followed by a flag test.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/12/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"This gives a call or epilogue context for POP TEST without occurrence or function context.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 top n-grams are reported as positive toward target class 1, with matching rounded SHAP values and the correct +0.0054 to +0.0103 range. Direction and magnitude are not distorted. The 'no single feature dominates' remark is limited by the unknown baseline and omitted features, and the class assumption is not caveated.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"There is no SHAP baseline and no full attributions; omitted features are unknown.\",\"Feature value semantics are unconfirmed, so values cannot be read as counts or frequencies.\",\"There are no occurrences, function context, APIs, strings, network indicators or architecture information.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"Numeric reporting and SHAP direction and magnitude are accurate, and the low-confidence tier with its follow-up actions is reasonable. Technical accuracy is held back by unsupported inferences: 32-bit target, loops, adjacency, and frequency read as share of code.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_0fc554ea0236b979",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, top-k SHAP signs and magnitudes, and the frequency range are reported correctly, and the final low-confidence hedging is appropriate. Several interpretations overreach: a 32-bit target, adjacency, 'inner loops', and frequency read as share of code. CDQ MOV is also grouped as a carry chain.",
+      "coherence": "Observations, clusters, per-feature assessments, tier and recommendations fit together. The 'low-confidence' tier matches the stated inability to separate a miner from legitimate crypto code. The text is somewhat repetitive between the explanation and the per-feature list.",
+      "cybersecurity_relevance": "It ties the rotate, shift and carry-chain n-grams to hashing and proof-of-work questions. It names benign alternatives (legitimate crypto, compression, hashing libraries) and the absence of API, string, network and function evidence.",
+      "actionable_utility": "Follow-up is concrete and proportionate: look for mining constants and Stratum/pool strings, check CPU use and persistence, locate the functions, examine PUSH RET sites, and sandbox the sample. These are framed as checks, not observed behavior. Some wording presumes loops and specific algorithm families that the evidence does not show."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "All frequencies are very low (0.00017 to 0.00224), so these sequences are a small share of the code.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says the values must not be treated as raw counts or frequencies without upstream confirmation. The numeric range is correct, but the inference about share of code is unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "This pattern appears in big-integer or 64-bit arithmetic on a 32-bit target.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "No architecture, bitness or extraction context is supplied. A 32-bit target is asserted from mnemonics alone.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "These are typical of hash and cipher inner loops, which fits proof-of-work mining code such as CryptoNight or SHA/Keccak-style routines.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/function_context",
+        "reason": "Mnemonic n-grams do not establish loops or specific algorithms. Function context and occurrences are empty, and there are no constants or APIs.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Adjacent opposing rotates suggest bit-mixing or rotate-based emulation, typical of cryptographic primitives and sometimes obfuscation.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Graph-aware n-grams need not be adjacent, and no extraction or context evidence shows adjacency. Obfuscation is also not supported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Double-precision shift used for 64-bit shifts on 32-bit code or big-integer operations, which fits hashing or wide arithmetic.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "This asserts a 32-bit code context and a purpose for the MOV SHRD n-gram without supporting context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Identify the functions that contain the rotate and carry-chain loops",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "/evidence/function_context",
+        "reason": "This presupposes that loops exist, but no function-level or control-flow evidence was supplied.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Post-call or epilogue pattern followed by a flag test.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/12/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "This gives a call or epilogue context for POP TEST without occurrence or function context.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 top n-grams are reported as positive toward target class 1, with matching rounded SHAP values and the correct +0.0054 to +0.0103 range. Direction and magnitude are not distorted. The 'no single feature dominates' remark is limited by the unknown baseline and omitted features, and the class assumption is not caveated.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "There is no SHAP baseline and no full attributions; omitted features are unknown.",
+      "Feature value semantics are unconfirmed, so values cannot be read as counts or frequencies.",
+      "There are no occurrences, function context, APIs, strings, network indicators or architecture information.",
+      "The RF probability is not behavioral proof of cryptojacking."
+    ],
+    "summary": "Numeric reporting and SHAP direction and magnitude are accurate, and the low-confidence tier with its follow-up actions is reasonable. Technical accuracy is held back by unsupported inferences: 32-bit target, loops, adjacency, and frequency read as share of code."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [
+      {
+        "quote": "0.00915",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'MOVZX PUSH': reported SHAP=0.00915; input=0.009149361797325839; tolerance=5e-07"
+      }
+    ],
+    "numeric_match": false,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "All frequencies are very low (0.00017 to 0.00224), so these sequences are a small share of the code.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says the values must not be treated as raw counts or frequencies without upstream confirmation. The numeric range is correct, but the inference about share of code is unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "This pattern appears in big-integer or 64-bit arithmetic on a 32-bit target.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "No architecture, bitness or extraction context is supplied. A 32-bit target is asserted from mnemonics alone.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "These are typical of hash and cipher inner loops, which fits proof-of-work mining code such as CryptoNight or SHA/Keccak-style routines.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/function_context",
+      "reason": "Mnemonic n-grams do not establish loops or specific algorithms. Function context and occurrences are empty, and there are no constants or APIs.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Adjacent opposing rotates suggest bit-mixing or rotate-based emulation, typical of cryptographic primitives and sometimes obfuscation.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Graph-aware n-grams need not be adjacent, and no extraction or context evidence shows adjacency. Obfuscation is also not supported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Double-precision shift used for 64-bit shifts on 32-bit code or big-integer operations, which fits hashing or wide arithmetic.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "This asserts a 32-bit code context and a purpose for the MOV SHRD n-gram without supporting context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Identify the functions that contain the rotate and carry-chain loops",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "/evidence/function_context",
+      "reason": "This presupposes that loops exist, but no function-level or control-flow evidence was supplied.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Post-call or epilogue pattern followed by a flag test.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/12/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "This gives a call or epilogue context for POP TEST without occurrence or function context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "0.00915",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'MOVZX PUSH': reported SHAP=0.00915; input=0.009149361797325839; tolerance=5e-07"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "cac8f75b454179510700d7b1c5f38bddfd3cedff81b3100dab5f375d6d3cda01.exe_analysis.json"
+}

@@ -1,0 +1,286 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_d5b94b9267f570b1",
+  "status": "success",
+  "source_sha256": "667633651fcf3457f14682c74c6ae73ca00008c6c06dfa967ac31ccb89dd18ab",
+  "input_sha256": "8b09692702083362682123012569c798bba5cd74e394b36ea7dce093afc72488",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "18498e5081675e3fa85c7bf29f842b91f6e12c96ba51bf62bc9995f861a5583d.exe",
+      "source_name": "18498e5081675e3fa85c7bf29f842b91f6e12c96ba51bf62bc9995f861a5583d.exe.json",
+      "source_path": "ml/dataset/cryptojacking/18498e5081675e3fa85c7bf29f842b91f6e12c96ba51bf62bc9995f861a5583d.exe.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 52,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "18498e5081675e3fa85c7bf29f842b91f6e12c96ba51bf62bc9995f861a5583d.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:11:53.726482+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:11:53.726518+00:00",
+      "error": {
+        "type": "ValueError",
+        "message": "SHAP faithful flag contradicts discrepancy list"
+      },
+      "request_sha256": "b51ee2769c04271996989dddac3b606874a76069671b6f8fa7ca2be9261813c0",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkxjoBEW8uwmdvwyANji",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm looking at the RF prediction of class 1 with 0.92 probability and the top 20 SHAP features, all positive. The candidate's language calling values \"frequency\" seems like a mild, somewhat unsupported interpretation since feature semantics aren't formally established, so I'm flagging that as a minor issue rather than a major one.\n\nI'm verifying each numeric value against the source data — all the SHAP contributions and frequency figures across the pairs (PXOR, MOVDQA, ADD/ROR, ROL, MOV, MOVAPD, CVTSI2SD, POP, SUB) check out correctly. The claim that contributions are \"small and evenly spread\" also holds given the 0.006–0.0126 range within the top 20, though the assertion that all features \"push toward cryptojacking\" assumes the target class semantics align with malware/cryptojacking classification, which isn't explicitly confirmed upstream — another small unverified leap rather than a flat-out error.\n\nI'm also flagging that several descriptions impose an unsupported adjacency relationship — phrases like \"followed by,\" \"repeated SIMD register zeroing,\" and \"heavy SIMD register clearing\" assume ordering or intent that the n-gram extraction method doesn't guarantee, since it's unclear whether these pairs are graph-aware or strictly adjacent. These are mild overreaches rather than outright fabrications, especially since the underlying frequencies are quite low.\n\nThe confidence score of 0.55 paired with a \"low-confidence, leaning suspicious\" tier seems somewhat arbitrary and not clearly calibrated against the model's actual 0.92 RF score, though that's defensible given sparse evidence. I also notice the claim that \"SIMD/vector patterns are the strongest signals\" is a bit misleading — the actual top SHAP contributor is POP SUB, which gets dismissed, while ADD ROR (ranked 4th, higher than most cited SIMD features) is left out of that framing, creating a selective emphasis that doesn't fully match the SHAP ranking.\n\nI'm deciding to mark this overall as faithful=true but flag the SIMD framing as a minor discrepancy, since the directions and magnitudes are accurate even if the selection emphasis is interpretive. Now I'm cataloging unsupported claims: the \"repeated SIMD register zeroing at relatively high frequency\" statement imputes a frequency semantics not justified by the evidence, and the claim about \"SIMD zeroing followed by an aligned store or move\" asserts an adjacency/ordering relationship that isn't actually supported.\n\nI'm weighing these overreaches against the hedged language elsewhere to settle on a technical accuracy score — leaning toward 3, since several recurring \"followed by\" and \"frequency\" interpretive leaps go beyond what the evidence actually shows, even though the core numbers and directions are correct.\n\nCoherence looks solid at 4, with some repetition between sections but a consistent low-confidence, suspicious-leaning stance. Relevance I'd put at 5 since it considers benign alternatives and stays sample-specific while acknowledging evidence limits. Actionability sits around 4, with reasonable next steps like sandboxing, string/import inspection, and threat intel checks, though not explicitly prioritized.\n\nFor evidence limitations, I'm noting the target class assumption, ambiguity in feature value semantics, lack of baseline comparisons or full attributions, missing occurrence/function context, and reliance on only top-k features.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_d5b94b9267f570b1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Cited probability (0.92), SHAP values and feature values match the evidence within rounding. However, it treats feature values as 'frequency', infers adjacency ('followed by') and zeroing, and says 'heavy SIMD register clearing' without extraction or context evidence. Several of these overreaches feed the hash-like interpretation.\",\"coherence\":\"Tier, uncertainty, per-feature assessments and recommendations are consistent: low-confidence, suspicious but unconfirmed. Some repetition between the summary, key indicators and per-feature entries.\",\"cybersecurity_relevance\":\"Ties the specific SIMD, rotate/add and arithmetic n-grams to hashing and mining while naming benign alternatives (memcpy, runtime libraries, compression, legitimate crypto). It states the lack of function, API, string and network evidence.\",\"actionable_utility\":\"Concrete, proportionate steps: sandbox CPU and Stratum observation, function-level inspection of the rotate/add and SIMD code, strings, imports, packer checks and threat-intel lookup. Purposes are clear and conditional, but the steps are not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Repeated SIMD register zeroing at relatively high frequency (0.002631).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1 and /evidence/feature_value_semantics\",\"reason\":\"The mnemonic pair PXOR PXOR does not establish zeroing or repetition. The feature value is explicitly not established as a frequency or count.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"SIMD zeroing followed by an aligned store or move.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2; /evidence/occurrences is empty\",\"reason\":\"Adjacency or order and the zeroing semantics are inferred without extraction or context evidence. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The combination of rotate/arithmetic mixing and heavy SIMD register clearing is suggestive of hash-like computation\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/function_context is empty\",\"reason\":\"'Heavy register clearing' is not shown. The n-gram values are tiny and have no code context, so mnemonics alone do not support hash-like computation.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"PXOR PXOR (0.002631 frequency, SHAP +0.012465)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Labels the feature value as a frequency although the artifact says value semantics are not established and should not be treated as raw counts.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive and match the evidence within tolerance. Magnitudes and the 0.006–0.0126 range are correct. It acknowledges that only the listed features were examined. The only issue is selection framing of the 'strongest signals'.\",\"discrepancies\":[{\"quote\":\"The strongest signals are the SIMD/vector patterns PXOR PXOR (0.002631 frequency, SHAP +0.012465), PXOR MOVAPS (+0.012389), MOVDQA MOVAPS (0.003790 frequency, +0.008580), PXOR MOVUPS (+0.007949), and MOVDQA PAND (+0.006065).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Minor framing issue. POP SUB (+0.0126) and ADD ROR (+0.0116) rank higher than most of these, and MOVDQA PAND is near the bottom of the top 20, so 'strongest' is a thematic choice rather than a SHAP ranking.\"}]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are not established, so the values cannot be treated as frequencies or counts.\",\"Occurrences and function context are empty, so adjacency and control flow cannot be verified.\",\"The SHAP baseline and full attributions are null, and only the top 20 features are given, so omitted features cannot be assessed.\",\"No strings, APIs, network indicators or ground-truth behavior are available.\"],\"summary\":\"Numbers and SHAP directions are reported faithfully, and the explanation is well hedged, relevant and gives sensible verification steps. Its accuracy is held back by 'frequency' labeling, inferred adjacency and zeroing, and the 'heavy SIMD register clearing' overreach.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7243,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4132,
+          "output_tokens_details": {
+            "thinking_tokens": 2421
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7243,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4132,
+        "output_tokens_details": {
+          "thinking_tokens": 2421
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_d5b94b9267f570b1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Cited probability (0.92), SHAP values and feature values match the evidence within rounding. However, it treats feature values as 'frequency', infers adjacency ('followed by') and zeroing, and says 'heavy SIMD register clearing' without extraction or context evidence. Several of these overreaches feed the hash-like interpretation.\",\"coherence\":\"Tier, uncertainty, per-feature assessments and recommendations are consistent: low-confidence, suspicious but unconfirmed. Some repetition between the summary, key indicators and per-feature entries.\",\"cybersecurity_relevance\":\"Ties the specific SIMD, rotate/add and arithmetic n-grams to hashing and mining while naming benign alternatives (memcpy, runtime libraries, compression, legitimate crypto). It states the lack of function, API, string and network evidence.\",\"actionable_utility\":\"Concrete, proportionate steps: sandbox CPU and Stratum observation, function-level inspection of the rotate/add and SIMD code, strings, imports, packer checks and threat-intel lookup. Purposes are clear and conditional, but the steps are not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Repeated SIMD register zeroing at relatively high frequency (0.002631).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1 and /evidence/feature_value_semantics\",\"reason\":\"The mnemonic pair PXOR PXOR does not establish zeroing or repetition. The feature value is explicitly not established as a frequency or count.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"SIMD zeroing followed by an aligned store or move.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2; /evidence/occurrences is empty\",\"reason\":\"Adjacency or order and the zeroing semantics are inferred without extraction or context evidence. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The combination of rotate/arithmetic mixing and heavy SIMD register clearing is suggestive of hash-like computation\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/function_context is empty\",\"reason\":\"'Heavy register clearing' is not shown. The n-gram values are tiny and have no code context, so mnemonics alone do not support hash-like computation.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"PXOR PXOR (0.002631 frequency, SHAP +0.012465)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Labels the feature value as a frequency although the artifact says value semantics are not established and should not be treated as raw counts.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive and match the evidence within tolerance. Magnitudes and the 0.006–0.0126 range are correct. It acknowledges that only the listed features were examined. The only issue is selection framing of the 'strongest signals'.\",\"discrepancies\":[{\"quote\":\"The strongest signals are the SIMD/vector patterns PXOR PXOR (0.002631 frequency, SHAP +0.012465), PXOR MOVAPS (+0.012389), MOVDQA MOVAPS (0.003790 frequency, +0.008580), PXOR MOVUPS (+0.007949), and MOVDQA PAND (+0.006065).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Minor framing issue. POP SUB (+0.0126) and ADD ROR (+0.0116) rank higher than most of these, and MOVDQA PAND is near the bottom of the top 20, so 'strongest' is a thematic choice rather than a SHAP ranking.\"}]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are not established, so the values cannot be treated as frequencies or counts.\",\"Occurrences and function context are empty, so adjacency and control flow cannot be verified.\",\"The SHAP baseline and full attributions are null, and only the top 20 features are given, so omitted features cannot be assessed.\",\"No strings, APIs, network indicators or ground-truth behavior are available.\"],\"summary\":\"Numbers and SHAP directions are reported faithfully, and the explanation is well hedged, relevant and gives sensible verification steps. Its accuracy is held back by 'frequency' labeling, inferred adjacency and zeroing, and the 'heavy SIMD register clearing' overreach.\"}"
+    },
+    {
+      "number": 2,
+      "timestamp": "2026-10-06T12:12:22.312888+00:00",
+      "error": null,
+      "request_sha256": "04404317ddaf140955c3a5cefd3961a72a2f2bd3cbad151e99f70d89e3f719e9",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkxmuTKzg8uTV6pYMf5r",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I need to check whether the explanation's claim that all 20 n-grams push toward \"cryptojacking\" is faithful to the SHAP data — class 1 seems tied to malware prediction generically, so labeling it specifically as cryptojacking might be an overreach worth flagging as a discrepancy.\n\nVerifying the individual SHAP values and frequencies cited (PXOR PXOR, MOVDQA MOVAPS, ADD ROR, etc.) against the source data, they all check out numerically. However, the explanation treats these values as \"frequencies\" when that semantic isn't established, and claims like \"heavy SIMD register clearing\" or \"SIMD zeroing followed by an aligned store\" assume register identity and adjacency that aren't actually supported by the graph-aware n-gram data — these are unsupported interpretive leaps I should flag.\n\nI'm also noting overconfident phrasing like \"it is a compiler-generated pattern\" stated as fact rather than hedged, and an internal inconsistency where the write-up claims SIMD patterns are the strongest signal, but the actual top SHAP value belongs to POP SUB, not a SIMD pair — so the narrative doesn't match the ranked evidence.\n\nI'm leaning toward calling this \"strongest signals\" framing a mild misrepresentation, since it skips over the actual top-ranked features like POP SUB and ADD ROR in favor of the SIMD pattern. I'll mark faithfulness as false given this discrepancy for consistency.\n\nFor scoring, technical accuracy feels like a 3 or 4 — the numbers themselves check out, but there's some overreach around frequency semantics, zeroing, and adjacency claims. Coherence seems closer to 4, since the \"strongest\" claim sits a bit awkwardly against the low-confidence tier framing elsewhere in the same analysis.\n\nRelevance and actionability both lean toward 4-5: the analysis considers alternatives and includes practical next steps like sandboxing, strings analysis, and threat intel lookups, though without clear prioritization. I'm now cataloguing the unsupported claims by their JSON pointer locations, tracing back through each indexed evidence item (POP SUB, PXOR PXOR, PXOR MOVAPS, ADD ROR, POP LEA, and so on) to pin down exactly where the explanation overstates what the evidence supports.\n\nFor each unsupported assessment, I'm identifying the specific issue — things like SIMD register zeroing claimed at high frequency without established operand semantics, zeroing patterns claimed adjacent to aligned stores without verified adjacency, and aligned 128-bit movement frequency claims that read more into the numbers than is warranted. I'm also flagging the \"branchless conditional selection after subtraction\" claim as a weakly-supported compiler-pattern characterization.\n\nI note that calling SIMD/vector patterns \"the strongest signals\" misrepresents what the SHAP values actually support. I'll keep the list to around five claims, attach evidence references pointing to the relevant top_features and feature_value_semantics paths, and output the whole thing as a single-line JSON object.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_d5b94b9267f570b1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP signs, SHAP values and the stated rounded values match the evidence, and the explanation correctly says the evidence is inconclusive. However, it treats values as 'frequency' despite undefined semantics, infers register zeroing and 'followed by' adjacency from bare mnemonics, and calls MOVDQA PAND one of the 'strongest signals'.\",\"coherence\":\"The explanation, per-feature table, indicators and action are well organized and consistent with the low-confidence tier. Minor flaw: the 'strongest signals' sentence conflicts with the table, where POP SUB is the top feature and MOVDQA PAND ranks 19th of 20.\",\"cybersecurity_relevance\":\"It ties the n-grams to hashing/mining hypotheses and to benign alternatives (memset/memcpy, compression, legitimate crypto, compiler patterns). It also states the missing function, API, string and network evidence.\",\"actionable_utility\":\"It recommends a sandbox for CPU use, Stratum traffic and persistence, static inspection of the rotate/add and SIMD functions, string/import/packer checks, and threat-intel lookup. These are concrete, conditional and proportionate, but not prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Repeated SIMD register zeroing at relatively high frequency (0.002631).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1 and /evidence/feature_value_semantics\",\"reason\":\"Operands are not supplied, so zeroing is not established. Feature values are explicitly not established as frequencies or counts.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"SIMD zeroing followed by an aligned store or move.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2 and /evidence/function_context\",\"reason\":\"The evidence has no operands, occurrences or extraction context to support zeroing or an adjacent ordering.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The combination of rotate/arithmetic mixing and heavy SIMD register clearing is suggestive of hash-like computation\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/1 and /evidence/occurrences\",\"reason\":\"'Heavy' register clearing is inferred from mnemonic n-gram names with undefined value semantics and no occurrences or context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Branchless conditional selection after subtraction. It is a compiler-generated pattern with weak relevance.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features/11\",\"reason\":\"Certainty about branchless selection, ordering and compiler origin is not supported by n-gram names alone.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The strongest signals are the SIMD/vector patterns PXOR PXOR (0.002631 frequency, SHAP +0.012465), PXOR MOVAPS (+0.012389), MOVDQA MOVAPS (0.003790 frequency, +0.008580), PXOR MOVUPS (+0.007949), and MOVDQA PAND (+0.006065).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"The list omits larger SHAP features (POP SUB +0.012611, ADD ROR +0.011592) and includes MOVDQA PAND, the 19th-ranked of 20 features, as 'strongest'.\",\"category\":\"shap_misrepresentation\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs and displayed values are accurate, but the explanation misdescribes relative SHAP strength by ranking SIMD n-grams, including a near-minimum one, as the strongest signals.\",\"discrepancies\":[{\"quote\":\"The strongest signals are the SIMD/vector patterns PXOR PXOR (0.002631 frequency, SHAP +0.012465), PXOR MOVAPS (+0.012389), MOVDQA MOVAPS (0.003790 frequency, +0.008580), PXOR MOVUPS (+0.007949), and MOVDQA PAND (+0.006065).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"POP SUB (+0.012611) is the top SHAP feature and ADD ROR (+0.011592) outranks several listed SIMD features; MOVDQA PAND (+0.006065) is among the weakest of the 20.\"}]},\"evidence_limitations\":[\"Only mnemonic 2-grams are supplied: no occurrences, function context, operands, API calls, strings or network indicators.\",\"Feature value semantics are not established, so 'frequency' cannot be confirmed.\",\"SHAP target class 1 is a configured assumption, and the baseline and full attributions are null.\",\"The top-20 list is a subset, so omitted features cannot be excluded.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation is well organized, appropriately cautious and relevant, with feasible follow-up. It is moderately accurate: it assumes zeroing, adjacency and 'frequency' semantics that the evidence does not establish, and it misstates SHAP strength by calling MOVDQA PAND one of the strongest signals.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7294,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4412,
+          "output_tokens_details": {
+            "thinking_tokens": 2474
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7294,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4412,
+        "output_tokens_details": {
+          "thinking_tokens": 2474
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_d5b94b9267f570b1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP signs, SHAP values and the stated rounded values match the evidence, and the explanation correctly says the evidence is inconclusive. However, it treats values as 'frequency' despite undefined semantics, infers register zeroing and 'followed by' adjacency from bare mnemonics, and calls MOVDQA PAND one of the 'strongest signals'.\",\"coherence\":\"The explanation, per-feature table, indicators and action are well organized and consistent with the low-confidence tier. Minor flaw: the 'strongest signals' sentence conflicts with the table, where POP SUB is the top feature and MOVDQA PAND ranks 19th of 20.\",\"cybersecurity_relevance\":\"It ties the n-grams to hashing/mining hypotheses and to benign alternatives (memset/memcpy, compression, legitimate crypto, compiler patterns). It also states the missing function, API, string and network evidence.\",\"actionable_utility\":\"It recommends a sandbox for CPU use, Stratum traffic and persistence, static inspection of the rotate/add and SIMD functions, string/import/packer checks, and threat-intel lookup. These are concrete, conditional and proportionate, but not prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Repeated SIMD register zeroing at relatively high frequency (0.002631).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1 and /evidence/feature_value_semantics\",\"reason\":\"Operands are not supplied, so zeroing is not established. Feature values are explicitly not established as frequencies or counts.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"SIMD zeroing followed by an aligned store or move.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2 and /evidence/function_context\",\"reason\":\"The evidence has no operands, occurrences or extraction context to support zeroing or an adjacent ordering.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The combination of rotate/arithmetic mixing and heavy SIMD register clearing is suggestive of hash-like computation\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/1 and /evidence/occurrences\",\"reason\":\"'Heavy' register clearing is inferred from mnemonic n-gram names with undefined value semantics and no occurrences or context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Branchless conditional selection after subtraction. It is a compiler-generated pattern with weak relevance.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features/11\",\"reason\":\"Certainty about branchless selection, ordering and compiler origin is not supported by n-gram names alone.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The strongest signals are the SIMD/vector patterns PXOR PXOR (0.002631 frequency, SHAP +0.012465), PXOR MOVAPS (+0.012389), MOVDQA MOVAPS (0.003790 frequency, +0.008580), PXOR MOVUPS (+0.007949), and MOVDQA PAND (+0.006065).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"The list omits larger SHAP features (POP SUB +0.012611, ADD ROR +0.011592) and includes MOVDQA PAND, the 19th-ranked of 20 features, as 'strongest'.\",\"category\":\"shap_misrepresentation\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs and displayed values are accurate, but the explanation misdescribes relative SHAP strength by ranking SIMD n-grams, including a near-minimum one, as the strongest signals.\",\"discrepancies\":[{\"quote\":\"The strongest signals are the SIMD/vector patterns PXOR PXOR (0.002631 frequency, SHAP +0.012465), PXOR MOVAPS (+0.012389), MOVDQA MOVAPS (0.003790 frequency, +0.008580), PXOR MOVUPS (+0.007949), and MOVDQA PAND (+0.006065).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"POP SUB (+0.012611) is the top SHAP feature and ADD ROR (+0.011592) outranks several listed SIMD features; MOVDQA PAND (+0.006065) is among the weakest of the 20.\"}]},\"evidence_limitations\":[\"Only mnemonic 2-grams are supplied: no occurrences, function context, operands, API calls, strings or network indicators.\",\"Feature value semantics are not established, so 'frequency' cannot be confirmed.\",\"SHAP target class 1 is a configured assumption, and the baseline and full attributions are null.\",\"The top-20 list is a subset, so omitted features cannot be excluded.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation is well organized, appropriately cautious and relevant, with feasible follow-up. It is moderately accurate: it assumes zeroing, adjacency and 'frequency' semantics that the evidence does not establish, and it misstates SHAP strength by calling MOVDQA PAND one of the strongest signals.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_d5b94b9267f570b1",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, SHAP signs, SHAP values and the stated rounded values match the evidence, and the explanation correctly says the evidence is inconclusive. However, it treats values as 'frequency' despite undefined semantics, infers register zeroing and 'followed by' adjacency from bare mnemonics, and calls MOVDQA PAND one of the 'strongest signals'.",
+      "coherence": "The explanation, per-feature table, indicators and action are well organized and consistent with the low-confidence tier. Minor flaw: the 'strongest signals' sentence conflicts with the table, where POP SUB is the top feature and MOVDQA PAND ranks 19th of 20.",
+      "cybersecurity_relevance": "It ties the n-grams to hashing/mining hypotheses and to benign alternatives (memset/memcpy, compression, legitimate crypto, compiler patterns). It also states the missing function, API, string and network evidence.",
+      "actionable_utility": "It recommends a sandbox for CPU use, Stratum traffic and persistence, static inspection of the rotate/add and SIMD functions, string/import/packer checks, and threat-intel lookup. These are concrete, conditional and proportionate, but not prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Repeated SIMD register zeroing at relatively high frequency (0.002631).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/top_features/1 and /evidence/feature_value_semantics",
+        "reason": "Operands are not supplied, so zeroing is not established. Feature values are explicitly not established as frequencies or counts.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "SIMD zeroing followed by an aligned store or move.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/top_features/2 and /evidence/function_context",
+        "reason": "The evidence has no operands, occurrences or extraction context to support zeroing or an adjacent ordering.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "The combination of rotate/arithmetic mixing and heavy SIMD register clearing is suggestive of hash-like computation",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/1 and /evidence/occurrences",
+        "reason": "'Heavy' register clearing is inferred from mnemonic n-gram names with undefined value semantics and no occurrences or context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Branchless conditional selection after subtraction. It is a compiler-generated pattern with weak relevance.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/top_features/11",
+        "reason": "Certainty about branchless selection, ordering and compiler origin is not supported by n-gram names alone.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "The strongest signals are the SIMD/vector patterns PXOR PXOR (0.002631 frequency, SHAP +0.012465), PXOR MOVAPS (+0.012389), MOVDQA MOVAPS (0.003790 frequency, +0.008580), PXOR MOVUPS (+0.007949), and MOVDQA PAND (+0.006065).",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "The list omits larger SHAP features (POP SUB +0.012611, ADD ROR +0.011592) and includes MOVDQA PAND, the 19th-ranked of 20 features, as 'strongest'.",
+        "category": "shap_misrepresentation"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "SHAP signs and displayed values are accurate, but the explanation misdescribes relative SHAP strength by ranking SIMD n-grams, including a near-minimum one, as the strongest signals.",
+      "discrepancies": [
+        {
+          "quote": "The strongest signals are the SIMD/vector patterns PXOR PXOR (0.002631 frequency, SHAP +0.012465), PXOR MOVAPS (+0.012389), MOVDQA MOVAPS (0.003790 frequency, +0.008580), PXOR MOVUPS (+0.007949), and MOVDQA PAND (+0.006065).",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "POP SUB (+0.012611) is the top SHAP feature and ADD ROR (+0.011592) outranks several listed SIMD features; MOVDQA PAND (+0.006065) is among the weakest of the 20."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "Only mnemonic 2-grams are supplied: no occurrences, function context, operands, API calls, strings or network indicators.",
+      "Feature value semantics are not established, so 'frequency' cannot be confirmed.",
+      "SHAP target class 1 is a configured assumption, and the baseline and full attributions are null.",
+      "The top-20 list is a subset, so omitted features cannot be excluded.",
+      "The RF probability is not behavioral proof."
+    ],
+    "summary": "The explanation is well organized, appropriately cautious and relevant, with feasible follow-up. It is moderately accurate: it assumes zeroing, adjacency and 'frequency' semantics that the evidence does not establish, and it misstates SHAP strength by calling MOVDQA PAND one of the strongest signals."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Repeated SIMD register zeroing at relatively high frequency (0.002631).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/top_features/1 and /evidence/feature_value_semantics",
+      "reason": "Operands are not supplied, so zeroing is not established. Feature values are explicitly not established as frequencies or counts.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "SIMD zeroing followed by an aligned store or move.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/top_features/2 and /evidence/function_context",
+      "reason": "The evidence has no operands, occurrences or extraction context to support zeroing or an adjacent ordering.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The combination of rotate/arithmetic mixing and heavy SIMD register clearing is suggestive of hash-like computation",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/1 and /evidence/occurrences",
+      "reason": "'Heavy' register clearing is inferred from mnemonic n-gram names with undefined value semantics and no occurrences or context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Branchless conditional selection after subtraction. It is a compiler-generated pattern with weak relevance.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/top_features/11",
+      "reason": "Certainty about branchless selection, ordering and compiler origin is not supported by n-gram names alone.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "The strongest signals are the SIMD/vector patterns PXOR PXOR (0.002631 frequency, SHAP +0.012465), PXOR MOVAPS (+0.012389), MOVDQA MOVAPS (0.003790 frequency, +0.008580), PXOR MOVUPS (+0.007949), and MOVDQA PAND (+0.006065).",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "The list omits larger SHAP features (POP SUB +0.012611, ADD ROR +0.011592) and includes MOVDQA PAND, the 19th-ranked of 20 features, as 'strongest'.",
+      "category": "shap_misrepresentation"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "18498e5081675e3fa85c7bf29f842b91f6e12c96ba51bf62bc9995f861a5583d.exe_analysis.json"
+}

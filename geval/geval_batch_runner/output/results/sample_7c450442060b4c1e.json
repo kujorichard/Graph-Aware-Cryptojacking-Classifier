@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_7c450442060b4c1e",
+  "status": "success",
+  "source_sha256": "43a25f1cc7cbd1381aaf329ea8a4baec421488d89322d59d5554420a87514b53",
+  "input_sha256": "803ca237100c867dff147ab727c9e7abc90237ed08caa1fdfcf24b93abbf0890",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "6f335f8dae3e1169350dfce7e5f052ad47c2cbe764d3abfa748b13f4f8430f0a.exe",
+      "source_name": "6f335f8dae3e1169350dfce7e5f052ad47c2cbe764d3abfa748b13f4f8430f0a.exe.json",
+      "source_path": "ml/dataset/cryptojacking/6f335f8dae3e1169350dfce7e5f052ad47c2cbe764d3abfa748b13f4f8430f0a.exe.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 95,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "6f335f8dae3e1169350dfce7e5f052ad47c2cbe764d3abfa748b13f4f8430f0a.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:49:14.318113+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:49:14.318164+00:00",
+      "error": null,
+      "request_sha256": "9d850a4e91eac4f24727001fa290ae48184a640b9a5c8a65177d8008c3e6b38b",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm1axWQxqCcTPzBHmSh9",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the claim that eight n-grams show zero relative frequency, and recounting the listed examples against that count to verify accuracy.\n\nAlso questioning whether treating a value of 0.0 as \"absence as a malware signal\" is well-supported, since feature semantics aren't firmly established—this reads more like an assumption than a confirmed fact. The frequency ranges cited for the remaining n-grams do check out against the data though.\n\nI'm also noting several adjacency assumptions baked into the narrative—phrases like \"counter or index increments before pushes\" or \"control-flow transition after register restore\" imply sequential ordering that graph-aware n-grams don't necessarily guarantee. The claim that no rotate/shift-heavy or vectorized sequences appear is an overreach too, since only the top 20 features were given and anything outside that set is unknown.\n\nOn the SHAP side, the rounded values all check out faithfully against the raw numbers (0.01216, 0.010925, 0.010513, etc.), and the magnitude range of 0.0065 to 0.0133 is accurate. The RF probability of 1.0 paired with a 0.55 confidence score is a bit misleading since raw RF probability isn't a calibrated confidence measure, but the \"small and evenly spread\" contribution characterization holds up, even if the \"absence\" framing stretches the feature semantics the SHAP values alone can't establish.\n\nI'm leaning toward marking this faithful=true overall since direction and magnitude are correct, but flagging the \"Eight\" count discrepancy (vs the 7 actually listed) as an internal inconsistency, and categorizing the absence-driven interpretation as unsupported_behavior rather than a core SHAP misrepresentation. For scoring: technical accuracy lands around 3 given the count error and overreaching semantic claims, while coherence sits at 4 due to that one internal mismatch but otherwise clear presentation.\n\nFor the recommendations I'm rating actionability around 4-5, since dynamic analysis, targeted function review, and hash lookups are proportionate and practical, though prioritization and benign-alternative framing could be stronger. I'm now compiling the list of unsupported claims with their JSON pointers — the \"Eight n-grams\" frequency claim, the absence-as-signal interpretation, and the certainty claim about lacking rotate/shift-heavy or vectorized sequences — each needing a reason tied to insufficient evidence or unestablished semantics.\n\n",
+            "signature": "CAQS7S0KEAgSGAI4AUIIdGhpbmtpbmcSDAR17CXak5bkoT5drxoMRmZQawVgvIlPyColIjDiGGLjtosWqo1YFUXKkSLvQG+lUCL+Vl3bBkYXdT5y0rpzgo8nz0PpCn4lLTyt6zgqii1AZZGvjqJBCRXFa7jOhDUZGTwQBIwvhKfogWAOHtM7PmvEpjTz6xGnU52Omjjjb6PqLt7uA2wlhkJXXzKfVXoNdXofpR9GgqSrztnGQ3Ll24AxH0Iqr0B88w6E8nGPuJOnu8cT0zqDWO/Y+6IdHxnWJK62XvezvgcoxROHT161s4+wue3uwFntbDuWUEo8v3Eq3x095tuumjFArPAUIc8MJm8I3OqdICo/HQfgpf1aUOR9DIJRQCn5CBY7Z9v8HYYnY7vHyMEXW6NSIMp1Ic0sFW+aSzZhaIfFO+OErHiNOgZk/2XIAKMih2mgGiPtD1XEFdn545s4GVz5JNob+3j1dwmpEZfsIDwGn3bqK+/NRlDwdeHVxoaTlvaK7CAj65nqWcKFM0YMPdWrA1Cag+hWu4pm+N9ErEMrTdPcnZOrXN8n9X1w4Y4zHkwspCLof+73z2vXSfpU4HF3VWOg8zbfFghp2qS7h+tCIT5BjnHezx3MDbX9FCDUz3XMItYIRfw6z2jHJPyoYzfYrPmAWfuIwppgRYCK33gs+oBTHYgliZ5eIEZf7Du0vK30bOlhWdeumANsHBAFo0nYR7P7js0hkciF36IKdVEMxZ87e7CnK3CcSn2x72+AkNfWWxcR/ZhDHuV8ufp9wQEWnokdXccRAU3ZkME58OOeGb1VPyLop/HU+UvMkvUR53iDea/fXkuZr8yo+iOvIujlkWjT2BlztPWVhsx/aL6ta2OshMKHmIevl7Y/s0DxGKP205qcZmyGPr2XUL+WUQGDYz8dMKXuHmItKsi8/ssB/HjhMURgAiAafNJXMCmcuZdGmOMxs8UqxQMXV9rGQ4tfqSvRKRbogFZaqzJAH3QpBtkIFR7FWxRu4Nx3w3VPc/+Y625y4J2YxIEdR5T2TTvytkqx3ntCijuQ0rmrfphiIn9+AD+E0CA/BMISnPJ1W8sXjJC7OuM6gWmyZOrYkE5zg5R5Lc3Q8Z2LV4s+xx5B3nXin4s+NediE8rN6zzNVYso28CpLqrrDir9Q4/yz+xZUc3OTxPKHzN4JYAFGl3FRlGMTUabDoxDzigcDDECf3NYJKUO+lXf/J9IiUpJAIhfC8pzYKH68hGMKoweLB5tGU2MM6h9YqBZxbRk7RfAGf9KYdMbFWvIk7pG9/zc+HPSgEUNDSY9f+BSvZV7djOu+0/AF6MTMporUoVp5jMPbxWZN4z0HTlh6WMcMP5FpnGuwS7vWUDs3sfQCez09EmM+W25MqLKjGDsKHqCmJE9EmORK+QAJ5ME4OdTRQjZOGSR2B1sVk648oeLkNAfYVMPI4vd8fb69Bw09WYSsRh4FoZa4hKgamLNG1EZGn5qlM6B8bhgIcRY+wXenKKIPRLkuxTmCNXcK5NScb0PHH3u8kCNyGrx/6FDVI7bGBbYQjC6GWzutId/vSefaRwefPyOLplLMLg8aDpOEkd7eqhVd27DgjCy8iDD+xtD85t0drveZI7k+kyLOjpKpV3e8fZnxgXP8X1Hw1YCxb1ztehL8h/gsMcnSFlsyZ1vtGLwiRvAHz+21UeEYHFEjsjsKd8o078ovEk1di1MhIls3CXTcdDBEAPksv/Hhh3bY8TVovmgJk8cI/Xvr3pnyUPha2W4kf96Ybd1koish2241QhHyryIx03xQ0wWVC6sw8qU/XYWqQD1XsXDPGpoS/Nh35Ucx1qhbhPfPjKZ001bJHqyeO8qqx0vod+6C2Arjt4cAHAy0GX4IhDvy7ZOM/iuJuwZ3cIW6Oodqcu/nXnhx1oC1oEkvLwpVtdtroBsZwi0Lf2DzzGdwCOdFz7GuZutRWZ5y1qQnTO1wLuSl92IPaBcy8YluaqVyKWiIWFbHHNdx5UlVc+JtjjFFTOnT0lXeA6viongPaIaAKfTe3wDduj3wYWNZAyXgt7/XzTlwkpjp3OhOvC/YhBqvHmeCNbsMPHI9mEHegIwCTQ3kC7g07jXia/eeu8BBB7YoJXLDRl7z7cnDwjdLNhSwyWkPKl6gfy6noPC9wpVsQ/4spX4MABq6Vr4/fU7qSKReWcF/XCkcT11elk0Sz5iBd16BQYXr3H/NFM88HKzUN3Y1ObZ/30syimNKT//hMyfLr6//2MUXUgl2A4pBtyevIxOdUhfOv6HbFpvh4C9Gvr9YEhs0Sh+ff09nsjomRvWImvksoH4iZ0gLWJ0g1FMwTc5c+KZRZCQRMVsMjQnza2QS19DCs6fHLj+PCW6+q/l3OMcLkP00oTKFwJLBfRATfsh4VSJgAO4HghTW3sPQQoc6EdWa6Le5sY5vOkRdCq8Qv0yzTGzYw8ipnjIzhu+gkNvg4agpy+eCGb5uKpQ8cKrOqttyLBNeVhmLfSK6dyZ3zBz5UcVoIx0LDdqhfojkholLtDZ1S90o1NOvEYpI3gB169qZEBtqx+3s8IOQJqHYlTLchAlnbcokLOaXFgha27zrOa4b3ujwg96tBTTm/RDO7zDoVqJEE0Tq3MUqBHoBPuSagRNZ3+BfeTcQH0cDWhGe9KGE8hl7i1Rdp5PH+00/26Dr+ebQJZUSki/UzhdzuCT3s+fTGmcqsKUc5/9jGgLi5ChZ2/mOpRQplVN036seXehSE2puyKJuGqySOaUewZEYxxRYFoIoAHjB2eWQavv7klc+smlxDwzq4wi8brDJiDMrMFIr5ab9at2r+99c0Wf1QsWzeUtwu8Wq00AsjrTLVa2JrxPg7JfAObgc4R87D5QsrfEgnkWW1WBa0FITh8mSZdaXswGGH/yTUreRGFNy4cVlFU/oq7LL08OpanePoH7S9hjv1dGfbP20JOnaWUOvmlLY9ifxb4rQ62OBb3N7Ek6a72FfhY6hp5DdznS2jgnNyOyXQzcu5clwdxZ4kxpeANwCKLYaLuVHraszNP5c8YrPCoWMAPGFldiKmb3Fio0mTLzAMhX43PqWEPdLQOH3gk3+VgOaL31E50dns/ejFDVRNu9ppxowowcPOz8OSJpc79X1YIOrmYxDH4UaGvZG9JePXWPF5TtmDow61IGSCd/D0MWw5y6W4gzsxRoeAW/AWPiDZE5YYrTHAl1THdS0TW2Z7tzIJUXsAaDShJ+P+fr7XKFQTNBaMG/vP+P6HDP25uim4bvh3zMFFDVcsk3XpEPK9JqZkzvv7aOEd1iP44O0jWnnKLwUjx9Cyu8YvnGXowDm5qYsj1r9IxlPOTTroDmw1iLRwGjbtNCVuDBSR18HhSBaaoW+IWcDAeH4ahk7RVJxd6K33p9ulgRLtamviUYCyu+jdz768aB4JexQZC1Lhie8WU2+RU8bZQ1ZBD9fOxLhk2EiOJTUhCAAIZgiNAMQ1j73uUmHJ5PPcgTfAI/wpGCihqGNbsKVVSsoW0Ok3XQYXkltkNrCdmC4QGsKw51WDkpf6zsSovIrfKYxOr8hA6k0Oe/b0jMSlWTH5+sV7Nfbjb5daKmSca0ATMGfpuP29GDNKDi22IXHfHGEndgfcNS3JP8A6yx4yFu9M/rVXrpBDHG6Qou0PCQdZUFysE957gaR7sNIaFqsyEVKnCTWaD0J6RnEbY76C8/AAck3vw03xXqHPpj50uS+5H1HwbZe/DmAJsWDLYVYGrqtWV3sneAvLiWV5fbuZE+ok1QClZpM6S/tSn0BMxD89+wvEWGn5+AfrBbB4u91ItL1abZjVMOAeF19pwCOJ/QJv60sq6ED5aLXxDANmOJJT7S6DxrjqCam4AHe+4T95PUsCfMMSbu3BevP9YaB4sX+n7o7YvaJVZMH44YpZ+/ILBkLEBuPJDIJpI+2ZDob/n27ZjKBURF7koZq0jqDByIh6MqjwD+y9jirIMhdoZ29WwDG+05lkFcQBWUDBrZxHULyWFJHeGpRAmhlLJCm3e3zfR9GEuHLMrqaogxp4kOSKC5aS4x9WjLw+MJsTtCYio87QIZaDqUANorJTuKYK2/mlWN49CMd8dxWZSB5V/PSweEWASo6ccJc4dbraWKl+d+PszVecKUQ8pGLOtFV7YyLheIgDOq5Rv5bpkGGr6Bna+hWtaI3eJR2KLvkwfFBgW4q2Sgg1hpQnOyW/h0II1H12rAAXUOU4BSxu0Ix6g87aGukpFalULbWQjjhdf3iA+lhAM3m46fJsOV9sF0E+QUNrVNMYvwSU5EhHkcuPEepIThPy785nrbyELkly6Dv1LwmqDJXgP4JPR2Ob1PwhW+iB6wlXxgcm3Hy5Wwd5tsaLfZYaqNfrQZArBvr6P/d7MXVEcJSX2/qOxOqJj6Ay42ukNRzEhGjM992aw4CT7+j9SJBLLp61nCyVsY8oun/iGHNrm5EnP26avpXA71LrQCNjXCWn37WGVgHaCIuHfXE1UT46g+zh337HiVan7aQwUsdbSzdMSXAuMck+bHLcLiIU7MCjWAcZe+bNR/8E8E9rBan8hcrNuRTz0jRwWrbvyar3gjWOVdf/Hl7+W+44BghVZKPHxiFld6k84g2HaZQFxEBNHtjKKtXnzPkmf+WYKQk6NaAKpBiPJA1DG0ufvL0+c23qZz37Enw/FIVefdrue52KhA4SYddW91U0jpVMOKefu6rlm3wbI0KLuoCgur1Ve3cACtBBzAEbQDKVK+P+lSl+cMRYaiL4n9frzShjp7KnOr3tUu8wR6gzU4Te0RyFQgczi0EcqmrFCZl1CkMBUk5VlGJV/Ey56f7ZRgZoVBU2tX2b3Q80mtO6PvWxIv16VVGCpLG/XrMSV/OvcJka3rsX7B5n2NQWSEB0d1K2vEOUo385ELGULmUmZ/IxC5ktTeO9NQPsG0lEiShTdHvb/oqDfpokf3lRxxOPTANY/JXE7EpJeUir5uNVktfEWcCQpSR7UUndaoQJpClp3V1/1pHup+5IFGf9Z+NpIRiCi7GVAhrNViKO1de+0mnUhFJpZESlTUvOzNR/yKmudX0WEHPDlSIe7yxYhramDJ0AFTmaau9jPHROkzif7VJpz3IX8RwNYoi1oGJT9hl6p817rTaqpUo+LUmvB7+Md0bX3FrOE9lyBJe5jlbIiuxqNjQcl62qRV4vAyUKm1kFc8ubLfLWcQ6zbKTywIJCORwQUmCVkyHllI/fDleg5xSmY8IazfYxZM2iXofyrHwc9vC8hdZw7w/907X6uOXx+sro+yWEkbMDVA1RxDdk/i1w6z/vSokPU8knBi0iijO8kviDGvFaR4qtNRG2lIW0FKDj/JvNBhH3DTthPg1851eA3PQMLnL9CEIHSzjcAca+Ge7klTBn19ldtJyvoqRBHDcKnHyq2PFthR723bbPtVJcLcmJSPb0B7MZYiZQvJlcX/3lFDuIjTYIkYEmqWp5KTXhc4jH+INzxeW/eH2qBVaVdSiYjqdzCsdmjNzTkHVmr0jg+pHrmRAeqoEb6lrWZQR63SImM1KvbC5AoYvwV9ZUoptYDmAb146e9tqvPz811Uw0dWWT44TFCAf8YxQXutpM8GauzFP6NOOFFzEoDJyjrmU3HssT0hzxOBMTOON8emRAf+rzpI5Iszh84z5zRbvZSdVvUqKAW9x/ONxQW66QgLUzP1X7unaek+/lPWO0fCbXacB/XeMyiu/7scIpTu4s9bSAZRYYvFQ2v49pVLeZYcYLsA46UPVLTG1Ikx8t7GBwC5MzMLXzP/ohHE9ehsg5Mk6rfEO/GJRupOzEM/jL5R2RtmdElavwXN/018KEDP/6faFIhP+9VAECBUPjOMgge55P16EvRbVH4shqgmaEMW9bPfSaX+eeEiT1TDpRS1zQ5+N69H9Yt9YbetAyaw85RcvpG5RiRyG7pFB8mLvuzE2cpi7OJbsdh8pJWayLszTXnnG9x4ajNFhyNlNnMTHhhB/h66nyGlXT2KvOE6Gb5d4SHZz9IupHDGNGGyZSp+cLCERtdm50L10nUFMsjDHRGJ7JB8zK2PmCjQe7wQk4hiwQYxJ6IZ4iB/zO/9SAK+3QuOtPlOU6DBsyLqM9ogguFCkxRI5cmH7P98GE+vAe1jSo8W0DhFOJFEPYM0Tk+5wa6Qk7/3vaZgV5wRi2qGIGMVKkAcqOHGYGOKCaNyXppVPlZdHco3gosL22c8Umqf6Qyfp6TpJEdUOKi3PkzQgoHLBY1X522UMf2VOc+433/VR2Us3UwJCQ0nDKx+ShQqMeT+OjmM2tr6Hb/bUyPDMORlH9SGljUhfcRO8az3wrj+diGM/1ZuO5oiaui6L03xoT0i5pv7Ct8qHXbce3PIL/IJaECnjI4f5GD2SbQfHBBgUYn7NZmYrZXWH2/u07luQVb6mjxZZN6CcdmQRQ+zxBunwcOAdYG5+DcW+13QrPZvZZZeLsB3qOJQL02AJhYLZdVaZU0D+5I8BUYIX48vpL2Lurwe69EurEncvxpQ0F10LljwRqJZVITN01a0jFKAUUA2nW6Wr6tLZRGAZyGMbLnBHYN/AiWUvkmq0vTYRpQr3fF7PjFIX07s36sE2IuEk3K0/+gnq9KcFocvAjfbn+Sxt6gfX/G0VA00ccdFQsv4ESArpfHZmOvaYgjewf+MzzRWb3pt5S0+pWsoyFjEM1lSik2Qg6AKYuHomFYN146p6jqvtTa5p2yVeGlslPE0TTQUlYD4GaSz9MxQZwLZrzl52q206uhzZ2M1iPyTT2erGu+8Vp3UToXvYsOIJxS2ClhiUKGoH7u0habVNk31TXlFchehabiI3aLkLEq3ez9nOjKNOLEpibXN+MLQgTJQg2AOVhXc/RiGMTlIiQ89B6wmrv+uqWxHJDOlOtvhss5NZSDZtlfLrxfilpkMAkQQSwfqj2Qlfyyyck6mPn7ojdzpidaoHdQ++2hv3sC9ueWm2LaVkxq772N0Fza2/Gq2OPzLcFcRna/PTeuk04hsGwkRqvRMsxoIaGiBf2KizwZSAbeLAup0Ox4THx/PXpTCg9eF3H30zbT8fGEGPrX0XLqMvupADi10PsbkLpvf+j/BJzA8eR8l7/U4pmNA7sL0U3FNXAOzabfLcu/pRJhflSiGHNbeaHIM2SAPOaqwJcZyaoLVpPK8dr2eXljkLYguy5k9KkFpCUDG24gDXdMFC/J1ZPsYKGDs0G8+iSORHCRLVOIsHIWkQJ9p7CAKEw0ngd2bP3N1PnFxwLMRwN66Z6WoP6vU0d4zLLtEFfTECLI0P7l7p3L0kD3FeTkJUopkUkCAkJJtSC3LCyxue/JFZukbKFDwiUMWTfkU4qWBLor8vUaA5/dSyAGYL+fvpsQaMImI9LXRM67K3yOmMEkPxACvqMYDj+TSQj7mAEUSl1p6YmyvkN5IBl5wPw8sXS+SZJ/y8DbGloGSi4BsLcmXQkQObC6s17lUQaQx5jn4yeSsQv9VDakxqETJtcrJWC1gWQaLZts5FVhkqw0Ngpdlyk4fXwbI4+rthcOn2eUDhXOhNjZjD8mTilbf84IT2CF49zOA4bGXmQlW2f5GL+jjIQVZkaCEjcxwEWIVEdBrHijUs6afxxZJKGoj4ORTpGNhwD1abdSDw1C/tVTpTzFT3/Focyqo8RmA12Flpsoxy5MNnYoPFvDRTr4NeoHXBzze3gczlcMipKXqmQ84WvK9zKhz8QP1JpbVHztWjfut7aX/S3VUA9URjcYm8iJQ8EraOfsY1FhNyPNZlQRU0BJ17vNrCXT0ByyaaFUENsLh0XQEFFpy+oAf84WZFDdYwuG+1Jq+oKZ6BSw7GAE="
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_7c450442060b4c1e\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF class and probability, SHAP signs and magnitudes, nonzero values and the 'no functions' observation are accurate. However, 'Eight' zero-valued n-grams is wrong (seven are listed and seven exist). The absence-driven attribution and 'no rotate/shift-heavy or vectorized sequences' overreach, because feature semantics are unestablished and only the top 20 features are visible.\",\"coherence\":\"Well organized: it states the RF result, notes the weak evidence, gives per-feature assessments and ends with an inconclusive verdict that matches the low-confidence tier and the recommendations. The 'Eight' count contradicts the seven names listed in the same sentence, which is a minor consistency flaw.\",\"cybersecurity_relevance\":\"It ties the carry-flag n-grams to hashing and big-integer code as a hypothesis, names benign alternatives (ordinary compiled code), and notes the lack of function context. Some per-n-gram comments rely on generic compiler-idiom and adjacency assumptions.\",\"actionable_utility\":\"The follow-ups are concrete, proportionate and conditional: sandbox run watching CPU and network, targeted function review of the carry-arithmetic sequences, string/config extraction and hash lookups. They address the evidence gaps and invent no indicators. They are not explicitly prioritized, and the dynamic-analysis step is somewhat generic.\"},\"unsupported_claims\":[{\"quote\":\"Eight of the 20 n-grams have a relative frequency of 0.000000 (ADD POP, CMOVZ MOV, CALL ADD, LEA CALL, XOR XOR, TEST JS, XOR CALL).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (value 0.0 for indices 0, 4, 12, 14, 16, 18, 19)\",\"reason\":\"Only seven features have value 0.0, and the candidate lists seven. The same wrong count recurs in key_indicators. The evidence also says feature_value_semantics is not established, so calling the values 'relative frequency' is unconfirmed.\",\"category\":\"other\"},{\"quote\":\"Their contribution comes from the model treating their absence as a malware signal, not from any observed code pattern.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states that feature value semantics are not established, so 0.0 cannot be confirmed as 'absence'. The SHAP mechanism is asserted with unwarranted certainty.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The contribution reflects the model's learned association with the absence of conditional-move code, not observed behavior.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4\",\"reason\":\"Treats a zero value as confirmed absence and claims a learned association. Neither is supported by the artifact, which gives no baseline, no full attributions and no confirmed semantics.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The evidence has no rotate/shift-heavy or vectorized sequences and no function-level context that would tie the patterns to mining.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/scope_notes/1\",\"reason\":\"Only a top-20 subset is available, so it cannot establish that rotate/shift or vectorized sequences are absent from the sample. The function-context part is supported.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"A sign-test branch pattern missing from the binary, with no direct behavioral interpretation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features/18\",\"reason\":\"Asserts the pattern is missing from the binary, but value 0.0 has unconfirmed semantics and no extraction or occurrence data is provided.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive for the configured class 1, and the reported magnitudes and range (+0.013321 to +0.006492) match the evidence within stated rounding. 'No single feature dominates' is consistent with the values. The candidate does not claim the top-k subset is exhaustive. The main caveat is the interpretation of zero-valued features as absence-driven, which is an unsupported mechanism rather than a direction or magnitude error.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No SHAP baseline or full attributions, so omitted features cannot be ruled out as supporting benign.\",\"The occurrences and function_context lists are empty, so no function-level or adjacency interpretation is possible.\",\"Feature value semantics are unestablished, so 0.0 values cannot be confirmed as absent or as raw counts.\",\"The SHAP target class is a configured assumption pending upstream verification.\",\"The RF probability of 1.0 is not behavioral proof of cryptojacking.\"],\"summary\":\"This is a largely cautious and well-organized explanation with sound SHAP direction and magnitude and proportionate, conditional follow-up actions. It is marred by a miscounted zero-valued n-gram total (eight stated, seven listed) and overconfident claims that zeros mean absence and that no rotate/shift or vectorized sequences exist, despite top-k-only evidence and unconfirmed feature semantics.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6930,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3993,
+          "output_tokens_details": {
+            "thinking_tokens": 2077
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6930,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3993,
+        "output_tokens_details": {
+          "thinking_tokens": 2077
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_7c450442060b4c1e\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF class and probability, SHAP signs and magnitudes, nonzero values and the 'no functions' observation are accurate. However, 'Eight' zero-valued n-grams is wrong (seven are listed and seven exist). The absence-driven attribution and 'no rotate/shift-heavy or vectorized sequences' overreach, because feature semantics are unestablished and only the top 20 features are visible.\",\"coherence\":\"Well organized: it states the RF result, notes the weak evidence, gives per-feature assessments and ends with an inconclusive verdict that matches the low-confidence tier and the recommendations. The 'Eight' count contradicts the seven names listed in the same sentence, which is a minor consistency flaw.\",\"cybersecurity_relevance\":\"It ties the carry-flag n-grams to hashing and big-integer code as a hypothesis, names benign alternatives (ordinary compiled code), and notes the lack of function context. Some per-n-gram comments rely on generic compiler-idiom and adjacency assumptions.\",\"actionable_utility\":\"The follow-ups are concrete, proportionate and conditional: sandbox run watching CPU and network, targeted function review of the carry-arithmetic sequences, string/config extraction and hash lookups. They address the evidence gaps and invent no indicators. They are not explicitly prioritized, and the dynamic-analysis step is somewhat generic.\"},\"unsupported_claims\":[{\"quote\":\"Eight of the 20 n-grams have a relative frequency of 0.000000 (ADD POP, CMOVZ MOV, CALL ADD, LEA CALL, XOR XOR, TEST JS, XOR CALL).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (value 0.0 for indices 0, 4, 12, 14, 16, 18, 19)\",\"reason\":\"Only seven features have value 0.0, and the candidate lists seven. The same wrong count recurs in key_indicators. The evidence also says feature_value_semantics is not established, so calling the values 'relative frequency' is unconfirmed.\",\"category\":\"other\"},{\"quote\":\"Their contribution comes from the model treating their absence as a malware signal, not from any observed code pattern.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states that feature value semantics are not established, so 0.0 cannot be confirmed as 'absence'. The SHAP mechanism is asserted with unwarranted certainty.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The contribution reflects the model's learned association with the absence of conditional-move code, not observed behavior.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4\",\"reason\":\"Treats a zero value as confirmed absence and claims a learned association. Neither is supported by the artifact, which gives no baseline, no full attributions and no confirmed semantics.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The evidence has no rotate/shift-heavy or vectorized sequences and no function-level context that would tie the patterns to mining.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/scope_notes/1\",\"reason\":\"Only a top-20 subset is available, so it cannot establish that rotate/shift or vectorized sequences are absent from the sample. The function-context part is supported.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"A sign-test branch pattern missing from the binary, with no direct behavioral interpretation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features/18\",\"reason\":\"Asserts the pattern is missing from the binary, but value 0.0 has unconfirmed semantics and no extraction or occurrence data is provided.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive for the configured class 1, and the reported magnitudes and range (+0.013321 to +0.006492) match the evidence within stated rounding. 'No single feature dominates' is consistent with the values. The candidate does not claim the top-k subset is exhaustive. The main caveat is the interpretation of zero-valued features as absence-driven, which is an unsupported mechanism rather than a direction or magnitude error.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No SHAP baseline or full attributions, so omitted features cannot be ruled out as supporting benign.\",\"The occurrences and function_context lists are empty, so no function-level or adjacency interpretation is possible.\",\"Feature value semantics are unestablished, so 0.0 values cannot be confirmed as absent or as raw counts.\",\"The SHAP target class is a configured assumption pending upstream verification.\",\"The RF probability of 1.0 is not behavioral proof of cryptojacking.\"],\"summary\":\"This is a largely cautious and well-organized explanation with sound SHAP direction and magnitude and proportionate, conditional follow-up actions. It is marred by a miscounted zero-valued n-gram total (eight stated, seven listed) and overconfident claims that zeros mean absence and that no rotate/shift or vectorized sequences exist, despite top-k-only evidence and unconfirmed feature semantics.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_7c450442060b4c1e",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF class and probability, SHAP signs and magnitudes, nonzero values and the 'no functions' observation are accurate. However, 'Eight' zero-valued n-grams is wrong (seven are listed and seven exist). The absence-driven attribution and 'no rotate/shift-heavy or vectorized sequences' overreach, because feature semantics are unestablished and only the top 20 features are visible.",
+      "coherence": "Well organized: it states the RF result, notes the weak evidence, gives per-feature assessments and ends with an inconclusive verdict that matches the low-confidence tier and the recommendations. The 'Eight' count contradicts the seven names listed in the same sentence, which is a minor consistency flaw.",
+      "cybersecurity_relevance": "It ties the carry-flag n-grams to hashing and big-integer code as a hypothesis, names benign alternatives (ordinary compiled code), and notes the lack of function context. Some per-n-gram comments rely on generic compiler-idiom and adjacency assumptions.",
+      "actionable_utility": "The follow-ups are concrete, proportionate and conditional: sandbox run watching CPU and network, targeted function review of the carry-arithmetic sequences, string/config extraction and hash lookups. They address the evidence gaps and invent no indicators. They are not explicitly prioritized, and the dynamic-analysis step is somewhat generic."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Eight of the 20 n-grams have a relative frequency of 0.000000 (ADD POP, CMOVZ MOV, CALL ADD, LEA CALL, XOR XOR, TEST JS, XOR CALL).",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features (value 0.0 for indices 0, 4, 12, 14, 16, 18, 19)",
+        "reason": "Only seven features have value 0.0, and the candidate lists seven. The same wrong count recurs in key_indicators. The evidence also says feature_value_semantics is not established, so calling the values 'relative frequency' is unconfirmed.",
+        "category": "other"
+      },
+      {
+        "quote": "Their contribution comes from the model treating their absence as a malware signal, not from any observed code pattern.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states that feature value semantics are not established, so 0.0 cannot be confirmed as 'absence'. The SHAP mechanism is asserted with unwarranted certainty.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "The contribution reflects the model's learned association with the absence of conditional-move code, not observed behavior.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/top_features/4",
+        "reason": "Treats a zero value as confirmed absence and claims a learned association. Neither is supported by the artifact, which gives no baseline, no full attributions and no confirmed semantics.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "The evidence has no rotate/shift-heavy or vectorized sequences and no function-level context that would tie the patterns to mining.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/scope_notes/1",
+        "reason": "Only a top-20 subset is available, so it cannot establish that rotate/shift or vectorized sequences are absent from the sample. The function-context part is supported.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "A sign-test branch pattern missing from the binary, with no direct behavioral interpretation.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+        "evidence_reference": "/evidence/top_features/18",
+        "reason": "Asserts the pattern is missing from the binary, but value 0.0 has unconfirmed semantics and no extraction or occurrence data is provided.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are positive for the configured class 1, and the reported magnitudes and range (+0.013321 to +0.006492) match the evidence within stated rounding. 'No single feature dominates' is consistent with the values. The candidate does not claim the top-k subset is exhaustive. The main caveat is the interpretation of zero-valued features as absence-driven, which is an unsupported mechanism rather than a direction or magnitude error.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No SHAP baseline or full attributions, so omitted features cannot be ruled out as supporting benign.",
+      "The occurrences and function_context lists are empty, so no function-level or adjacency interpretation is possible.",
+      "Feature value semantics are unestablished, so 0.0 values cannot be confirmed as absent or as raw counts.",
+      "The SHAP target class is a configured assumption pending upstream verification.",
+      "The RF probability of 1.0 is not behavioral proof of cryptojacking."
+    ],
+    "summary": "This is a largely cautious and well-organized explanation with sound SHAP direction and magnitude and proportionate, conditional follow-up actions. It is marred by a miscounted zero-valued n-gram total (eight stated, seven listed) and overconfident claims that zeros mean absence and that no rotate/shift or vectorized sequences exist, despite top-k-only evidence and unconfirmed feature semantics."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Eight of the 20 n-grams have a relative frequency of 0.000000 (ADD POP, CMOVZ MOV, CALL ADD, LEA CALL, XOR XOR, TEST JS, XOR CALL).",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features (value 0.0 for indices 0, 4, 12, 14, 16, 18, 19)",
+      "reason": "Only seven features have value 0.0, and the candidate lists seven. The same wrong count recurs in key_indicators. The evidence also says feature_value_semantics is not established, so calling the values 'relative frequency' is unconfirmed.",
+      "category": "other"
+    },
+    {
+      "quote": "Their contribution comes from the model treating their absence as a malware signal, not from any observed code pattern.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states that feature value semantics are not established, so 0.0 cannot be confirmed as 'absence'. The SHAP mechanism is asserted with unwarranted certainty.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "The contribution reflects the model's learned association with the absence of conditional-move code, not observed behavior.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/top_features/4",
+      "reason": "Treats a zero value as confirmed absence and claims a learned association. Neither is supported by the artifact, which gives no baseline, no full attributions and no confirmed semantics.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "The evidence has no rotate/shift-heavy or vectorized sequences and no function-level context that would tie the patterns to mining.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/scope_notes/1",
+      "reason": "Only a top-20 subset is available, so it cannot establish that rotate/shift or vectorized sequences are absent from the sample. The function-context part is supported.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "A sign-test branch pattern missing from the binary, with no direct behavioral interpretation.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+      "evidence_reference": "/evidence/top_features/18",
+      "reason": "Asserts the pattern is missing from the binary, but value 0.0 has unconfirmed semantics and no extraction or occurrence data is provided.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "6f335f8dae3e1169350dfce7e5f052ad47c2cbe764d3abfa748b13f4f8430f0a.exe_analysis.json"
+}

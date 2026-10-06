@@ -1,0 +1,237 @@
+{
+  "sample_id": "sample_4c76fa62619ff3c6",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.96,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "ADD PUSH",
+        "value": 0.0009332711342722178,
+        "shap_value": 0.008155698839061786
+      },
+      {
+        "ngram": "MOVZX PUSH",
+        "value": 0.001244361512362957,
+        "shap_value": 0.008153341217645856
+      },
+      {
+        "ngram": "MOV ROL",
+        "value": 0.0015554518904536963,
+        "shap_value": 0.008007318299331044
+      },
+      {
+        "ngram": "ADD ROR",
+        "value": 0.0004666355671361089,
+        "shap_value": 0.007498326576541248
+      },
+      {
+        "ngram": "SUB SBB",
+        "value": 0.0017109970794990659,
+        "shap_value": 0.007403081652048373
+      },
+      {
+        "ngram": "PUSH RET",
+        "value": 0.001244361512362957,
+        "shap_value": 0.007161048394481932
+      },
+      {
+        "ngram": "POP TEST",
+        "value": 0.00015554518904536963,
+        "shap_value": 0.00677492182879244
+      },
+      {
+        "ngram": "SHRD BT",
+        "value": 0.00031109037809073925,
+        "shap_value": 0.006753298296576567
+      },
+      {
+        "ngram": "ROL MOVZX",
+        "value": 0.00015554518904536963,
+        "shap_value": 0.006653706735110681
+      },
+      {
+        "ngram": "INC PUSH",
+        "value": 0.00015554518904536963,
+        "shap_value": 0.0065353295545045945
+      },
+      {
+        "ngram": "POP PUSH",
+        "value": 0.0009332711342722178,
+        "shap_value": 0.006518185904842804
+      },
+      {
+        "ngram": "ROL ROR",
+        "value": 0.00015554518904536963,
+        "shap_value": 0.006395842336183271
+      },
+      {
+        "ngram": "XOR PUSH",
+        "value": 0.00031109037809073925,
+        "shap_value": 0.006344966426240518
+      },
+      {
+        "ngram": "CALL PUSH",
+        "value": 0.0010888163233175874,
+        "shap_value": 0.006125632183807167
+      },
+      {
+        "ngram": "CMP PUSH",
+        "value": 0.0004666355671361089,
+        "shap_value": 0.005878042107176369
+      },
+      {
+        "ngram": "MOVZX ROL",
+        "value": 0.0009332711342722178,
+        "shap_value": 0.00581992247858697
+      },
+      {
+        "ngram": "SUB ADC",
+        "value": 0.0004666355671361089,
+        "shap_value": 0.005794599160823983
+      },
+      {
+        "ngram": "ADD OR",
+        "value": 0.0009332711342722178,
+        "shap_value": 0.005787209638072841
+      },
+      {
+        "ngram": "ADC SUB",
+        "value": 0.00015554518904536963,
+        "shap_value": 0.005691137292704293
+      },
+      {
+        "ngram": "ADD POP",
+        "value": 0.0006221807561814785,
+        "shap_value": 0.005642460273106032
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest assigns a 0.96 malware probability, but the supplied evidence does not independently support a high-confidence cryptojacking verdict. All 20 n-grams push toward cryptojacking, with SHAP values in a narrow band (+0.0056 to +0.0082) and no single dominant feature. Several n-grams are consistent with bit-rotation and multi-precision arithmetic seen in hashing and cryptographic code: MOV ROL (+0.008007), ADD ROR (+0.007498), ROL ROR (+0.006396), ROL MOVZX (+0.006654), and MOVZX ROL (+0.005820), plus the carry/borrow chains SUB SBB (+0.007403), SUB ADC (+0.005795), and ADC SUB (+0.005691). SHRD BT (+0.006753) suggests wide shifts and bit tests, which also fit big-number or bit-manipulation routines. However, these are generic instruction pairs that also occur in compression, general crypto libraries, and compiler-generated code. The other top features are stack and control-flow patterns: ADD PUSH, MOVZX PUSH, PUSH RET, POP PUSH, CALL PUSH, CMP PUSH, XOR PUSH, INC PUSH, POP TEST, ADD OR, and ADD POP. These are non-specific and may reflect prologue/epilogue code, calling conventions, or obfuscation, but the evidence cannot confirm any of these. All frequencies are very low (0.000156 to 0.001711), and no function names, API calls, strings, or network indicators are provided. The evidence therefore points to crypto-like arithmetic and possible obfuscated control flow, consistent with the model's malware call, but it does not demonstrate mining behavior specifically (for example, a recognizable hash round structure). The classification is low-confidence: suspicious and consistent with the model, but inconclusive from n-grams alone.",
+    "evidence_analysis": [
+      {
+        "ngram": "ADD PUSH",
+        "shap_contribution": 0.008156,
+        "assessment": "Generic arithmetic-then-stack-push pattern. Could be argument setup or register spilling in compiled code. Top contributor, but not cryptojacking-specific on its own."
+      },
+      {
+        "ngram": "MOVZX PUSH",
+        "shap_contribution": 0.008153,
+        "assessment": "Zero-extending a byte or word and pushing it. Consistent with byte-oriented data handling before calls, but non-specific."
+      },
+      {
+        "ngram": "MOV ROL",
+        "shap_contribution": 0.008007,
+        "assessment": "Load followed by rotate is characteristic of hash and cipher round operations, so this is a moderate indicator of crypto-like computation."
+      },
+      {
+        "ngram": "ADD ROR",
+        "shap_contribution": 0.007498,
+        "assessment": "Addition followed by right rotation is typical of ARX-style hash and cipher primitives. This supports crypto-like arithmetic but does not prove mining."
+      },
+      {
+        "ngram": "SUB SBB",
+        "shap_contribution": 0.007403,
+        "assessment": "Subtract-with-borrow chain indicates multi-word arithmetic, as in big-integer math. Seen in crypto code, but also in generic 64-bit-on-32-bit operations."
+      },
+      {
+        "ngram": "PUSH RET",
+        "shap_contribution": 0.007161,
+        "assessment": "Push followed by return can be an indirect control-transfer idiom, possibly related to obfuscation or packing. Cannot be confirmed from the evidence."
+      },
+      {
+        "ngram": "POP TEST",
+        "shap_contribution": 0.006775,
+        "assessment": "Restoring a register then testing it. Common in epilogues and conditional checks. Weak indicator in isolation."
+      },
+      {
+        "ngram": "SHRD BT",
+        "shap_contribution": 0.006753,
+        "assessment": "Double-precision shift with bit test suggests wide bit manipulation, which may relate to big-number or crypto routines. Moderately notable given its rarity."
+      },
+      {
+        "ngram": "ROL MOVZX",
+        "shap_contribution": 0.006654,
+        "assessment": "Rotate followed by zero-extended extraction. May indicate byte extraction from rotated words, as in table-driven hash or cipher code."
+      },
+      {
+        "ngram": "INC PUSH",
+        "shap_contribution": 0.006535,
+        "assessment": "Counter increment followed by push. Non-specific, possibly loop or argument handling."
+      },
+      {
+        "ngram": "POP PUSH",
+        "shap_contribution": 0.006518,
+        "assessment": "Stack register shuffling. Could reflect compiler patterns or obfuscated code, but is non-specific."
+      },
+      {
+        "ngram": "ROL ROR",
+        "shap_contribution": 0.006396,
+        "assessment": "Adjacent opposing rotations are unusual in ordinary code and fit bit-mixing in hash or cipher routines. A stronger crypto-like signal."
+      },
+      {
+        "ngram": "XOR PUSH",
+        "shap_contribution": 0.006345,
+        "assessment": "XOR then push. Could be zeroing a register for an argument or part of data mixing. Ambiguous."
+      },
+      {
+        "ngram": "CALL PUSH",
+        "shap_contribution": 0.006126,
+        "assessment": "Call followed by push is a general control-flow and stack pattern. It contributes to the model's malware signal but has no specific mining interpretation."
+      },
+      {
+        "ngram": "CMP PUSH",
+        "shap_contribution": 0.005878,
+        "assessment": "Comparison followed by push. Generic and low in specificity."
+      },
+      {
+        "ngram": "MOVZX ROL",
+        "shap_contribution": 0.00582,
+        "assessment": "Zero-extended load followed by rotation. Consistent with byte-to-word mixing in hash-like operations."
+      },
+      {
+        "ngram": "SUB ADC",
+        "shap_contribution": 0.005795,
+        "assessment": "Mixed subtract/add-with-carry sequence suggests multi-precision arithmetic, relevant to big-number operations."
+      },
+      {
+        "ngram": "ADD OR",
+        "shap_contribution": 0.005787,
+        "assessment": "Arithmetic followed by bitwise OR. Could be bit-field assembly or flag combination. Weak indicator."
+      },
+      {
+        "ngram": "ADC SUB",
+        "shap_contribution": 0.005691,
+        "assessment": "Add-with-carry followed by subtract, which complements SUB ADC and SUB SBB as evidence of carry-chain arithmetic."
+      },
+      {
+        "ngram": "ADD POP",
+        "shap_contribution": 0.005642,
+        "assessment": "Likely stack-pointer adjustment followed by register restore, as in function cleanup. Low specificity."
+      }
+    ],
+    "confidence_score": 0.55,
+    "key_indicators": [
+      "Rotation-heavy n-grams (MOV ROL, ADD ROR, ROL ROR, ROL MOVZX, MOVZX ROL) consistent with hash/cipher bit mixing",
+      "Carry/borrow chains (SUB SBB, SUB ADC, ADC SUB) and SHRD BT suggesting multi-precision or wide bit arithmetic",
+      "Numerous PUSH-centric stack and control-flow patterns (including PUSH RET) that could indicate obfuscation or are merely generic compiler output",
+      "All 20 top features have positive SHAP values, consistent with the 0.96 model probability, but values are uniformly small with no dominant feature",
+      "No function names, API calls, strings, or network artifacts provided to confirm mining behavior"
+    ],
+    "recommended_action": "Treat as suspicious and escalate for deeper analysis rather than concluding it is cryptojacking. Identify the functions containing the rotation and carry-chain n-grams and check whether they implement a known hash or mining algorithm round structure. Examine the PUSH/RET sequences for packing or indirect control flow. Run the sample in a sandbox to look for sustained CPU use, mining-pool connections, and Stratum-style traffic, and extract strings and network indicators to confirm or rule out mining."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

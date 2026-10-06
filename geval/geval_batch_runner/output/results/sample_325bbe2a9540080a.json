@@ -1,0 +1,188 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_325bbe2a9540080a",
+  "status": "success",
+  "source_sha256": "be6cb9cda9557487d1c308a586ab2b6266edb8155d51142bd777bb2002a84fd5",
+  "input_sha256": "2d6023f7239db4544c2dc12d8dadc6103873b3895963d98118605934dfe4559e",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "6032d1538d68df2b8a118c6c5f3756a9c383d213f71fae50fef2c59482cdf107.exe",
+      "source_name": "6032d1538d68df2b8a118c6c5f3756a9c383d213f71fae50fef2c59482cdf107.exe.json",
+      "source_path": "ml/dataset/cryptojacking/6032d1538d68df2b8a118c6c5f3756a9c383d213f71fae50fef2c59482cdf107.exe.json",
+      "split": "test",
+      "batch_number": 0,
+      "row_index_in_batch": 10,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "6032d1538d68df2b8a118c6c5f3756a9c383d213f71fae50fef2c59482cdf107.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:45:02.359447+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:45:02.359474+00:00",
+      "error": null,
+      "request_sha256": "d914796b0ff55092b410d49bfb4643370a9d0542971992e94a31c21141a883bf",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm1GPEvNHRGe9f2Px2y7",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the claim about 19 of the top 20 n-grams pointing toward cryptojacking, with TEST JNS as the lone benign-leaning feature — this holds within the top-20 list, but I should note it's qualified to that subset since features outside the top-k aren't accounted for.\n\nVerifying the SHAP contribution values and frequency figures against the data — CALL RET, CALL PUSH, ADD FLD, CDQ MOV, PUSH CALL, SBB INC, and PXOR MOVDQA all check out numerically. Though I notice the candidate treats these values as straightforward frequencies and makes general claims about them appearing in typical compiled x86 code without the semantics of these values being firmly established, which is a slight overreach.\n\nThe candidate also makes several adjacency assumptions it hasn't earned — treating n-gram features like CALL RET, INC PUSH, POP SUB, MOV FLD, and PXOR MOVDQA as if they imply adjacent instructions or specific behaviors (tiny wrapper functions, stack shuffling, x87 memory loads, vector zeroing) when the underlying features may be graph-aware and not require true adjacency. The CDQ MOV and SBB INC interpretations are more reasonably hedged as general or conditional possibilities. Finally, I check that the 0.77 Random Forest probability for class 1 aligns with the malware/cryptojacking label, which it does.\n\nSHAP representation seems faithful overall, just that minor overgeneralization caveat. For scoring, I'd lean toward technical accuracy around 4, with coherence near 5 despite some repetition in the evidence analysis.\n\nRelevance is solid at 5, and for actionability I'm weighing the targeted recommendations (locate functions, sandbox) against the lack of clear prioritization or benign alternatives—landing around 4. Now I'm working out which specific JSON pointers to cite for the CALL RET and TEST JNS evidence entries.\n\nI'm tracking exact quotes to cite: the rare-pattern wrapper/thunk reference, the benign-leaning TEST JNS indicator, and the frequency semantics note, deciding whether that last one fits under \"other\" category, then assembling it all into a single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_325bbe2a9540080a\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.77, the 19 positive and 1 negative top-20 split, the SHAP signs and magnitudes, and the quoted values all match the evidence. Instruction semantics are generally sound and mostly hedged. Minor overreach: CALL RET is read as 'tiny wrapper or thunk functions', and the values are called 'frequency' although their semantics are not established.\",\"coherence\":\"The tier, the 0.45 confidence, the diffuse-evidence argument and the recommended action are consistent: suspicious but inconclusive. Per-feature assessments are somewhat repetitive, and the generic-versus-interesting n-gram grouping is easy to follow.\",\"cybersecurity_relevance\":\"It ties this sample's specific n-grams to cryptojacking questions such as numeric, hash or multi-precision computation. It names benign alternatives (ordinary runtimes and libraries) and notes the absence of function names, APIs and locations.\",\"actionable_utility\":\"It gives concrete, proportionate steps: locate the functions containing the rare n-grams, check for tight compute loops, corroborate with string, network and process indicators, and sandbox for CPU use and outbound connections. No fabricated indicators appear. Prioritization is only implicit.\"},\"unsupported_claims\":[{\"quote\":\"A very rare pattern (frequency 0.000254) that suggests tiny wrapper or thunk functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/function_context\",\"reason\":\"There is no function context or adjacency evidence, and graph-aware n-grams need not be adjacent. Inferring thunk or wrapper structure is unsupported, and the 'frequency' label is not established by the feature_value_semantics note.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"TEST JNS (-0.007825) is the only benign-leaning feature\",\"candidate_path\":\"/candidate_analysis/key_indicators/5\",\"evidence_reference\":\"/evidence/full_attributions\",\"reason\":\"Only the top-20 subset is supplied. The claim is unqualified, and omitted features cannot be ruled out as benign-leaning.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Very rare (frequency 0.000026).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values are not established as counts or frequencies, so presenting them as frequencies is a minor overinterpretation.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP direction and magnitudes for all 20 listed n-grams match the evidence within rounding. TEST JNS is correctly the only negative feature, the range +0.005 to +0.013 is correct, and SUB PUSH is correctly the largest listed contributor. The only caveat is the unqualified 'only benign-leaning feature' wording, which ignores omitted features.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function context, occurrences, or extraction details, so the n-grams cannot be tied to code locations or adjacency.\",\"The SHAP baseline and full attributions are absent, so omitted features are unknown.\",\"The target class is a configured assumption needing upstream verification.\",\"The semantics of the feature values are unconfirmed.\"],\"summary\":\"This is a faithful and well-hedged explanation that correctly reports the SHAP evidence and concludes the result is suggestive but inconclusive. Minor overreach includes the thunk inference for CALL RET, an unqualified 'only benign-leaning' claim, and the 'frequency' labeling. Its follow-up actions are concrete and proportionate.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6838,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3257,
+          "output_tokens_details": {
+            "thinking_tokens": 1901
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6838,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3257,
+        "output_tokens_details": {
+          "thinking_tokens": 1901
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_325bbe2a9540080a\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.77, the 19 positive and 1 negative top-20 split, the SHAP signs and magnitudes, and the quoted values all match the evidence. Instruction semantics are generally sound and mostly hedged. Minor overreach: CALL RET is read as 'tiny wrapper or thunk functions', and the values are called 'frequency' although their semantics are not established.\",\"coherence\":\"The tier, the 0.45 confidence, the diffuse-evidence argument and the recommended action are consistent: suspicious but inconclusive. Per-feature assessments are somewhat repetitive, and the generic-versus-interesting n-gram grouping is easy to follow.\",\"cybersecurity_relevance\":\"It ties this sample's specific n-grams to cryptojacking questions such as numeric, hash or multi-precision computation. It names benign alternatives (ordinary runtimes and libraries) and notes the absence of function names, APIs and locations.\",\"actionable_utility\":\"It gives concrete, proportionate steps: locate the functions containing the rare n-grams, check for tight compute loops, corroborate with string, network and process indicators, and sandbox for CPU use and outbound connections. No fabricated indicators appear. Prioritization is only implicit.\"},\"unsupported_claims\":[{\"quote\":\"A very rare pattern (frequency 0.000254) that suggests tiny wrapper or thunk functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/function_context\",\"reason\":\"There is no function context or adjacency evidence, and graph-aware n-grams need not be adjacent. Inferring thunk or wrapper structure is unsupported, and the 'frequency' label is not established by the feature_value_semantics note.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"TEST JNS (-0.007825) is the only benign-leaning feature\",\"candidate_path\":\"/candidate_analysis/key_indicators/5\",\"evidence_reference\":\"/evidence/full_attributions\",\"reason\":\"Only the top-20 subset is supplied. The claim is unqualified, and omitted features cannot be ruled out as benign-leaning.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Very rare (frequency 0.000026).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values are not established as counts or frequencies, so presenting them as frequencies is a minor overinterpretation.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP direction and magnitudes for all 20 listed n-grams match the evidence within rounding. TEST JNS is correctly the only negative feature, the range +0.005 to +0.013 is correct, and SUB PUSH is correctly the largest listed contributor. The only caveat is the unqualified 'only benign-leaning feature' wording, which ignores omitted features.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function context, occurrences, or extraction details, so the n-grams cannot be tied to code locations or adjacency.\",\"The SHAP baseline and full attributions are absent, so omitted features are unknown.\",\"The target class is a configured assumption needing upstream verification.\",\"The semantics of the feature values are unconfirmed.\"],\"summary\":\"This is a faithful and well-hedged explanation that correctly reports the SHAP evidence and concludes the result is suggestive but inconclusive. Minor overreach includes the thunk inference for CALL RET, an unqualified 'only benign-leaning' claim, and the 'frequency' labeling. Its follow-up actions are concrete and proportionate.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_325bbe2a9540080a",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability 0.77, the 19 positive and 1 negative top-20 split, the SHAP signs and magnitudes, and the quoted values all match the evidence. Instruction semantics are generally sound and mostly hedged. Minor overreach: CALL RET is read as 'tiny wrapper or thunk functions', and the values are called 'frequency' although their semantics are not established.",
+      "coherence": "The tier, the 0.45 confidence, the diffuse-evidence argument and the recommended action are consistent: suspicious but inconclusive. Per-feature assessments are somewhat repetitive, and the generic-versus-interesting n-gram grouping is easy to follow.",
+      "cybersecurity_relevance": "It ties this sample's specific n-grams to cryptojacking questions such as numeric, hash or multi-precision computation. It names benign alternatives (ordinary runtimes and libraries) and notes the absence of function names, APIs and locations.",
+      "actionable_utility": "It gives concrete, proportionate steps: locate the functions containing the rare n-grams, check for tight compute loops, corroborate with string, network and process indicators, and sandbox for CPU use and outbound connections. No fabricated indicators appear. Prioritization is only implicit."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "A very rare pattern (frequency 0.000254) that suggests tiny wrapper or thunk functions.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/top_features/1; /evidence/function_context",
+        "reason": "There is no function context or adjacency evidence, and graph-aware n-grams need not be adjacent. Inferring thunk or wrapper structure is unsupported, and the 'frequency' label is not established by the feature_value_semantics note.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "TEST JNS (-0.007825) is the only benign-leaning feature",
+        "candidate_path": "/candidate_analysis/key_indicators/5",
+        "evidence_reference": "/evidence/full_attributions",
+        "reason": "Only the top-20 subset is supplied. The claim is unqualified, and omitted features cannot be ruled out as benign-leaning.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Very rare (frequency 0.000026).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature values are not established as counts or frequencies, so presenting them as frequencies is a minor overinterpretation.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP direction and magnitudes for all 20 listed n-grams match the evidence within rounding. TEST JNS is correctly the only negative feature, the range +0.005 to +0.013 is correct, and SUB PUSH is correctly the largest listed contributor. The only caveat is the unqualified 'only benign-leaning feature' wording, which ignores omitted features.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No function context, occurrences, or extraction details, so the n-grams cannot be tied to code locations or adjacency.",
+      "The SHAP baseline and full attributions are absent, so omitted features are unknown.",
+      "The target class is a configured assumption needing upstream verification.",
+      "The semantics of the feature values are unconfirmed."
+    ],
+    "summary": "This is a faithful and well-hedged explanation that correctly reports the SHAP evidence and concludes the result is suggestive but inconclusive. Minor overreach includes the thunk inference for CALL RET, an unqualified 'only benign-leaning' claim, and the 'frequency' labeling. Its follow-up actions are concrete and proportionate."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "A very rare pattern (frequency 0.000254) that suggests tiny wrapper or thunk functions.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/top_features/1; /evidence/function_context",
+      "reason": "There is no function context or adjacency evidence, and graph-aware n-grams need not be adjacent. Inferring thunk or wrapper structure is unsupported, and the 'frequency' label is not established by the feature_value_semantics note.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "TEST JNS (-0.007825) is the only benign-leaning feature",
+      "candidate_path": "/candidate_analysis/key_indicators/5",
+      "evidence_reference": "/evidence/full_attributions",
+      "reason": "Only the top-20 subset is supplied. The claim is unqualified, and omitted features cannot be ruled out as benign-leaning.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Very rare (frequency 0.000026).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature values are not established as counts or frequencies, so presenting them as frequencies is a minor overinterpretation.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "6032d1538d68df2b8a118c6c5f3756a9c383d213f71fae50fef2c59482cdf107.exe_analysis.json"
+}

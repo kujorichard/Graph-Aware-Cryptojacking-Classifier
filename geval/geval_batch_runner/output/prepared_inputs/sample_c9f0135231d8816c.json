@@ -1,0 +1,237 @@
+{
+  "sample_id": "sample_c9f0135231d8816c",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.9998837209302326,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.016849677463475758
+      },
+      {
+        "ngram": "ADD POP",
+        "value": 0.0,
+        "shap_value": 0.015843400562152294
+      },
+      {
+        "ngram": "XOR CALL",
+        "value": 0.0,
+        "shap_value": 0.010817663052161586
+      },
+      {
+        "ngram": "TEST JZ",
+        "value": 0.0,
+        "shap_value": 0.010334430702313543
+      },
+      {
+        "ngram": "CALL ADD",
+        "value": 0.0,
+        "shap_value": 0.010170533786729089
+      },
+      {
+        "ngram": "PUSH SUB",
+        "value": 0.0,
+        "shap_value": 0.009976940558099721
+      },
+      {
+        "ngram": "XOR MOV",
+        "value": 0.0,
+        "shap_value": 0.009663208348040835
+      },
+      {
+        "ngram": "TEST JS",
+        "value": 0.0,
+        "shap_value": 0.009571805442585997
+      },
+      {
+        "ngram": "XOR XOR",
+        "value": 0.0,
+        "shap_value": 0.008825692960848792
+      },
+      {
+        "ngram": "AND MOV",
+        "value": 0.0,
+        "shap_value": 0.008100954379851213
+      },
+      {
+        "ngram": "MOV JZ",
+        "value": 0.0,
+        "shap_value": 0.007965329914687997
+      },
+      {
+        "ngram": "XOR CMOVNZ",
+        "value": 0.0,
+        "shap_value": 0.007577418104538934
+      },
+      {
+        "ngram": "LEA CALL",
+        "value": 0.0,
+        "shap_value": 0.00735040423394423
+      },
+      {
+        "ngram": "SUB MOV",
+        "value": 0.0,
+        "shap_value": 0.007177956105109303
+      },
+      {
+        "ngram": "XOR SHL",
+        "value": 0.0,
+        "shap_value": 0.007045797346558713
+      },
+      {
+        "ngram": "CMP CMOVZ",
+        "value": 0.0,
+        "shap_value": 0.0069564845991204535
+      },
+      {
+        "ngram": "CMP JL",
+        "value": 0.0,
+        "shap_value": 0.006738855078975783
+      },
+      {
+        "ngram": "CALL XOR",
+        "value": 0.0,
+        "shap_value": 0.006598620760164589
+      },
+      {
+        "ngram": "SUB LEA",
+        "value": 0.0,
+        "shap_value": 0.006395961324232599
+      },
+      {
+        "ngram": "MOV LEA",
+        "value": 0.0,
+        "shap_value": 0.006300384097352713
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest assigns a 0.9999 malware probability, and all 20 top n-grams push toward cryptojacking, with a combined SHAP contribution of about +0.180. However, the evidence itself is weak. Every n-gram is a generic two-instruction mnemonic pair, and every listed frequency is 0.000000, so none is demonstrably prevalent in the binary. No function names, call targets, constants, or strings are provided, so no pattern can be tied to a specific routine such as a hashing loop or a mining-pool network routine. The strongest contributors are CMOVZ MOV (+0.016850) and ADD POP (+0.015843). The first is a branchless conditional-move idiom and the second is typical function-epilogue or stack-cleanup code. Several bigrams (XOR XOR, XOR SHL, XOR MOV, XOR CMOVNZ, XOR CALL, CALL XOR) show heavy XOR use together with a shift and conditional moves. That is loosely consistent with bit-mixing or branchless arithmetic of the kind found in hash or cipher code, but it is equally common in compiler-generated code, so it is not specific to mining. The control-flow and prologue/epilogue patterns (TEST JZ, TEST JS, MOV JZ, CMP JL, PUSH SUB, SUB LEA, MOV LEA, LEA CALL, CALL ADD) look like ordinary compiled code. The result is a high model score that rests on a diffuse statistical signature rather than interpretable cryptojacking-specific evidence, so I classify it as low-confidence. It leans malicious because of the model output and the uniform direction of the SHAP values, but the listed evidence cannot confirm cryptojacking.",
+    "evidence_analysis": [
+      {
+        "ngram": "CMOVZ MOV",
+        "shap_contribution": 0.01685,
+        "assessment": "Top contributor. A conditional move followed by a move suggests branchless selection logic, which can appear in tight compute loops. It is also a common compiler idiom, and no function context is given, so it is not specific to mining."
+      },
+      {
+        "ngram": "ADD POP",
+        "shap_contribution": 0.015843,
+        "assessment": "Typical stack cleanup before return. It carries little behavioral meaning on its own, and its high SHAP value probably reflects the model's learned distribution rather than a specific malicious routine."
+      },
+      {
+        "ngram": "XOR CALL",
+        "shap_contribution": 0.010818,
+        "assessment": "An XOR, often used for zeroing or mixing, followed by a call. It is generic, and the call target is unknown, so no network or hashing behavior can be inferred."
+      },
+      {
+        "ngram": "TEST JZ",
+        "shap_contribution": 0.010334,
+        "assessment": "A standard test-and-branch pattern found in nearly all compiled code. It adds only weak, non-specific support."
+      },
+      {
+        "ngram": "CALL ADD",
+        "shap_contribution": 0.010171,
+        "assessment": "A post-call stack adjustment or result handling, typical of cdecl-style calling conventions. It is non-specific."
+      },
+      {
+        "ngram": "PUSH SUB",
+        "shap_contribution": 0.009977,
+        "assessment": "Function prologue and stack frame allocation. It is common to all functions and offers no mining-specific insight."
+      },
+      {
+        "ngram": "XOR MOV",
+        "shap_contribution": 0.009663,
+        "assessment": "Register zeroing or value mixing followed by a move. It is consistent with bitwise computation but also with ordinary initialization."
+      },
+      {
+        "ngram": "TEST JS",
+        "shap_contribution": 0.009572,
+        "assessment": "A sign-flag branch, often used for error or negative-return checks. It is moderately less common than TEST JZ, but its meaning is generic."
+      },
+      {
+        "ngram": "XOR XOR",
+        "shap_contribution": 0.008826,
+        "assessment": "Consecutive XORs may indicate bit-mixing or register-clearing sequences, as in hash or cipher rounds. This is one of the more suggestive patterns, but it is not conclusive without frequency or function context."
+      },
+      {
+        "ngram": "AND MOV",
+        "shap_contribution": 0.008101,
+        "assessment": "Masking followed by a move. Bit masking occurs in hashing and in general code, so it is non-specific."
+      },
+      {
+        "ngram": "MOV JZ",
+        "shap_contribution": 0.007965,
+        "assessment": "A move followed by a conditional jump on the flags. This is generic control flow."
+      },
+      {
+        "ngram": "XOR CMOVNZ",
+        "shap_contribution": 0.007577,
+        "assessment": "Combines XOR with a conditional move, a branchless arithmetic pattern. Together with CMOVZ MOV and CMP CMOVZ, it points to a recurring branchless-selection style that the model associates with malicious samples."
+      },
+      {
+        "ngram": "LEA CALL",
+        "shap_contribution": 0.00735,
+        "assessment": "Address computation immediately before a call, typically for argument setup. It is generic, and the target is unknown."
+      },
+      {
+        "ngram": "SUB MOV",
+        "shap_contribution": 0.007178,
+        "assessment": "Arithmetic followed by a move. This is a generic compiled-code pattern."
+      },
+      {
+        "ngram": "XOR SHL",
+        "shap_contribution": 0.007046,
+        "assessment": "XOR combined with a left shift is a classic ingredient of hash, PRNG, and cipher mixing. It is mildly suggestive of compute-heavy bit manipulation, but it can also be general-purpose code."
+      },
+      {
+        "ngram": "CMP CMOVZ",
+        "shap_contribution": 0.006956,
+        "assessment": "Compare followed by a conditional move, i.e. branchless conditional assignment. It is consistent with the other CMOV-based patterns."
+      },
+      {
+        "ngram": "CMP JL",
+        "shap_contribution": 0.006739,
+        "assessment": "A signed comparison and branch, typical of loop bounds or range checks. It is generic."
+      },
+      {
+        "ngram": "CALL XOR",
+        "shap_contribution": 0.006599,
+        "assessment": "An XOR after a call, probably result handling or register clearing. It is non-specific."
+      },
+      {
+        "ngram": "SUB LEA",
+        "shap_contribution": 0.006396,
+        "assessment": "Stack or pointer arithmetic followed by address computation. It is generic compiled code."
+      },
+      {
+        "ngram": "MOV LEA",
+        "shap_contribution": 0.0063,
+        "assessment": "Data movement followed by address calculation. It is extremely common and carries minimal discriminating value individually."
+      }
+    ],
+    "confidence_score": 0.6,
+    "key_indicators": [
+      "Random Forest probability of 0.9999 for malware",
+      "All 20 top n-grams have positive SHAP values, totaling about +0.180 toward cryptojacking",
+      "Recurring XOR-centric bigrams (XOR XOR, XOR SHL, XOR MOV, XOR CMOVNZ, XOR CALL, CALL XOR) loosely consistent with bit-mixing or hash-like computation",
+      "Multiple branchless conditional-move patterns (CMOVZ MOV, XOR CMOVNZ, CMP CMOVZ)",
+      "Limitation: all frequencies are 0.000000, there is no function-level context, and the n-grams are generic compiler idioms, so no cryptojacking-specific behavior is directly evidenced"
+    ],
+    "recommended_action": "Do not rely on the n-gram evidence alone. Run static and dynamic analysis to confirm: check for stratum or mining-pool connection strings and wallet addresses, identify hash-loop routines that use the XOR/shift/conditional-move patterns, and look for CPU-intensive behavior, persistence, and outbound network traffic in a sandbox. Until confirmed, treat the sample as suspicious and isolate it, since the 0.9999 model score is strongly malicious even though the per-feature evidence is non-specific."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

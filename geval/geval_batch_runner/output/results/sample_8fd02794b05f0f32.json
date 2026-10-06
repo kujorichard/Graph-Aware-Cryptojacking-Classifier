@@ -1,0 +1,280 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_8fd02794b05f0f32",
+  "status": "success",
+  "source_sha256": "888720328f6ffc9b3907b5f3d9650fc27debb32d65f1d59e0934b3e9899320a0",
+  "input_sha256": "dffe71500f7a56fdf7f1b3d5ce55f8cc20f7f429bedd04bc06e16e2aba08bb02",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "fc29f52e495390630ccda0c1071af6a811eeae68ae7d7cee5de58bdc02f00b61.exe",
+      "source_name": "fc29f52e495390630ccda0c1071af6a811eeae68ae7d7cee5de58bdc02f00b61.exe.json",
+      "source_path": "ml/dataset/cryptojacking/fc29f52e495390630ccda0c1071af6a811eeae68ae7d7cee5de58bdc02f00b61.exe.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 53,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "fc29f52e495390630ccda0c1071af6a811eeae68ae7d7cee5de58bdc02f00b61.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T14:07:21.615594+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T14:07:21.615630+00:00",
+      "error": {
+        "type": "ValueError",
+        "message": "Finding must quote candidate text/value verbatim"
+      },
+      "request_sha256": "48c07931fe94f5824819c66d7cf0389cb803ae39dc6da2e1d9bda9bfca8ea723",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm7YUqfKaxQpuESsQv8m",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm double-checking the SHAP numbers: 19 of the top 20 n-grams indeed push toward cryptojacking, with contributions ranging from about +0.0054 to +0.0120, confirming that claim is accurate, and the individual contributions do look fairly small and evenly distributed.\n\nI'm also verifying the other n-gram values like CALL PUSH, LEA PUSH, POP PUSH and the rest, and they match what's reported. But I'm noting some overreach in the candidate's framing — calling these \"frequencies\" assumes a value semantics that isn't actually established, and claiming CALL PUSH is the \"most frequent n-gram\" overall is unsupported since only the top 20 were examined. Statements like the contribution \"reflecting model bias more than behavior\" or \"ADD PUSH probably reflecting code-style statistics\" are speculative additions not grounded in the data, so I should flag those as unsupported interpretive leaps rather than verified facts.\n\nI'm also flagging the adjacency assumption problem: the candidate treats n-grams like \"CALL RET\" or \"counter increment followed by a push\" as implying immediate sequential adjacency, but graph-aware n-grams don't require that — this is an unsupported inference. Similarly, the claims about PXOR/MOVAPS \"zeroing\" and POP XOR being a \"zeroing idiom\" assume same-register operands that aren't confirmed, though they're appropriately hedged with \"often\" and \"could.\" The confidence tier (0.35, low) and the conditional recommended action both seem consistent and proportionate, and the SHAP magnitude/direction claims check out, though \"spread evenly\" and \"model bias more than behavior\" remain interpretive rather than strictly verified.\n\nScoring out: technical accuracy around 4 for these adjacency/frequency nitpicks, coherence 4-5 despite some repetition between explanation and evidence_analysis, relevance 5 for linking to benign alternatives and evidential limits, actionable 4 since it's concrete but not explicitly prioritized. I'm noting specific paths to flag — the explanation node and evidence_analysis entries for CALL/RET and CALL/PUSH — plus the \"frequency of effectively zero\" claim, then composing the final JSON as a single line.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_8fd02794b05f0f32\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability (0.69), the 19-of-20 positive count, the SHAP range, the TEST JNS sign and the quoted values all match the evidence. Minor overreach: values are called 'frequencies' although their semantics are unestablished, CALL PUSH is called 'the most frequent n-gram' from a top-20 subset, and CALL RET is described as 'immediately' followed by a return.\",\"coherence\":\"The tier, the 0.35 confidence, the inconclusive framing and the recommendations are consistent with each other. Observations, interpretation and actions are easy to separate. Some repetition between the summary and the per-feature list keeps it from a 5.\",\"cybersecurity_relevance\":\"Ties the sample's actual n-grams to mining hypotheses (SIMD, carry-chain, x87) and to benign alternatives (math, runtime, compression libraries). It states that missing function, API and hashing-loop context prevents confirmation.\",\"actionable_utility\":\"Sandbox dynamic analysis for CPU use, stratum/pool connections and config strings, plus static inspection of functions containing three named n-grams and a packing check. These are concrete, conditional and proportionate, with an explicit no-escalation-without-corroboration rule. They are not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"CALL RET\\\", \\\"shap_contribution\\\": 0.008371, \\\"assessment\\\": \\\"A call followed immediately by a return, typical of thin wrapper or tail functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/top_features/5; /scope_notes; rules on graph-aware n-grams\",\"reason\":\"Immediate adjacency and wrapper/tail-function structure are inferred without extraction or context evidence. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The most frequent n-gram (0.0335)\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4; /evidence/full_attributions is null\",\"reason\":\"Only the top-20 subset is available, so it cannot be shown that CALL PUSH is the most frequent n-gram overall. The value semantics are also not established as frequencies.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"its contribution reflects model bias more than behavior\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/shap_baseline is null; /evidence/full_attributions is null\",\"reason\":\"No baseline or full attribution evidence supports attributing this SHAP contribution to model bias rather than to the feature.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"However, these frequencies are extremely low and are also common in benign math, runtime or compression libraries.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the values should not be treated as raw counts or frequencies without upstream confirmation. The claim about prevalence in benign libraries is also not evidenced for this sample.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP directions and magnitudes match the evidence: 19 positive values from +0.0054 to +0.0120, and TEST JNS at -0.007752. The values are correctly rounded and the weak, diffuse framing fits the small magnitudes. The only slip is the unsupported 'model bias' remark.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Only top-20 SHAP features are supplied; omitted features and the SHAP baseline are unknown.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are unestablished.\",\"No occurrences, function context, API calls or strings are provided, so adjacency and behavior cannot be verified.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"Accurate and appropriately cautious explanation with faithful SHAP reporting, a sensible low-confidence tier and proportionate conditional follow-ups. Minor issues: it treats the values as frequencies, infers adjacency for CALL RET, and calls CALL PUSH the most frequent n-gram overall from a top-k subset.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6976,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2941,
+          "output_tokens_details": {
+            "thinking_tokens": 1380
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6976,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2941,
+        "output_tokens_details": {
+          "thinking_tokens": 1380
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_8fd02794b05f0f32\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability (0.69), the 19-of-20 positive count, the SHAP range, the TEST JNS sign and the quoted values all match the evidence. Minor overreach: values are called 'frequencies' although their semantics are unestablished, CALL PUSH is called 'the most frequent n-gram' from a top-20 subset, and CALL RET is described as 'immediately' followed by a return.\",\"coherence\":\"The tier, the 0.35 confidence, the inconclusive framing and the recommendations are consistent with each other. Observations, interpretation and actions are easy to separate. Some repetition between the summary and the per-feature list keeps it from a 5.\",\"cybersecurity_relevance\":\"Ties the sample's actual n-grams to mining hypotheses (SIMD, carry-chain, x87) and to benign alternatives (math, runtime, compression libraries). It states that missing function, API and hashing-loop context prevents confirmation.\",\"actionable_utility\":\"Sandbox dynamic analysis for CPU use, stratum/pool connections and config strings, plus static inspection of functions containing three named n-grams and a packing check. These are concrete, conditional and proportionate, with an explicit no-escalation-without-corroboration rule. They are not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"CALL RET\\\", \\\"shap_contribution\\\": 0.008371, \\\"assessment\\\": \\\"A call followed immediately by a return, typical of thin wrapper or tail functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/top_features/5; /scope_notes; rules on graph-aware n-grams\",\"reason\":\"Immediate adjacency and wrapper/tail-function structure are inferred without extraction or context evidence. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The most frequent n-gram (0.0335)\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4; /evidence/full_attributions is null\",\"reason\":\"Only the top-20 subset is available, so it cannot be shown that CALL PUSH is the most frequent n-gram overall. The value semantics are also not established as frequencies.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"its contribution reflects model bias more than behavior\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/shap_baseline is null; /evidence/full_attributions is null\",\"reason\":\"No baseline or full attribution evidence supports attributing this SHAP contribution to model bias rather than to the feature.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"However, these frequencies are extremely low and are also common in benign math, runtime or compression libraries.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the values should not be treated as raw counts or frequencies without upstream confirmation. The claim about prevalence in benign libraries is also not evidenced for this sample.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP directions and magnitudes match the evidence: 19 positive values from +0.0054 to +0.0120, and TEST JNS at -0.007752. The values are correctly rounded and the weak, diffuse framing fits the small magnitudes. The only slip is the unsupported 'model bias' remark.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Only top-20 SHAP features are supplied; omitted features and the SHAP baseline are unknown.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are unestablished.\",\"No occurrences, function context, API calls or strings are provided, so adjacency and behavior cannot be verified.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"Accurate and appropriately cautious explanation with faithful SHAP reporting, a sensible low-confidence tier and proportionate conditional follow-ups. Minor issues: it treats the values as frequencies, infers adjacency for CALL RET, and calls CALL PUSH the most frequent n-gram overall from a top-k subset.\"}"
+    },
+    {
+      "number": 2,
+      "timestamp": "2026-10-06T14:07:43.529146+00:00",
+      "error": null,
+      "request_sha256": "07f53d3e8e4e9fb39a08716070a13eb58386a9a0679292abd5be07b6dd603608",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm7a6YHzGhgSBvApgHH4",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I need to produce the JSON verdict on a single line, so I'm checking the candidate's claims against the evidence—verifying the RF probability figure and whether \"malware\" versus \"cryptojacking\" framing matches the underlying class label, then confirming the n-gram statistic about pushing toward cryptojacking.\n\nGoing through the frequency figures one by one, they all check out against the evidence, but I'm noting the candidate treats feature values as straightforward \"frequencies\" and makes claims like \"the most frequent n-gram\" when really only the top-20 subset is visible—that's an overreach not fully supported by the data, along with unverified claims about benign optimized libraries and mining kernels.\n\nThere's also a pattern of unsupported adjacency assumptions: phrases like \"CALL RET\" being described as \"a call followed immediately by a return,\" or \"INC PUSH\" as \"a counter increment,\" or \"PXOR MOVAPS\" as \"SIMD register-clearing\" — these infer literal instruction adjacency and specific semantic roles that the n-gram features don't necessarily establish, since graph-aware n-grams need not reflect adjacent instructions. Several other claims (generic code-style statistics, common in all x86 binaries, model bias vs. behavior) are reasonably hedged but still speculative beyond what the evidence directly supports.\n\nThe SHAP analysis itself seems faithful in terms of sign and magnitude accuracy, with the top feature correctly identified and benign-leaning features correctly noted as sparse, though scoping the claim to \"top-20\" rather than unqualified is a minor nuance worth flagging.\n\nI'll keep faithful true but flag the overreach claims as unsupported rather than discrepancies—the \"only benign-leaning feature\" scoping issue and the SHAP-as-bias framing both go into unsupported_claims instead, since direction and magnitude are still correct. Now I need to pull exact verbatim quotes and map them to their JSON pointer paths within the candidate analysis.\n\nI'm continuing to gather supporting quotes: the call-return pair at index 5, the benign-leaning sign-test branch at index 7, and the generic n-gram observation categorized as \"other.\" For index 8, I'm noting the x87 instruction quote as weak/unsupported evidence since mining kernels rarely use it.\n\nGeneric domain claims about x86 prevalence don't tie to this specific sample, so I'm skipping those. For scoring, I'm landing on technical accuracy around 4 due to a few overreaches, coherence at 4 given some repetition between sections, relevance at 5 since it connects evidence to alternatives well, and actionability at 4 since the suggested checks are concrete but not strongly prioritized.\n\nLimitations to flag: the SHAP target class is assumed rather than confirmed, feature value semantics aren't established, there's no actual function context or occurrence data, and both baseline and full attribution values are missing—only top-k features were provided.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_8fd02794b05f0f32\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.69), the SHAP signs, the +0.0054 to +0.0120 range, the 19-of-20 count and the cited n-gram values all match the evidence. The overreaches are minor: adjacency wording, treating values as frequencies, and top-k extremes presented as global.\",\"coherence\":\"The explanation, per-feature notes, tier, confidence and action all point the same way (weak lean, no concrete indicator, low-confidence). It is somewhat repetitive across the summary and the per-feature list.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to cryptojacking hypotheses (SIMD, carry-chain, x87) and to benign alternatives (compiler boilerplate, math or compression libraries). It also states that no function, API or hashing-loop context was supplied.\",\"actionable_utility\":\"Sandbox CPU and stratum/pool monitoring, inspecting functions containing specific n-grams, and checking for packing are concrete and proportionate, with an explicit no-escalation condition. They are not prioritized, and no occurrences or function context exist to locate the n-grams.\"},\"unsupported_claims\":[{\"quote\":\"The most frequent n-gram (0.0335)\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features (top-20 subset only); /scope_notes\",\"reason\":\"Only the top-20 subset is available, so CALL PUSH cannot be the most frequent n-gram overall. Feature values are also not established as frequencies.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"its contribution reflects model bias more than behavior\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/shap_baseline is null; /evidence/full_attributions is null\",\"reason\":\"Nothing supports attributing this SHAP value to model bias; the baseline is unknown and SHAP does not separate bias from behavior here.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"A call followed immediately by a return\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/occurrences is empty; /evidence/function_context is empty\",\"reason\":\"Adjacency and thin-wrapper structure are inferred without extraction context, and graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The only benign-leaning feature\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/scope_notes: a positive top-k subset is not all features\",\"reason\":\"This is true only within the top 20; omitted features may also lean benign.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Most of the high-frequency n-grams\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states the values must not be treated as raw counts or frequencies without upstream confirmation, yet the candidate treats them as frequencies without caveat.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP directions and magnitudes are reported correctly: 19 positive, TEST JNS negative, a range of +0.0054 to +0.0120, and correct per-feature values. The small scoping overreaches are listed under unsupported_claims.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are not established, so they may not be frequencies or counts.\",\"Occurrences and function context are empty, so n-gram adjacency and location are unknown.\",\"The SHAP baseline and full attributions are null, and only the top 20 features are shown.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"Numbers and SHAP signs are accurate, and the low-confidence framing with its follow-up checks is appropriate. A few overreaches remain: top-k extremes stated globally, a model-bias attribution, adjacency wording and treating values as frequencies.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7024,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3937,
+          "output_tokens_details": {
+            "thinking_tokens": 2454
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7024,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3937,
+        "output_tokens_details": {
+          "thinking_tokens": 2454
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_8fd02794b05f0f32\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.69), the SHAP signs, the +0.0054 to +0.0120 range, the 19-of-20 count and the cited n-gram values all match the evidence. The overreaches are minor: adjacency wording, treating values as frequencies, and top-k extremes presented as global.\",\"coherence\":\"The explanation, per-feature notes, tier, confidence and action all point the same way (weak lean, no concrete indicator, low-confidence). It is somewhat repetitive across the summary and the per-feature list.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to cryptojacking hypotheses (SIMD, carry-chain, x87) and to benign alternatives (compiler boilerplate, math or compression libraries). It also states that no function, API or hashing-loop context was supplied.\",\"actionable_utility\":\"Sandbox CPU and stratum/pool monitoring, inspecting functions containing specific n-grams, and checking for packing are concrete and proportionate, with an explicit no-escalation condition. They are not prioritized, and no occurrences or function context exist to locate the n-grams.\"},\"unsupported_claims\":[{\"quote\":\"The most frequent n-gram (0.0335)\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features (top-20 subset only); /scope_notes\",\"reason\":\"Only the top-20 subset is available, so CALL PUSH cannot be the most frequent n-gram overall. Feature values are also not established as frequencies.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"its contribution reflects model bias more than behavior\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/shap_baseline is null; /evidence/full_attributions is null\",\"reason\":\"Nothing supports attributing this SHAP value to model bias; the baseline is unknown and SHAP does not separate bias from behavior here.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"A call followed immediately by a return\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/occurrences is empty; /evidence/function_context is empty\",\"reason\":\"Adjacency and thin-wrapper structure are inferred without extraction context, and graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The only benign-leaning feature\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/scope_notes: a positive top-k subset is not all features\",\"reason\":\"This is true only within the top 20; omitted features may also lean benign.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Most of the high-frequency n-grams\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states the values must not be treated as raw counts or frequencies without upstream confirmation, yet the candidate treats them as frequencies without caveat.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP directions and magnitudes are reported correctly: 19 positive, TEST JNS negative, a range of +0.0054 to +0.0120, and correct per-feature values. The small scoping overreaches are listed under unsupported_claims.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are not established, so they may not be frequencies or counts.\",\"Occurrences and function context are empty, so n-gram adjacency and location are unknown.\",\"The SHAP baseline and full attributions are null, and only the top 20 features are shown.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"Numbers and SHAP signs are accurate, and the low-confidence framing with its follow-up checks is appropriate. A few overreaches remain: top-k extremes stated globally, a model-bias attribution, adjacency wording and treating values as frequencies.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_8fd02794b05f0f32",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability (0.69), the SHAP signs, the +0.0054 to +0.0120 range, the 19-of-20 count and the cited n-gram values all match the evidence. The overreaches are minor: adjacency wording, treating values as frequencies, and top-k extremes presented as global.",
+      "coherence": "The explanation, per-feature notes, tier, confidence and action all point the same way (weak lean, no concrete indicator, low-confidence). It is somewhat repetitive across the summary and the per-feature list.",
+      "cybersecurity_relevance": "It ties the sample's n-grams to cryptojacking hypotheses (SIMD, carry-chain, x87) and to benign alternatives (compiler boilerplate, math or compression libraries). It also states that no function, API or hashing-loop context was supplied.",
+      "actionable_utility": "Sandbox CPU and stratum/pool monitoring, inspecting functions containing specific n-grams, and checking for packing are concrete and proportionate, with an explicit no-escalation condition. They are not prioritized, and no occurrences or function context exist to locate the n-grams."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "The most frequent n-gram (0.0335)",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/top_features (top-20 subset only); /scope_notes",
+        "reason": "Only the top-20 subset is available, so CALL PUSH cannot be the most frequent n-gram overall. Feature values are also not established as frequencies.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "its contribution reflects model bias more than behavior",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/shap_baseline is null; /evidence/full_attributions is null",
+        "reason": "Nothing supports attributing this SHAP value to model bias; the baseline is unknown and SHAP does not separate bias from behavior here.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "A call followed immediately by a return",
+        "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+        "evidence_reference": "/evidence/occurrences is empty; /evidence/function_context is empty",
+        "reason": "Adjacency and thin-wrapper structure are inferred without extraction context, and graph-aware n-grams need not be adjacent.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "The only benign-leaning feature",
+        "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+        "evidence_reference": "/scope_notes: a positive top-k subset is not all features",
+        "reason": "This is true only within the top 20; omitted features may also lean benign.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Most of the high-frequency n-grams",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states the values must not be treated as raw counts or frequencies without upstream confirmation, yet the candidate treats them as frequencies without caveat.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP directions and magnitudes are reported correctly: 19 positive, TEST JNS negative, a range of +0.0054 to +0.0120, and correct per-feature values. The small scoping overreaches are listed under unsupported_claims.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "Feature value semantics are not established, so they may not be frequencies or counts.",
+      "Occurrences and function context are empty, so n-gram adjacency and location are unknown.",
+      "The SHAP baseline and full attributions are null, and only the top 20 features are shown.",
+      "The RF probability is not behavioral proof."
+    ],
+    "summary": "Numbers and SHAP signs are accurate, and the low-confidence framing with its follow-up checks is appropriate. A few overreaches remain: top-k extremes stated globally, a model-bias attribution, adjacency wording and treating values as frequencies."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "The most frequent n-gram (0.0335)",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/top_features (top-20 subset only); /scope_notes",
+      "reason": "Only the top-20 subset is available, so CALL PUSH cannot be the most frequent n-gram overall. Feature values are also not established as frequencies.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "its contribution reflects model bias more than behavior",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/shap_baseline is null; /evidence/full_attributions is null",
+      "reason": "Nothing supports attributing this SHAP value to model bias; the baseline is unknown and SHAP does not separate bias from behavior here.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "A call followed immediately by a return",
+      "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+      "evidence_reference": "/evidence/occurrences is empty; /evidence/function_context is empty",
+      "reason": "Adjacency and thin-wrapper structure are inferred without extraction context, and graph-aware n-grams need not be adjacent.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The only benign-leaning feature",
+      "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+      "evidence_reference": "/scope_notes: a positive top-k subset is not all features",
+      "reason": "This is true only within the top 20; omitted features may also lean benign.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Most of the high-frequency n-grams",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states the values must not be treated as raw counts or frequencies without upstream confirmation, yet the candidate treats them as frequencies without caveat.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "fc29f52e495390630ccda0c1071af6a811eeae68ae7d7cee5de58bdc02f00b61.exe_analysis.json"
+}

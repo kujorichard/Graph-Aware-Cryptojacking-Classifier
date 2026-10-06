@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_023f99850505e303",
+  "status": "success",
+  "source_sha256": "ca4da809527a1f3426b26352c81e977eb764e955d3de8b1e84f9ac237f7d7eef",
+  "input_sha256": "dbd8e34e780fadf25f59aec0ccd1016813edb4619ac767e4408567bd6e6260ff",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "f72cc34394c1d4ce63a6151c1effe973e44cc65043df34de98f82a127c6225d1.elf",
+      "source_name": "f72cc34394c1d4ce63a6151c1effe973e44cc65043df34de98f82a127c6225d1.elf.json",
+      "source_path": "ml/dataset/cryptojacking/f72cc34394c1d4ce63a6151c1effe973e44cc65043df34de98f82a127c6225d1.elf.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 34,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "f72cc34394c1d4ce63a6151c1effe973e44cc65043df34de98f82a127c6225d1.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T14:04:23.352693+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T14:04:23.352720+00:00",
+      "error": null,
+      "request_sha256": "4af64b5af21e80c05df5427e8cce6a5a7a195e9a72f6c6715d4affa99ac5c0b7",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm7KLeSgBfZ9R5JveizD",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF prediction value and the SHAP contributions, confirming they match the reported numbers. I notice the candidate labels the all-zero feature as \"relative frequency\" even though the evidence doesn't establish that semantic, which is a minor unsupported claim worth flagging.\n\nI also note the \"no single dominant signature\" claim is only true within the top-k features shown (0.0169 vs 0.0063, roughly a 2.7x spread), while the interpretations of specific instruction patterns like XOR/CALL, CMP/JL, and ADD/POP are reasonably hedged as general code semantics rather than overclaimed.\n\nThe bigger issue is the candidate's adjacency assumption — treating consecutive mnemonic pairs (XOR/CMOVNZ, CMP/CMOVZ, \"immediately before a call\", \"post-call register zeroing\") as if they're literally adjacent in the code, when graph-aware n-grams don't establish that. This overreaches beyond what the features actually show. The confidence tier (0.55, low-confidence) and conditional recommendations seem fine, and SHAP signs/magnitudes appear faithful overall aside from the minor \"spread evenly\" framing. I'm leaning toward technical accuracy around a 3.\n\nI'm compiling the specific unsupported claims with their JSON pointers — flagging the frequency-0.000000 misstatements in both the explanation and evidence_analysis sections, the \"immediately before a call\" adjacency claim, and the branchless-logic overreach in key_indicators, along with the relevant evidence references for feature_value_semantics and the top feature value. Now I need to assemble this all into a single-line JSON output with coherence around 4, relevance 4-5, and actionable around 4 given the concrete, somewhat prioritized recommendations.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_023f99850505e303\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability (0.9999), the 20 positive SHAP values and the 0.0063-0.0169 range match the evidence. However, it labels the feature values 'relative frequency' although their semantics are unestablished. It also treats n-grams as adjacent ('Consecutive XORs', 'immediately before a call') and says CMOV pairs 'show branchless conditional-move logic'. These overreach the evidence.\",\"coherence\":\"The explanation is well organized and consistent: the low-confidence tier, 0.55 confidence, inconclusive framing and recommendations agree. The repeated per-feature caveats and the restatement of the zero-frequency point add some redundancy.\",\"cybersecurity_relevance\":\"It ties sample evidence to cryptojacking hypotheses (XOR/SHL hash-like mixing, CMOV) and gives benign alternatives (prologues, epilogues, call setup, ordinary compiled code). It also flags the all-zero values and missing function context as limits. Much of the per-n-gram text is generic.\",\"actionable_utility\":\"Recommendations are concrete and proportionate: disassemble and locate the XOR/SHL/AND/CMOV functions, look for compute loops and pool strings, sandbox CPU and network, and check whether feature extraction is incomplete. They are conditional and linked to the evidence gaps, but not prioritized and they lack specifics.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a reported relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states that value semantics are not established and should not be treated as raw counts. Calling them relative frequencies assigns unsupported semantics.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"CMOVZ MOV, XOR CMOVNZ and CMP CMOVZ show branchless conditional-move logic\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Mnemonic pairs alone cannot show branchless logic. The explanation text itself only says it 'may indicate' this. The key indicator states it with unwarranted certainty.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Consecutive XORs may reflect bitwise mixing of the kind seen in hash or cipher routines, or just multiple register zeroings.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Graph-aware n-grams need not be adjacent, and no extraction or context evidence supports consecutiveness.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Address computation immediately before a call, such as passing a pointer argument.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/12/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"Adjacency and call-setup role are asserted without occurrences or function context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Its frequency is 0.000000 and no function is listed\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0/value\",\"reason\":\"The value 0.0 is reported as a frequency, although the artifact does not establish what the feature value represents.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs (all positive for configured class 1) and magnitudes match the evidence within rounding. The candidate also notes that the evidence cannot confirm mining behavior. The only mild imprecision is describing the top-k contributions as 'spread evenly' without noting that omitted features are unknown.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are unestablished, and all values are 0.0 despite positive SHAP.\",\"No occurrences, function context, SHAP baseline or full attributions are available.\",\"The top-k subset cannot show what omitted features contribute.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation reports RF and SHAP numbers faithfully and appropriately hedges toward an inconclusive result with sensible follow-up. It loses accuracy through treating the feature values as frequencies, assuming adjacency, and overstating 'branchless conditional-move logic' in the key indicators.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6754,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2770,
+          "output_tokens_details": {
+            "thinking_tokens": 1170
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6754,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2770,
+        "output_tokens_details": {
+          "thinking_tokens": 1170
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_023f99850505e303\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability (0.9999), the 20 positive SHAP values and the 0.0063-0.0169 range match the evidence. However, it labels the feature values 'relative frequency' although their semantics are unestablished. It also treats n-grams as adjacent ('Consecutive XORs', 'immediately before a call') and says CMOV pairs 'show branchless conditional-move logic'. These overreach the evidence.\",\"coherence\":\"The explanation is well organized and consistent: the low-confidence tier, 0.55 confidence, inconclusive framing and recommendations agree. The repeated per-feature caveats and the restatement of the zero-frequency point add some redundancy.\",\"cybersecurity_relevance\":\"It ties sample evidence to cryptojacking hypotheses (XOR/SHL hash-like mixing, CMOV) and gives benign alternatives (prologues, epilogues, call setup, ordinary compiled code). It also flags the all-zero values and missing function context as limits. Much of the per-n-gram text is generic.\",\"actionable_utility\":\"Recommendations are concrete and proportionate: disassemble and locate the XOR/SHL/AND/CMOV functions, look for compute loops and pool strings, sandbox CPU and network, and check whether feature extraction is incomplete. They are conditional and linked to the evidence gaps, but not prioritized and they lack specifics.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a reported relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states that value semantics are not established and should not be treated as raw counts. Calling them relative frequencies assigns unsupported semantics.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"CMOVZ MOV, XOR CMOVNZ and CMP CMOVZ show branchless conditional-move logic\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Mnemonic pairs alone cannot show branchless logic. The explanation text itself only says it 'may indicate' this. The key indicator states it with unwarranted certainty.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Consecutive XORs may reflect bitwise mixing of the kind seen in hash or cipher routines, or just multiple register zeroings.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Graph-aware n-grams need not be adjacent, and no extraction or context evidence supports consecutiveness.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Address computation immediately before a call, such as passing a pointer argument.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/12/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"Adjacency and call-setup role are asserted without occurrences or function context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Its frequency is 0.000000 and no function is listed\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0/value\",\"reason\":\"The value 0.0 is reported as a frequency, although the artifact does not establish what the feature value represents.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs (all positive for configured class 1) and magnitudes match the evidence within rounding. The candidate also notes that the evidence cannot confirm mining behavior. The only mild imprecision is describing the top-k contributions as 'spread evenly' without noting that omitted features are unknown.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are unestablished, and all values are 0.0 despite positive SHAP.\",\"No occurrences, function context, SHAP baseline or full attributions are available.\",\"The top-k subset cannot show what omitted features contribute.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation reports RF and SHAP numbers faithfully and appropriately hedges toward an inconclusive result with sensible follow-up. It loses accuracy through treating the feature values as frequencies, assuming adjacency, and overstating 'branchless conditional-move logic' in the key indicators.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_023f99850505e303",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability (0.9999), the 20 positive SHAP values and the 0.0063-0.0169 range match the evidence. However, it labels the feature values 'relative frequency' although their semantics are unestablished. It also treats n-grams as adjacent ('Consecutive XORs', 'immediately before a call') and says CMOV pairs 'show branchless conditional-move logic'. These overreach the evidence.",
+      "coherence": "The explanation is well organized and consistent: the low-confidence tier, 0.55 confidence, inconclusive framing and recommendations agree. The repeated per-feature caveats and the restatement of the zero-frequency point add some redundancy.",
+      "cybersecurity_relevance": "It ties sample evidence to cryptojacking hypotheses (XOR/SHL hash-like mixing, CMOV) and gives benign alternatives (prologues, epilogues, call setup, ordinary compiled code). It also flags the all-zero values and missing function context as limits. Much of the per-n-gram text is generic.",
+      "actionable_utility": "Recommendations are concrete and proportionate: disassemble and locate the XOR/SHL/AND/CMOV functions, look for compute loops and pool strings, sandbox CPU and network, and check whether feature extraction is incomplete. They are conditional and linked to the evidence gaps, but not prioritized and they lack specifics."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Every n-gram has a reported relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states that value semantics are not established and should not be treated as raw counts. Calling them relative frequencies assigns unsupported semantics.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "CMOVZ MOV, XOR CMOVNZ and CMP CMOVZ show branchless conditional-move logic",
+        "candidate_path": "/candidate_analysis/key_indicators/2",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "Mnemonic pairs alone cannot show branchless logic. The explanation text itself only says it 'may indicate' this. The key indicator states it with unwarranted certainty.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Consecutive XORs may reflect bitwise mixing of the kind seen in hash or cipher routines, or just multiple register zeroings.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Graph-aware n-grams need not be adjacent, and no extraction or context evidence supports consecutiveness.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Address computation immediately before a call, such as passing a pointer argument.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/12/assessment",
+        "evidence_reference": "/evidence/function_context",
+        "reason": "Adjacency and call-setup role are asserted without occurrences or function context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Its frequency is 0.000000 and no function is listed",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/top_features/0/value",
+        "reason": "The value 0.0 is reported as a frequency, although the artifact does not establish what the feature value represents.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP signs (all positive for configured class 1) and magnitudes match the evidence within rounding. The candidate also notes that the evidence cannot confirm mining behavior. The only mild imprecision is describing the top-k contributions as 'spread evenly' without noting that omitted features are unknown.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Target class is a configured assumption that needs upstream verification.",
+      "Feature value semantics are unestablished, and all values are 0.0 despite positive SHAP.",
+      "No occurrences, function context, SHAP baseline or full attributions are available.",
+      "The top-k subset cannot show what omitted features contribute.",
+      "The RF probability is not behavioral proof."
+    ],
+    "summary": "The explanation reports RF and SHAP numbers faithfully and appropriately hedges toward an inconclusive result with sensible follow-up. It loses accuracy through treating the feature values as frequencies, assuming adjacency, and overstating 'branchless conditional-move logic' in the key indicators."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Every n-gram has a reported relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states that value semantics are not established and should not be treated as raw counts. Calling them relative frequencies assigns unsupported semantics.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "CMOVZ MOV, XOR CMOVNZ and CMP CMOVZ show branchless conditional-move logic",
+      "candidate_path": "/candidate_analysis/key_indicators/2",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "Mnemonic pairs alone cannot show branchless logic. The explanation text itself only says it 'may indicate' this. The key indicator states it with unwarranted certainty.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Consecutive XORs may reflect bitwise mixing of the kind seen in hash or cipher routines, or just multiple register zeroings.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Graph-aware n-grams need not be adjacent, and no extraction or context evidence supports consecutiveness.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Address computation immediately before a call, such as passing a pointer argument.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/12/assessment",
+      "evidence_reference": "/evidence/function_context",
+      "reason": "Adjacency and call-setup role are asserted without occurrences or function context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Its frequency is 0.000000 and no function is listed",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/top_features/0/value",
+      "reason": "The value 0.0 is reported as a frequency, although the artifact does not establish what the feature value represents.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "f72cc34394c1d4ce63a6151c1effe973e44cc65043df34de98f82a127c6225d1.elf_analysis.json"
+}

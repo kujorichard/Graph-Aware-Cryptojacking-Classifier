@@ -1,0 +1,174 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_bda6f0dc60eee5be",
+  "status": "success",
+  "source_sha256": "e86666adeacab6ce45c7b1aa627c1d4e70ac80311a93477b372cab29c722ee40",
+  "input_sha256": "d247ed458c712c7566554c26c2143ef5b20399ac66cb1f6b816033f490832354",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "eedba0d4610926371c8ae3ae8203b7119160f28fcc5e37fb9579ad0fb86f95db.exe",
+      "source_name": "eedba0d4610926371c8ae3ae8203b7119160f28fcc5e37fb9579ad0fb86f95db.exe.json",
+      "source_path": "ml/dataset/cryptojacking/eedba0d4610926371c8ae3ae8203b7119160f28fcc5e37fb9579ad0fb86f95db.exe.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 67,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "eedba0d4610926371c8ae3ae8203b7119160f28fcc5e37fb9579ad0fb86f95db.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T14:02:04.837491+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T14:02:04.837519+00:00",
+      "error": null,
+      "request_sha256": "4a4e1de4246c06a1de61ba5fe24ab25bfc425b6491a2c15f33cfc6c6f87bb752",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm798uTrB6SfN1Ka3g8n",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "The model predicts class 1 with full confidence, and all 20 top SHAP features are positive — I'm noting that many of the instruction bigram counts (like CMOVZ-MOV, ADD-POP, PUSH-SUB) are zero, which seems to be driving the prediction.\n\nChecking the claim that only three bigrams occur at nonzero frequency among the shift/XOR group: SUB-SHL, SHL-ADD, and XOR-MOV are nonzero while XOR-SHL and XOR-XOR are zero, so that part holds up. SHL-ADD does have the highest frequency among the listed n-grams, and MOV-SYSCALL/SYSCALL-RET match at equal values — but I'm wary of the claim that these indicate \"direct system-call stubs,\" since that's an interpretive leap not strictly supported by the data, and the semantics of calling these values \"frequency\" versus SHAP contribution still isn't fully established.\n\nI also notice an inconsistency: CMOVZ-MOV gets lumped into \"ordinary compiler-generated prologue/epilogue idioms\" in the summary, but the assessment itself describes it as a branchless selection pattern, not stack-related — that's a minor internal contradiction worth flagging. The other pairings like ADD-POP and PUSH-SUB as stack-adjustment/prologue patterns seem reasonable, though still speculative, and I'm now weighing how the stated 0.55 confidence tier squares with recommending \"suspicious and likely malicious.\"\n\nThere's also an unsupported assumption that the feature values represent \"frequency\" — many are exactly 0.0, and nothing in the evidence establishes that framing, so treating zero as \"contributing through absence\" is an interpretive leap rather than a grounded fact. Otherwise the SHAP directions and magnitudes look internally consistent and the explanation remains largely faithful, aside from these smaller unsupported or imprecise claims.\n\nI'll settle on faithful: true, with no major discrepancies flagged but a note on the unsupported \"frequency\" framing. For scores: technical accuracy around 4, coherence 4, relevance 4-5, and actionability 4 since sandboxing and function inspection are reasonable next steps even without exact offsets. I'm also flagging the \"ordinary compiler-generated prologue/epilogue\" claim as an unsupported assertion, since it's an interpretive label not strictly backed by the evidence given.\n\nThat frequency claim ties back to /evidence/feature_value_semantics, confirming the zero-frequency n-grams point.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_bda6f0dc60eee5be\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Numbers match the evidence: prob 1.0, all 20 SHAP values positive, 12 zero-valued and 8 nonzero features, SHL ADD highest at 0.015649, and the syscall pair at 0.003912. Mining and obfuscation readings are hedged as non-specific. Two flaws: it treats values as 'frequency' although the artifact says value semantics are not established, and it lumps CMOVZ MOV into prologue/epilogue idioms.\",\"coherence\":\"The explanation, per-feature assessments, indicators and action are consistent and explicitly insufficient for a high-confidence call. Minor tension between the 'low-confidence' tier and 'suspicious and likely malicious', plus some repetition across sections.\",\"cybersecurity_relevance\":\"Ties this sample's n-grams (syscall stubs, shift/XOR/ADD arithmetic, generic epilogues) to mining questions (stratum, hashing, throttling) and benign alternatives (compiler boilerplate, index scaling). It notes the lack of function locations and the lack of mining-specific evidence.\",\"actionable_utility\":\"Concrete, proportionate steps: check for pool/stratum connections and sustained CPU, inspect the functions containing the syscall n-grams, locate shift/XOR/ADD sequences, and run a sandbox plus signature comparison. They are conditional and linked to the gaps, though not prioritized and without stated purposes for each step.\"},\"unsupported_claims\":[{\"quote\":\"Twelve of the 20 n-grams have a frequency of 0.000000, so their SHAP weight comes from absence or near-absence\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature value semantics are not established and the values should not be treated as raw counts or frequencies. The 'absence' interpretation of SHAP contributions depends on that assumption.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"are ordinary compiler-generated function prologue/epilogue and stack-cleanup idioms\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/0\",\"reason\":\"The sentence names CMOVZ MOV among the strongest contributors, but that n-gram (conditional move then move) is not a prologue/epilogue idiom. The candidate's own per-feature assessment calls it branchless selection.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 top features are correctly described as positive toward class 1, and the quoted SHAP values match the evidence within rounding. The ordering of the strongest contributors and the claim that their weight is weak or generic evidence are consistent. No omitted-feature or baseline claims are made. The only issue is the CMOVZ MOV category lumping, which is a semantic point, not a SHAP sign or magnitude error.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No occurrences, function context, SHAP baseline or full attributions are provided, so omitted features and instruction adjacency or control flow cannot be assessed.\",\"Feature value semantics are not established, so 'frequency' is an assumption.\",\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"RF probability 1.0 is not behavioral proof, and the artifact contains no dynamic, network or CPU evidence.\"],\"summary\":\"The explanation is accurate, well hedged and well organized, with sample-grounded investigative steps. Minor issues: the 'frequency' interpretation of values with undefined semantics, and CMOVZ MOV mislabeled as an epilogue idiom. SHAP direction and magnitude are faithfully represented.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7056,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3071,
+          "output_tokens_details": {
+            "thinking_tokens": 1735
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7056,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3071,
+        "output_tokens_details": {
+          "thinking_tokens": 1735
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_bda6f0dc60eee5be\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Numbers match the evidence: prob 1.0, all 20 SHAP values positive, 12 zero-valued and 8 nonzero features, SHL ADD highest at 0.015649, and the syscall pair at 0.003912. Mining and obfuscation readings are hedged as non-specific. Two flaws: it treats values as 'frequency' although the artifact says value semantics are not established, and it lumps CMOVZ MOV into prologue/epilogue idioms.\",\"coherence\":\"The explanation, per-feature assessments, indicators and action are consistent and explicitly insufficient for a high-confidence call. Minor tension between the 'low-confidence' tier and 'suspicious and likely malicious', plus some repetition across sections.\",\"cybersecurity_relevance\":\"Ties this sample's n-grams (syscall stubs, shift/XOR/ADD arithmetic, generic epilogues) to mining questions (stratum, hashing, throttling) and benign alternatives (compiler boilerplate, index scaling). It notes the lack of function locations and the lack of mining-specific evidence.\",\"actionable_utility\":\"Concrete, proportionate steps: check for pool/stratum connections and sustained CPU, inspect the functions containing the syscall n-grams, locate shift/XOR/ADD sequences, and run a sandbox plus signature comparison. They are conditional and linked to the gaps, though not prioritized and without stated purposes for each step.\"},\"unsupported_claims\":[{\"quote\":\"Twelve of the 20 n-grams have a frequency of 0.000000, so their SHAP weight comes from absence or near-absence\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature value semantics are not established and the values should not be treated as raw counts or frequencies. The 'absence' interpretation of SHAP contributions depends on that assumption.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"are ordinary compiler-generated function prologue/epilogue and stack-cleanup idioms\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/0\",\"reason\":\"The sentence names CMOVZ MOV among the strongest contributors, but that n-gram (conditional move then move) is not a prologue/epilogue idiom. The candidate's own per-feature assessment calls it branchless selection.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 top features are correctly described as positive toward class 1, and the quoted SHAP values match the evidence within rounding. The ordering of the strongest contributors and the claim that their weight is weak or generic evidence are consistent. No omitted-feature or baseline claims are made. The only issue is the CMOVZ MOV category lumping, which is a semantic point, not a SHAP sign or magnitude error.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No occurrences, function context, SHAP baseline or full attributions are provided, so omitted features and instruction adjacency or control flow cannot be assessed.\",\"Feature value semantics are not established, so 'frequency' is an assumption.\",\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"RF probability 1.0 is not behavioral proof, and the artifact contains no dynamic, network or CPU evidence.\"],\"summary\":\"The explanation is accurate, well hedged and well organized, with sample-grounded investigative steps. Minor issues: the 'frequency' interpretation of values with undefined semantics, and CMOVZ MOV mislabeled as an epilogue idiom. SHAP direction and magnitude are faithfully represented.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_bda6f0dc60eee5be",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Numbers match the evidence: prob 1.0, all 20 SHAP values positive, 12 zero-valued and 8 nonzero features, SHL ADD highest at 0.015649, and the syscall pair at 0.003912. Mining and obfuscation readings are hedged as non-specific. Two flaws: it treats values as 'frequency' although the artifact says value semantics are not established, and it lumps CMOVZ MOV into prologue/epilogue idioms.",
+      "coherence": "The explanation, per-feature assessments, indicators and action are consistent and explicitly insufficient for a high-confidence call. Minor tension between the 'low-confidence' tier and 'suspicious and likely malicious', plus some repetition across sections.",
+      "cybersecurity_relevance": "Ties this sample's n-grams (syscall stubs, shift/XOR/ADD arithmetic, generic epilogues) to mining questions (stratum, hashing, throttling) and benign alternatives (compiler boilerplate, index scaling). It notes the lack of function locations and the lack of mining-specific evidence.",
+      "actionable_utility": "Concrete, proportionate steps: check for pool/stratum connections and sustained CPU, inspect the functions containing the syscall n-grams, locate shift/XOR/ADD sequences, and run a sandbox plus signature comparison. They are conditional and linked to the gaps, though not prioritized and without stated purposes for each step."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Twelve of the 20 n-grams have a frequency of 0.000000, so their SHAP weight comes from absence or near-absence",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature value semantics are not established and the values should not be treated as raw counts or frequencies. The 'absence' interpretation of SHAP contributions depends on that assumption.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "are ordinary compiler-generated function prologue/epilogue and stack-cleanup idioms",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/0",
+        "reason": "The sentence names CMOVZ MOV among the strongest contributors, but that n-gram (conditional move then move) is not a prologue/epilogue idiom. The candidate's own per-feature assessment calls it branchless selection.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 top features are correctly described as positive toward class 1, and the quoted SHAP values match the evidence within rounding. The ordering of the strongest contributors and the claim that their weight is weak or generic evidence are consistent. No omitted-feature or baseline claims are made. The only issue is the CMOVZ MOV category lumping, which is a semantic point, not a SHAP sign or magnitude error.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No occurrences, function context, SHAP baseline or full attributions are provided, so omitted features and instruction adjacency or control flow cannot be assessed.",
+      "Feature value semantics are not established, so 'frequency' is an assumption.",
+      "SHAP target class 1 is a configured assumption pending upstream verification.",
+      "RF probability 1.0 is not behavioral proof, and the artifact contains no dynamic, network or CPU evidence."
+    ],
+    "summary": "The explanation is accurate, well hedged and well organized, with sample-grounded investigative steps. Minor issues: the 'frequency' interpretation of values with undefined semantics, and CMOVZ MOV mislabeled as an epilogue idiom. SHAP direction and magnitude are faithfully represented."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Twelve of the 20 n-grams have a frequency of 0.000000, so their SHAP weight comes from absence or near-absence",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature value semantics are not established and the values should not be treated as raw counts or frequencies. The 'absence' interpretation of SHAP contributions depends on that assumption.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "are ordinary compiler-generated function prologue/epilogue and stack-cleanup idioms",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/0",
+      "reason": "The sentence names CMOVZ MOV among the strongest contributors, but that n-gram (conditional move then move) is not a prologue/epilogue idiom. The candidate's own per-feature assessment calls it branchless selection.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "eedba0d4610926371c8ae3ae8203b7119160f28fcc5e37fb9579ad0fb86f95db.exe_analysis.json"
+}

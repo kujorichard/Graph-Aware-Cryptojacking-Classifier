@@ -1,0 +1,237 @@
+{
+  "sample_id": "sample_a9a92d22066e9aa2",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.885,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "MOV ROL",
+        "value": 7.110670412657782e-05,
+        "shap_value": 0.009967478008350357
+      },
+      {
+        "ngram": "ADD MOVQ",
+        "value": 3.0868024623487145e-05,
+        "shap_value": 0.009225719497915138
+      },
+      {
+        "ngram": "ADD ROR",
+        "value": 0.002918682061135769,
+        "shap_value": 0.00911765898649697
+      },
+      {
+        "ngram": "SUB ADC",
+        "value": 0.00013780368317384273,
+        "shap_value": 0.00910143125271383
+      },
+      {
+        "ngram": "CALL RET",
+        "value": 2.204858901677653e-06,
+        "shap_value": 0.008563316054065758
+      },
+      {
+        "ngram": "ROR MOV",
+        "value": 0.0022583268582820892,
+        "shap_value": 0.008470824364832711
+      },
+      {
+        "ngram": "ROL AND",
+        "value": 2.204858901677653e-06,
+        "shap_value": 0.008071569250588405
+      },
+      {
+        "ngram": "MOVAPD DIVSD",
+        "value": 5.512147254194133e-07,
+        "shap_value": 0.007615592571971564
+      },
+      {
+        "ngram": "MOVHLPS MOVQ",
+        "value": 0.0001570962049299851,
+        "shap_value": 0.007595344165370056
+      },
+      {
+        "ngram": "BSWAP LEA",
+        "value": 1.1024294508388266e-06,
+        "shap_value": 0.0074912653098394445
+      },
+      {
+        "ngram": "PADDQ MOVDQA",
+        "value": 0.00017914478667080402,
+        "shap_value": 0.006704792662751196
+      },
+      {
+        "ngram": "SHL OR",
+        "value": 0.002189425053074956,
+        "shap_value": 0.006617109948658725
+      },
+      {
+        "ngram": "SHR ADC",
+        "value": 0.00013890610716771334,
+        "shap_value": 0.0064131056315108285
+      },
+      {
+        "ngram": "BSF MOV",
+        "value": 4.409717803355306e-06,
+        "shap_value": 0.006105603475665035
+      },
+      {
+        "ngram": "ADC XOR",
+        "value": 4.96093252877472e-06,
+        "shap_value": 0.006078317043769319
+      },
+      {
+        "ngram": "SUB NOT",
+        "value": 2.204858901677653e-06,
+        "shap_value": 0.006068656973040676
+      },
+      {
+        "ngram": "ROL MOV",
+        "value": 7.496520265704021e-05,
+        "shap_value": 0.006037223557503454
+      },
+      {
+        "ngram": "MOV PUNPCKLQDQ",
+        "value": 2.2599804651690647e-05,
+        "shap_value": 0.005951591877828145
+      },
+      {
+        "ngram": "MOVZX ROL",
+        "value": 3.803381696343422e-05,
+        "shap_value": 0.005903595028808158
+      },
+      {
+        "ngram": "MOVQ PUNPCKLQDQ",
+        "value": 0.001954607432708144,
+        "shap_value": 0.005841065239204328
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "high-confidence",
+    "explanation": "The Random Forest classified this binary as malware with probability 0.885. All 20 top features push toward cryptojacking, and none pushes the other way. Together they add about +0.147 of SHAP contribution. The n-grams cluster into three families typical of hashing and proof-of-work arithmetic. (1) Rotate and shift bit-mixing: MOV ROL (+0.00997), ADD ROR (+0.00912), ROR MOV (+0.00847), ROL AND (+0.00807), SHL OR (+0.00662), ROL MOV (+0.00604), MOVZX ROL (+0.00590). (2) Multi-precision carry arithmetic and bit manipulation: SUB ADC (+0.00910), SHR ADC (+0.00641), ADC XOR (+0.00608), SUB NOT (+0.00607), BSWAP LEA (+0.00749), BSF MOV (+0.00611). (3) SSE/SIMD data shuffling and packed arithmetic: ADD MOVQ (+0.00923), MOVHLPS MOVQ (+0.00760), PADDQ MOVDQA (+0.00671), MOV PUNPCKLQDQ (+0.00595), MOVQ PUNPCKLQDQ (+0.00584), MOVAPD DIVSD (+0.00762). The rotate-heavy patterns ADD ROR (freq 0.002919), ROR MOV (0.002258) and SHL OR (0.002189) are also among the most frequent n-grams in the binary, which fits a compute-intensive hashing loop. The case is strong but not conclusive. The evidence is purely mnemonic n-gram statistics with no function-level attribution, strings or API context. Most of the rare n-grams (frequency at or below 0.000005) are individually weak signals. Bit-rotation and carry-chain code also occurs in legitimate cryptographic, compression and checksum libraries. The consistency of all 20 features and the high model probability still support a high-confidence tier.",
+    "evidence_analysis": [
+      {
+        "ngram": "MOV ROL",
+        "shap_contribution": 0.009967,
+        "assessment": "Top-ranked feature. A load or move followed by a rotate-left is a typical round-function step in hash and cipher routines used for proof-of-work. Its frequency is very low (0.000071), so it is a sparse but highly discriminative marker."
+      },
+      {
+        "ngram": "ADD MOVQ",
+        "shap_contribution": 0.009226,
+        "assessment": "Scalar addition adjacent to 64-bit XMM moves suggests mixed scalar/SIMD state handling, consistent with optimized mining kernels. Very rare (0.000031)."
+      },
+      {
+        "ngram": "ADD ROR",
+        "shap_contribution": 0.009118,
+        "assessment": "An add followed by a rotate-right is the classic add-rotate-xor pattern of ARX hash designs. At 0.002919 it is the most frequent top-ranked n-gram, which indicates repeated, loop-like execution of this pattern."
+      },
+      {
+        "ngram": "SUB ADC",
+        "shap_contribution": 0.009101,
+        "assessment": "A subtract followed by add-with-carry indicates multi-word big-integer arithmetic, which appears in elliptic-curve and other crypto math. Frequency 0.000138."
+      },
+      {
+        "ngram": "CALL RET",
+        "shap_contribution": 0.008563,
+        "assessment": "A call immediately followed by a return indicates very small stub or thunk functions. This is a weak, ambiguous signal on its own, and the model weights it positively despite a very low frequency (0.000002). It adds little interpretable evidence without function context."
+      },
+      {
+        "ngram": "ROR MOV",
+        "shap_contribution": 0.008471,
+        "assessment": "A rotate-right followed by a store or move is the continuation of a bit-mixing round. Its frequency (0.002258) is relatively high, which supports repeated hash-round code."
+      },
+      {
+        "ngram": "ROL AND",
+        "shap_contribution": 0.008072,
+        "assessment": "A rotate combined with a mask is typical of bit-field extraction and mixing in cryptographic primitives. Extremely rare (0.000002), but it carries a high SHAP weight."
+      },
+      {
+        "ngram": "MOVAPD DIVSD",
+        "shap_contribution": 0.007616,
+        "assessment": "A packed-double move followed by scalar double division is floating-point work. It is less obviously a hashing marker, but floating-point operations can appear in some mining algorithms or in difficulty and statistics handling. The evidence does not support a firm interpretation. Frequency 0.000001."
+      },
+      {
+        "ngram": "MOVHLPS MOVQ",
+        "shap_contribution": 0.007595,
+        "assessment": "XMM high-to-low lane moves and 64-bit extraction are SIMD lane-manipulation steps used in vectorized hashing and AES-style state handling. Frequency 0.000157."
+      },
+      {
+        "ngram": "BSWAP LEA",
+        "shap_contribution": 0.007491,
+        "assessment": "A byte-swap followed by address computation is endianness conversion, which is common when loading hash input or serializing digest output. Rare (0.000001)."
+      },
+      {
+        "ngram": "PADDQ MOVDQA",
+        "shap_contribution": 0.006705,
+        "assessment": "Packed 64-bit addition with aligned 128-bit moves is vectorized arithmetic on wide state, consistent with SIMD-optimized hashing or memory-hard algorithm loops. Frequency 0.000179."
+      },
+      {
+        "ngram": "SHL OR",
+        "shap_contribution": 0.006617,
+        "assessment": "A shift-left combined with OR is manual rotate or bit-field composition, which supports the bit-mixing theme. Relatively frequent (0.002189)."
+      },
+      {
+        "ngram": "SHR ADC",
+        "shap_contribution": 0.006413,
+        "assessment": "A shift-right feeding add-with-carry is the carry-propagation pattern of big-integer or modular arithmetic. Frequency 0.000139."
+      },
+      {
+        "ngram": "BSF MOV",
+        "shap_contribution": 0.006106,
+        "assessment": "A bit-scan-forward is used for bit-index and leading/trailing-zero logic, which can relate to difficulty or target checks, though it also appears in many general-purpose routines. Weak, low-frequency signal (0.000004)."
+      },
+      {
+        "ngram": "ADC XOR",
+        "shap_contribution": 0.006078,
+        "assessment": "Carry arithmetic combined with XOR mixes big-integer math with diffusion operations, a pattern common in cryptographic code. Rare (0.000005)."
+      },
+      {
+        "ngram": "SUB NOT",
+        "shap_contribution": 0.006069,
+        "assessment": "Subtraction followed by bitwise negation is a multi-precision or constant-time arithmetic idiom, also found in hash boolean functions. Rare (0.000002) and individually ambiguous."
+      },
+      {
+        "ngram": "ROL MOV",
+        "shap_contribution": 0.006037,
+        "assessment": "A rotate-left followed by a move is another bit-rotation step in a hash round, reinforcing the rotate-heavy profile. Frequency 0.000075."
+      },
+      {
+        "ngram": "MOV PUNPCKLQDQ",
+        "shap_contribution": 0.005952,
+        "assessment": "A move followed by a low-quadword unpack is SIMD lane interleaving, typical of vectorized state setup in optimized compute kernels. Frequency 0.000023."
+      },
+      {
+        "ngram": "MOVZX ROL",
+        "shap_contribution": 0.005904,
+        "assessment": "A zero-extended byte or word load feeding a rotate suggests byte-wise input processing with rotation, as in hash message schedules. Frequency 0.000038."
+      },
+      {
+        "ngram": "MOVQ PUNPCKLQDQ",
+        "shap_contribution": 0.005841,
+        "assessment": "A 64-bit XMM move followed by a quadword unpack is a SIMD data-packing idiom. With a frequency of 0.001955 it is relatively common in this binary, suggesting substantial vectorized processing."
+      }
+    ],
+    "confidence_score": 0.84,
+    "key_indicators": [
+      "Random Forest malware probability of 0.885 with all 20 top SHAP features pushing toward cryptojacking (cumulative about +0.147)",
+      "Rotate-heavy bit-mixing n-grams (MOV ROL, ADD ROR, ROR MOV, ROL AND, SHL OR, ROL MOV, MOVZX ROL), with ADD ROR, ROR MOV and SHL OR at relatively high frequencies (about 0.002 to 0.003)",
+      "Carry-chain and multi-precision arithmetic patterns (SUB ADC, SHR ADC, ADC XOR, SUB NOT)",
+      "SIMD lane and packed-arithmetic patterns (PADDQ MOVDQA, MOVHLPS MOVQ, PUNPCKLQDQ combinations, ADD MOVQ)",
+      "Endianness and bit-scan idioms (BSWAP LEA, BSF MOV) consistent with hash input and output handling"
+    ],
+    "recommended_action": "Treat as a likely cryptojacker and prioritize it for deeper analysis. Statically locate the functions containing the rotate, ADC and SIMD n-grams and check whether they form tight hashing loops. Then run the sample in a sandbox and monitor sustained CPU usage, outbound connections and persistence behavior. Compare the code against known mining algorithm implementations and extract strings and configuration data to confirm. Because the evidence is limited to mnemonic n-grams, rule out legitimate cryptographic or compression library code before final attribution."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

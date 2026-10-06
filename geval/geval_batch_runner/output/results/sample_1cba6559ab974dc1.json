@@ -1,0 +1,198 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_1cba6559ab974dc1",
+  "status": "success",
+  "source_sha256": "f7a987a7b858ee6744137cbc2810bf2023bfb490d4ed53d91bffed30f92d5cbe",
+  "input_sha256": "b40657e812e7b0db129a7871888d40d4083b5ac17a8f72e5fbaf85f689497099",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "8a116e67de1378ff68529774ec5bb984c41de823080256ae4d679bf28c398c8d.exe",
+      "source_name": "8a116e67de1378ff68529774ec5bb984c41de823080256ae4d679bf28c398c8d.exe.json",
+      "source_path": "ml/dataset/cryptojacking/8a116e67de1378ff68529774ec5bb984c41de823080256ae4d679bf28c398c8d.exe.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 7,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "8a116e67de1378ff68529774ec5bb984c41de823080256ae4d679bf28c398c8d.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:03:50.385858+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:03:50.385888+00:00",
+      "error": null,
+      "request_sha256": "2fd63e86083e04c025e780d8b7caa965227803f2ce5ced4ccd0afdd03f552818",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm2hY9H7R13ze5NSEmCk",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_1cba6559ab974dc1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":5,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.925, SHAP values, n-gram values and rounding are accurate, and the verdict is hedged. Several n-gram readings overreach as sample-specific behavior, e.g. 'DEC DEC' as 'likely loop counters' and 'consistent with multi-precision arithmetic loops'. Others are 'often follows PMOVMSKB in string routines, so likely benign runtime code' and 'Shows the binary uses AVX-optimized code paths'. None of these are supported without context or adjacency. 'Dense cluster' absence is limited to the top-20, which is fine.\",\"coherence\":\"Well organized: score, SHAP magnitude and frequency caveats, grouped interpretation, absence of signature, then recommendation. Tier 'low-confidence', confidence 0.55 and the 'suspicious but unconfirmed' action are consistent. Evidence and interpretation are easy to tell apart.\",\"cybersecurity_relevance\":\"Ties the specific top n-grams to cryptojacking-relevant hypotheses (carry-chain/bignum, CPUID dispatch) and to benign alternatives (string/memory routines, compiler idioms). It states the limits (no function context, top-k only, weak signals) and does not overclaim.\",\"actionable_utility\":\"Concrete, proportionate steps: inspect regions with ADC/SBB/SETC sequences for hash-round/bignum loops, check whether SIMD/CPUID code is standard runtime, run dynamic analysis (CPU use, pool connections) and string/config extraction. They are conditional and tied to evidence gaps. Not strictly prioritized, and the ADC/SBB suggestion goes slightly beyond the supplied n-grams (SBB is not among them).\"},\"unsupported_claims\":[{\"quote\":\"Address computation feeding a carry-add, consistent with multi-precision arithmetic loops.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/top_features/3; occurrences and function_context are empty\",\"reason\":\"A loop and data-flow ('feeding') relationship is inferred from a bigram with no adjacency, extraction or control-flow context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Repeated decrements, likely loop counters or unrolled loop bookkeeping.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"/evidence/top_features/13; function_context is empty\",\"reason\":\"Loop usage is inferred from a mnemonic pair alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Often follows PMOVMSKB in string routines, so likely benign runtime code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/14/assessment\",\"evidence_reference\":\"/evidence/top_features/14 and /evidence/top_features/7; no occurrences or adjacency data\",\"reason\":\"Benign string-routine origin is inferred without any evidence that BSF MOV follows PMOVMSKB in this sample.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Shows the binary uses AVX-optimized code paths, which are common in both benign and miner code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/top_features/8\",\"reason\":\"The n-gram only shows an AVX mnemonic pair, not established optimized code paths.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All SHAP values are reported as positive toward class 1 with correct values, rank order and rounding. Magnitudes are described accurately as small (+0.0045 to +0.0100), and the top-20 claim matches the supplied list. The n-gram values and the most frequent items are also correct. The candidate does not claim omitted features are benign. The target-class assumption is unverified in the evidence.\",\"discrepancies\":[]},\"evidence_limitations\":[\"shap_target_class is a configured assumption that needs upstream verification.\",\"SHAP baseline and full attributions are null, so omitted features cannot be assessed.\",\"Feature value semantics are not established, so the values may not be raw counts or frequencies.\",\"No occurrences or function context are provided, so adjacency, loops and routine origin cannot be verified.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"Numerically accurate, SHAP-faithful and well hedged, with relevant benign alternatives and proportionate follow-up. It loses accuracy points for a few sample-specific interpretations such as loops, string-routine origin and AVX code paths, which are made without adjacency or function context.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7302,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 1663,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7302,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1663,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_1cba6559ab974dc1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":5,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.925, SHAP values, n-gram values and rounding are accurate, and the verdict is hedged. Several n-gram readings overreach as sample-specific behavior, e.g. 'DEC DEC' as 'likely loop counters' and 'consistent with multi-precision arithmetic loops'. Others are 'often follows PMOVMSKB in string routines, so likely benign runtime code' and 'Shows the binary uses AVX-optimized code paths'. None of these are supported without context or adjacency. 'Dense cluster' absence is limited to the top-20, which is fine.\",\"coherence\":\"Well organized: score, SHAP magnitude and frequency caveats, grouped interpretation, absence of signature, then recommendation. Tier 'low-confidence', confidence 0.55 and the 'suspicious but unconfirmed' action are consistent. Evidence and interpretation are easy to tell apart.\",\"cybersecurity_relevance\":\"Ties the specific top n-grams to cryptojacking-relevant hypotheses (carry-chain/bignum, CPUID dispatch) and to benign alternatives (string/memory routines, compiler idioms). It states the limits (no function context, top-k only, weak signals) and does not overclaim.\",\"actionable_utility\":\"Concrete, proportionate steps: inspect regions with ADC/SBB/SETC sequences for hash-round/bignum loops, check whether SIMD/CPUID code is standard runtime, run dynamic analysis (CPU use, pool connections) and string/config extraction. They are conditional and tied to evidence gaps. Not strictly prioritized, and the ADC/SBB suggestion goes slightly beyond the supplied n-grams (SBB is not among them).\"},\"unsupported_claims\":[{\"quote\":\"Address computation feeding a carry-add, consistent with multi-precision arithmetic loops.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/top_features/3; occurrences and function_context are empty\",\"reason\":\"A loop and data-flow ('feeding') relationship is inferred from a bigram with no adjacency, extraction or control-flow context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Repeated decrements, likely loop counters or unrolled loop bookkeeping.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"/evidence/top_features/13; function_context is empty\",\"reason\":\"Loop usage is inferred from a mnemonic pair alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Often follows PMOVMSKB in string routines, so likely benign runtime code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/14/assessment\",\"evidence_reference\":\"/evidence/top_features/14 and /evidence/top_features/7; no occurrences or adjacency data\",\"reason\":\"Benign string-routine origin is inferred without any evidence that BSF MOV follows PMOVMSKB in this sample.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Shows the binary uses AVX-optimized code paths, which are common in both benign and miner code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/top_features/8\",\"reason\":\"The n-gram only shows an AVX mnemonic pair, not established optimized code paths.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All SHAP values are reported as positive toward class 1 with correct values, rank order and rounding. Magnitudes are described accurately as small (+0.0045 to +0.0100), and the top-20 claim matches the supplied list. The n-gram values and the most frequent items are also correct. The candidate does not claim omitted features are benign. The target-class assumption is unverified in the evidence.\",\"discrepancies\":[]},\"evidence_limitations\":[\"shap_target_class is a configured assumption that needs upstream verification.\",\"SHAP baseline and full attributions are null, so omitted features cannot be assessed.\",\"Feature value semantics are not established, so the values may not be raw counts or frequencies.\",\"No occurrences or function context are provided, so adjacency, loops and routine origin cannot be verified.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"Numerically accurate, SHAP-faithful and well hedged, with relevant benign alternatives and proportionate follow-up. It loses accuracy points for a few sample-specific interpretations such as loops, string-routine origin and AVX code paths, which are made without adjacency or function context.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_1cba6559ab974dc1",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 5,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability 0.925, SHAP values, n-gram values and rounding are accurate, and the verdict is hedged. Several n-gram readings overreach as sample-specific behavior, e.g. 'DEC DEC' as 'likely loop counters' and 'consistent with multi-precision arithmetic loops'. Others are 'often follows PMOVMSKB in string routines, so likely benign runtime code' and 'Shows the binary uses AVX-optimized code paths'. None of these are supported without context or adjacency. 'Dense cluster' absence is limited to the top-20, which is fine.",
+      "coherence": "Well organized: score, SHAP magnitude and frequency caveats, grouped interpretation, absence of signature, then recommendation. Tier 'low-confidence', confidence 0.55 and the 'suspicious but unconfirmed' action are consistent. Evidence and interpretation are easy to tell apart.",
+      "cybersecurity_relevance": "Ties the specific top n-grams to cryptojacking-relevant hypotheses (carry-chain/bignum, CPUID dispatch) and to benign alternatives (string/memory routines, compiler idioms). It states the limits (no function context, top-k only, weak signals) and does not overclaim.",
+      "actionable_utility": "Concrete, proportionate steps: inspect regions with ADC/SBB/SETC sequences for hash-round/bignum loops, check whether SIMD/CPUID code is standard runtime, run dynamic analysis (CPU use, pool connections) and string/config extraction. They are conditional and tied to evidence gaps. Not strictly prioritized, and the ADC/SBB suggestion goes slightly beyond the supplied n-grams (SBB is not among them)."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Address computation feeding a carry-add, consistent with multi-precision arithmetic loops.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+        "evidence_reference": "/evidence/top_features/3; occurrences and function_context are empty",
+        "reason": "A loop and data-flow ('feeding') relationship is inferred from a bigram with no adjacency, extraction or control-flow context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Repeated decrements, likely loop counters or unrolled loop bookkeeping.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+        "evidence_reference": "/evidence/top_features/13; function_context is empty",
+        "reason": "Loop usage is inferred from a mnemonic pair alone.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Often follows PMOVMSKB in string routines, so likely benign runtime code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/14/assessment",
+        "evidence_reference": "/evidence/top_features/14 and /evidence/top_features/7; no occurrences or adjacency data",
+        "reason": "Benign string-routine origin is inferred without any evidence that BSF MOV follows PMOVMSKB in this sample.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Shows the binary uses AVX-optimized code paths, which are common in both benign and miner code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+        "evidence_reference": "/evidence/top_features/8",
+        "reason": "The n-gram only shows an AVX mnemonic pair, not established optimized code paths.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All SHAP values are reported as positive toward class 1 with correct values, rank order and rounding. Magnitudes are described accurately as small (+0.0045 to +0.0100), and the top-20 claim matches the supplied list. The n-gram values and the most frequent items are also correct. The candidate does not claim omitted features are benign. The target-class assumption is unverified in the evidence.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "shap_target_class is a configured assumption that needs upstream verification.",
+      "SHAP baseline and full attributions are null, so omitted features cannot be assessed.",
+      "Feature value semantics are not established, so the values may not be raw counts or frequencies.",
+      "No occurrences or function context are provided, so adjacency, loops and routine origin cannot be verified.",
+      "The RF probability is not behavioral proof."
+    ],
+    "summary": "Numerically accurate, SHAP-faithful and well hedged, with relevant benign alternatives and proportionate follow-up. It loses accuracy points for a few sample-specific interpretations such as loops, string-routine origin and AVX code paths, which are made without adjacency or function context."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Address computation feeding a carry-add, consistent with multi-precision arithmetic loops.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "evidence_reference": "/evidence/top_features/3; occurrences and function_context are empty",
+      "reason": "A loop and data-flow ('feeding') relationship is inferred from a bigram with no adjacency, extraction or control-flow context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Repeated decrements, likely loop counters or unrolled loop bookkeeping.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+      "evidence_reference": "/evidence/top_features/13; function_context is empty",
+      "reason": "Loop usage is inferred from a mnemonic pair alone.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Often follows PMOVMSKB in string routines, so likely benign runtime code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/14/assessment",
+      "evidence_reference": "/evidence/top_features/14 and /evidence/top_features/7; no occurrences or adjacency data",
+      "reason": "Benign string-routine origin is inferred without any evidence that BSF MOV follows PMOVMSKB in this sample.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Shows the binary uses AVX-optimized code paths, which are common in both benign and miner code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+      "evidence_reference": "/evidence/top_features/8",
+      "reason": "The n-gram only shows an AVX mnemonic pair, not established optimized code paths.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "8a116e67de1378ff68529774ec5bb984c41de823080256ae4d679bf28c398c8d.exe_analysis.json"
+}

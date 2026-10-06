@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_f3dea795e7ea174a",
+  "status": "success",
+  "source_sha256": "e5b55a89f0c983e0415e2321f71df5800c711ade3540c1eb89dd04b616c75aba",
+  "input_sha256": "3df6d0a6a93d2b61d23c88a9fd9d991c62b3a5223a1b400ef4a9dd166db0677c",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "wbiosrvc.dll",
+      "source_name": "wbiosrvc.dll.json",
+      "source_path": "ml/dataset/benign/wbiosrvc.dll.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 86,
+      "actual_label": 0,
+      "actual_class": "benign"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "wbiosrvc.dll",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T14:10:54.360818+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T14:10:54.360845+00:00",
+      "error": null,
+      "request_sha256": "1ba59c02d658da43ab2c034884439104c55f0711a87aa36946a36f1760d3e6a8",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm7pAp9gFwmi3AbQe7Rt",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the prediction details: rf_prediction of 1 with probability 0.61, and all top 20 SHAP features positive, matching the candidate's claim of modest confidence above the assumed 0.5 boundary. The SHAP value range of +0.0134 to +0.0058 checks out correctly, though the decision boundary wasn't explicitly given so I'm treating that as an assumption worth noting.\n\nI'm also flagging that the candidate calls these values \"frequencies\" without that semantic being established, and the \"PUSH CALL\" feature at 0.04196 being labeled the \"most frequent call-setup pattern\" is a slight overreach. More concerning, the filename \"wbiosrvc.dll\" appears in the recommended action but isn't actually present in the supplied evidence — that looks fabricated. The claim about \"no rotate/shift-heavy patterns\" also ignores that only top-k features were shown, so absence elsewhere is unverifiable.\n\nI'm also noting the adjacency assumptions scattered throughout — treating \"CALL RET,\" \"counter decrement followed by push,\" and \"register restore followed by XOR\" as if the features guarantee direct instruction adjacency, when n-gram features don't necessarily imply that. Similarly, \"PXOR MOVAPS\" being read as register-zeroing assumes same-register usage that isn't confirmed. SHAP direction and magnitude seem faithfully represented though, so I'd call that part accurate even as the narrative overreaches elsewhere. Weighing all this, technical accuracy lands around a 3 given the fabricated filename and unjustified adjacency claims.\n\nFor actionability, the recommendations (sandboxing, CPU/pool monitoring, hash comparisons, function inspection) are sound, but since they're anchored partly to an invented indicator, I'm leaning toward a 3 rather than 4 — the rubric is strict about fabricated indicators pulling scores down. I'm now locating the exact JSON pointers and quotes I'll need to cite for each flagged issue: the recommended_action and explanation fields, plus the specific evidence_analysis entries for CALL RET, POP XOR, DEC PUSH, and PUSH CALL patterns, along with their exact wording about the wbiosrvc.dll name and the generic nature of these instruction patterns in Windows binaries.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_f3dea795e7ea174a\",\"scores\":{\"technical_accuracy\":3,\"coherence\":5,\"cybersecurity_relevance\":4,\"actionable_utility\":3},\"justifications\":{\"technical_accuracy\":\"The RF probability, SHAP range and n-gram values are reported correctly. However, it cites a filename (wbiosrvc.dll) absent from the evidence, assumes n-gram adjacency, calls the values 'frequency' and asserts 'Windows binaries' without support.\",\"coherence\":\"The explanation is well organized, with consistent observations, interpretation, low-confidence tier, inconclusive verdict and recommended action. The 0.4 confidence and escalate-not-block advice match the weak evidence.\",\"cybersecurity_relevance\":\"It ties the weak, diffuse SHAP evidence to hashing or large-integer arithmetic hypotheses and to benign compiler-generated alternatives, and it says the result is inconclusive. Some context is assumed (Windows, filename), and the top-k limit is not acknowledged.\",\"actionable_utility\":\"The actions are concrete and proportionate: inspect the flagged functions, run a sandbox for CPU and pool traffic, and compare against a baseline. The first step relies on a filename that was never supplied, which is an unsupported sample-specific indicator.\"},\"unsupported_claims\":[{\"quote\":\"since the name wbiosrvc.dll resembles a system component\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence (no filename, path or metadata supplied)\",\"reason\":\"The file name is not in the supplied evidence, so it is a sample-specific fact with no support. It drives the first recommended action.\",\"category\":\"other\"},{\"quote\":\"Call immediately followed by return, suggesting thin wrapper or thunk functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/occurrences, /evidence/function_context (both empty)\",\"reason\":\"Immediate adjacency and thunk structure cannot be inferred from graph-aware n-grams without extraction or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Register restore followed by XOR, typically a zeroing idiom or epilogue-adjacent logic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/occurrences, /evidence/function_context (both empty)\",\"reason\":\"It assumes sequential adjacency and a zeroing idiom, but operands and control flow are not provided.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"They are common in nearly all compiled Windows binaries and are not specific to mining.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence (no file format or platform information)\",\"reason\":\"Asserting a Windows binary is unsupported by the supplied artifact. The prevalence claim is also not backed by evidence.\",\"category\":\"other\"},{\"quote\":\"is very rare (frequency 0.000007)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the feature values are not established as raw counts or frequencies, so calling them frequencies is unconfirmed.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Most frequent call-setup pattern (frequency 0.041960).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/top_features/8/value\",\"reason\":\"0.04196 is only the largest value among the 20 listed features, and its semantics are unconfirmed. It does not establish the most frequent call-setup pattern overall.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The evidence does not contain any rotate/shift-heavy round-function patterns, dense XOR/ADD/ROL sequences, or other strong hashing signatures.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions (null), /scope_notes/1\",\"reason\":\"Only a top-20 subset is available. Omitted features cannot be ruled out, and this is not flagged as a top-k limitation.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 top features are reported as positive toward class 1 with correct magnitudes (+0.0134 to +0.0058, rounded). The 'no dominant feature' and 'diffuse' characterizations fit the listed values, and no omitted-feature or baseline claim is made.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Target class 1 is a configured assumption that needs upstream verification.\",\"Only the top 20 features are given. The SHAP baseline and full attributions are null, and omitted features are unknown.\",\"Occurrences and function context are empty, so adjacency, control flow and loops cannot be established.\",\"Feature value semantics (frequency vs count) are not established.\",\"The decision threshold, file format, filename and runtime behavior are not supplied.\"],\"summary\":\"The explanation faithfully reports RF probability, SHAP direction and magnitude, and it appropriately concludes the result is inconclusive. It loses accuracy and actionability by citing an unsupplied filename, assuming n-gram adjacency, treating values as frequencies and assuming Windows.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7021,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3272,
+          "output_tokens_details": {
+            "thinking_tokens": 1434
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7021,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3272,
+        "output_tokens_details": {
+          "thinking_tokens": 1434
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_f3dea795e7ea174a\",\"scores\":{\"technical_accuracy\":3,\"coherence\":5,\"cybersecurity_relevance\":4,\"actionable_utility\":3},\"justifications\":{\"technical_accuracy\":\"The RF probability, SHAP range and n-gram values are reported correctly. However, it cites a filename (wbiosrvc.dll) absent from the evidence, assumes n-gram adjacency, calls the values 'frequency' and asserts 'Windows binaries' without support.\",\"coherence\":\"The explanation is well organized, with consistent observations, interpretation, low-confidence tier, inconclusive verdict and recommended action. The 0.4 confidence and escalate-not-block advice match the weak evidence.\",\"cybersecurity_relevance\":\"It ties the weak, diffuse SHAP evidence to hashing or large-integer arithmetic hypotheses and to benign compiler-generated alternatives, and it says the result is inconclusive. Some context is assumed (Windows, filename), and the top-k limit is not acknowledged.\",\"actionable_utility\":\"The actions are concrete and proportionate: inspect the flagged functions, run a sandbox for CPU and pool traffic, and compare against a baseline. The first step relies on a filename that was never supplied, which is an unsupported sample-specific indicator.\"},\"unsupported_claims\":[{\"quote\":\"since the name wbiosrvc.dll resembles a system component\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence (no filename, path or metadata supplied)\",\"reason\":\"The file name is not in the supplied evidence, so it is a sample-specific fact with no support. It drives the first recommended action.\",\"category\":\"other\"},{\"quote\":\"Call immediately followed by return, suggesting thin wrapper or thunk functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/occurrences, /evidence/function_context (both empty)\",\"reason\":\"Immediate adjacency and thunk structure cannot be inferred from graph-aware n-grams without extraction or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Register restore followed by XOR, typically a zeroing idiom or epilogue-adjacent logic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/occurrences, /evidence/function_context (both empty)\",\"reason\":\"It assumes sequential adjacency and a zeroing idiom, but operands and control flow are not provided.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"They are common in nearly all compiled Windows binaries and are not specific to mining.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence (no file format or platform information)\",\"reason\":\"Asserting a Windows binary is unsupported by the supplied artifact. The prevalence claim is also not backed by evidence.\",\"category\":\"other\"},{\"quote\":\"is very rare (frequency 0.000007)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the feature values are not established as raw counts or frequencies, so calling them frequencies is unconfirmed.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Most frequent call-setup pattern (frequency 0.041960).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/top_features/8/value\",\"reason\":\"0.04196 is only the largest value among the 20 listed features, and its semantics are unconfirmed. It does not establish the most frequent call-setup pattern overall.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The evidence does not contain any rotate/shift-heavy round-function patterns, dense XOR/ADD/ROL sequences, or other strong hashing signatures.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions (null), /scope_notes/1\",\"reason\":\"Only a top-20 subset is available. Omitted features cannot be ruled out, and this is not flagged as a top-k limitation.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 top features are reported as positive toward class 1 with correct magnitudes (+0.0134 to +0.0058, rounded). The 'no dominant feature' and 'diffuse' characterizations fit the listed values, and no omitted-feature or baseline claim is made.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Target class 1 is a configured assumption that needs upstream verification.\",\"Only the top 20 features are given. The SHAP baseline and full attributions are null, and omitted features are unknown.\",\"Occurrences and function context are empty, so adjacency, control flow and loops cannot be established.\",\"Feature value semantics (frequency vs count) are not established.\",\"The decision threshold, file format, filename and runtime behavior are not supplied.\"],\"summary\":\"The explanation faithfully reports RF probability, SHAP direction and magnitude, and it appropriately concludes the result is inconclusive. It loses accuracy and actionability by citing an unsupplied filename, assuming n-gram adjacency, treating values as frequencies and assuming Windows.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_f3dea795e7ea174a",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 5,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 3
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability, SHAP range and n-gram values are reported correctly. However, it cites a filename (wbiosrvc.dll) absent from the evidence, assumes n-gram adjacency, calls the values 'frequency' and asserts 'Windows binaries' without support.",
+      "coherence": "The explanation is well organized, with consistent observations, interpretation, low-confidence tier, inconclusive verdict and recommended action. The 0.4 confidence and escalate-not-block advice match the weak evidence.",
+      "cybersecurity_relevance": "It ties the weak, diffuse SHAP evidence to hashing or large-integer arithmetic hypotheses and to benign compiler-generated alternatives, and it says the result is inconclusive. Some context is assumed (Windows, filename), and the top-k limit is not acknowledged.",
+      "actionable_utility": "The actions are concrete and proportionate: inspect the flagged functions, run a sandbox for CPU and pool traffic, and compare against a baseline. The first step relies on a filename that was never supplied, which is an unsupported sample-specific indicator."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "since the name wbiosrvc.dll resembles a system component",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "/evidence (no filename, path or metadata supplied)",
+        "reason": "The file name is not in the supplied evidence, so it is a sample-specific fact with no support. It drives the first recommended action.",
+        "category": "other"
+      },
+      {
+        "quote": "Call immediately followed by return, suggesting thin wrapper or thunk functions.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/occurrences, /evidence/function_context (both empty)",
+        "reason": "Immediate adjacency and thunk structure cannot be inferred from graph-aware n-grams without extraction or context evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Register restore followed by XOR, typically a zeroing idiom or epilogue-adjacent logic.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/occurrences, /evidence/function_context (both empty)",
+        "reason": "It assumes sequential adjacency and a zeroing idiom, but operands and control flow are not provided.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "They are common in nearly all compiled Windows binaries and are not specific to mining.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence (no file format or platform information)",
+        "reason": "Asserting a Windows binary is unsupported by the supplied artifact. The prevalence claim is also not backed by evidence.",
+        "category": "other"
+      },
+      {
+        "quote": "is very rare (frequency 0.000007)",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says the feature values are not established as raw counts or frequencies, so calling them frequencies is unconfirmed.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Most frequent call-setup pattern (frequency 0.041960).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+        "evidence_reference": "/evidence/top_features/8/value",
+        "reason": "0.04196 is only the largest value among the 20 listed features, and its semantics are unconfirmed. It does not establish the most frequent call-setup pattern overall.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "The evidence does not contain any rotate/shift-heavy round-function patterns, dense XOR/ADD/ROL sequences, or other strong hashing signatures.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/full_attributions (null), /scope_notes/1",
+        "reason": "Only a top-20 subset is available. Omitted features cannot be ruled out, and this is not flagged as a top-k limitation.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 top features are reported as positive toward class 1 with correct magnitudes (+0.0134 to +0.0058, rounded). The 'no dominant feature' and 'diffuse' characterizations fit the listed values, and no omitted-feature or baseline claim is made.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Target class 1 is a configured assumption that needs upstream verification.",
+      "Only the top 20 features are given. The SHAP baseline and full attributions are null, and omitted features are unknown.",
+      "Occurrences and function context are empty, so adjacency, control flow and loops cannot be established.",
+      "Feature value semantics (frequency vs count) are not established.",
+      "The decision threshold, file format, filename and runtime behavior are not supplied."
+    ],
+    "summary": "The explanation faithfully reports RF probability, SHAP direction and magnitude, and it appropriately concludes the result is inconclusive. It loses accuracy and actionability by citing an unsupplied filename, assuming n-gram adjacency, treating values as frequencies and assuming Windows."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "since the name wbiosrvc.dll resembles a system component",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "/evidence (no filename, path or metadata supplied)",
+      "reason": "The file name is not in the supplied evidence, so it is a sample-specific fact with no support. It drives the first recommended action.",
+      "category": "other"
+    },
+    {
+      "quote": "Call immediately followed by return, suggesting thin wrapper or thunk functions.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/occurrences, /evidence/function_context (both empty)",
+      "reason": "Immediate adjacency and thunk structure cannot be inferred from graph-aware n-grams without extraction or context evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Register restore followed by XOR, typically a zeroing idiom or epilogue-adjacent logic.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/occurrences, /evidence/function_context (both empty)",
+      "reason": "It assumes sequential adjacency and a zeroing idiom, but operands and control flow are not provided.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "They are common in nearly all compiled Windows binaries and are not specific to mining.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence (no file format or platform information)",
+      "reason": "Asserting a Windows binary is unsupported by the supplied artifact. The prevalence claim is also not backed by evidence.",
+      "category": "other"
+    },
+    {
+      "quote": "is very rare (frequency 0.000007)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says the feature values are not established as raw counts or frequencies, so calling them frequencies is unconfirmed.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Most frequent call-setup pattern (frequency 0.041960).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+      "evidence_reference": "/evidence/top_features/8/value",
+      "reason": "0.04196 is only the largest value among the 20 listed features, and its semantics are unconfirmed. It does not establish the most frequent call-setup pattern overall.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "The evidence does not contain any rotate/shift-heavy round-function patterns, dense XOR/ADD/ROL sequences, or other strong hashing signatures.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/full_attributions (null), /scope_notes/1",
+      "reason": "Only a top-20 subset is available. Omitted features cannot be ruled out, and this is not flagged as a top-k limitation.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "wbiosrvc.dll_analysis.json"
+}

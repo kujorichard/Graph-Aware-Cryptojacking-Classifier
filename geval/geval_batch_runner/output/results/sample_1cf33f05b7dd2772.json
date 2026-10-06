@@ -1,0 +1,188 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_1cf33f05b7dd2772",
+  "status": "success",
+  "source_sha256": "2a55b136b3a133a9fbbe41c6864e64252bb043907d13c33d4a33c64df80ea4ca",
+  "input_sha256": "03e26ff2a70d9eaa2a0c8ccd53fdc1862df272d90f359a645f1eb695fbe580f8",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "bf77d73a22c6324f77a549662e41a3b3fe80a38d546ac03e846755e52e1a79f4.elf",
+      "source_name": "bf77d73a22c6324f77a549662e41a3b3fe80a38d546ac03e846755e52e1a79f4.elf.json",
+      "source_path": "ml/dataset/cryptojacking/bf77d73a22c6324f77a549662e41a3b3fe80a38d546ac03e846755e52e1a79f4.elf.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 76,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "bf77d73a22c6324f77a549662e41a3b3fe80a38d546ac03e846755e52e1a79f4.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:26:17.911046+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:26:17.911074+00:00",
+      "error": null,
+      "request_sha256": "b6903e929afeeb23aaa68feec06bf64fa641047e84c3f8a8c63f7dd3d27c43ad",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm4Qt1ryAp9x26NT5siP",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF prediction confidence and reviewing the top SHAP features to verify whether they consistently support the predicted class, scrutinizing the claim about n-grams pushing toward a cryptojacking/malware classification.\n\nI'm also scrutinizing the candidate's inference about \"frequency\" values — the feature semantics don't establish these as raw counts, so claiming \"isolated occurrences\" or ruling out a \"dominant hot loop\" is unsupported speculation. Similarly, I'm flagging the assumption of strict adjacency between n-gram pairs like MOVDQA-PAND or MOV-SHRD, since graph-aware n-grams don't necessarily imply sequential instruction order, making phrases like \"followed by\" or \"precedes\" potentially misleading.\n\n\"PUSH RET adjacency at function or thunk boundaries\" is speculative but hedged, and \"POP SUB\" as a stack/arithmetic boundary pattern is plausible though generic — these prologue/epilogue claims apply to nearly any compiled binary, making them weak evidence specific to this sample.\n\nThe tier confidence of 0.55 and proportionate recommended actions look reasonable, and the model's strong RF probability of 1.0 is correctly framed as not behavioral proof — SHAP evidence stays circumstantial since most top features (MOV RET, PUSH RET, POP SUB, etc.) are generic instruction pairs, though the analysis doesn't acknowledge that the SHAP target class itself is an assumption or that baseline/omitted features aren't considered.\n\nI'm cross-checking the SHAP values against the full n-gram index list (MOV RET, MOVDQA PAND, SHRD BT, through ADD FLD) and confirming the numbers and directions match, though labeling things as \"frequency\" is really a value-semantics issue rather than a SHAP accuracy problem — overall the SHAP values remain faithful to what's claimed.\n\nOn the technical accuracy score, I'm weighing between 3 and 4 since the core evidence is correct but there's some overreach with the hot-loop and isolated-occurrence interpretations, plus the unflagged \"all 20 push toward cryptojacking\" framing that assumes but doesn't note the config bias. I'm leaning toward 3 for \"some substantive interpretations overreach\" given the hot-loop inference is explicit enough to matter, even if minor to the final conclusion.\n\nFor coherence I'm settling on 4, since the write-up is lengthy but consistent with the evidence analysis. For relevance I'm also landing around 4-5, noting it connects evidence well and raises benign alternatives like crypto libraries, compression, and checksums, and discusses limitations, though it never flags the SHAP target assumption explicitly.\n\nFor actionability I'm giving a 4 — the steps are somewhat ordered with clear purposes and no fabricated indicators, but it isn't strictly prioritized and doesn't flag that the suggested sandbox approach could itself be risky.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_1cf33f05b7dd2772\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, class, n-gram names, SHAP values and listed values match the evidence, and the mnemonic semantics are mostly right and hedged. However, it treats feature values as frequencies and infers sparse occurrences and no hot loop, even though value semantics are explicitly unestablished. It also repeatedly assumes adjacency ('followed by', 'Precedes').\",\"coherence\":\"The argument runs from model output to generic versus suggestive features, then to benign alternatives, tier and actions, and stays consistent with the low-confidence tier. It is somewhat repetitive because the summary and per-feature table restate the same points.\",\"cybersecurity_relevance\":\"It ties specific SIMD, rotate and shift n-grams to proof-of-work hypotheses and names benign alternatives (crypto libraries, compression, checksums). It notes that the generic stack and call features are non-specific and that there are no function, string or network indicators.\",\"actionable_utility\":\"The follow-up is concrete, feasible and proportionate: disassemble the relevant functions, check for known PoW hashes, inspect strings for pool, wallet and Stratum markers, sandbox for CPU and network activity, and compare against known miner signatures. Each action addresses a stated evidence gap and is conditional. It is not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"The extremely low frequencies of many n-grams (about 0.000056) suggest a few isolated occurrences rather than a dominant hot loop.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values must not be treated as raw counts, and no loop or control-flow context is supplied, so inferring isolated occurrences or the absence of a hot loop is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"At relatively high frequency (0.0074), it suggests vectorized bit-mask operations\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Values are described as 'frequency' and used to draw behavioral inferences, but their semantics are not established. 'Followed by' also asserts adjacency, which graph-aware n-grams do not guarantee.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Precedes a multi-word shift, indicating wide-integer arithmetic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/scope_notes/1\",\"reason\":\"This asserts instruction ordering and wide-integer use. The n-gram alone does not establish adjacency or the arithmetic purpose; the 'suggestive but not conclusive' hedge only partly mitigates this.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Reported SHAP values match the evidence within display tolerance, and all are positive for configured target class 1. MOV RET is correctly identified as the largest contributor. The candidate does not claim that omitted features are non-benign or reconstruct the probability from the top-k subset.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption pending upstream verification.\",\"The SHAP baseline and full attributions are unavailable, so omitted features are unknown.\",\"Feature value semantics (frequency versus count) are not established.\",\"There are no occurrences, function context, strings, APIs or network evidence, and no adjacency or control-flow information.\"],\"summary\":\"The explanation is faithful on SHAP direction and magnitude, appropriately low-confidence, and its follow-up is well targeted. It loses accuracy by reading the feature values as frequencies (isolated occurrences, no hot loop) and by assuming adjacency.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6987,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3752,
+          "output_tokens_details": {
+            "thinking_tokens": 2378
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6987,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3752,
+        "output_tokens_details": {
+          "thinking_tokens": 2378
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_1cf33f05b7dd2772\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, class, n-gram names, SHAP values and listed values match the evidence, and the mnemonic semantics are mostly right and hedged. However, it treats feature values as frequencies and infers sparse occurrences and no hot loop, even though value semantics are explicitly unestablished. It also repeatedly assumes adjacency ('followed by', 'Precedes').\",\"coherence\":\"The argument runs from model output to generic versus suggestive features, then to benign alternatives, tier and actions, and stays consistent with the low-confidence tier. It is somewhat repetitive because the summary and per-feature table restate the same points.\",\"cybersecurity_relevance\":\"It ties specific SIMD, rotate and shift n-grams to proof-of-work hypotheses and names benign alternatives (crypto libraries, compression, checksums). It notes that the generic stack and call features are non-specific and that there are no function, string or network indicators.\",\"actionable_utility\":\"The follow-up is concrete, feasible and proportionate: disassemble the relevant functions, check for known PoW hashes, inspect strings for pool, wallet and Stratum markers, sandbox for CPU and network activity, and compare against known miner signatures. Each action addresses a stated evidence gap and is conditional. It is not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"The extremely low frequencies of many n-grams (about 0.000056) suggest a few isolated occurrences rather than a dominant hot loop.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values must not be treated as raw counts, and no loop or control-flow context is supplied, so inferring isolated occurrences or the absence of a hot loop is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"At relatively high frequency (0.0074), it suggests vectorized bit-mask operations\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Values are described as 'frequency' and used to draw behavioral inferences, but their semantics are not established. 'Followed by' also asserts adjacency, which graph-aware n-grams do not guarantee.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Precedes a multi-word shift, indicating wide-integer arithmetic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/scope_notes/1\",\"reason\":\"This asserts instruction ordering and wide-integer use. The n-gram alone does not establish adjacency or the arithmetic purpose; the 'suggestive but not conclusive' hedge only partly mitigates this.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Reported SHAP values match the evidence within display tolerance, and all are positive for configured target class 1. MOV RET is correctly identified as the largest contributor. The candidate does not claim that omitted features are non-benign or reconstruct the probability from the top-k subset.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption pending upstream verification.\",\"The SHAP baseline and full attributions are unavailable, so omitted features are unknown.\",\"Feature value semantics (frequency versus count) are not established.\",\"There are no occurrences, function context, strings, APIs or network evidence, and no adjacency or control-flow information.\"],\"summary\":\"The explanation is faithful on SHAP direction and magnitude, appropriately low-confidence, and its follow-up is well targeted. It loses accuracy by reading the feature values as frequencies (isolated occurrences, no hot loop) and by assuming adjacency.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_1cf33f05b7dd2772",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The probability, class, n-gram names, SHAP values and listed values match the evidence, and the mnemonic semantics are mostly right and hedged. However, it treats feature values as frequencies and infers sparse occurrences and no hot loop, even though value semantics are explicitly unestablished. It also repeatedly assumes adjacency ('followed by', 'Precedes').",
+      "coherence": "The argument runs from model output to generic versus suggestive features, then to benign alternatives, tier and actions, and stays consistent with the low-confidence tier. It is somewhat repetitive because the summary and per-feature table restate the same points.",
+      "cybersecurity_relevance": "It ties specific SIMD, rotate and shift n-grams to proof-of-work hypotheses and names benign alternatives (crypto libraries, compression, checksums). It notes that the generic stack and call features are non-specific and that there are no function, string or network indicators.",
+      "actionable_utility": "The follow-up is concrete, feasible and proportionate: disassemble the relevant functions, check for known PoW hashes, inspect strings for pool, wallet and Stratum markers, sandbox for CPU and network activity, and compare against known miner signatures. Each action addresses a stated evidence gap and is conditional. It is not explicitly prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "The extremely low frequencies of many n-grams (about 0.000056) suggest a few isolated occurrences rather than a dominant hot loop.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature values must not be treated as raw counts, and no loop or control-flow context is supplied, so inferring isolated occurrences or the absence of a hot loop is unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "At relatively high frequency (0.0074), it suggests vectorized bit-mask operations",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "Values are described as 'frequency' and used to draw behavioral inferences, but their semantics are not established. 'Followed by' also asserts adjacency, which graph-aware n-grams do not guarantee.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Precedes a multi-word shift, indicating wide-integer arithmetic.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/scope_notes/1",
+        "reason": "This asserts instruction ordering and wide-integer use. The n-gram alone does not establish adjacency or the arithmetic purpose; the 'suggestive but not conclusive' hedge only partly mitigates this.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "Reported SHAP values match the evidence within display tolerance, and all are positive for configured target class 1. MOV RET is correctly identified as the largest contributor. The candidate does not claim that omitted features are non-benign or reconstruct the probability from the top-k subset.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption pending upstream verification.",
+      "The SHAP baseline and full attributions are unavailable, so omitted features are unknown.",
+      "Feature value semantics (frequency versus count) are not established.",
+      "There are no occurrences, function context, strings, APIs or network evidence, and no adjacency or control-flow information."
+    ],
+    "summary": "The explanation is faithful on SHAP direction and magnitude, appropriately low-confidence, and its follow-up is well targeted. It loses accuracy by reading the feature values as frequencies (isolated occurrences, no hot loop) and by assuming adjacency."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "The extremely low frequencies of many n-grams (about 0.000056) suggest a few isolated occurrences rather than a dominant hot loop.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature values must not be treated as raw counts, and no loop or control-flow context is supplied, so inferring isolated occurrences or the absence of a hot loop is unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "At relatively high frequency (0.0074), it suggests vectorized bit-mask operations",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "Values are described as 'frequency' and used to draw behavioral inferences, but their semantics are not established. 'Followed by' also asserts adjacency, which graph-aware n-grams do not guarantee.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Precedes a multi-word shift, indicating wide-integer arithmetic.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/scope_notes/1",
+      "reason": "This asserts instruction ordering and wide-integer use. The n-gram alone does not establish adjacency or the arithmetic purpose; the 'suggestive but not conclusive' hedge only partly mitigates this.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "bf77d73a22c6324f77a549662e41a3b3fe80a38d546ac03e846755e52e1a79f4.elf_analysis.json"
+}

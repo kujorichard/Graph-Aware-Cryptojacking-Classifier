@@ -1,0 +1,188 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_c7bd7dcc35a2c603",
+  "status": "success",
+  "source_sha256": "26920da2f2921e60a3d28f907b58a7227d61b6e971592cdebabc4ab35a8fc309",
+  "input_sha256": "933f09b12c6ccbdc15af6c0dd9ba38d94deb2e472c5bf8afc4320e3b1870c42e",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "4e160339aeb9bfbd576dfbe288cbb58eb82b7d85f9c4d84651cb1ee024c3a260.exe",
+      "source_name": "4e160339aeb9bfbd576dfbe288cbb58eb82b7d85f9c4d84651cb1ee024c3a260.exe.json",
+      "source_path": "ml/dataset/cryptojacking/4e160339aeb9bfbd576dfbe288cbb58eb82b7d85f9c4d84651cb1ee024c3a260.exe.json",
+      "split": "test",
+      "batch_number": 0,
+      "row_index_in_batch": 84,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "4e160339aeb9bfbd576dfbe288cbb58eb82b7d85f9c4d84651cb1ee024c3a260.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:36:30.478532+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:36:30.478562+00:00",
+      "error": null,
+      "request_sha256": "a650216efa5f8248bf7bfb10387f3e96b652af87aeaa3e29317789e481d4cecf",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkzceoFeLKLy2aVt69aX",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "Looking at the evidence, rf_prediction is 1 with probability 1.0 and all top 20 SHAP features positive. But the candidate's interpretation of feature values as \"relative frequency\" or \"code density\" isn't supported by anything established in the artifact — those semantics are being assumed rather than verified.\n\nI also spot an internal inconsistency: the candidate calls \"sub strb\" the most frequent n-gram at 0.001259, but \"cmn mov\" at 0.001751 is actually higher — that's a factual error. I verify the count of zero-frequency n-grams (12 out of 20) checks out, so \"most\" is accurate there, but the claim that zero-valued SHAP contributions reflect \"model-learned correlations, not visible code density\" is another unsupported interpretive leap. There's also an unstated assumption that class 1 corresponds to cryptojacking, which the candidate doesn't flag as needing verification.\n\nThe mnemonic pairings themselves are mostly reasonable ARM/x86 interpretations (branch instructions, bitwise ops, compare-negative, register zeroing), though some explanations are generic and hedged rather than grounded. I note the mixed uppercase/lowercase mnemonic styles could just be an artifact of feature extraction rather than meaningful ARM/x86 mixing, which the candidate doesn't adequately caveat.\n\nChecking SHAP faithfulness overall: the signs, magnitudes, and rankings all seem correctly reported, though treating feature counts as \"frequency\" is a slight mislabeling since these are really presence/activation values. I'd call this mostly faithful to the actual SHAP output, with only minor caveats worth flagging rather than outright discrepancies.\n\nFor unsupported claims, I'm noting the \"relative frequency of 0.000000\" statement as unsupported, plus the mismatched numbers around the \"sub strb\" n-gram being labeled both the highest SHAP value and separately the \"most frequent\" with a different figure — that's a clear numerical inconsistency worth flagging. The other hedged phrasing about x86-style sequences and generic epilogue patterns seems safe to leave alone since it's appropriately qualified.\n\nScoring-wise, I'm landing on technical accuracy around 3 given the frequency-semantics confusion and the most-frequent contradiction, but coherence closer to 4 since the writing is otherwise clear and organized despite that one inconsistency. I'll set this at a low-confidence tier with confidence around 0.55, labeling it inconclusive given the mixed signal.\n\nFor relevance I'm settling on 4 — it covers evidence limits and alternative explanations like ordinary compiled code and extraction issues well, though some of the per-ngram discussion feels generic rather than specific. For actionability I'm also giving 4, since the suggestions are concrete and proportionate like running in a sandbox, but they aren't clearly prioritized and miss verifying the SHAP target class.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_c7bd7dcc35a2c603\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF 1.0, the 20 positive SHAP values, and the 12 zero-valued n-grams are reported correctly. It treats feature values as 'relative frequency' although the artifact says their semantics are not established. It also wrongly calls 'sub strb' (0.001259) the most frequent n-gram, since 'cmn mov' (0.001751) is higher.\",\"coherence\":\"The argument is organized, and the low-confidence tier, 0.55 confidence and 'inconclusive' framing agree with each other. The 'most frequent' contradiction between the 'sub strb' and 'cmn mov' entries is a minor inconsistency.\",\"cybersecurity_relevance\":\"It ties the n-grams to hash/mixing hypotheses and to benign explanations such as ordinary compiled code and extraction artifacts. It notes the missing function, API and constant context. Some per-n-gram commentary is generic.\",\"actionable_utility\":\"Disassembly of loops, stratum/pool and wallet checks, a sandbox run with CPU and network monitoring, and checking the ARM/x86 mix are concrete and proportionate. The steps are not explicitly prioritized, and verifying the configured SHAP target class is not mentioned.\"},\"unsupported_claims\":[{\"quote\":\"Most of the n-grams have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature value semantics are not established and must not be treated as raw counts. 'Relative frequency' and 'visible code density' assume a semantics that is not supplied.\",\"category\":\"other\"},{\"quote\":\"'sub strb' (+0.006752, the most frequent at 0.001259)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/4 and /evidence/top_features/7\",\"reason\":\"'cmn mov' has a higher value (0.0017507) than 'sub strb' (0.00125889), so 'most frequent' is numerically wrong. The explanation later calls 'cmn mov' the highest-frequency n-gram.\",\"category\":\"other\"},{\"quote\":\"This is the most frequent n-gram (0.001259) and suggests byte-level buffer processing\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/7/value\",\"reason\":\"The ranking claim is contradicted by 'cmn mov' at 0.0017507. The 'byte-level buffer processing' inference is also not supported by any context.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP signs are positive and the magnitudes match the evidence within rounding. It correctly says the positive top-k pushes toward class 1, and it does not claim omitted features are benign. The frequency mislabeling concerns feature values, not SHAP direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are not established, and the baseline and full attributions are unavailable.\",\"There are no occurrences or function context, so n-gram adjacency and code location cannot be established.\",\"Only the top-20 features are shown, so omitted features are unknown.\"],\"summary\":\"The explanation is cautious, uses the evidence well, and gives sensible verification steps. It is faithful on SHAP direction and magnitude. Its main problems are treating feature values as relative frequencies without support and misidentifying the most frequent n-gram.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7016,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3108,
+          "output_tokens_details": {
+            "thinking_tokens": 1817
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7016,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3108,
+        "output_tokens_details": {
+          "thinking_tokens": 1817
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_c7bd7dcc35a2c603\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF 1.0, the 20 positive SHAP values, and the 12 zero-valued n-grams are reported correctly. It treats feature values as 'relative frequency' although the artifact says their semantics are not established. It also wrongly calls 'sub strb' (0.001259) the most frequent n-gram, since 'cmn mov' (0.001751) is higher.\",\"coherence\":\"The argument is organized, and the low-confidence tier, 0.55 confidence and 'inconclusive' framing agree with each other. The 'most frequent' contradiction between the 'sub strb' and 'cmn mov' entries is a minor inconsistency.\",\"cybersecurity_relevance\":\"It ties the n-grams to hash/mixing hypotheses and to benign explanations such as ordinary compiled code and extraction artifacts. It notes the missing function, API and constant context. Some per-n-gram commentary is generic.\",\"actionable_utility\":\"Disassembly of loops, stratum/pool and wallet checks, a sandbox run with CPU and network monitoring, and checking the ARM/x86 mix are concrete and proportionate. The steps are not explicitly prioritized, and verifying the configured SHAP target class is not mentioned.\"},\"unsupported_claims\":[{\"quote\":\"Most of the n-grams have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature value semantics are not established and must not be treated as raw counts. 'Relative frequency' and 'visible code density' assume a semantics that is not supplied.\",\"category\":\"other\"},{\"quote\":\"'sub strb' (+0.006752, the most frequent at 0.001259)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/4 and /evidence/top_features/7\",\"reason\":\"'cmn mov' has a higher value (0.0017507) than 'sub strb' (0.00125889), so 'most frequent' is numerically wrong. The explanation later calls 'cmn mov' the highest-frequency n-gram.\",\"category\":\"other\"},{\"quote\":\"This is the most frequent n-gram (0.001259) and suggests byte-level buffer processing\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/7/value\",\"reason\":\"The ranking claim is contradicted by 'cmn mov' at 0.0017507. The 'byte-level buffer processing' inference is also not supported by any context.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP signs are positive and the magnitudes match the evidence within rounding. It correctly says the positive top-k pushes toward class 1, and it does not claim omitted features are benign. The frequency mislabeling concerns feature values, not SHAP direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are not established, and the baseline and full attributions are unavailable.\",\"There are no occurrences or function context, so n-gram adjacency and code location cannot be established.\",\"Only the top-20 features are shown, so omitted features are unknown.\"],\"summary\":\"The explanation is cautious, uses the evidence well, and gives sensible verification steps. It is faithful on SHAP direction and magnitude. Its main problems are treating feature values as relative frequencies without support and misidentifying the most frequent n-gram.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_c7bd7dcc35a2c603",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF 1.0, the 20 positive SHAP values, and the 12 zero-valued n-grams are reported correctly. It treats feature values as 'relative frequency' although the artifact says their semantics are not established. It also wrongly calls 'sub strb' (0.001259) the most frequent n-gram, since 'cmn mov' (0.001751) is higher.",
+      "coherence": "The argument is organized, and the low-confidence tier, 0.55 confidence and 'inconclusive' framing agree with each other. The 'most frequent' contradiction between the 'sub strb' and 'cmn mov' entries is a minor inconsistency.",
+      "cybersecurity_relevance": "It ties the n-grams to hash/mixing hypotheses and to benign explanations such as ordinary compiled code and extraction artifacts. It notes the missing function, API and constant context. Some per-n-gram commentary is generic.",
+      "actionable_utility": "Disassembly of loops, stratum/pool and wallet checks, a sandbox run with CPU and network monitoring, and checking the ARM/x86 mix are concrete and proportionate. The steps are not explicitly prioritized, and verifying the configured SHAP target class is not mentioned."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Most of the n-grams have a relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states feature value semantics are not established and must not be treated as raw counts. 'Relative frequency' and 'visible code density' assume a semantics that is not supplied.",
+        "category": "other"
+      },
+      {
+        "quote": "'sub strb' (+0.006752, the most frequent at 0.001259)",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/4 and /evidence/top_features/7",
+        "reason": "'cmn mov' has a higher value (0.0017507) than 'sub strb' (0.00125889), so 'most frequent' is numerically wrong. The explanation later calls 'cmn mov' the highest-frequency n-gram.",
+        "category": "other"
+      },
+      {
+        "quote": "This is the most frequent n-gram (0.001259) and suggests byte-level buffer processing",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/top_features/7/value",
+        "reason": "The ranking claim is contradicted by 'cmn mov' at 0.0017507. The 'byte-level buffer processing' inference is also not supported by any context.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP signs are positive and the magnitudes match the evidence within rounding. It correctly says the positive top-k pushes toward class 1, and it does not claim omitted features are benign. The frequency mislabeling concerns feature values, not SHAP direction or magnitude.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "Feature value semantics are not established, and the baseline and full attributions are unavailable.",
+      "There are no occurrences or function context, so n-gram adjacency and code location cannot be established.",
+      "Only the top-20 features are shown, so omitted features are unknown."
+    ],
+    "summary": "The explanation is cautious, uses the evidence well, and gives sensible verification steps. It is faithful on SHAP direction and magnitude. Its main problems are treating feature values as relative frequencies without support and misidentifying the most frequent n-gram."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Most of the n-grams have a relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states feature value semantics are not established and must not be treated as raw counts. 'Relative frequency' and 'visible code density' assume a semantics that is not supplied.",
+      "category": "other"
+    },
+    {
+      "quote": "'sub strb' (+0.006752, the most frequent at 0.001259)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/4 and /evidence/top_features/7",
+      "reason": "'cmn mov' has a higher value (0.0017507) than 'sub strb' (0.00125889), so 'most frequent' is numerically wrong. The explanation later calls 'cmn mov' the highest-frequency n-gram.",
+      "category": "other"
+    },
+    {
+      "quote": "This is the most frequent n-gram (0.001259) and suggests byte-level buffer processing",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/top_features/7/value",
+      "reason": "The ranking claim is contradicted by 'cmn mov' at 0.0017507. The 'byte-level buffer processing' inference is also not supported by any context.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "4e160339aeb9bfbd576dfbe288cbb58eb82b7d85f9c4d84651cb1ee024c3a260.exe_analysis.json"
+}

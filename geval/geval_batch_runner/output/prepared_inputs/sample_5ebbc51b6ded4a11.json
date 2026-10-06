@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_5ebbc51b6ded4a11",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.545,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "VPAND VPMOVMSKB",
+        "value": 4.4441974750952795e-05,
+        "shap_value": 0.007326502495425921
+      },
+      {
+        "ngram": "MOVQ SHR",
+        "value": 0.0001222154387505725,
+        "shap_value": 0.006845335816120976
+      },
+      {
+        "ngram": "MOVDQU MOVDQA",
+        "value": 0.00017776789900381118,
+        "shap_value": 0.006012015072936538
+      },
+      {
+        "ngram": "ADD VMOVNTDQ",
+        "value": 0.0001555469207232818,
+        "shap_value": 0.006011397878895685
+      },
+      {
+        "ngram": "SETC AND",
+        "value": 3.33314819727093e-05,
+        "shap_value": 0.005837285014894975
+      },
+      {
+        "ngram": "TEST JS",
+        "value": 0.0003999777836725116,
+        "shap_value": 0.005836172188178839
+      },
+      {
+        "ngram": "VPCMPEQB VPAND",
+        "value": 2.2220987375476398e-05,
+        "shap_value": 0.005493622823391116
+      },
+      {
+        "ngram": "PCMPEQB PMOVMSKB",
+        "value": 0.0001333259278908372,
+        "shap_value": 0.00514001329658517
+      },
+      {
+        "ngram": "SETG ADD",
+        "value": 3.33314819727093e-05,
+        "shap_value": 0.004948549416433437
+      },
+      {
+        "ngram": "VMOVD VPSHUFB",
+        "value": 2.2220987375476398e-05,
+        "shap_value": 0.004711118973652246
+      },
+      {
+        "ngram": "AND MOVQ",
+        "value": 2.2220987375476398e-05,
+        "shap_value": 0.004567627448419942
+      },
+      {
+        "ngram": "AND SUB",
+        "value": 0.0006110771792009473,
+        "shap_value": 0.0042175590419771475
+      },
+      {
+        "ngram": "VPMOVMSKB TZCNT",
+        "value": 4.4441974750952795e-05,
+        "shap_value": 0.004140908804870376
+      },
+      {
+        "ngram": "PMOVMSKB TEST",
+        "value": 0.0001555469207232818,
+        "shap_value": 0.003997426419743492
+      },
+      {
+        "ngram": "PSHUFB PCMPEQB",
+        "value": 2.2220987375476398e-05,
+        "shap_value": 0.003991343698035794
+      },
+      {
+        "ngram": "ADD LEA",
+        "value": 0.0018554524285718799,
+        "shap_value": 0.0039101295135307
+      },
+      {
+        "ngram": "CPUID CMP",
+        "value": 2.2220987375476398e-05,
+        "shap_value": 0.003892745282677408
+      },
+      {
+        "ngram": "MOVQ AND",
+        "value": 0.0001333259278908372,
+        "shap_value": 0.0038004353917700053
+      },
+      {
+        "ngram": "OR XCHG",
+        "value": 2.2220987375476398e-05,
+        "shap_value": 0.003726057646644039
+      },
+      {
+        "ngram": "XOR ROR",
+        "value": 0.00042219876195304096,
+        "shap_value": 0.0036683567732158193
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "benign",
+    "explanation": "The Random Forest probability of 0.545 is barely above the decision boundary, and the top-20 SHAP contributions are small and evenly spread (+0.0037 to +0.0073), with no dominant indicator. Most of the top features are SIMD byte-scanning idioms: VPAND/VPMOVMSKB, VPCMPEQB/VPAND, PCMPEQB/PMOVMSKB, PMOVMSKB/TEST, VPMOVMSKB/TZCNT, PSHUFB/PCMPEQB and VMOVD/VPSHUFB. These compare vectors, extract a bitmask and find the first matching byte, which is how vectorized string and memory search routines such as strlen, memchr and strchr work. CPUID/CMP is consistent with CPU-feature dispatch that selects among these routines. MOVDQU/MOVDQA and ADD/VMOVNTDQ are bulk memory copy or fill patterns. The remaining n-grams (TEST/JS, AND/SUB, ADD/LEA, SETC/AND, SETG/ADD, MOVQ/SHR, MOVQ/AND, AND/MOVQ, OR/XCHG) are generic arithmetic, flag and address-computation sequences with no mining-specific meaning. The only mildly crypto-flavored n-gram is XOR/ROR (frequency 0.000422, SHAP +0.003668). It is a common mixing primitive, appears at low frequency and is not accompanied by the dense, repeated XOR/ROTATE/ADD sequences expected from hash kernels such as RandomX, CryptoNight or SHA-256 loops. The binary name indicates a GNU coreutils 'id' utility, which fits the library-style vectorized string code seen here. No function names were supplied with the n-grams, so nothing ties these patterns to a mining routine. Overall the SHAP pushes toward 'malware' appear to come from generic optimized-libc instruction patterns rather than cryptojacking behavior.",
+    "evidence_analysis": [
+      {
+        "ngram": "VPAND VPMOVMSKB",
+        "shap_contribution": 0.007327,
+        "assessment": "AVX2 compare-and-mask idiom typical of vectorized string and memory scanning (strlen/memchr style). Not specific to hashing or mining."
+      },
+      {
+        "ngram": "MOVQ SHR",
+        "shap_contribution": 0.006845,
+        "assessment": "Generic data movement followed by a shift, common in bit manipulation and index calculations. Weak, non-specific indicator."
+      },
+      {
+        "ngram": "MOVDQU MOVDQA",
+        "shap_contribution": 0.006012,
+        "assessment": "Unaligned and aligned 128-bit moves typical of block memory copy routines. Benign bulk data handling."
+      },
+      {
+        "ngram": "ADD VMOVNTDQ",
+        "shap_contribution": 0.006011,
+        "assessment": "Pointer increment followed by a non-temporal vector store, typical of large memcpy/memset implementations. Not mining-specific."
+      },
+      {
+        "ngram": "SETC AND",
+        "shap_contribution": 0.005837,
+        "assessment": "Carry-flag materialization followed by masking, a generic branchless comparison or arithmetic pattern."
+      },
+      {
+        "ngram": "TEST JS",
+        "shap_contribution": 0.005836,
+        "assessment": "Sign test and branch, ubiquitous control flow such as error or negative-value checks. No cryptographic meaning."
+      },
+      {
+        "ngram": "VPCMPEQB VPAND",
+        "shap_contribution": 0.005494,
+        "assessment": "AVX2 byte-compare and mask, characteristic of vectorized string search routines."
+      },
+      {
+        "ngram": "PCMPEQB PMOVMSKB",
+        "shap_contribution": 0.00514,
+        "assessment": "SSE2 byte compare plus mask extraction, the classic strlen/memchr kernel. Consistent with libc string code."
+      },
+      {
+        "ngram": "SETG ADD",
+        "shap_contribution": 0.004949,
+        "assessment": "Signed comparison result added to a value, a generic branchless arithmetic idiom."
+      },
+      {
+        "ngram": "VMOVD VPSHUFB",
+        "shap_contribution": 0.004711,
+        "assessment": "Broadcast or shuffle setup for byte-wise vector operations, commonly seen in optimized string routines. Not itself indicative of mining."
+      },
+      {
+        "ngram": "AND MOVQ",
+        "shap_contribution": 0.004568,
+        "assessment": "Masking followed by a move, generic alignment or bit handling with no specific malicious meaning."
+      },
+      {
+        "ngram": "AND SUB",
+        "shap_contribution": 0.004218,
+        "assessment": "Common alignment and pointer arithmetic sequence. Moderately frequent and benign in nature."
+      },
+      {
+        "ngram": "VPMOVMSKB TZCNT",
+        "shap_contribution": 0.004141,
+        "assessment": "Extracts a vector comparison mask and finds the first set bit, the signature of vectorized find-first-byte routines. Not crypto-related."
+      },
+      {
+        "ngram": "PMOVMSKB TEST",
+        "shap_contribution": 0.003997,
+        "assessment": "Mask extraction then test, part of the SSE2 string scanning pattern."
+      },
+      {
+        "ngram": "PSHUFB PCMPEQB",
+        "shap_contribution": 0.003991,
+        "assessment": "Shuffle then compare, used in vectorized character-class or string matching. Could superficially resemble crypto shuffles but fits string scanning here."
+      },
+      {
+        "ngram": "ADD LEA",
+        "shap_contribution": 0.00391,
+        "assessment": "Very common address computation sequence with no discriminative value for cryptojacking."
+      },
+      {
+        "ngram": "CPUID CMP",
+        "shap_contribution": 0.003893,
+        "assessment": "CPU feature detection and comparison, consistent with runtime dispatch among SIMD implementations. Miners also query CPU features, but the evidence gives no sign of mining-oriented use."
+      },
+      {
+        "ngram": "MOVQ AND",
+        "shap_contribution": 0.0038,
+        "assessment": "Generic move and mask sequence with minimal specificity."
+      },
+      {
+        "ngram": "OR XCHG",
+        "shap_contribution": 0.003726,
+        "assessment": "Low-frequency combination, possibly from atomic or synchronization helpers or flag manipulation. No evidence of a mining loop."
+      },
+      {
+        "ngram": "XOR ROR",
+        "shap_contribution": 0.003668,
+        "assessment": "Rotate and XOR mixing is a primitive in hashing and ciphers, so it is the most crypto-adjacent n-gram. At frequency 0.000422 and with a small SHAP value, it is insufficient evidence of a hashing kernel."
+      }
+    ],
+    "confidence_score": 0.7,
+    "key_indicators": [
+      "Dominant n-grams (PCMPEQB/PMOVMSKB, VPAND/VPMOVMSKB, VPMOVMSKB/TZCNT) match vectorized string and memory scanning routines",
+      "CPUID/CMP suggests CPU-feature dispatch rather than a mining-specific capability check",
+      "SHAP contributions are small and diffuse (max +0.0073) with no single decisive indicator",
+      "Only XOR/ROR resembles a crypto primitive, at low frequency and without supporting hash-loop patterns",
+      "Model probability of 0.545 is near the decision boundary, indicating a marginal call",
+      "Binary name indicates a coreutils 'id' utility, consistent with library-style SIMD code"
+    ],
+    "recommended_action": "Treat as likely benign and a probable false positive. Confirm by checking the function-level origin of the SIMD n-grams (expected to be libc-style string/memory routines) and by verifying the binary's hash against known-good coreutils 'id' builds. Look for network or stratum-style indicators, high-entropy constants or sustained hash loops. Escalate only if the XOR/ROR sequences cluster into dense hashing kernels."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

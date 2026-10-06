@@ -1,0 +1,175 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_9ccedfe24fe7e4b7",
+  "status": "success",
+  "source_sha256": "be7b4110aea313ce0d7b8856fd731f6b6143a59ae26a36149dfc52c0e222b4cb",
+  "input_sha256": "7190219777c67e5ec9641aa1f7f7994192491bd0dad84ff2335c158f4d6a33e8",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "52333bfa6c7dbcb8f29e4dbfc1fc144e33158e39ee5bcc6c0631d27c1ad71298.exe",
+      "source_name": "52333bfa6c7dbcb8f29e4dbfc1fc144e33158e39ee5bcc6c0631d27c1ad71298.exe.json",
+      "source_path": "ml/dataset/cryptojacking/52333bfa6c7dbcb8f29e4dbfc1fc144e33158e39ee5bcc6c0631d27c1ad71298.exe.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 57,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "52333bfa6c7dbcb8f29e4dbfc1fc144e33158e39ee5bcc6c0631d27c1ad71298.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:37:57.695884+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:37:57.695912+00:00",
+      "error": null,
+      "request_sha256": "4cc07e527993de73a525997c231c312ef7af306b243eb1a040aa9525a5db486a",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfkzj7cTtpkkJ2gngf3rk",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I need to check this claim carefully—the prediction is 1 with probability 1.0, and features are mostly 0 except \"or nor\" at a tiny value. The candidate's phrase \"relative frequency of 0.000000\" asserts a specific semantic meaning for these feature values that isn't actually established, so that's an unsupported claim I should flag.\n\nSimilarly, labeling class 1 as \"cryptojacking\" or \"MALWARE\" assumes a specific class naming that isn't confirmed by the evidence—that's another minor unsupported assumption. I'm now verifying the SHAP values one by one against the candidate's numbers (CMOVZ MOV, ADD POP, XOR CALL, and so on down the list), checking each rounds correctly, and they all appear to match.\n\nThe claim about the range \"0.0056 to 0.0127\" checks out, though describing the values as \"evenly spread\" or \"flat\" is a loose characterization—the top value is roughly double the bottom, which is a stretch to call truly flat, especially without knowing the full distribution of SHAP values beyond the top 20. I'm now looking at the more interpretive claims, like \"ADD POP\" suggesting stack cleanup or epilogue behavior, and \"CMP JL\" suggesting a loop or branch condition—these are generic, speculative interpretations that are reasonably hedged but still not strictly established by the data alone.\n\nThe \"or nor\" token is flagged as possibly a disassembly or tokenization artifact rather than an actual mnemonic, which is appropriately hedged. I'm also noting that attributing the high model probability to the feature distribution resembling the malware training set is plausible but somewhat overreaching, since a random forest probability isn't direct behavioral proof. The claim that the evidence lacks mining-specific indicators like stratum or pool strings is accurate as a statement about the limited evidence provided, and the point that missing evidence isn't the same as benign evidence is handled well. I'm also flagging that the confidence_score of 0.45 is essentially arbitrary and uncalibrated, which is a minor but worth-noting gap, along with the fact that nineteen of the twenty n-grams show a relative frequency of exactly zero.\n\nOn SHAP faithfulness, I think the direction and magnitude claims hold up, though the candidate treats the feature value as relative frequency rather than clarifying it's SHAP-specific, and it doesn't flag that all 20 features pushing toward cryptojacking assumes a specific target class configuration—still, I'd call it faithful overall with minor caveats. For scoring, technical accuracy lands around 4 given the relative-frequency overreach, and coherence is maybe 4 rather than 5 due to repetitive content across the explanation, evidence analysis, and key indicators sections.\n\nCyber relevance also sits around 4—it connects to mining checks and benign alternatives but stays somewhat generic at the per-n-gram level. Actionability is solid with concrete steps like checking strings, imports, and pool indicators, running sandbox analysis, and comparing signatures, though the signature comparison advice feels generic and nothing is explicitly prioritized, so that's a 4 too. Now I need to list the evidence limitations and write it all out as a single-line JSON object.\n\n",
+            "signature": "CAQSwy0KEAgSGAI4AUIIdGhpbmtpbmcSDNKZpQTK/xgw1PoPDBoMwAbEw+BiizhEHDKpIjAJOwJwLYpKMpj7CXrfMHIQfxdz3nozFtuQZHZqQXcUZcnYF4N2Wn4f0z/DAiFX6kYq4Cyt6AlOKYTbh/pArJvvXG4+X2ihNFFW6HpPFZ5aXa8M3rXQMJTHwF4m5lpWRF6RIxbBn6DkhOAfsmARgLCasz+79MPtxO9PJDx38lA7dnoUbqqWh4YqEF1WAJdvVz6hS+HKW5ebumv0+x7W6Pe5U3oPOOkamL8mMtIrgI4rrs9xspcdaV33/03qh/JEgqRql2EPJmvohOz907y/TiFALgv6weSAE5rdlnGpio8OSdA46mRWfZukrsH6fDEXNEI6uRNu0631b+iI4tfvsNsh9pZuUq0g3/MuFfEYYw6iSfDb18Zsm4gPVPmFPmLhlIbb2jUP39YrTDFV9PF19A1cWytvW0a11wvggaBUUz9Y32uHClblVMeLZnz3D883Nvv/8RlHBtIUGDXlQCia4wrm23wKP2CLO+alVEsuy2GmpEnNMK53c8Z+26pQ8sD0gur/kJ5d1VUpRNI+T/E6utcT6cMve0nKy2DajWpPhdNxYsqf5WMVMIXRyYEi9OXUi/4s7Iu9mmRPRibkvWqzy478ZbdvYGDCYwEJOfK+QIWOd6UdvLhkX6rltSHQ8bN30ZJlgJ+r5xl18PuyAiqLw9kVG5lvtlozY5+utqAyE+AKicJZCmvypMeS0eXR8pVEfQT3zSfq2D07K8ci4auvk5jRT57mm3bm61fWgqf9vLfXlYG5Y9nssdj9CQaWVFhDVIGYMMk8Ilu1X5mzcK5Njs71GvU4c6C9s4MaurPNBns8owESiKxPK+DIhG/tBbtv+flhbdWl2+Ee9xWlUjZv1Yjpx1P+gZdCCblx/ougV/CWX8/lWrxdNMGMfFOVkvGA4aeCcl+4psNEvh08oEtZIqWJACdSzXG0XKy2P9xJ3CR3oIhBmBpqKcli6SHmoqRmw0oFNWUElcBjff95ixpCejtLxxKkpAj6shYSw+r8RBzWurLg0QxAuKKRlFc/RRjT4ehkMlhf2Hsx5E1Zbnl+/xKaP31hWPvXpiPNJl4i7mzDsKk8hlijYng6T03oX6JPBH1ID2ncLGbW0cufLc4ngfD09ZIm8S47FTKB8egulm86e49vPggHEU4NSvkQIYrRZk65O7zNFezHTg5S7pEQXgMJsFcxdKdpSb1wBjZnK9ySt0LgUhkB3XkQmaLipeMXV88ypIM6/tezPcQTsX6+yz9aVQXeaR4gGl3bujxFeAtTISsQnQnQttlGPTRhOvF8pX78qi6aRSHdSHmeluiBB6yxoyCaqxfEweOWqxGOiQe8JPxyeDhCjX1Rx2COkriw15TyY1dJ4CZ8c7zTIr6R0gR9tJaObiSbPFmT3Xz/L84qEqkRNYORUL2gXHcpG+A7LIrdtNfrYES9WMqKk+5mVX2TVjcq8d9y6pGtta2cmIhaEKxzba+xiF9KCxD5DFp/Fn+N9L23OT+DJPG4+2egbJ919Rjp+O0nbhgZAwpQLHAptFdEpy6AlVdQCIMKC6BKUvFWlGDXWWraAR/IFT6Me8lIYJuI+z9stq8AHtG95xdEbcA52EqYvrDhyhaRnrLEmRwGrVSP3pG4WU2D6iiuzyyzIK/sQ6M1oAT0mHsF7taxcYlg5cR+Ny2+KNcfPiHhvLXNKLj/rM1E11OcJcEM3JlZbCOqavSpYjIODZagnhJdZPmtHz7yonRSrCZyq/nj75hRBrd9A02n7FNkGfd9gP5gaMC5T2rPEAZjdVC9NHQX28Mg5edDmpfyawRuc6e4kdp6ZFRkPVHt5kaHd2krxbzcvi6qjY/Ltxy/aW7EV3K67JVbFX0+O6B4DXT2P8vJP5I5LtLgPuXQimPupk3zwZo+lTOfvafhdSfIML/GEuSZxQYBT95yVMaZRocC9DZayyV2PyA8La6iMePF6a3TvmoA97D17oGRhBjYf3QUOQYns37sq13tugwrgNqt9u+3/JQeFZlevRXhocrTJS778FPqzta376UzOLyYgnimN6jDoov8SJSWFioSwiaJInf8031ssnECqJ3PmvdseEvk/D22HUNBi2FgXKZqatIGT8/42PL7u4Wd/4BLzY5tZlWCvD0fUURSUft02/qpnPVuoN8NEUrpznwY5s2Do/rY5cUNHB/bbGJzortwPqrCUHUi8E+c2AstdRMeRh6dOz335JH3KCX0E99BulGYvzFTrnxiG61l8yzchI5+NbxSvzdVBwbwPmcKb/PVZ3QsO42XKiSY6v/8QoWy2hlgUQxDvxwROWgh/slJoRvd/1+u+YFD2EyS7hEEUDePj9XY3xGoKog50N0VBMLGiQIRHixR2Faj00+ao/wPshKsRpOrJz2UnKIY+/vdoLV/QaN/l5+W1QGnw6VSbJmlAtSu7q0z77lRMAfMA7fh9ptfJRhDM5MPyKBKBGlQmboVzLwtw6xz6dH0oPuepckqUfhvM4WAGpjoEdtuxiyTOtRxjEgA0Dq1DNZh63ShWBYk+ddfp+89p3HP9YNS5thOu62NLQlVRF65lKHoX49FzHysM49mJoDvr4boYlut1B8wfZGdRQ11LUrohqhv9alR3AGyCq5+Zy1e1I03hXMvIWc/PW1kBAW18GT9BEX5sMa6tkLS2XHA1jdeUpEdDlsnDTn4+Jejfocp4v/wcKWnpAXj3Qfaxmz9a2rKqE6AENgJgdWbtjUn11ZdI7Hl/elKOv6fgwqun5a/KzVa1EPvJi+aFd9k6HugJ0iWB5xTbBywnTLSYEf93TLSes5sVBuHE4R7kkku1Jbj0spEaKGzjaiaFVhIyWM98xUR98u+FGyyokmO8ApUGsZjqej0funCnxd4NaoFmRE+g2JFx6mdttuwm8l32Z+hSSHPeNgvqZbE34ZKjcp1pBLnqWrUpeTI5X975X6MtKCAY9o22t4ESce93vdOaDpHOih5Gvkj8L/RuAHJvJMj5SMrQ13UuWOWLlQI3E+EQbDYxBo5zLyxN1HNpfugdWuy66p3OsfKyEYEYIwtP3j3bX/2RlmYp7Fux0BEQbgNVpbs/hER5pkbZixkalvG+87mikv0/2PvgeptONMLEPFzk1l4d5JM3li5Aq3dWAnhiB5ky9pAh30X39tlZ64a8a1CxqEJy7lfmrPIS4oOdcm388yzmAPRc4Y7XvYJ5c5mPerede2GaSA398WhKTOP10BE53j//Pvql1EgnpuvYcbWwVquctJyqA3YEsu8JdpYC2F0lPBkWMkr2TlG/qtG7NiADRJRCpkHrhtDVsp2BIZ1bqzCXG8FApaFWbM+BFI+zdxhO6yqwXGk1Cgzj1oiOKupJJ1qfWFZyfWYFsSZOQPkzKLEoj8SWuwQx3NGUx0u3Z5nVDo47A49HlqyHT1xeq0fGAFZI+o6lWzX/+JyOpOK4CWDlpKdHzF1454G8glCgSXs20yIFMCQQdhS8XUZ7fQI+cyU8sZ6Y8DKuMV4Ul2XzJWbQgOHVFSE0wD0Kuab44wuanHzASJVx7HMhZTQL2N3cZzVF36z7bSgy8yL6FHbt04Yau0UsjZCh92ICnvDIKwVKalUYmyhcw9E3gyvLgAJGU8dHwX4e/mYsfRQ+hV6dsubH9MSaq+dYT+2VZkj49h/CR9VGMdLXChCD/bPvrpGySNOLz3VBSxNDZYFnIuUzXqIa4MmM5Q/dQKYdnISwGFWL50jXzMWlCbhUDz4vLprSBkxwU0PIAh3tc3tq+zvY4cetS1HxfLQSnrhjvHqQbGYvfAZ6s1IniqXcJLkgxuCaNCLwCmSzcePtCV57Y7gQumgRtGkwuGQJ0GytZEgi/+adawAK3IMDjM01MKgcYiFizwfKpo81H80lffnk87NaUgzhqT1U5J/Xx6swygPXbPA55Rcbnx0o92/F5+ZyPQKQDZx/CbjEvlNEigNULbVEQYU8wj2BLxTY03UWsIbxxpr+ZL6JRL0O1fmIXqf5BGrntGM270/NVJLarlJ63aXb1B+rsHbrOgNyykgaRGBXItPJQSG2inUs+UL4dHSY9+87opRr3odOS0SsXYoxdJEmlBTfcAf58YBW4Rs/LbASnrKuWqiqktSJoY/UUCDkILmqESdA5xl0RkxugLgQbeNrCqQ33G/hlW55OcepPWIoDI6UhCuz+BmtvI5pCZbqYqnGsmhYv2ZsstxQVhA7Zq1crw7vwld8TcjhxMbiGgcMuVg43PrbYGjEGoGB25la64JzNKi+l/BR7sU84wW1aq7ZDzJZMIjNgLNJ28meD6nmemsqZtyw1dHBu44aREyvlI+nD5MhZmZGjMrOfm4OqedFwIT/FTjwRSmhAR+rl4Pc38RuBCRzSzqWI8fPeNcjlxThxc+oIMUmkUozn3e0tq6UJ2oQ5wnAPAqxheed7mDNKFz1FCvxhDI2rBbQ3fonwiVEIX5EOJD34EoOC4m19kpaeZIN0wX4yJOjJCCeh1tgecAKgt+SLsxdtgMwhJcF0NosV+3wmVeDcpUDa/9qP+gWa3nlfnMYg5hqSovpz9+Ux9rEauSwPPFCF51fQhuph4ckdhj+6vw6BL7C5c9YZk3SjOLUxx65OYoracGrF79WLX/77yjaz1nDHkg2gxpfEKDRyl+PzvJJMgeb1KkuUB8AaQd9Nol91NcN7g3X1i8qvgfbduOdRgbbpsh2ssxA93jZLg6daHVkubIgsvnR//5UZB4PxJs/vTFpxnInfcUBl2vGtW6ca91QPTdhbHJtd3P0wwBCPoz23DKNYtcYpwJTE2s5zuErC7sVzNoKjYvWgLH3X3UYo4eSszwY4huCkZvSNXX1GVFDr129TNXS4Q2BtL4Tmrh1hcquaxbvHxjxkzHznDF8FD+A25IZYwKEDPRWpI25crSwsKVWSsIUkV/0BZkL5xk+liec00/UXTdcG9ZgDn7qu6A2wZ9wHzFx7ogSniVGwNeBAL8HvJQwcs9zNErsVbnLN7KHn19J8nGYG1g1AKXcij1Tk30Go4YzIJXr4GKl4Ps3gU13UB72VlPfzY8QbqPmIqZ0AO8cpJu7ly9LJUvJeH6pxCId61FwFnVmvWQmLPzcTnAvG3W5Q4CCz2ZtL1nAq8q8KX1iiFfodGIu3f9/BAonaUydJfs1OBq5OTE6u1X38vMGCV1wHyw6H9CDyL4uwMCKoN4pdZ8kBebYp/IxQwV7k5ZHtZhpTGoms2VkTkMbt9nbmPjGJFyZVqdOAut8/fVt9cKjo864yQv7vvjO9X4e2cUGK7MkJiaxlh/KKFenkc83Ix3P5Iqlgi01DKJpE/u+ceNQfIbecC7DDWqUCW+/HS5+ecPZvAv/RRuUkKmoDkySjO/mEPlo5CETnAsO5FY3C1gc/M6v2V2NhCGRWA4ZtOE4McDI+CdNMM+EwzNZt4Ybo8RNAKcu7sGfT01HqeWowzvlQdHtSx8jfDaKZHtpIORNinkuJUXp+0WWO+LqFzceg5nQf6XkpH/xFlM7Xd1ibP5oXBVfYE7XYimm1yPfwEny7vFz9tHOBTztMfAIxCSqlWSpCW5TO3RPdGtA+x7SqicYcbIFcG4M/1S6IBus3E0++QNmj2TXfSnu4H7YkqC5NuvDP/jYdZTlvOjR5DsLkV15aBDsHdZnafntwQYuBFAPDK4TZaAwbzJrGmvOay6rfur/DBOzWg3hEJtufJcLL44gKoTaeZwEghzwysuf7yi9nkYo8IMXjoVz9WF4K7VeMuxdOYDp8PLvBtrTk+ooFXwvA0xCivjd+Tf0JWkN6rbL5+ZpTKK+ER6Ua8W0KyjFkrKwwivWGTDXt2S0YDGgXYoU+bx9t90RRPYkcauIqnRirXgKr61PstWERAizONMRP8z6Pe5y+yFHl8ikceTTqUEGnCaa2GxrkVJsf3G3d5n8I5ydKpAEetYUQWFJdwbIQkyzHd++0OWsmf1YiQkCV1ZXsZ47jn32R0XB5Mkkf/WrpyaXxLzmL5nyhjGueoN1ElBOhF03O0Rw7y7sQ8fA2g8iQ0NifUV2ZmLyHBgzullFkBINACCkECnCvREwaoFD0ZnSYc5H0RQ9ktT/rECdhdjhkQinP8m6H+9kweIbqQgzu1Nq866A7ryFLYPVy5k8/V3lmBJc2+s4WaExm2vnklcxE11LOUbHPUx7mpgTCeCxscZp5doSsnifX+8Jt6t7cpxBpQm6hQZ+zyZTMWQqa9JdGbtzEEn8Wo+Ms/7kquLAsKA7jA807htGC4JIsS5rPlkBpsLPnuCPC5n1l8gwmC/Ue0jyV2iUXjwkkZChUffcQMUJ3aZhf7rNJMZzYMPHLpuxqvKIX0VOMpKJ7S+9eaeRQVn2GQ9jZGCQ1zSynEWqK2WW5/RqeP3is0v7mmgeymbdAfRrx0bGTR2U6jM5EeetgKx5TQoT6WYr6uXrDry7+9Bb4EvlNLadwckZqWer2yJ2AWGpAy/0hLvcgYmIeQoSWaGp+uv5F0ViDppvUK2BL6mW9poKMwIVTrTQPTvK8vMAbWQ92WYsBCUnT0Y7miBC1tDUbrTZ098vqnXjPYIqzwkPIFepGwuius1VBxT6nj8Zg1dQAuDXlpI/fr1kY3uQec/8ej98W2Wk7kfd+tMOKa2rbdoukMXrmVwQ73zxLZgJHqVjEds+2s9LwfPsHk6q4+Xu+2DVrH7FDWXUb7otfuDn34CxUtL5yom2vD5Q4WPLB9lylgo7vnJpYYZ0A3HQvMRr7vIeGgjKnIKlPl8vgYCPH/HibMv6N4+H7rAhDr1znxVs3Y8ohUAjvDLjxIz1XO0k6WHPXmMYyMhW7VjPyfOUjVHgw2k1dNKkmfUC7PdUnXnudjks8n3XGYVHcZMXn827l1/FeFF06IJFQ9A6BPNoOTIf3S5oW7z53E7XFDYckExZI/3iz6avKcS1GU202jLGf0CgHCD3ObVlI4VWzQZ8JJJ9/q+E4+e2xp/7fkI0DYENj2ABBu5OWysZXkqN7CdGXkX2B4uggpyYv8W/rOCh0zk60pfYaRSm5uUCiO0cz0Bm0anF4H7Vu5pvExfs5pn5Xn8Zp7+4mEL9JWt0eTSubrebVmteuHdwO0f4ERh6X9gPs4VaZmVhhLbVbls5eZtAIfHYI9qkB0dmYuIWBeiEoMQPuN3PvXgsBsD9m0Dvx7X9v8INBS3RCeKQD29h4jYr0HMeJXfqwnUPLuWBD5R/nVSf+AKZjDuVjzoE8xpuyguCei3VJrKW8eaDbFzyBp0vYa5tyzvv9wdGg/3f3t0osW2eE/m9Z+f8sRTPEItf6JeM4f5C8PZKYgg7O1TcEfdOdyOBs/feUVG5mzGnLUD03VvJZ/uGMjJhVnc/qavhBVOfjZMaax5Z3pui+V0kIDHxKc6lbA9UjKX9I8d+Jp6oiCn5En1ztlsP0YeLMoJHWDrBam3m6bZLdMP1c7ruTXT5jJUWy7+cg2Rz5vt0Np5njbAuyrEtPr5eh5UZOC5pD5FrnYJcH6Ib8eahnrx2QPvSSVus9gkfcLGWsCR/mpN83RXWj4SyidwTr5gbH+pfdS7PkvvWWy4EZc7qgd+OoOGUH0s1Hh/k37pC76L9BzoZuA3zsvHNcsdeSRLUfx7Lij9qTaGCcDfZiwfIn7MP6ShpsNpgWfBy8648xyo+JN4w9tK+cLkGftuxamklMjmV4JGd/SCyPFhPicZfBs01T1aSOxt2wj8ZExOPnobSo85ny4g6BByiTz4udFv+IF4Z+BCGQWCOP01GAE="
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_9ccedfe24fe7e4b7\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF class and probability and all 20 SHAP values match the evidence within rounding. Instruction interpretations are hedged and generic. The main flaw is treating the feature values as 'relative frequency' and inferring prominence from them, although the artifact says value semantics are not established.\",\"coherence\":\"The argument runs logically from RF output, to flat SHAP, to generic idioms, to the absence of mining indicators, to the low-confidence tier and the recommendations. The tier and actions are consistent with the limits it states. The explanation, evidence_analysis and key_indicators repeat each other, and the confidence_score of 0.45 is unexplained.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to hash or mixing code versus benign compiler idioms. It notes the missing pool strings, wallet addresses and function context, and it treats the 1.0 probability as an investigation trigger. Several per-n-gram comments are generic and not tied to this sample.\",\"actionable_utility\":\"The recommendations are concrete, feasible and proportionate: strings and config extraction, import review, pool and network indicators, locating XOR/shift/cmov loops, sandbox CPU and network checks. They are conditional and do not assert behavior as observed. The steps are not explicitly prioritized, and 'compare against known malware family signatures' is generic.\\\"\"},\"unsupported_claims\":[{\"quote\":\"Nineteen of the 20 n-grams have a relative frequency of 0.000000, and 'or nor' is only 0.000046, so none is a prominent part of the code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says value semantics are not established and the values must not be treated as raw counts without upstream confirmation. Calling them relative frequencies and inferring that no n-gram is prominent in the code is unsupported.\",\"category\":\"other\"},{\"quote\":\"19 of 20 n-grams have a relative frequency of 0.000000, and the remaining one is 0.000046\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Same unsupported 'relative frequency' interpretation of the feature value field.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive toward the configured target class 1 and are reported with correct values, ordering and range within the stated tolerance. The 'no single feature dominates' claim is restricted to the top-20 subset. The candidate does not claim omitted features are non-benign or that the top-k subset is complete.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The target class 1 is a configured assumption, and the 'MALWARE' and 'cryptojacking' labels are not independently confirmed by the artifact.\",\"Feature value semantics are unconfirmed, so the values cannot be read as counts or frequencies.\",\"There is no SHAP baseline and no full attributions, so omitted features and the overall balance of evidence are unknown.\",\"There are no occurrences or function context, so adjacency, control flow and routine-level behavior cannot be established.\",\"There are no strings, imports, network or runtime data to confirm or rule out mining.\"],\"summary\":\"The explanation is a well-hedged, SHAP-faithful low-confidence assessment with proportionate verification steps. Its main weakness is the unsupported reading of the feature values as relative frequencies.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6722,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3376,
+          "output_tokens_details": {
+            "thinking_tokens": 2130
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6722,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3376,
+        "output_tokens_details": {
+          "thinking_tokens": 2130
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_9ccedfe24fe7e4b7\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF class and probability and all 20 SHAP values match the evidence within rounding. Instruction interpretations are hedged and generic. The main flaw is treating the feature values as 'relative frequency' and inferring prominence from them, although the artifact says value semantics are not established.\",\"coherence\":\"The argument runs logically from RF output, to flat SHAP, to generic idioms, to the absence of mining indicators, to the low-confidence tier and the recommendations. The tier and actions are consistent with the limits it states. The explanation, evidence_analysis and key_indicators repeat each other, and the confidence_score of 0.45 is unexplained.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to hash or mixing code versus benign compiler idioms. It notes the missing pool strings, wallet addresses and function context, and it treats the 1.0 probability as an investigation trigger. Several per-n-gram comments are generic and not tied to this sample.\",\"actionable_utility\":\"The recommendations are concrete, feasible and proportionate: strings and config extraction, import review, pool and network indicators, locating XOR/shift/cmov loops, sandbox CPU and network checks. They are conditional and do not assert behavior as observed. The steps are not explicitly prioritized, and 'compare against known malware family signatures' is generic.\\\"\"},\"unsupported_claims\":[{\"quote\":\"Nineteen of the 20 n-grams have a relative frequency of 0.000000, and 'or nor' is only 0.000046, so none is a prominent part of the code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says value semantics are not established and the values must not be treated as raw counts without upstream confirmation. Calling them relative frequencies and inferring that no n-gram is prominent in the code is unsupported.\",\"category\":\"other\"},{\"quote\":\"19 of 20 n-grams have a relative frequency of 0.000000, and the remaining one is 0.000046\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Same unsupported 'relative frequency' interpretation of the feature value field.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive toward the configured target class 1 and are reported with correct values, ordering and range within the stated tolerance. The 'no single feature dominates' claim is restricted to the top-20 subset. The candidate does not claim omitted features are non-benign or that the top-k subset is complete.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The target class 1 is a configured assumption, and the 'MALWARE' and 'cryptojacking' labels are not independently confirmed by the artifact.\",\"Feature value semantics are unconfirmed, so the values cannot be read as counts or frequencies.\",\"There is no SHAP baseline and no full attributions, so omitted features and the overall balance of evidence are unknown.\",\"There are no occurrences or function context, so adjacency, control flow and routine-level behavior cannot be established.\",\"There are no strings, imports, network or runtime data to confirm or rule out mining.\"],\"summary\":\"The explanation is a well-hedged, SHAP-faithful low-confidence assessment with proportionate verification steps. Its main weakness is the unsupported reading of the feature values as relative frequencies.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_9ccedfe24fe7e4b7",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF class and probability and all 20 SHAP values match the evidence within rounding. Instruction interpretations are hedged and generic. The main flaw is treating the feature values as 'relative frequency' and inferring prominence from them, although the artifact says value semantics are not established.",
+      "coherence": "The argument runs logically from RF output, to flat SHAP, to generic idioms, to the absence of mining indicators, to the low-confidence tier and the recommendations. The tier and actions are consistent with the limits it states. The explanation, evidence_analysis and key_indicators repeat each other, and the confidence_score of 0.45 is unexplained.",
+      "cybersecurity_relevance": "It ties the sample's n-grams to hash or mixing code versus benign compiler idioms. It notes the missing pool strings, wallet addresses and function context, and it treats the 1.0 probability as an investigation trigger. Several per-n-gram comments are generic and not tied to this sample.",
+      "actionable_utility": "The recommendations are concrete, feasible and proportionate: strings and config extraction, import review, pool and network indicators, locating XOR/shift/cmov loops, sandbox CPU and network checks. They are conditional and do not assert behavior as observed. The steps are not explicitly prioritized, and 'compare against known malware family signatures' is generic.\""
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Nineteen of the 20 n-grams have a relative frequency of 0.000000, and 'or nor' is only 0.000046, so none is a prominent part of the code.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says value semantics are not established and the values must not be treated as raw counts without upstream confirmation. Calling them relative frequencies and inferring that no n-gram is prominent in the code is unsupported.",
+        "category": "other"
+      },
+      {
+        "quote": "19 of 20 n-grams have a relative frequency of 0.000000, and the remaining one is 0.000046",
+        "candidate_path": "/candidate_analysis/key_indicators/2",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "Same unsupported 'relative frequency' interpretation of the feature value field.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are positive toward the configured target class 1 and are reported with correct values, ordering and range within the stated tolerance. The 'no single feature dominates' claim is restricted to the top-20 subset. The candidate does not claim omitted features are non-benign or that the top-k subset is complete.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The target class 1 is a configured assumption, and the 'MALWARE' and 'cryptojacking' labels are not independently confirmed by the artifact.",
+      "Feature value semantics are unconfirmed, so the values cannot be read as counts or frequencies.",
+      "There is no SHAP baseline and no full attributions, so omitted features and the overall balance of evidence are unknown.",
+      "There are no occurrences or function context, so adjacency, control flow and routine-level behavior cannot be established.",
+      "There are no strings, imports, network or runtime data to confirm or rule out mining."
+    ],
+    "summary": "The explanation is a well-hedged, SHAP-faithful low-confidence assessment with proportionate verification steps. Its main weakness is the unsupported reading of the feature values as relative frequencies."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Nineteen of the 20 n-grams have a relative frequency of 0.000000, and 'or nor' is only 0.000046, so none is a prominent part of the code.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says value semantics are not established and the values must not be treated as raw counts without upstream confirmation. Calling them relative frequencies and inferring that no n-gram is prominent in the code is unsupported.",
+      "category": "other"
+    },
+    {
+      "quote": "19 of 20 n-grams have a relative frequency of 0.000000, and the remaining one is 0.000046",
+      "candidate_path": "/candidate_analysis/key_indicators/2",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "Same unsupported 'relative frequency' interpretation of the feature value field.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "52333bfa6c7dbcb8f29e4dbfc1fc144e33158e39ee5bcc6c0631d27c1ad71298.exe_analysis.json"
+}

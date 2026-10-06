@@ -1,0 +1,240 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_1a46b65def6da4aa",
+  "status": "success",
+  "source_sha256": "6c76be9fdfd7b8e481ffd85c86e6140058996e78567ed1974b3393ca5159a6e0",
+  "input_sha256": "aa05b8e20ec8507e6fa95529f2dd2841d36ba211b67890005f714535bbd9afe1",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "3afca0f0f28a8e8a57ea459ec7bbc8ec03082e8c818b521687c36e9375fef784.exe",
+      "source_name": "3afca0f0f28a8e8a57ea459ec7bbc8ec03082e8c818b521687c36e9375fef784.exe.json",
+      "source_path": "ml/dataset/cryptojacking/3afca0f0f28a8e8a57ea459ec7bbc8ec03082e8c818b521687c36e9375fef784.exe.json",
+      "split": "test",
+      "batch_number": 6,
+      "row_index_in_batch": 36,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "3afca0f0f28a8e8a57ea459ec7bbc8ec03082e8c818b521687c36e9375fef784.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:28:17.807299+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:28:17.807327+00:00",
+      "error": null,
+      "request_sha256": "b8bcbdf2c0fcaabed7f3e51ad505da0c2dc9a9342a70f6ec8659317f62579ede",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkyzLtjFLh33ZtTyziPh",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_1a46b65def6da4aa\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.995, n-gram names and SHAP values are reported correctly, and the generic instruction semantics are mostly fine. But it overreaches on sample-specific interpretation: \\\"hash-based proof-of-work mining code\\\", \\\"as in SSE/AVX implementations of mining hash algorithms\\\" and \\\"indicates a repeated ARX round structure\\\" are inferred from mnemonic pairs with no context. \\\"CMP ROL\\\" as \\\"likely loop or round-count logic\\\" and \\\"All 20 ... push toward cryptojacking\\\" are also unsupported or imprecise. It also describes ADD ROR as \\\"the most frequent of all listed n-grams\\\", which holds only if the values are frequencies, and the artifact says feature_value_semantics is not established.\",\"coherence\":\"Well organized into groups, with per-feature assessments, key indicators and actions that match the stated tier. Some repetition across summary, evidence_analysis and key_indicators. The \\\"high-confidence\\\" tier and the caveat about legitimate crypto libraries sit in mild tension.\",\"cybersecurity_relevance\":\"Ties the specific n-grams to cryptojacking hypotheses and names the main benign alternative, legitimate cryptographic libraries. It acknowledges that no function or API evidence exists. It is weakened by treating crypto-like mnemonics as fairly strong evidence and by not considering other benign sources such as compression, media codecs or generic SIMD code.\",\"actionable_utility\":\"Concrete, feasible follow-up: sandbox for sustained CPU use and Stratum connections, disassemble the clusters, check for wallet and pool configuration, and compare against legitimate crypto libraries. Mostly conditional and proportionate. \\\"Treat the sample as a probable cryptominer\\\" and block-by-hash are slightly ahead of the evidence, but they are tied to confirmation.\"},\"unsupported_claims\":[{\"quote\":\"The n-grams fall into three groups consistent with hash-based proof-of-work mining code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/function_context; /evidence/occurrences\",\"reason\":\"Mnemonic pairs alone do not establish proof-of-work mining code. The evidence has no function context, occurrences or API data.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"These suggest vectorized state mixing and bulk data handling, as in SSE/AVX implementations of mining hash algorithms.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (PXOR MOVAPS, PXOR PXOR, PXOR MOVUPS, VPXOR VMOVDQU)\",\"reason\":\"The sample-specific attribution to mining hash implementations is unsupported. PXOR and MOVAPS pairs are generic vector operations.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"It indicates a repeated ARX round structure typical of hashing.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features (ADD ROR value 0.0007041211938485503); /evidence/feature_value_semantics\",\"reason\":\"A single n-gram does not establish a repeated round structure, and the semantics of the feature values are not confirmed. Repetition and algorithm structure are inferred without extraction context.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Comparison adjacent to rotate, likely loop or round-count logic inside rotation-heavy code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/top_features (CMP ROL); /evidence/function_context\",\"reason\":\"Loop or round-count logic is inferred from a mnemonic pair. There is no control-flow or context evidence. The rubric also says not to infer adjacency or control flow without extraction evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Combination of vectorized and scalar crypto-style instruction patterns is consistent with mining hash kernels\",\"candidate_path\":\"/candidate_analysis/key_indicators/5\",\"evidence_reference\":\"/evidence/top_features; /evidence/function_context\",\"reason\":\"Asserts consistency with mining hash kernels from instruction patterns alone. These patterns are not established as mining-specific.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"the combination of crypto-style rotate, vector XOR and multi-precision patterns, all pointing the same way, is strong\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /scope_notes/1; /evidence/full_attributions\",\"reason\":\"Asserts strength from a top-20 positive subset. Omitted features and the SHAP baseline are unknown, and RF confidence is not behavioral proof.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Rotate followed by store or move, completing the ARX round pattern together with MOV ROL and ROL ADD.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features; /evidence/occurrences\",\"reason\":\"Asserts that these n-grams complete a round pattern and implies sequential adjacency across n-grams. Graph-aware n-grams need not be adjacent, and no extraction context is supplied.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs, ranks and rounded magnitudes match the evidence, and the top feature is PXOR MOVAPS at +0.015001. The claim that all 20 shown features push toward class 1 is correct for the listed subset. The candidate also notes that CALL RET, CALL PUSH and MOV JZ carry small contributions, though it does not say SHAP is only a model attribution. The remaining issue is interpretive overreach, not misreported SHAP numbers.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function context, occurrences, API names or extraction details were supplied.\",\"feature_value_semantics is unconfirmed, so the n-gram values may not be raw frequencies or counts.\",\"SHAP baseline and full attributions are null, so omitted features cannot be assessed.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation reports RF and SHAP numbers faithfully and is clearly organized, with useful, mostly proportionate verification steps and a stated benign caveat. It repeatedly reads mnemonic pairs as hash or mining algorithm structure and as loop or round logic without context evidence, so technical accuracy is mixed.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7293,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2372,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7293,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2372,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_1a46b65def6da4aa\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.995, n-gram names and SHAP values are reported correctly, and the generic instruction semantics are mostly fine. But it overreaches on sample-specific interpretation: \\\"hash-based proof-of-work mining code\\\", \\\"as in SSE/AVX implementations of mining hash algorithms\\\" and \\\"indicates a repeated ARX round structure\\\" are inferred from mnemonic pairs with no context. \\\"CMP ROL\\\" as \\\"likely loop or round-count logic\\\" and \\\"All 20 ... push toward cryptojacking\\\" are also unsupported or imprecise. It also describes ADD ROR as \\\"the most frequent of all listed n-grams\\\", which holds only if the values are frequencies, and the artifact says feature_value_semantics is not established.\",\"coherence\":\"Well organized into groups, with per-feature assessments, key indicators and actions that match the stated tier. Some repetition across summary, evidence_analysis and key_indicators. The \\\"high-confidence\\\" tier and the caveat about legitimate crypto libraries sit in mild tension.\",\"cybersecurity_relevance\":\"Ties the specific n-grams to cryptojacking hypotheses and names the main benign alternative, legitimate cryptographic libraries. It acknowledges that no function or API evidence exists. It is weakened by treating crypto-like mnemonics as fairly strong evidence and by not considering other benign sources such as compression, media codecs or generic SIMD code.\",\"actionable_utility\":\"Concrete, feasible follow-up: sandbox for sustained CPU use and Stratum connections, disassemble the clusters, check for wallet and pool configuration, and compare against legitimate crypto libraries. Mostly conditional and proportionate. \\\"Treat the sample as a probable cryptominer\\\" and block-by-hash are slightly ahead of the evidence, but they are tied to confirmation.\"},\"unsupported_claims\":[{\"quote\":\"The n-grams fall into three groups consistent with hash-based proof-of-work mining code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/function_context; /evidence/occurrences\",\"reason\":\"Mnemonic pairs alone do not establish proof-of-work mining code. The evidence has no function context, occurrences or API data.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"These suggest vectorized state mixing and bulk data handling, as in SSE/AVX implementations of mining hash algorithms.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (PXOR MOVAPS, PXOR PXOR, PXOR MOVUPS, VPXOR VMOVDQU)\",\"reason\":\"The sample-specific attribution to mining hash implementations is unsupported. PXOR and MOVAPS pairs are generic vector operations.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"It indicates a repeated ARX round structure typical of hashing.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features (ADD ROR value 0.0007041211938485503); /evidence/feature_value_semantics\",\"reason\":\"A single n-gram does not establish a repeated round structure, and the semantics of the feature values are not confirmed. Repetition and algorithm structure are inferred without extraction context.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Comparison adjacent to rotate, likely loop or round-count logic inside rotation-heavy code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/top_features (CMP ROL); /evidence/function_context\",\"reason\":\"Loop or round-count logic is inferred from a mnemonic pair. There is no control-flow or context evidence. The rubric also says not to infer adjacency or control flow without extraction evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Combination of vectorized and scalar crypto-style instruction patterns is consistent with mining hash kernels\",\"candidate_path\":\"/candidate_analysis/key_indicators/5\",\"evidence_reference\":\"/evidence/top_features; /evidence/function_context\",\"reason\":\"Asserts consistency with mining hash kernels from instruction patterns alone. These patterns are not established as mining-specific.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"the combination of crypto-style rotate, vector XOR and multi-precision patterns, all pointing the same way, is strong\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /scope_notes/1; /evidence/full_attributions\",\"reason\":\"Asserts strength from a top-20 positive subset. Omitted features and the SHAP baseline are unknown, and RF confidence is not behavioral proof.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Rotate followed by store or move, completing the ARX round pattern together with MOV ROL and ROL ADD.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features; /evidence/occurrences\",\"reason\":\"Asserts that these n-grams complete a round pattern and implies sequential adjacency across n-grams. Graph-aware n-grams need not be adjacent, and no extraction context is supplied.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs, ranks and rounded magnitudes match the evidence, and the top feature is PXOR MOVAPS at +0.015001. The claim that all 20 shown features push toward class 1 is correct for the listed subset. The candidate also notes that CALL RET, CALL PUSH and MOV JZ carry small contributions, though it does not say SHAP is only a model attribution. The remaining issue is interpretive overreach, not misreported SHAP numbers.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function context, occurrences, API names or extraction details were supplied.\",\"feature_value_semantics is unconfirmed, so the n-gram values may not be raw frequencies or counts.\",\"SHAP baseline and full attributions are null, so omitted features cannot be assessed.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation reports RF and SHAP numbers faithfully and is clearly organized, with useful, mostly proportionate verification steps and a stated benign caveat. It repeatedly reads mnemonic pairs as hash or mining algorithm structure and as loop or round logic without context evidence, so technical accuracy is mixed.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_1a46b65def6da4aa",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability 0.995, n-gram names and SHAP values are reported correctly, and the generic instruction semantics are mostly fine. But it overreaches on sample-specific interpretation: \"hash-based proof-of-work mining code\", \"as in SSE/AVX implementations of mining hash algorithms\" and \"indicates a repeated ARX round structure\" are inferred from mnemonic pairs with no context. \"CMP ROL\" as \"likely loop or round-count logic\" and \"All 20 ... push toward cryptojacking\" are also unsupported or imprecise. It also describes ADD ROR as \"the most frequent of all listed n-grams\", which holds only if the values are frequencies, and the artifact says feature_value_semantics is not established.",
+      "coherence": "Well organized into groups, with per-feature assessments, key indicators and actions that match the stated tier. Some repetition across summary, evidence_analysis and key_indicators. The \"high-confidence\" tier and the caveat about legitimate crypto libraries sit in mild tension.",
+      "cybersecurity_relevance": "Ties the specific n-grams to cryptojacking hypotheses and names the main benign alternative, legitimate cryptographic libraries. It acknowledges that no function or API evidence exists. It is weakened by treating crypto-like mnemonics as fairly strong evidence and by not considering other benign sources such as compression, media codecs or generic SIMD code.",
+      "actionable_utility": "Concrete, feasible follow-up: sandbox for sustained CPU use and Stratum connections, disassemble the clusters, check for wallet and pool configuration, and compare against legitimate crypto libraries. Mostly conditional and proportionate. \"Treat the sample as a probable cryptominer\" and block-by-hash are slightly ahead of the evidence, but they are tied to confirmation."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "The n-grams fall into three groups consistent with hash-based proof-of-work mining code.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; /evidence/function_context; /evidence/occurrences",
+        "reason": "Mnemonic pairs alone do not establish proof-of-work mining code. The evidence has no function context, occurrences or API data.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "These suggest vectorized state mixing and bulk data handling, as in SSE/AVX implementations of mining hash algorithms.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features (PXOR MOVAPS, PXOR PXOR, PXOR MOVUPS, VPXOR VMOVDQU)",
+        "reason": "The sample-specific attribution to mining hash implementations is unsupported. PXOR and MOVAPS pairs are generic vector operations.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "It indicates a repeated ARX round structure typical of hashing.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/top_features (ADD ROR value 0.0007041211938485503); /evidence/feature_value_semantics",
+        "reason": "A single n-gram does not establish a repeated round structure, and the semantics of the feature values are not confirmed. Repetition and algorithm structure are inferred without extraction context.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "Comparison adjacent to rotate, likely loop or round-count logic inside rotation-heavy code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+        "evidence_reference": "/evidence/top_features (CMP ROL); /evidence/function_context",
+        "reason": "Loop or round-count logic is inferred from a mnemonic pair. There is no control-flow or context evidence. The rubric also says not to infer adjacency or control flow without extraction evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Combination of vectorized and scalar crypto-style instruction patterns is consistent with mining hash kernels",
+        "candidate_path": "/candidate_analysis/key_indicators/5",
+        "evidence_reference": "/evidence/top_features; /evidence/function_context",
+        "reason": "Asserts consistency with mining hash kernels from instruction patterns alone. These patterns are not established as mining-specific.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "the combination of crypto-style rotate, vector XOR and multi-precision patterns, all pointing the same way, is strong",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; /scope_notes/1; /evidence/full_attributions",
+        "reason": "Asserts strength from a top-20 positive subset. Omitted features and the SHAP baseline are unknown, and RF confidence is not behavioral proof.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Rotate followed by store or move, completing the ARX round pattern together with MOV ROL and ROL ADD.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+        "evidence_reference": "/evidence/top_features; /evidence/occurrences",
+        "reason": "Asserts that these n-grams complete a round pattern and implies sequential adjacency across n-grams. Graph-aware n-grams need not be adjacent, and no extraction context is supplied.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP signs, ranks and rounded magnitudes match the evidence, and the top feature is PXOR MOVAPS at +0.015001. The claim that all 20 shown features push toward class 1 is correct for the listed subset. The candidate also notes that CALL RET, CALL PUSH and MOV JZ carry small contributions, though it does not say SHAP is only a model attribution. The remaining issue is interpretive overreach, not misreported SHAP numbers.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No function context, occurrences, API names or extraction details were supplied.",
+      "feature_value_semantics is unconfirmed, so the n-gram values may not be raw frequencies or counts.",
+      "SHAP baseline and full attributions are null, so omitted features cannot be assessed.",
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "The RF probability is not behavioral proof."
+    ],
+    "summary": "The explanation reports RF and SHAP numbers faithfully and is clearly organized, with useful, mostly proportionate verification steps and a stated benign caveat. It repeatedly reads mnemonic pairs as hash or mining algorithm structure and as loop or round logic without context evidence, so technical accuracy is mixed."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "The n-grams fall into three groups consistent with hash-based proof-of-work mining code.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; /evidence/function_context; /evidence/occurrences",
+      "reason": "Mnemonic pairs alone do not establish proof-of-work mining code. The evidence has no function context, occurrences or API data.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "These suggest vectorized state mixing and bulk data handling, as in SSE/AVX implementations of mining hash algorithms.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features (PXOR MOVAPS, PXOR PXOR, PXOR MOVUPS, VPXOR VMOVDQU)",
+      "reason": "The sample-specific attribution to mining hash implementations is unsupported. PXOR and MOVAPS pairs are generic vector operations.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "It indicates a repeated ARX round structure typical of hashing.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/top_features (ADD ROR value 0.0007041211938485503); /evidence/feature_value_semantics",
+      "reason": "A single n-gram does not establish a repeated round structure, and the semantics of the feature values are not confirmed. Repetition and algorithm structure are inferred without extraction context.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "Comparison adjacent to rotate, likely loop or round-count logic inside rotation-heavy code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+      "evidence_reference": "/evidence/top_features (CMP ROL); /evidence/function_context",
+      "reason": "Loop or round-count logic is inferred from a mnemonic pair. There is no control-flow or context evidence. The rubric also says not to infer adjacency or control flow without extraction evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Combination of vectorized and scalar crypto-style instruction patterns is consistent with mining hash kernels",
+      "candidate_path": "/candidate_analysis/key_indicators/5",
+      "evidence_reference": "/evidence/top_features; /evidence/function_context",
+      "reason": "Asserts consistency with mining hash kernels from instruction patterns alone. These patterns are not established as mining-specific.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "the combination of crypto-style rotate, vector XOR and multi-precision patterns, all pointing the same way, is strong",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; /scope_notes/1; /evidence/full_attributions",
+      "reason": "Asserts strength from a top-20 positive subset. Omitted features and the SHAP baseline are unknown, and RF confidence is not behavioral proof.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Rotate followed by store or move, completing the ARX round pattern together with MOV ROL and ROL ADD.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+      "evidence_reference": "/evidence/top_features; /evidence/occurrences",
+      "reason": "Asserts that these n-grams complete a round pattern and implies sequential adjacency across n-grams. Graph-aware n-grams need not be adjacent, and no extraction context is supplied.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "3afca0f0f28a8e8a57ea459ec7bbc8ec03082e8c818b521687c36e9375fef784.exe_analysis.json"
+}

@@ -1,0 +1,233 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_3e4d61246fe39c14",
+  "status": "success",
+  "source_sha256": "3e593f91b0464b3f8bbd024cc20946b09f3b48abc97d2fb1f61330b3aaca05a8",
+  "input_sha256": "5c89fc55e149ea33464096d929eed13674e481d2c1024d047eaace360c348d6d",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "cf8766321e15f41953397dcbf7fccad710d949b13bde100af94b1c1889da4b3f.elf",
+      "source_name": "cf8766321e15f41953397dcbf7fccad710d949b13bde100af94b1c1889da4b3f.elf.json",
+      "source_path": "ml/dataset/cryptojacking/cf8766321e15f41953397dcbf7fccad710d949b13bde100af94b1c1889da4b3f.elf.json",
+      "split": "test",
+      "batch_number": 6,
+      "row_index_in_batch": 92,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "cf8766321e15f41953397dcbf7fccad710d949b13bde100af94b1c1889da4b3f.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:34:31.099189+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:34:31.099222+00:00",
+      "error": null,
+      "request_sha256": "8891672dfae478024e260945dcb6fa64f264b7abd05648f4e1b4bce8f974ba6a",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm53DzfKD6x2hutuPfzR",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm double-checking the numbers—confirming the probability value, the SHAP range across all 20 features, and counting how many entries actually have a zero relative frequency to make sure that claim of fourteen holds up.\n\nCounting through the full list, I'm finding only 8 nonzero entries, meaning 12 are actually zero, not 14—so that \"fourteen of 20\" claim in the key indicators is factually wrong. I'm also flagging that interpreting a zero value as \"absence of patterns associated with benign software\" is an unsupported leap, since the semantics of these feature values as relative frequencies hasn't actually been established—treating zero as meaningful absence rather than just an unobserved pattern is a stretch. I'm also running a rough sum of the top 20 SHAP values to sanity-check the magnitude being claimed.\n\nSumming it all up gives roughly 0.18, so the candidate's \"about 0.19\" is a bit off, though minor. The claim that this probability is \"spread across many weak features\" isn't really verifiable since we don't know the omitted features or baseline, so that feels unsupported. The observations about frequency ranges (0.0238 to 0.0714) check out fine, but saying \"no counter-evidence\" overreaches a little since we're only looking at the top 20 subset—plus there's an unstated assumption that the SHAP direction corresponds to pushing toward the malware class specifically.\n\nI'm also noting the assumption about RF class 1 being \"malware\" versus possibly \"cryptojacking\"—that distinction is unclear and could matter. The interpretations of XOR for register zeroing and PUSH/POP/MOV as function prologues are reasonable but assume adjacency in the n-grams that isn't guaranteed, and the \"likely reflects overall code-style statistics\" claim is appropriately hedged as speculative.\n\nOverall the low-confidence tier (0.55) with an inconclusive verdict seems justified, and the recommended actions are sensibly conditional—escalate only with corroboration. The main gap is not flagging the SHAP target-class assumption or verifying upstream feature semantics explicitly.\n\nOn faithfulness: directions and magnitudes of SHAP values look correct, but the claim that \"14 of 20\" zero-frequency features drive an \"absence-based\" contribution misrepresents how SHAP attributions actually work—that's a mechanism claim not supported by the data. I'm leaning toward marking this unfaithful given that misrepresentation, even though the numeric signs/magnitudes are accurate. For technical accuracy, I'm settling on a low score given the repeated count error and the unsupported absence-driven narrative.\n\nI'm noting coherence is decent despite the internal inconsistency between the \"14 zero\" claim and the evidence_analysis listing \"12 zero,\" and relevance/actionability both look fine. Now I'm pulling out the exact quotes for the unsupported claims list, pointing to the explanation field and key_indicators/2, and categorizing the count issue as \"other\" while the absence-driven interpretation gets tagged as \"shap_misrepresentation.\"\n\nI'm also flagging the \"spread across many weak features\" claim as unsupported_certainty, quoting it precisely with its summed SHAP value, and deciding whether to also include the evidence_analysis/0 assessment about zero frequency, keeping the final list to three or four claims before assembling the single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_3e4d61246fe39c14\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP signs, the SHAP range and the low/non-diagnostic framing are accurate. But only 8 of 20 values are nonzero, so '14 of 20' zero-valued is wrong. The explanation also treats value 0 as 'absence' and claims SHAP is absence-driven, although the artifact says value semantics are not established.\",\"coherence\":\"The argument is organized and consistent: classifier evidence, weak specificity, a low-confidence tier and escalation conditions fit together. The '14 of 20' figure is repeated, and the per-feature list contradicts it, with only 12 listed as frequency 0. The per-feature section is also somewhat repetitive.\",\"cybersecurity_relevance\":\"It ties the n-grams to the cryptojacking question and notes that generic compiler patterns are not mining-specific. It treats XOR/CDQ/CMOV as only weak hints and says nothing can be tied to hashing without context. It does not discuss specific benign alternatives, and it never flags the assumed target class or unestablished feature semantics as investigation caveats.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: disassembly for hashing loops, strings/config for pools or wallets, sandbox CPU/network observation, and hash lookup. It is conditional, with a clear escalation criterion. It omits verifying upstream extraction and the target class, and the actions are only moderately prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Fourteen of the 20 have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (value fields)\",\"reason\":\"Only 12 of the 20 listed values are 0.0 (8 are nonzero). Also, the artifact states feature values are not established as relative frequencies or counts.\",\"category\":\"other\"},{\"quote\":\"so their SHAP contributions come from the absence of patterns the model associates with benign software, not from observed mining-like code\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics; /evidence/shap_baseline; /evidence/full_attributions\",\"reason\":\"The artifact does not establish that value 0 means the pattern is absent, or that the model associates absence with benign software. No baseline or full attributions are supplied to support this mechanism.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"14 of 20 n-grams have a frequency of 0.000000, so the contributions come largely from absent patterns\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features; /evidence/feature_value_semantics\",\"reason\":\"The count is wrong (12 zeros), and the absence-driven attribution is unsupported given the unestablished value semantics.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"The summed SHAP of the top 20 is also modest (about 0.19), so the high probability is spread across many weak features.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/shap_baseline; /evidence/full_attributions\",\"reason\":\"The top-20 sum is about 0.182, not 0.19. Without a baseline or omitted-feature attributions, the claim that probability is spread across many weak features cannot be established.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs (all positive for the configured target class) and the magnitude range match the evidence. The explanation misrepresents why the SHAP values are positive by attributing them largely to absent patterns, based on a miscounted and unestablished zero-value interpretation, and it overstates what the top-20 sum shows.\",\"discrepancies\":[{\"quote\":\"so their SHAP contributions come from the absence of patterns the model associates with benign software\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Mechanism not supported: value semantics are unestablished, and no baseline or full attributions are provided.\"},{\"quote\":\"14 of 20 n-grams have a frequency of 0.000000, so the contributions come largely from absent patterns\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"reason\":\"Only 12 of 20 listed values are zero, and the absence-driven attribution is unsupported.\"},{\"quote\":\"so the high probability is spread across many weak features\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Omitted features are unknown, and the top-20 sum is about 0.182 rather than 0.19.\"}]},\"evidence_limitations\":[\"Feature value semantics are unestablished, so zero values cannot be read as absence or as counts.\",\"SHAP target class is a configured assumption that needs upstream verification.\",\"The SHAP baseline and full attributions are null, so omitted features may support benign or malware.\",\"There are no occurrences or function context, so adjacency, control flow and routine-level interpretation are unavailable.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation is cautious, well organized and appropriately declines to assert cryptojacking, with sound follow-up steps. It miscounts zero-valued features (14 vs 12), builds an unsupported absence-driven SHAP mechanism on that count, and overreads the top-20 SHAP sum. This lowers technical accuracy and SHAP faithfulness.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7133,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4232,
+          "output_tokens_details": {
+            "thinking_tokens": 2337
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7133,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4232,
+        "output_tokens_details": {
+          "thinking_tokens": 2337
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_3e4d61246fe39c14\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP signs, the SHAP range and the low/non-diagnostic framing are accurate. But only 8 of 20 values are nonzero, so '14 of 20' zero-valued is wrong. The explanation also treats value 0 as 'absence' and claims SHAP is absence-driven, although the artifact says value semantics are not established.\",\"coherence\":\"The argument is organized and consistent: classifier evidence, weak specificity, a low-confidence tier and escalation conditions fit together. The '14 of 20' figure is repeated, and the per-feature list contradicts it, with only 12 listed as frequency 0. The per-feature section is also somewhat repetitive.\",\"cybersecurity_relevance\":\"It ties the n-grams to the cryptojacking question and notes that generic compiler patterns are not mining-specific. It treats XOR/CDQ/CMOV as only weak hints and says nothing can be tied to hashing without context. It does not discuss specific benign alternatives, and it never flags the assumed target class or unestablished feature semantics as investigation caveats.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: disassembly for hashing loops, strings/config for pools or wallets, sandbox CPU/network observation, and hash lookup. It is conditional, with a clear escalation criterion. It omits verifying upstream extraction and the target class, and the actions are only moderately prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Fourteen of the 20 have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (value fields)\",\"reason\":\"Only 12 of the 20 listed values are 0.0 (8 are nonzero). Also, the artifact states feature values are not established as relative frequencies or counts.\",\"category\":\"other\"},{\"quote\":\"so their SHAP contributions come from the absence of patterns the model associates with benign software, not from observed mining-like code\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics; /evidence/shap_baseline; /evidence/full_attributions\",\"reason\":\"The artifact does not establish that value 0 means the pattern is absent, or that the model associates absence with benign software. No baseline or full attributions are supplied to support this mechanism.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"14 of 20 n-grams have a frequency of 0.000000, so the contributions come largely from absent patterns\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features; /evidence/feature_value_semantics\",\"reason\":\"The count is wrong (12 zeros), and the absence-driven attribution is unsupported given the unestablished value semantics.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"The summed SHAP of the top 20 is also modest (about 0.19), so the high probability is spread across many weak features.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/shap_baseline; /evidence/full_attributions\",\"reason\":\"The top-20 sum is about 0.182, not 0.19. Without a baseline or omitted-feature attributions, the claim that probability is spread across many weak features cannot be established.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs (all positive for the configured target class) and the magnitude range match the evidence. The explanation misrepresents why the SHAP values are positive by attributing them largely to absent patterns, based on a miscounted and unestablished zero-value interpretation, and it overstates what the top-20 sum shows.\",\"discrepancies\":[{\"quote\":\"so their SHAP contributions come from the absence of patterns the model associates with benign software\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Mechanism not supported: value semantics are unestablished, and no baseline or full attributions are provided.\"},{\"quote\":\"14 of 20 n-grams have a frequency of 0.000000, so the contributions come largely from absent patterns\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"reason\":\"Only 12 of 20 listed values are zero, and the absence-driven attribution is unsupported.\"},{\"quote\":\"so the high probability is spread across many weak features\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Omitted features are unknown, and the top-20 sum is about 0.182 rather than 0.19.\"}]},\"evidence_limitations\":[\"Feature value semantics are unestablished, so zero values cannot be read as absence or as counts.\",\"SHAP target class is a configured assumption that needs upstream verification.\",\"The SHAP baseline and full attributions are null, so omitted features may support benign or malware.\",\"There are no occurrences or function context, so adjacency, control flow and routine-level interpretation are unavailable.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation is cautious, well organized and appropriately declines to assert cryptojacking, with sound follow-up steps. It miscounts zero-valued features (14 vs 12), builds an unsupported absence-driven SHAP mechanism on that count, and overreads the top-20 SHAP sum. This lowers technical accuracy and SHAP faithfulness.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_3e4d61246fe39c14",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability, SHAP signs, the SHAP range and the low/non-diagnostic framing are accurate. But only 8 of 20 values are nonzero, so '14 of 20' zero-valued is wrong. The explanation also treats value 0 as 'absence' and claims SHAP is absence-driven, although the artifact says value semantics are not established.",
+      "coherence": "The argument is organized and consistent: classifier evidence, weak specificity, a low-confidence tier and escalation conditions fit together. The '14 of 20' figure is repeated, and the per-feature list contradicts it, with only 12 listed as frequency 0. The per-feature section is also somewhat repetitive.",
+      "cybersecurity_relevance": "It ties the n-grams to the cryptojacking question and notes that generic compiler patterns are not mining-specific. It treats XOR/CDQ/CMOV as only weak hints and says nothing can be tied to hashing without context. It does not discuss specific benign alternatives, and it never flags the assumed target class or unestablished feature semantics as investigation caveats.",
+      "actionable_utility": "The follow-up is concrete and proportionate: disassembly for hashing loops, strings/config for pools or wallets, sandbox CPU/network observation, and hash lookup. It is conditional, with a clear escalation criterion. It omits verifying upstream extraction and the target class, and the actions are only moderately prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Fourteen of the 20 have a relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features (value fields)",
+        "reason": "Only 12 of the 20 listed values are 0.0 (8 are nonzero). Also, the artifact states feature values are not established as relative frequencies or counts.",
+        "category": "other"
+      },
+      {
+        "quote": "so their SHAP contributions come from the absence of patterns the model associates with benign software, not from observed mining-like code",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics; /evidence/shap_baseline; /evidence/full_attributions",
+        "reason": "The artifact does not establish that value 0 means the pattern is absent, or that the model associates absence with benign software. No baseline or full attributions are supplied to support this mechanism.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "14 of 20 n-grams have a frequency of 0.000000, so the contributions come largely from absent patterns",
+        "candidate_path": "/candidate_analysis/key_indicators/2",
+        "evidence_reference": "/evidence/top_features; /evidence/feature_value_semantics",
+        "reason": "The count is wrong (12 zeros), and the absence-driven attribution is unsupported given the unestablished value semantics.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "The summed SHAP of the top 20 is also modest (about 0.19), so the high probability is spread across many weak features.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; /evidence/shap_baseline; /evidence/full_attributions",
+        "reason": "The top-20 sum is about 0.182, not 0.19. Without a baseline or omitted-feature attributions, the claim that probability is spread across many weak features cannot be established.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "Signs (all positive for the configured target class) and the magnitude range match the evidence. The explanation misrepresents why the SHAP values are positive by attributing them largely to absent patterns, based on a miscounted and unestablished zero-value interpretation, and it overstates what the top-20 sum shows.",
+      "discrepancies": [
+        {
+          "quote": "so their SHAP contributions come from the absence of patterns the model associates with benign software",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "Mechanism not supported: value semantics are unestablished, and no baseline or full attributions are provided."
+        },
+        {
+          "quote": "14 of 20 n-grams have a frequency of 0.000000, so the contributions come largely from absent patterns",
+          "candidate_path": "/candidate_analysis/key_indicators/2",
+          "reason": "Only 12 of 20 listed values are zero, and the absence-driven attribution is unsupported."
+        },
+        {
+          "quote": "so the high probability is spread across many weak features",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "Omitted features are unknown, and the top-20 sum is about 0.182 rather than 0.19."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "Feature value semantics are unestablished, so zero values cannot be read as absence or as counts.",
+      "SHAP target class is a configured assumption that needs upstream verification.",
+      "The SHAP baseline and full attributions are null, so omitted features may support benign or malware.",
+      "There are no occurrences or function context, so adjacency, control flow and routine-level interpretation are unavailable.",
+      "The RF probability is not behavioral proof."
+    ],
+    "summary": "The explanation is cautious, well organized and appropriately declines to assert cryptojacking, with sound follow-up steps. It miscounts zero-valued features (14 vs 12), builds an unsupported absence-driven SHAP mechanism on that count, and overreads the top-20 SHAP sum. This lowers technical accuracy and SHAP faithfulness."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Fourteen of the 20 have a relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features (value fields)",
+      "reason": "Only 12 of the 20 listed values are 0.0 (8 are nonzero). Also, the artifact states feature values are not established as relative frequencies or counts.",
+      "category": "other"
+    },
+    {
+      "quote": "so their SHAP contributions come from the absence of patterns the model associates with benign software, not from observed mining-like code",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics; /evidence/shap_baseline; /evidence/full_attributions",
+      "reason": "The artifact does not establish that value 0 means the pattern is absent, or that the model associates absence with benign software. No baseline or full attributions are supplied to support this mechanism.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "14 of 20 n-grams have a frequency of 0.000000, so the contributions come largely from absent patterns",
+      "candidate_path": "/candidate_analysis/key_indicators/2",
+      "evidence_reference": "/evidence/top_features; /evidence/feature_value_semantics",
+      "reason": "The count is wrong (12 zeros), and the absence-driven attribution is unsupported given the unestablished value semantics.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "The summed SHAP of the top 20 is also modest (about 0.19), so the high probability is spread across many weak features.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; /evidence/shap_baseline; /evidence/full_attributions",
+      "reason": "The top-20 sum is about 0.182, not 0.19. Without a baseline or omitted-feature attributions, the claim that probability is spread across many weak features cannot be established.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "so their SHAP contributions come from the absence of patterns the model associates with benign software",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "Mechanism not supported: value semantics are unestablished, and no baseline or full attributions are provided.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "so the high probability is spread across many weak features",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "Omitted features are unknown, and the top-20 sum is about 0.182 rather than 0.19.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "cf8766321e15f41953397dcbf7fccad710d949b13bde100af94b1c1889da4b3f.elf_analysis.json"
+}

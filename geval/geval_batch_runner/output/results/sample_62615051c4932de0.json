@@ -1,0 +1,226 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_62615051c4932de0",
+  "status": "success",
+  "source_sha256": "afaeaa711fae002f593cac1c451b212fe28245060cda3b699bd9ff78f92481ef",
+  "input_sha256": "cdca3f9ca422d8db1c44501ad4281d703e213a197639515ea37600117d3e3371",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "6fc6f8b1c1f62316088292908d81764321cbcf84cad433f3485c0d27b7d5c15b.exe",
+      "source_name": "6fc6f8b1c1f62316088292908d81764321cbcf84cad433f3485c0d27b7d5c15b.exe.json",
+      "source_path": "ml/dataset/cryptojacking/6fc6f8b1c1f62316088292908d81764321cbcf84cad433f3485c0d27b7d5c15b.exe.json",
+      "split": "test",
+      "batch_number": 3,
+      "row_index_in_batch": 66,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "6fc6f8b1c1f62316088292908d81764321cbcf84cad433f3485c0d27b7d5c15b.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:50:31.759770+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:50:31.759798+00:00",
+      "error": null,
+      "request_sha256": "fca28f47a7cf4459a06ec26fdcdc3e7983d4e36a65cd16ada608c772b9600349",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm1gfacBRtckCyFYYWx6",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_62615051c4932de0\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Numbers, n-gram names and SHAP values match the evidence, and the closing caveat is appropriate. But several interpretations overreach: SHRD is called 'Double-precision shift' and 'Rare in ordinary code', 'small, concentrated compute kernel' is inferred from low frequency, and PUSH RET is read as an 'indirect-jump idiom' implying obfuscation without adjacency evidence.\",\"coherence\":\"Well organized into clusters, with per-feature assessments that agree with the summary and tier. A minor inconsistency: it says the control-flow n-grams are 'better read as model-learned signatures' yet later treats PUSH RET/POP CALL as 'suggest obfuscation' and as a 'high-confidence' call.\",\"cybersecurity_relevance\":\"It links the SIMD, rotate/shift and FPU n-grams to hashing and mining investigation and notes benign alternatives (benchmarking, packing, generic idioms). It leans heavily on mining-specific narratives for generic n-grams and does not discuss common benign crypto, compression or media code that uses the same instructions.\",\"actionable_utility\":\"The recommendations are concrete and feasible: sandbox run, CPU and Stratum checks, locating the PAND/PXOR and ROL/SHRD functions, checking algorithm constants, packing analysis and IOC extraction. They are mostly conditional checks. 'Treat as a likely cryptominer' and the quarantine advice are somewhat premature given the admitted lack of function context.\"},\"unsupported_claims\":[{\"quote\":\"They occur at very low frequency (0.000055), which suggests a small, concentrated compute kernel rather than general code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics; /evidence/occurrences (empty)\",\"reason\":\"The feature values are not established as counts or frequencies, and there is no location or occurrence data. Low values do not show a concentrated kernel.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"PUSH immediately followed by RET is an indirect-jump idiom often seen in obfuscated or packed code. It may point to control-flow obfuscation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/function_context (empty); /evidence/occurrences (empty)\",\"reason\":\"Adjacency and control flow are not supported. The graph-aware n-grams need not be adjacent, and there is no context to support obfuscation.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Double-precision shift followed by bit test. Rare in ordinary code and suggestive of multi-word or big-integer arithmetic or bit manipulation as used in crypto primitives.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/top_features/3\",\"reason\":\"SHRD is a double-word, not 'double-precision', shift. The rarity claim and the crypto/big-integer inference are not backed by the supplied evidence.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Its relatively high frequency (0.008507) suggests a sizable SIMD compute region.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact does not establish what the value means or any region size, so a 'sizable SIMD compute region' is inferred without context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Frequent byte/word zero-extension loads (freq 0.026508). Consistent with byte-oriented data processing such as hash input handling or state-table lookups.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The value semantics are not established. The hash input handling and state-table lookup interpretation is speculative, though phrased as 'consistent with'.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Treat as a likely cryptominer.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /scope_notes\",\"reason\":\"RF probability is not behavioral proof. The conclusion is stated more strongly than static mnemonic evidence supports, and it conflicts with the explanation's own caveat.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP signs, magnitudes (within rounding), rankings and n-gram names match the top_features. The claim that all top-20 values are positive toward class 1 is correct. The candidate does not claim the omitted features are all positive. Its statement that the SHAP values are 'model-learned signatures' is appropriate.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function names, API calls, occurrences or function context were provided.\",\"Feature value semantics are not established, so the candidate's 'frequency' interpretation is unverified.\",\"SHAP baseline and full attributions are missing, and the target class is a configured assumption.\",\"The top-20 subset cannot exclude omitted features that support benign.\",\"Graph-aware n-grams may not be adjacent instructions, so control-flow and idiom inferences are unverifiable.\"],\"summary\":\"Numeric and SHAP reporting is faithful and the explanation is well organized with useful follow-up. Technical accuracy is held back by several context-free inferences (concentrated kernel, obfuscation, the SHRD mislabel, crypto primitives) and a 'likely cryptominer' framing that goes beyond static n-gram evidence.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7337,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2009,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7337,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2009,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_62615051c4932de0\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Numbers, n-gram names and SHAP values match the evidence, and the closing caveat is appropriate. But several interpretations overreach: SHRD is called 'Double-precision shift' and 'Rare in ordinary code', 'small, concentrated compute kernel' is inferred from low frequency, and PUSH RET is read as an 'indirect-jump idiom' implying obfuscation without adjacency evidence.\",\"coherence\":\"Well organized into clusters, with per-feature assessments that agree with the summary and tier. A minor inconsistency: it says the control-flow n-grams are 'better read as model-learned signatures' yet later treats PUSH RET/POP CALL as 'suggest obfuscation' and as a 'high-confidence' call.\",\"cybersecurity_relevance\":\"It links the SIMD, rotate/shift and FPU n-grams to hashing and mining investigation and notes benign alternatives (benchmarking, packing, generic idioms). It leans heavily on mining-specific narratives for generic n-grams and does not discuss common benign crypto, compression or media code that uses the same instructions.\",\"actionable_utility\":\"The recommendations are concrete and feasible: sandbox run, CPU and Stratum checks, locating the PAND/PXOR and ROL/SHRD functions, checking algorithm constants, packing analysis and IOC extraction. They are mostly conditional checks. 'Treat as a likely cryptominer' and the quarantine advice are somewhat premature given the admitted lack of function context.\"},\"unsupported_claims\":[{\"quote\":\"They occur at very low frequency (0.000055), which suggests a small, concentrated compute kernel rather than general code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics; /evidence/occurrences (empty)\",\"reason\":\"The feature values are not established as counts or frequencies, and there is no location or occurrence data. Low values do not show a concentrated kernel.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"PUSH immediately followed by RET is an indirect-jump idiom often seen in obfuscated or packed code. It may point to control-flow obfuscation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/function_context (empty); /evidence/occurrences (empty)\",\"reason\":\"Adjacency and control flow are not supported. The graph-aware n-grams need not be adjacent, and there is no context to support obfuscation.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Double-precision shift followed by bit test. Rare in ordinary code and suggestive of multi-word or big-integer arithmetic or bit manipulation as used in crypto primitives.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/top_features/3\",\"reason\":\"SHRD is a double-word, not 'double-precision', shift. The rarity claim and the crypto/big-integer inference are not backed by the supplied evidence.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Its relatively high frequency (0.008507) suggests a sizable SIMD compute region.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact does not establish what the value means or any region size, so a 'sizable SIMD compute region' is inferred without context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Frequent byte/word zero-extension loads (freq 0.026508). Consistent with byte-oriented data processing such as hash input handling or state-table lookups.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The value semantics are not established. The hash input handling and state-table lookup interpretation is speculative, though phrased as 'consistent with'.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Treat as a likely cryptominer.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /scope_notes\",\"reason\":\"RF probability is not behavioral proof. The conclusion is stated more strongly than static mnemonic evidence supports, and it conflicts with the explanation's own caveat.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP signs, magnitudes (within rounding), rankings and n-gram names match the top_features. The claim that all top-20 values are positive toward class 1 is correct. The candidate does not claim the omitted features are all positive. Its statement that the SHAP values are 'model-learned signatures' is appropriate.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function names, API calls, occurrences or function context were provided.\",\"Feature value semantics are not established, so the candidate's 'frequency' interpretation is unverified.\",\"SHAP baseline and full attributions are missing, and the target class is a configured assumption.\",\"The top-20 subset cannot exclude omitted features that support benign.\",\"Graph-aware n-grams may not be adjacent instructions, so control-flow and idiom inferences are unverifiable.\"],\"summary\":\"Numeric and SHAP reporting is faithful and the explanation is well organized with useful follow-up. Technical accuracy is held back by several context-free inferences (concentrated kernel, obfuscation, the SHRD mislabel, crypto primitives) and a 'likely cryptominer' framing that goes beyond static n-gram evidence.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_62615051c4932de0",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Numbers, n-gram names and SHAP values match the evidence, and the closing caveat is appropriate. But several interpretations overreach: SHRD is called 'Double-precision shift' and 'Rare in ordinary code', 'small, concentrated compute kernel' is inferred from low frequency, and PUSH RET is read as an 'indirect-jump idiom' implying obfuscation without adjacency evidence.",
+      "coherence": "Well organized into clusters, with per-feature assessments that agree with the summary and tier. A minor inconsistency: it says the control-flow n-grams are 'better read as model-learned signatures' yet later treats PUSH RET/POP CALL as 'suggest obfuscation' and as a 'high-confidence' call.",
+      "cybersecurity_relevance": "It links the SIMD, rotate/shift and FPU n-grams to hashing and mining investigation and notes benign alternatives (benchmarking, packing, generic idioms). It leans heavily on mining-specific narratives for generic n-grams and does not discuss common benign crypto, compression or media code that uses the same instructions.",
+      "actionable_utility": "The recommendations are concrete and feasible: sandbox run, CPU and Stratum checks, locating the PAND/PXOR and ROL/SHRD functions, checking algorithm constants, packing analysis and IOC extraction. They are mostly conditional checks. 'Treat as a likely cryptominer' and the quarantine advice are somewhat premature given the admitted lack of function context."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "They occur at very low frequency (0.000055), which suggests a small, concentrated compute kernel rather than general code.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics; /evidence/occurrences (empty)",
+        "reason": "The feature values are not established as counts or frequencies, and there is no location or occurrence data. Low values do not show a concentrated kernel.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "PUSH immediately followed by RET is an indirect-jump idiom often seen in obfuscated or packed code. It may point to control-flow obfuscation.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+        "evidence_reference": "/evidence/function_context (empty); /evidence/occurrences (empty)",
+        "reason": "Adjacency and control flow are not supported. The graph-aware n-grams need not be adjacent, and there is no context to support obfuscation.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Double-precision shift followed by bit test. Rare in ordinary code and suggestive of multi-word or big-integer arithmetic or bit manipulation as used in crypto primitives.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+        "evidence_reference": "/evidence/top_features/3",
+        "reason": "SHRD is a double-word, not 'double-precision', shift. The rarity claim and the crypto/big-integer inference are not backed by the supplied evidence.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "Its relatively high frequency (0.008507) suggests a sizable SIMD compute region.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact does not establish what the value means or any region size, so a 'sizable SIMD compute region' is inferred without context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Frequent byte/word zero-extension loads (freq 0.026508). Consistent with byte-oriented data processing such as hash input handling or state-table lookups.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The value semantics are not established. The hash input handling and state-table lookup interpretation is speculative, though phrased as 'consistent with'.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Treat as a likely cryptominer.",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "/evidence/rf_probability_class_1; /scope_notes",
+        "reason": "RF probability is not behavioral proof. The conclusion is stated more strongly than static mnemonic evidence supports, and it conflicts with the explanation's own caveat.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP signs, magnitudes (within rounding), rankings and n-gram names match the top_features. The claim that all top-20 values are positive toward class 1 is correct. The candidate does not claim the omitted features are all positive. Its statement that the SHAP values are 'model-learned signatures' is appropriate.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No function names, API calls, occurrences or function context were provided.",
+      "Feature value semantics are not established, so the candidate's 'frequency' interpretation is unverified.",
+      "SHAP baseline and full attributions are missing, and the target class is a configured assumption.",
+      "The top-20 subset cannot exclude omitted features that support benign.",
+      "Graph-aware n-grams may not be adjacent instructions, so control-flow and idiom inferences are unverifiable."
+    ],
+    "summary": "Numeric and SHAP reporting is faithful and the explanation is well organized with useful follow-up. Technical accuracy is held back by several context-free inferences (concentrated kernel, obfuscation, the SHRD mislabel, crypto primitives) and a 'likely cryptominer' framing that goes beyond static n-gram evidence."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "They occur at very low frequency (0.000055), which suggests a small, concentrated compute kernel rather than general code.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics; /evidence/occurrences (empty)",
+      "reason": "The feature values are not established as counts or frequencies, and there is no location or occurrence data. Low values do not show a concentrated kernel.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "PUSH immediately followed by RET is an indirect-jump idiom often seen in obfuscated or packed code. It may point to control-flow obfuscation.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+      "evidence_reference": "/evidence/function_context (empty); /evidence/occurrences (empty)",
+      "reason": "Adjacency and control flow are not supported. The graph-aware n-grams need not be adjacent, and there is no context to support obfuscation.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Double-precision shift followed by bit test. Rare in ordinary code and suggestive of multi-word or big-integer arithmetic or bit manipulation as used in crypto primitives.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "evidence_reference": "/evidence/top_features/3",
+      "reason": "SHRD is a double-word, not 'double-precision', shift. The rarity claim and the crypto/big-integer inference are not backed by the supplied evidence.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "Its relatively high frequency (0.008507) suggests a sizable SIMD compute region.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact does not establish what the value means or any region size, so a 'sizable SIMD compute region' is inferred without context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Frequent byte/word zero-extension loads (freq 0.026508). Consistent with byte-oriented data processing such as hash input handling or state-table lookups.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The value semantics are not established. The hash input handling and state-table lookup interpretation is speculative, though phrased as 'consistent with'.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Treat as a likely cryptominer.",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "/evidence/rf_probability_class_1; /scope_notes",
+      "reason": "RF probability is not behavioral proof. The conclusion is stated more strongly than static mnemonic evidence supports, and it conflicts with the explanation's own caveat.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "6fc6f8b1c1f62316088292908d81764321cbcf84cad433f3485c0d27b7d5c15b.exe_analysis.json"
+}

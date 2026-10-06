@@ -1,0 +1,189 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_831d33718835c01a",
+  "status": "success",
+  "source_sha256": "63192fa45ae668c0f20dcb7b16c0a396f0ece33afdcb3b4cbfc574edf2697fe4",
+  "input_sha256": "e33c1906ecf29b16b584d9957831daeb73699082afbed3562f2322cbcc5b7904",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "5122b2cc1fc99c60330b863c94e09e82553eff28cbfba8496f30bea88465b77d.exe",
+      "source_name": "5122b2cc1fc99c60330b863c94e09e82553eff28cbfba8496f30bea88465b77d.exe.json",
+      "source_path": "ml/dataset/cryptojacking/5122b2cc1fc99c60330b863c94e09e82553eff28cbfba8496f30bea88465b77d.exe.json",
+      "split": "test",
+      "batch_number": 4,
+      "row_index_in_batch": 18,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "5122b2cc1fc99c60330b863c94e09e82553eff28cbfba8496f30bea88465b77d.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:37:32.999797+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:37:32.999826+00:00",
+      "error": null,
+      "request_sha256": "4e808f6decd806f986f5a14cfd8762f4b8e8411f0491ae486cae527f8c414046",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkzhG6Q1QCnQM2sAE2XE",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF prediction and SHAP values look correct, but the candidate's claim that the zero value represents a \"relative frequency\" isn't actually supported by the evidence, which explicitly says feature value semantics aren't established and shouldn't be treated as raw counts.\n\nLooking at the \"spread fairly evenly\" claim, the top SHAP value of 0.01685 is actually more than 2.6x the lowest, so calling it diffuse is a mild overreach, and there's no visibility into omitted features beyond the top 20. The candidate also doesn't flag the assumption that target class 1 corresponds to cryptojacking, nor note the missing baseline for comparison, though its other hedging around interpretation is reasonably appropriate.\n\nI'm also catching an unsupported adjacency assumption — the candidate treats n-grams like \"XOR CALL\" or \"ADD POP\" as directly sequential instructions, but graph-aware n-grams don't require adjacency, so phrases like \"followed by\" aren't strictly justified by the evidence. Aside from these issues, the SHAP numbers and directional claims otherwise appear faithful to the underlying data.\n\nI'm leaning toward keeping faithfulness marked true with discrepancies left empty, maybe just a mild caveat noted, since the zero-frequency values are accurately described even if the adjacency framing isn't. For technical accuracy, I'm weighing whether the repeated frequency misinterpretation and adjacency assumption should pull the score down from a 4, since the core numbers are right but the narrative built around them stretches the evidence.\n\nFor coherence I'm settling on 4 given some redundancy across sections but a consistent low-confidence tier. For relevance I keep going back and forth between 4 and 5, since the analysis considers benign alternatives and evidential limits well but doesn't flag the missing target-class assumption — I'll land on 5 since that gap is more of an accuracy issue than a relevance one. For actionability, I'm thinking 4 or 5 since the recommendations are concrete and proportionate, even though they skip things like unpacking or hash lookups.\n\nNow I'm identifying the unsupported claims with their JSON pointers: the exact quote about every n-gram having zero relative frequency from the explanation field, the \"conditional move followed by a move\" assessment that I'm categorizing as unsupported behavior, and the claim about SHAP contributions being spread evenly across no single feature above 0.017 — I'm debating between labeling this as misrepresentation versus unsupported certainty since it's based only on the top-k values while omitting the unknown remainder, and I'll go with unsupported certainty to stay consistent with calling the overall analysis faithful.\n\nThere's also a fourth possible indicator at key_indicators/3 about all n-gram frequencies being 0.000000, but I'll skip it since three claims is sufficient, and now I'm assembling the final output as a single line of JSON.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_831d33718835c01a\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.9999), the 20 positive SHAP values and their range (+0.0063 to +0.01685) match the evidence. Mnemonic claims are mostly hedged. Minor issues: the 0.0 values are called 'relative frequency' although the evidence says their semantics are not established, and the n-grams are read as adjacent ('followed by') without extraction evidence.\",\"coherence\":\"The explanation, per-n-gram assessments, low-confidence tier (0.45) and recommended action are consistent: suspicious but inconclusive. There is some repetition across the explanation, evidence_analysis and key_indicators.\",\"cybersecurity_relevance\":\"It ties the sample's actual n-grams and SHAP values to the cryptojacking question. It weighs benign compiler-generated alternatives and states the evidence limits: no function context, no strings or API references, zero values.\",\"actionable_utility\":\"The actions are concrete and proportionate: isolated handling, disassembly to locate the XOR/SHL and CMOV sequences, CPU and network profiling, string and config extraction, and checking for a zero-value extraction artifact. They are conditional and linked to the evidence gaps. They are not explicitly prioritized, and the final escalation criterion is only briefly stated.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The evidence says feature value semantics are not established and the values should not be treated as raw counts without upstream confirmation. Labeling them 'relative frequency' asserts a semantic the artifact does not support.\",\"category\":\"other\"},{\"quote\":\"A conditional move followed by a move indicates branchless selection logic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0; /evidence/occurrences; /evidence/function_context\",\"reason\":\"Adjacency and ordering are assumed, but there is no extraction or context evidence, and graph-aware n-grams need not be adjacent instructions. The same adjacency reading recurs in other assessments, e.g. 'Post-call arithmetic'.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The SHAP contributions are spread fairly evenly (no single feature above 0.017), which suggests a diffuse statistical signature rather than one decisive indicator.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions; /evidence/shap_baseline\",\"reason\":\"Only the top-20 subset is available. Full attributions and baseline are null, so the overall attribution distribution cannot be characterized as diffuse.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs, magnitudes and feature names match the supplied top_features within rounding. All are positive for target class 1, and the stated range +0.006300 to +0.016850 is correct. The only issue is the 'diffuse' generalization from a top-k subset, noted under unsupported claims; the configured target-class assumption is not mentioned.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Target class 1 is a configured assumption that needs upstream verification.\",\"Full attributions and SHAP baseline are null, and the top-k subset cannot exclude omitted features supporting the benign class.\",\"Feature values are all 0.0 with undefined semantics; occurrences and function context are empty.\",\"No strings, API calls, constants or control-flow context are available, and adjacency of n-grams is not established.\",\"The RF probability is a model score, not behavioral proof.\"],\"summary\":\"The explanation is well hedged, accurately reports the RF score and SHAP values, and correctly refuses to infer mining from generic n-grams, with sensible verification steps. Minor flaws: it calls the zero values 'relative frequency', it assumes n-gram adjacency, and it describes the SHAP distribution as diffuse from top-k data only.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6879,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3451,
+          "output_tokens_details": {
+            "thinking_tokens": 2000
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6879,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3451,
+        "output_tokens_details": {
+          "thinking_tokens": 2000
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_831d33718835c01a\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.9999), the 20 positive SHAP values and their range (+0.0063 to +0.01685) match the evidence. Mnemonic claims are mostly hedged. Minor issues: the 0.0 values are called 'relative frequency' although the evidence says their semantics are not established, and the n-grams are read as adjacent ('followed by') without extraction evidence.\",\"coherence\":\"The explanation, per-n-gram assessments, low-confidence tier (0.45) and recommended action are consistent: suspicious but inconclusive. There is some repetition across the explanation, evidence_analysis and key_indicators.\",\"cybersecurity_relevance\":\"It ties the sample's actual n-grams and SHAP values to the cryptojacking question. It weighs benign compiler-generated alternatives and states the evidence limits: no function context, no strings or API references, zero values.\",\"actionable_utility\":\"The actions are concrete and proportionate: isolated handling, disassembly to locate the XOR/SHL and CMOV sequences, CPU and network profiling, string and config extraction, and checking for a zero-value extraction artifact. They are conditional and linked to the evidence gaps. They are not explicitly prioritized, and the final escalation criterion is only briefly stated.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The evidence says feature value semantics are not established and the values should not be treated as raw counts without upstream confirmation. Labeling them 'relative frequency' asserts a semantic the artifact does not support.\",\"category\":\"other\"},{\"quote\":\"A conditional move followed by a move indicates branchless selection logic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0; /evidence/occurrences; /evidence/function_context\",\"reason\":\"Adjacency and ordering are assumed, but there is no extraction or context evidence, and graph-aware n-grams need not be adjacent instructions. The same adjacency reading recurs in other assessments, e.g. 'Post-call arithmetic'.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The SHAP contributions are spread fairly evenly (no single feature above 0.017), which suggests a diffuse statistical signature rather than one decisive indicator.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions; /evidence/shap_baseline\",\"reason\":\"Only the top-20 subset is available. Full attributions and baseline are null, so the overall attribution distribution cannot be characterized as diffuse.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs, magnitudes and feature names match the supplied top_features within rounding. All are positive for target class 1, and the stated range +0.006300 to +0.016850 is correct. The only issue is the 'diffuse' generalization from a top-k subset, noted under unsupported claims; the configured target-class assumption is not mentioned.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Target class 1 is a configured assumption that needs upstream verification.\",\"Full attributions and SHAP baseline are null, and the top-k subset cannot exclude omitted features supporting the benign class.\",\"Feature values are all 0.0 with undefined semantics; occurrences and function context are empty.\",\"No strings, API calls, constants or control-flow context are available, and adjacency of n-grams is not established.\",\"The RF probability is a model score, not behavioral proof.\"],\"summary\":\"The explanation is well hedged, accurately reports the RF score and SHAP values, and correctly refuses to infer mining from generic n-grams, with sensible verification steps. Minor flaws: it calls the zero values 'relative frequency', it assumes n-gram adjacency, and it describes the SHAP distribution as diffuse from top-k data only.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_831d33718835c01a",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability (0.9999), the 20 positive SHAP values and their range (+0.0063 to +0.01685) match the evidence. Mnemonic claims are mostly hedged. Minor issues: the 0.0 values are called 'relative frequency' although the evidence says their semantics are not established, and the n-grams are read as adjacent ('followed by') without extraction evidence.",
+      "coherence": "The explanation, per-n-gram assessments, low-confidence tier (0.45) and recommended action are consistent: suspicious but inconclusive. There is some repetition across the explanation, evidence_analysis and key_indicators.",
+      "cybersecurity_relevance": "It ties the sample's actual n-grams and SHAP values to the cryptojacking question. It weighs benign compiler-generated alternatives and states the evidence limits: no function context, no strings or API references, zero values.",
+      "actionable_utility": "The actions are concrete and proportionate: isolated handling, disassembly to locate the XOR/SHL and CMOV sequences, CPU and network profiling, string and config extraction, and checking for a zero-value extraction artifact. They are conditional and linked to the evidence gaps. They are not explicitly prioritized, and the final escalation criterion is only briefly stated."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Every n-gram has a relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The evidence says feature value semantics are not established and the values should not be treated as raw counts without upstream confirmation. Labeling them 'relative frequency' asserts a semantic the artifact does not support.",
+        "category": "other"
+      },
+      {
+        "quote": "A conditional move followed by a move indicates branchless selection logic.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/top_features/0; /evidence/occurrences; /evidence/function_context",
+        "reason": "Adjacency and ordering are assumed, but there is no extraction or context evidence, and graph-aware n-grams need not be adjacent instructions. The same adjacency reading recurs in other assessments, e.g. 'Post-call arithmetic'.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "The SHAP contributions are spread fairly evenly (no single feature above 0.017), which suggests a diffuse statistical signature rather than one decisive indicator.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/full_attributions; /evidence/shap_baseline",
+        "reason": "Only the top-20 subset is available. Full attributions and baseline are null, so the overall attribution distribution cannot be characterized as diffuse.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP signs, magnitudes and feature names match the supplied top_features within rounding. All are positive for target class 1, and the stated range +0.006300 to +0.016850 is correct. The only issue is the 'diffuse' generalization from a top-k subset, noted under unsupported claims; the configured target-class assumption is not mentioned.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Target class 1 is a configured assumption that needs upstream verification.",
+      "Full attributions and SHAP baseline are null, and the top-k subset cannot exclude omitted features supporting the benign class.",
+      "Feature values are all 0.0 with undefined semantics; occurrences and function context are empty.",
+      "No strings, API calls, constants or control-flow context are available, and adjacency of n-grams is not established.",
+      "The RF probability is a model score, not behavioral proof."
+    ],
+    "summary": "The explanation is well hedged, accurately reports the RF score and SHAP values, and correctly refuses to infer mining from generic n-grams, with sensible verification steps. Minor flaws: it calls the zero values 'relative frequency', it assumes n-gram adjacency, and it describes the SHAP distribution as diffuse from top-k data only."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Every n-gram has a relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The evidence says feature value semantics are not established and the values should not be treated as raw counts without upstream confirmation. Labeling them 'relative frequency' asserts a semantic the artifact does not support.",
+      "category": "other"
+    },
+    {
+      "quote": "A conditional move followed by a move indicates branchless selection logic.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/top_features/0; /evidence/occurrences; /evidence/function_context",
+      "reason": "Adjacency and ordering are assumed, but there is no extraction or context evidence, and graph-aware n-grams need not be adjacent instructions. The same adjacency reading recurs in other assessments, e.g. 'Post-call arithmetic'.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The SHAP contributions are spread fairly evenly (no single feature above 0.017), which suggests a diffuse statistical signature rather than one decisive indicator.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/full_attributions; /evidence/shap_baseline",
+      "reason": "Only the top-20 subset is available. Full attributions and baseline are null, so the overall attribution distribution cannot be characterized as diffuse.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "5122b2cc1fc99c60330b863c94e09e82553eff28cbfba8496f30bea88465b77d.exe_analysis.json"
+}

@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_36b99299b89908bd",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.595,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "MOV FLD",
+        "value": 0.0008616975392214954,
+        "shap_value": 0.014219448042571695
+      },
+      {
+        "ngram": "PXOR MOVUPS",
+        "value": 0.00017233951075468212,
+        "shap_value": 0.012618484202039487
+      },
+      {
+        "ngram": "CVTSI2SD PXOR",
+        "value": 8.616975537734106e-05,
+        "shap_value": 0.010381182060359224
+      },
+      {
+        "ngram": "LEA JC",
+        "value": 8.616975537734106e-05,
+        "shap_value": 0.00999573479084026
+      },
+      {
+        "ngram": "MOV MOVZX",
+        "value": 0.022490305826067924,
+        "shap_value": 0.008735265501563413
+      },
+      {
+        "ngram": "MULSD SUBSD",
+        "value": 0.0005170185468159616,
+        "shap_value": 0.007908241471439785
+      },
+      {
+        "ngram": "LEA STOSQ.REP",
+        "value": 0.00017233951075468212,
+        "shap_value": 0.0077085140560530785
+      },
+      {
+        "ngram": "FSTP MOV",
+        "value": 8.616975537734106e-05,
+        "shap_value": 0.007408871717400465
+      },
+      {
+        "ngram": "CDQE BSR",
+        "value": 8.616975537734106e-05,
+        "shap_value": 0.007403012350037661
+      },
+      {
+        "ngram": "NEG OR",
+        "value": 0.00017233951075468212,
+        "shap_value": 0.007094833097799788
+      },
+      {
+        "ngram": "ADD MOVZX",
+        "value": 0.002929771551862359,
+        "shap_value": 0.007033301203922748
+      },
+      {
+        "ngram": "CVTSI2SD MULSD",
+        "value": 0.0004308487696107477,
+        "shap_value": 0.0070332647161428915
+      },
+      {
+        "ngram": "AND SUB",
+        "value": 0.00120637658983469,
+        "shap_value": 0.006715564212741602
+      },
+      {
+        "ngram": "MOVD PUNPCKLDQ",
+        "value": 0.0002585092734079808,
+        "shap_value": 0.006424273056808552
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "value": 0.00017233951075468212,
+        "shap_value": 0.006376599259356221
+      },
+      {
+        "ngram": "MOVSXD MOVSD",
+        "value": 0.00017233951075468212,
+        "shap_value": 0.005421243311810834
+      },
+      {
+        "ngram": "FLD FLD",
+        "value": 0.0015510555822402239,
+        "shap_value": 0.005364321006180661
+      },
+      {
+        "ngram": "MOVQ PXOR",
+        "value": 8.616975537734106e-05,
+        "shap_value": 0.0052167456377541655
+      },
+      {
+        "ngram": "LEA POP",
+        "value": 0.0002585092734079808,
+        "shap_value": 0.0050912384731408395
+      },
+      {
+        "ngram": "NOP TEST",
+        "value": 0.0,
+        "shap_value": 0.005069806142621518
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest gave a probability of 0.5950 for malware, only slightly above the decision boundary. All 20 top n-grams push toward cryptojacking, but each SHAP contribution is small (+0.005 to +0.014), so no single feature is decisive. The evidence also lacks function-level information, API references, and strings, so no behavior can be tied to mining. Most of the n-grams are floating-point or SIMD patterns: x87 sequences (MOV FLD, FSTP MOV, FLD FLD), SSE scalar-double conversions and arithmetic (CVTSI2SD PXOR, CVTSI2SD MULSD, MULSD SUBSD, MOVSXD MOVSD), and vector zeroing or packing (PXOR MOVUPS, PXOR PXOR, MOVD PUNPCKLDQ, MOVQ PXOR). These could reflect numerically intensive code, which is loosely consistent with a mining or hashing workload. They are equally typical of compiler-generated math, graphics, runtime library, or game code in benign software. Other n-grams (LEA STOSQ.REP, CDQE BSR, NEG OR, AND SUB, MOV MOVZX, ADD MOVZX, LEA JC, LEA POP) point to buffer initialization, bit scanning, and integer or byte manipulation. These are generic compiler idioms and are not specific to cryptojacking. NOP TEST has a frequency of 0.000000 yet contributes +0.005070, which suggests a model artifact or threshold effect rather than meaningful presence. Frequencies are very low for nearly all features, except MOV MOVZX at 0.0225, so the signals are weak. The evidence is suggestive but inconclusive, so the low-confidence tier fits.",
+    "evidence_analysis": [
+      {
+        "ngram": "MOV FLD",
+        "shap_contribution": 0.014219,
+        "assessment": "Loads a value into the x87 FPU. It is the strongest contributor, but it is common in legacy or compiler-generated floating-point code and is not mining-specific."
+      },
+      {
+        "ngram": "PXOR MOVUPS",
+        "shap_contribution": 0.012618,
+        "assessment": "Register zeroing followed by an unaligned vector store. This is typical of buffer or structure initialization, and could appear in hashing code but is also generic."
+      },
+      {
+        "ngram": "CVTSI2SD PXOR",
+        "shap_contribution": 0.010381,
+        "assessment": "Integer-to-double conversion preceded or followed by register clearing. This is a standard compiler pattern for floating-point math and is weak evidence."
+      },
+      {
+        "ngram": "LEA JC",
+        "shap_contribution": 0.009996,
+        "assessment": "Address computation followed by a carry-conditioned branch. This is a generic control-flow idiom, and the evidence gives no context for it."
+      },
+      {
+        "ngram": "MOV MOVZX",
+        "shap_contribution": 0.008735,
+        "assessment": "Frequent byte or word load and zero-extension pattern (frequency 0.0225). It indicates byte-level data handling, which is ubiquitous in benign code."
+      },
+      {
+        "ngram": "MULSD SUBSD",
+        "shap_contribution": 0.007908,
+        "assessment": "Scalar double multiply and subtract. It indicates floating-point computation and is not specific to cryptojacking."
+      },
+      {
+        "ngram": "LEA STOSQ.REP",
+        "shap_contribution": 0.007709,
+        "assessment": "Memory block fill or initialization via REP STOSQ. It is common in compiler-generated zeroing and could precede large buffer setup."
+      },
+      {
+        "ngram": "FSTP MOV",
+        "shap_contribution": 0.007409,
+        "assessment": "Stores the x87 result and moves data. This is another legacy FPU idiom and is not suggestive of mining on its own."
+      },
+      {
+        "ngram": "CDQE BSR",
+        "shap_contribution": 0.007403,
+        "assessment": "Sign extension followed by bit scan reverse. It is used in bit-length or normalization logic, which appears in big-number arithmetic but also in general code."
+      },
+      {
+        "ngram": "NEG OR",
+        "shap_contribution": 0.007095,
+        "assessment": "Integer negate and OR, a bit-manipulation idiom. It is weak and non-specific."
+      },
+      {
+        "ngram": "ADD MOVZX",
+        "shap_contribution": 0.007033,
+        "assessment": "Arithmetic followed by zero-extending load, which indicates byte-level processing and is generic."
+      },
+      {
+        "ngram": "CVTSI2SD MULSD",
+        "shap_contribution": 0.007033,
+        "assessment": "Integer-to-double conversion feeding a multiply. This is typical numeric code, not clearly mining."
+      },
+      {
+        "ngram": "AND SUB",
+        "shap_contribution": 0.006716,
+        "assessment": "Masking and subtraction, common in alignment, index, and bit arithmetic. It is non-specific."
+      },
+      {
+        "ngram": "MOVD PUNPCKLDQ",
+        "shap_contribution": 0.006424,
+        "assessment": "SIMD data packing and unpacking. It could relate to vectorized data processing, but it is also common in multimedia and library code."
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "shap_contribution": 0.006377,
+        "assessment": "Consecutive SIMD register zeroing. It is a typical compiler or optimized-library idiom with limited discriminative value."
+      },
+      {
+        "ngram": "MOVSXD MOVSD",
+        "shap_contribution": 0.005421,
+        "assessment": "Sign-extended integer index followed by scalar double load. This is standard array-of-double access."
+      },
+      {
+        "ngram": "FLD FLD",
+        "shap_contribution": 0.005364,
+        "assessment": "Consecutive x87 loads, which indicate legacy floating-point computation, not mining specifically."
+      },
+      {
+        "ngram": "MOVQ PXOR",
+        "shap_contribution": 0.005217,
+        "assessment": "A 64-bit SIMD move with register clearing. It is generic SSE usage."
+      },
+      {
+        "ngram": "LEA POP",
+        "shap_contribution": 0.005091,
+        "assessment": "Address computation near a stack restore, usually function epilogue code. It is non-specific."
+      },
+      {
+        "ngram": "NOP TEST",
+        "shap_contribution": 0.00507,
+        "assessment": "Frequency is 0.000000 yet SHAP is positive, which suggests a model artifact or threshold effect. It is not interpretable as behavioral evidence."
+      }
+    ],
+    "confidence_score": 0.4,
+    "key_indicators": [
+      "Random Forest probability of 0.5950 is only marginally above the decision threshold",
+      "All 20 top n-grams push toward malware, but each with a small SHAP contribution (max +0.0142)",
+      "Heavy presence of x87 and SSE floating-point and SIMD n-grams, loosely consistent with numeric workloads but not specific to mining",
+      "Generic integer, bit-manipulation, and buffer-initialization idioms with no mining-specific signature",
+      "No function-level context, API usage, or strings provided to corroborate cryptojacking",
+      "NOP TEST has zero frequency yet positive SHAP, indicating a possible model artifact"
+    ],
+    "recommended_action": "Treat as suspicious but unconfirmed. Perform further analysis: examine the import table and strings for mining-pool or stratum indicators, run in a sandbox to observe CPU usage and network connections, and inspect the floating-point and SIMD routines for hashing or mining kernels. Do not escalate to confirmed cryptojacking without corroborating behavioral or static evidence."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

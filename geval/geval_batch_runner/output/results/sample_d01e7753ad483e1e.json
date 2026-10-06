@@ -1,0 +1,263 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_d01e7753ad483e1e",
+  "status": "success",
+  "source_sha256": "9658bd198590fef039fcb306c7a431a73c29d285980053a45ab9c86cbf14c416",
+  "input_sha256": "c5be87a5e0ef608fb4d7b41062d7477410fc2d81a307d50edf165058938bd68c",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "151df3364d6d3ff361ed45ea944386ad8b45fc8327929447de5f7a86bc19547b.elf",
+      "source_name": "151df3364d6d3ff361ed45ea944386ad8b45fc8327929447de5f7a86bc19547b.elf.json",
+      "source_path": "ml/dataset/cryptojacking/151df3364d6d3ff361ed45ea944386ad8b45fc8327929447de5f7a86bc19547b.elf.json",
+      "split": "test",
+      "batch_number": 4,
+      "row_index_in_batch": 95,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "151df3364d6d3ff361ed45ea944386ad8b45fc8327929447de5f7a86bc19547b.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:08:48.437444+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:08:48.437471+00:00",
+      "error": null,
+      "request_sha256": "07d0510448e28a8b91b0575c5f6b18409ec9257fbf91a26a62a09e759c997d78",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkxW8noby99sbVNnKS4g",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_d01e7753ad483e1e\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, ranks, SHAP signs and frequencies match the evidence, and the caveats are good. But it presents unsupported semantics (\\\"likely a function epilogue\\\", \\\"tight loops over memory buffers with conditional flow\\\") and treats near-zero features as having \\\"measurable frequency\\\" and \\\"recurring\\\" patterns. It also says \\\"feature values are frequencies\\\" though the semantics are explicitly unestablished.\",\"coherence\":\"Well organized: observations, clusters, caveats, indicators and actions line up, and the tier is consistent with the hedging. Minor inconsistencies: \\\"high-confidence\\\" and \\\"Treat as likely cryptojacking\\\" sit beside \\\"the verdict rests on the aggregate pattern\\\", and cluster 2 is described as having measurable frequency while some values are tiny.\",\"cybersecurity_relevance\":\"Ties n-grams to hash/PoW arithmetic, flags the mixed x86/ARM mnemonics, and notes that benign code can produce the same patterns. It does not weigh specific benign alternatives such as compression or crypto libraries, and several n-gram interpretations are generic.\",\"actionable_utility\":\"Concrete, feasible, ordered steps: disassemble, locate the XOR/shift/multiply code, check the architecture mix, run a sandbox for CPU/pool/persistence, extract strings. Isolating and blocking the hash is proportionate. The actions are conditional and not presented as observed. No priorities are given and the pool/persistence checks are generic.\"},\"unsupported_claims\":[{\"quote\":\"A second cluster of ARM load/store, flag and branch patterns appears with measurable frequency\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics; /evidence/top_features\",\"reason\":\"The feature values are explicitly not established as raw counts or frequencies, and most are near zero (e.g. 0.000091). Calling them measurable frequencies is an interpretive overreach.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"These suggest tight loops over memory buffers with conditional flow.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences; /evidence/function_context\",\"reason\":\"No occurrences, adjacency, or function or control-flow context are supplied, so loop structure cannot be inferred from the n-gram names.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Frequent ARM byte and halfword load/store with arithmetic (sub strb, cmn mov, sub ldrh, and ldrh), indicating tight buffer-processing loops\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"evidence_reference\":\"/evidence/top_features; /evidence/occurrences\",\"reason\":\"The values are not established as frequencies (most ≤0.0004), and loops cannot be inferred from mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"An x86-style add followed by a stack restore, likely a function epilogue.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"No function context is available to support an epilogue inference. Also, the \\\"ADD POP\\\" mnemonics could belong to ARM; labelling it x86 is an assumption.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A compare followed by a jump-if-less, the classic bounded-loop pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"A loop is inferred without control-flow evidence; the claim is hedged but still sample-specific.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Its relatively high frequency (0.002175) indicates repeated flag-setting and conditional logic, such as overflow or carry checks in arithmetic-heavy code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Assigns specific behavior to a value whose semantics are unestablished, with no context to indicate overflow/carry checks.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs, ranks and individual magnitudes are reported accurately, and the explanation notes that SHAP values are modest. However, it sums the top-20 SHAP values as a total (\\\"roughly +0.12\\\") without a baseline or the omitted features, and it states that \\\"No feature argues against that label\\\", which overreaches because the top-k subset cannot exclude omitted opposing features. It also describes the large SHAP values of zero-valued features as showing \\\"the model is weighing them heavily\\\", though their magnitudes are small and equal to other features.\",\"discrepancies\":[{\"quote\":\"No feature argues against that label.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only the top-20 positive features are supplied, so omitted features may have negative SHAP values; the statement cannot be established.\"},{\"quote\":\"Their large SHAP values show that the model is weighing them heavily.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The SHAP values for these features (about 0.0045–0.0101) are in the same modest range as the rest, which the explanation itself calls \\\"modest\\\"; \\\"large\\\" and \\\"heavily\\\" overstate their magnitude.\"},{\"quote\":\"all 20 top SHAP features push toward cryptojacking (+0.0044 to +0.0102 each, roughly +0.12 in total)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The +0.12 total is a top-k sum with no baseline or omitted features, so it is not a verdict-level quantity; the direction assumes target class 1, which is only a configured assumption.\"}]},\"evidence_limitations\":[\"Only n-gram names, values and SHAP values are supplied; no occurrences, function context, strings or call targets.\",\"feature_value_semantics are not established, so values should not be treated as frequencies or counts.\",\"The SHAP target class is a configured assumption, and there is no baseline or full attribution, so omitted features cannot be assessed.\",\"RF probability of 1.0 is not behavioral proof or a calibrated confidence.\",\"The mixed x86/ARM-style mnemonics are unexplained by the artifact.\"],\"summary\":\"Mostly accurate reporting of probability, ranks and SHAP values, with well-organized caveats and sensible, conditional verification steps. Weaknesses are unsupported behavioral inferences (loops, epilogue, frequency semantics) and SHAP overreach: top-k aggregate sums, the claim that no feature opposes the label, and \\\"large\\\" magnitudes.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7518,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2388,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7518,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2388,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_d01e7753ad483e1e\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, ranks, SHAP signs and frequencies match the evidence, and the caveats are good. But it presents unsupported semantics (\\\"likely a function epilogue\\\", \\\"tight loops over memory buffers with conditional flow\\\") and treats near-zero features as having \\\"measurable frequency\\\" and \\\"recurring\\\" patterns. It also says \\\"feature values are frequencies\\\" though the semantics are explicitly unestablished.\",\"coherence\":\"Well organized: observations, clusters, caveats, indicators and actions line up, and the tier is consistent with the hedging. Minor inconsistencies: \\\"high-confidence\\\" and \\\"Treat as likely cryptojacking\\\" sit beside \\\"the verdict rests on the aggregate pattern\\\", and cluster 2 is described as having measurable frequency while some values are tiny.\",\"cybersecurity_relevance\":\"Ties n-grams to hash/PoW arithmetic, flags the mixed x86/ARM mnemonics, and notes that benign code can produce the same patterns. It does not weigh specific benign alternatives such as compression or crypto libraries, and several n-gram interpretations are generic.\",\"actionable_utility\":\"Concrete, feasible, ordered steps: disassemble, locate the XOR/shift/multiply code, check the architecture mix, run a sandbox for CPU/pool/persistence, extract strings. Isolating and blocking the hash is proportionate. The actions are conditional and not presented as observed. No priorities are given and the pool/persistence checks are generic.\"},\"unsupported_claims\":[{\"quote\":\"A second cluster of ARM load/store, flag and branch patterns appears with measurable frequency\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics; /evidence/top_features\",\"reason\":\"The feature values are explicitly not established as raw counts or frequencies, and most are near zero (e.g. 0.000091). Calling them measurable frequencies is an interpretive overreach.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"These suggest tight loops over memory buffers with conditional flow.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences; /evidence/function_context\",\"reason\":\"No occurrences, adjacency, or function or control-flow context are supplied, so loop structure cannot be inferred from the n-gram names.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Frequent ARM byte and halfword load/store with arithmetic (sub strb, cmn mov, sub ldrh, and ldrh), indicating tight buffer-processing loops\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"evidence_reference\":\"/evidence/top_features; /evidence/occurrences\",\"reason\":\"The values are not established as frequencies (most ≤0.0004), and loops cannot be inferred from mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"An x86-style add followed by a stack restore, likely a function epilogue.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"No function context is available to support an epilogue inference. Also, the \\\"ADD POP\\\" mnemonics could belong to ARM; labelling it x86 is an assumption.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A compare followed by a jump-if-less, the classic bounded-loop pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"A loop is inferred without control-flow evidence; the claim is hedged but still sample-specific.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Its relatively high frequency (0.002175) indicates repeated flag-setting and conditional logic, such as overflow or carry checks in arithmetic-heavy code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Assigns specific behavior to a value whose semantics are unestablished, with no context to indicate overflow/carry checks.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs, ranks and individual magnitudes are reported accurately, and the explanation notes that SHAP values are modest. However, it sums the top-20 SHAP values as a total (\\\"roughly +0.12\\\") without a baseline or the omitted features, and it states that \\\"No feature argues against that label\\\", which overreaches because the top-k subset cannot exclude omitted opposing features. It also describes the large SHAP values of zero-valued features as showing \\\"the model is weighing them heavily\\\", though their magnitudes are small and equal to other features.\",\"discrepancies\":[{\"quote\":\"No feature argues against that label.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only the top-20 positive features are supplied, so omitted features may have negative SHAP values; the statement cannot be established.\"},{\"quote\":\"Their large SHAP values show that the model is weighing them heavily.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The SHAP values for these features (about 0.0045–0.0101) are in the same modest range as the rest, which the explanation itself calls \\\"modest\\\"; \\\"large\\\" and \\\"heavily\\\" overstate their magnitude.\"},{\"quote\":\"all 20 top SHAP features push toward cryptojacking (+0.0044 to +0.0102 each, roughly +0.12 in total)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The +0.12 total is a top-k sum with no baseline or omitted features, so it is not a verdict-level quantity; the direction assumes target class 1, which is only a configured assumption.\"}]},\"evidence_limitations\":[\"Only n-gram names, values and SHAP values are supplied; no occurrences, function context, strings or call targets.\",\"feature_value_semantics are not established, so values should not be treated as frequencies or counts.\",\"The SHAP target class is a configured assumption, and there is no baseline or full attribution, so omitted features cannot be assessed.\",\"RF probability of 1.0 is not behavioral proof or a calibrated confidence.\",\"The mixed x86/ARM-style mnemonics are unexplained by the artifact.\"],\"summary\":\"Mostly accurate reporting of probability, ranks and SHAP values, with well-organized caveats and sensible, conditional verification steps. Weaknesses are unsupported behavioral inferences (loops, epilogue, frequency semantics) and SHAP overreach: top-k aggregate sums, the claim that no feature opposes the label, and \\\"large\\\" magnitudes.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_d01e7753ad483e1e",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability, ranks, SHAP signs and frequencies match the evidence, and the caveats are good. But it presents unsupported semantics (\"likely a function epilogue\", \"tight loops over memory buffers with conditional flow\") and treats near-zero features as having \"measurable frequency\" and \"recurring\" patterns. It also says \"feature values are frequencies\" though the semantics are explicitly unestablished.",
+      "coherence": "Well organized: observations, clusters, caveats, indicators and actions line up, and the tier is consistent with the hedging. Minor inconsistencies: \"high-confidence\" and \"Treat as likely cryptojacking\" sit beside \"the verdict rests on the aggregate pattern\", and cluster 2 is described as having measurable frequency while some values are tiny.",
+      "cybersecurity_relevance": "Ties n-grams to hash/PoW arithmetic, flags the mixed x86/ARM mnemonics, and notes that benign code can produce the same patterns. It does not weigh specific benign alternatives such as compression or crypto libraries, and several n-gram interpretations are generic.",
+      "actionable_utility": "Concrete, feasible, ordered steps: disassemble, locate the XOR/shift/multiply code, check the architecture mix, run a sandbox for CPU/pool/persistence, extract strings. Isolating and blocking the hash is proportionate. The actions are conditional and not presented as observed. No priorities are given and the pool/persistence checks are generic."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "A second cluster of ARM load/store, flag and branch patterns appears with measurable frequency",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics; /evidence/top_features",
+        "reason": "The feature values are explicitly not established as raw counts or frequencies, and most are near zero (e.g. 0.000091). Calling them measurable frequencies is an interpretive overreach.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "These suggest tight loops over memory buffers with conditional flow.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/occurrences; /evidence/function_context",
+        "reason": "No occurrences, adjacency, or function or control-flow context are supplied, so loop structure cannot be inferred from the n-gram names.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Frequent ARM byte and halfword load/store with arithmetic (sub strb, cmn mov, sub ldrh, and ldrh), indicating tight buffer-processing loops",
+        "candidate_path": "/candidate_analysis/key_indicators/3",
+        "evidence_reference": "/evidence/top_features; /evidence/occurrences",
+        "reason": "The values are not established as frequencies (most ≤0.0004), and loops cannot be inferred from mnemonics alone.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "An x86-style add followed by a stack restore, likely a function epilogue.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/function_context",
+        "reason": "No function context is available to support an epilogue inference. Also, the \"ADD POP\" mnemonics could belong to ARM; labelling it x86 is an assumption.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "A compare followed by a jump-if-less, the classic bounded-loop pattern.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/function_context",
+        "reason": "A loop is inferred without control-flow evidence; the claim is hedged but still sample-specific.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Its relatively high frequency (0.002175) indicates repeated flag-setting and conditional logic, such as overflow or carry checks in arithmetic-heavy code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "Assigns specific behavior to a value whose semantics are unestablished, with no context to indicate overflow/carry checks.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "SHAP signs, ranks and individual magnitudes are reported accurately, and the explanation notes that SHAP values are modest. However, it sums the top-20 SHAP values as a total (\"roughly +0.12\") without a baseline or the omitted features, and it states that \"No feature argues against that label\", which overreaches because the top-k subset cannot exclude omitted opposing features. It also describes the large SHAP values of zero-valued features as showing \"the model is weighing them heavily\", though their magnitudes are small and equal to other features.",
+      "discrepancies": [
+        {
+          "quote": "No feature argues against that label.",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "Only the top-20 positive features are supplied, so omitted features may have negative SHAP values; the statement cannot be established."
+        },
+        {
+          "quote": "Their large SHAP values show that the model is weighing them heavily.",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The SHAP values for these features (about 0.0045–0.0101) are in the same modest range as the rest, which the explanation itself calls \"modest\"; \"large\" and \"heavily\" overstate their magnitude."
+        },
+        {
+          "quote": "all 20 top SHAP features push toward cryptojacking (+0.0044 to +0.0102 each, roughly +0.12 in total)",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The +0.12 total is a top-k sum with no baseline or omitted features, so it is not a verdict-level quantity; the direction assumes target class 1, which is only a configured assumption."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "Only n-gram names, values and SHAP values are supplied; no occurrences, function context, strings or call targets.",
+      "feature_value_semantics are not established, so values should not be treated as frequencies or counts.",
+      "The SHAP target class is a configured assumption, and there is no baseline or full attribution, so omitted features cannot be assessed.",
+      "RF probability of 1.0 is not behavioral proof or a calibrated confidence.",
+      "The mixed x86/ARM-style mnemonics are unexplained by the artifact."
+    ],
+    "summary": "Mostly accurate reporting of probability, ranks and SHAP values, with well-organized caveats and sensible, conditional verification steps. Weaknesses are unsupported behavioral inferences (loops, epilogue, frequency semantics) and SHAP overreach: top-k aggregate sums, the claim that no feature opposes the label, and \"large\" magnitudes."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "A second cluster of ARM load/store, flag and branch patterns appears with measurable frequency",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics; /evidence/top_features",
+      "reason": "The feature values are explicitly not established as raw counts or frequencies, and most are near zero (e.g. 0.000091). Calling them measurable frequencies is an interpretive overreach.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "These suggest tight loops over memory buffers with conditional flow.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/occurrences; /evidence/function_context",
+      "reason": "No occurrences, adjacency, or function or control-flow context are supplied, so loop structure cannot be inferred from the n-gram names.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Frequent ARM byte and halfword load/store with arithmetic (sub strb, cmn mov, sub ldrh, and ldrh), indicating tight buffer-processing loops",
+      "candidate_path": "/candidate_analysis/key_indicators/3",
+      "evidence_reference": "/evidence/top_features; /evidence/occurrences",
+      "reason": "The values are not established as frequencies (most ≤0.0004), and loops cannot be inferred from mnemonics alone.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "An x86-style add followed by a stack restore, likely a function epilogue.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/function_context",
+      "reason": "No function context is available to support an epilogue inference. Also, the \"ADD POP\" mnemonics could belong to ARM; labelling it x86 is an assumption.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "A compare followed by a jump-if-less, the classic bounded-loop pattern.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/function_context",
+      "reason": "A loop is inferred without control-flow evidence; the claim is hedged but still sample-specific.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Its relatively high frequency (0.002175) indicates repeated flag-setting and conditional logic, such as overflow or carry checks in arithmetic-heavy code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "Assigns specific behavior to a value whose semantics are unestablished, with no context to indicate overflow/carry checks.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "No feature argues against that label.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "Only the top-20 positive features are supplied, so omitted features may have negative SHAP values; the statement cannot be established.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "Their large SHAP values show that the model is weighing them heavily.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "The SHAP values for these features (about 0.0045–0.0101) are in the same modest range as the rest, which the explanation itself calls \"modest\"; \"large\" and \"heavily\" overstate their magnitude.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "all 20 top SHAP features push toward cryptojacking (+0.0044 to +0.0102 each, roughly +0.12 in total)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "The +0.12 total is a top-k sum with no baseline or omitted features, so it is not a verdict-level quantity; the direction assumes target class 1, which is only a configured assumption.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "151df3364d6d3ff361ed45ea944386ad8b45fc8327929447de5f7a86bc19547b.elf_analysis.json"
+}

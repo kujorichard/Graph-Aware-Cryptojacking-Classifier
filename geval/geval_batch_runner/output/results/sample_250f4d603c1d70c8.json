@@ -1,0 +1,203 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_250f4d603c1d70c8",
+  "status": "success",
+  "source_sha256": "259d46a946b7539f705a75779ad248cf66aa321d6d0a7f2a8ae43ccfcbb44199",
+  "input_sha256": "dedc7e932e06ea1cfdc3145b6f07032b779a8eca045226ef0bcb46e1896aeaee",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "9be5a7e0652d43093c9b8635a693a61db8a08a240ce390e6208ed9fda8f2c445.exe",
+      "source_name": "9be5a7e0652d43093c9b8635a693a61db8a08a240ce390e6208ed9fda8f2c445.exe.json",
+      "source_path": "ml/dataset/cryptojacking/9be5a7e0652d43093c9b8635a693a61db8a08a240ce390e6208ed9fda8f2c445.exe.json",
+      "split": "test",
+      "batch_number": 2,
+      "row_index_in_batch": 22,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "9be5a7e0652d43093c9b8635a693a61db8a08a240ce390e6208ed9fda8f2c445.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:09:48.309612+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:09:48.309650+00:00",
+      "error": null,
+      "request_sha256": "4fd816d345f9b1b743273eed7295d2041f3f58668eed1d2bd3d81835fc95575b",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm39vhpChACDcdUbfhQW",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I need to weigh this evidence carefully: the RF model predicts class 1 with 0.95 probability, and the SHAP values assume class 1 as the target, but the actual semantics of the feature values aren't established—calling them \"frequencies\" given their tiny magnitudes (around 0.000003 to 0.00040) is an assumption I shouldn't treat as confirmed fact.\n\nClaims like \"strongest feature at relatively high frequency\" or singling out the \"most frequent n-gram\" among only the top-20 features are overreaches since the full feature set isn't considered, and characterizing most n-grams as \"generic compiler or runtime patterns\" is an interpretive leap that's only loosely hedged.\n\nThe remaining claims about specific idioms are mostly reasonable but carry small imprecisions — e.g., describing PXOR/MOVUPS as a zeroing-then-store idiom assumes the same register and a store target when MOVUPS could just as easily be a load; the rest (CVTSI2SD/PXOR conversion-then-clear, REP MOVSD as block copy, CALL/ADD stack adjustment, branchless CMOVG arithmetic, MOVSXD/BSR for log2, ADD/ROR as ARX) are plausible low-level interpretations consistent with known instruction semantics.\n\nI also notice several candidates assume adjacency (\"consecutive,\" \"back-to-back,\" \"followed by\") for n-grams, which isn't necessarily justified if the extraction is graph-aware rather than strictly sequential — a moderate unsupported leap. The final point about floating-point-heavy code \"regions\" also slightly overstates locality beyond what co-occurring FLD/FSTP n-grams actually support.\n\nNow I'm checking that the SHAP values have been rounded correctly against their full-precision counterparts, confirming each rounds properly to the reported decimal places.\n\nOverall the values do form a flat, evenly-distributed top-20 without a dominant feature, which supports the \"no single mining-specific signature\" framing, though the analysis never explicitly flags that it's only looking at a top-k subset with omitted features unaccounted for — a minor but real gap in rigor.\n\nThe confidence tiering looks consistent: the 0.55 score is kept separate from the RF probability without conflating the two, and \"leaning-suspicious\"/\"low-confidence\" line up coherently with \"treat as suspicious but unconfirmed.\" I'm flagging several overreaching claims as unsupported — things like asserting specific instruction adjacency (consecutive SSE register-clearing, back-to-back x87 stores), inferring semantic meaning from raw n-gram frequencies, and assuming a \"SSE zeroing-then-vector-store idiom\" — these read as speculative pattern-matching dressed up as fact, so I'm noting them under unsupported_behavior with their evidence paths (PXOR/PXOR, FSTP/FSTP, CALL/ADD, PXOR/MOVUPS indices) for the explanation and evidence_analysis sections.\n\nScoring it out: technical accuracy around 4 given the adjacency/frequency overreach, coherence 4 for some repetition across explanation/evidence/key_indicators sections, relevance 4-5 since it connects evidence to plausible alternatives like benign compiler output but doesn't flag the top-k feature limitation. For actionable utility I'm landing on 4 — the steps (locate functions, check loops, sandbox, examine strings) are reasonably ordered and conditional without fabricating indicators, though it doesn't explicitly call out needing disassembly to locate those functions. SHAP faithfulness checks out true with no discrepancies to report.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_250f4d603c1d70c8\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.95 and all 20 SHAP values are reported correctly within rounding. Instruction semantics are mostly sound and the mining link is hedged. Minor overreach: adjacency wording ('Consecutive', 'Back-to-back'), treating feature values as 'frequencies', and calling CALL ADD 'the most frequent n-gram' when only the top-20 subset was seen.\",\"coherence\":\"Tier (low-confidence), the 0.55 confidence score, the 'inconclusive, leaning-suspicious' framing and the recommended action are consistent with each other. The structure is clear. There is some repetition across the explanation, per-feature assessments and key_indicators.\",\"cybersecurity_relevance\":\"It ties specific n-grams (ARX/rotate/ADC patterns, SSE idioms, x87 code) to hashing-loop and mining questions and weighs benign compiler/runtime explanations. It also notes the absence of function, API and location evidence. It does not mention the top-k limit or the unverified SHAP target-class assumption.\",\"actionable_utility\":\"The steps are concrete and proportionate: locate the functions holding the rotate/XOR/ADC sequences, look for hash-round loops, run a sandbox for sustained CPU and pool-style network traffic, and review strings and config. They are conditional and use no fabricated indicators. They are not explicitly prioritized and give no detail on how to get function-level context.\"},\"unsupported_claims\":[{\"quote\":\"Consecutive SSE register-clearing or XOR operations.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/top_features/6\",\"reason\":\"Only a 2-gram name and a value are supplied. There is no extraction or context evidence for adjacency, or for the same register being cleared. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Back-to-back x87 stores.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"/evidence/top_features/13\",\"reason\":\"Adjacency or control flow is inferred from the n-gram name alone, with no occurrence or context data.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The most frequent n-gram (0.004763).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/top_features/17/value\",\"reason\":\"Only the top-20 subset is available, and feature_value_semantics says the values are not established as frequencies or counts. 'Most frequent' can only hold within the displayed subset.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Their frequencies are very low (about 0.000003 to 0.00040), so they do not show a hot compute loop.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The feature values are treated as frequencies and used to rule out a hot loop, although their semantics are explicitly unconfirmed. The numeric range itself matches the supplied values.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All SHAP values are quoted correctly within stated rounding, and the direction (all positive toward the configured class 1) is accurate. The 'small and evenly spread' description fits the displayed range of +0.0139 to +0.0063. The candidate does not claim that omitted features are irrelevant, but it also does not state the top-k or target-class-assumption limits.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"The SHAP baseline and full attributions are null, and omitted features are unknown.\",\"Feature value semantics are not established, so the values may not be frequencies or counts.\",\"No occurrences, function context, API calls, strings or network evidence were supplied.\",\"Adjacency and control flow between n-gram instructions cannot be inferred.\"],\"summary\":\"This is a largely grounded, appropriately hedged explanation with accurate SHAP reporting. Its flaws are minor: it assumes adjacency, it treats feature values as frequencies, and it overstates 'most frequent' beyond the top-20 subset. The recommended actions are sensible and conditional.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7477,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4196,
+          "output_tokens_details": {
+            "thinking_tokens": 2649
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7477,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4196,
+        "output_tokens_details": {
+          "thinking_tokens": 2649
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_250f4d603c1d70c8\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.95 and all 20 SHAP values are reported correctly within rounding. Instruction semantics are mostly sound and the mining link is hedged. Minor overreach: adjacency wording ('Consecutive', 'Back-to-back'), treating feature values as 'frequencies', and calling CALL ADD 'the most frequent n-gram' when only the top-20 subset was seen.\",\"coherence\":\"Tier (low-confidence), the 0.55 confidence score, the 'inconclusive, leaning-suspicious' framing and the recommended action are consistent with each other. The structure is clear. There is some repetition across the explanation, per-feature assessments and key_indicators.\",\"cybersecurity_relevance\":\"It ties specific n-grams (ARX/rotate/ADC patterns, SSE idioms, x87 code) to hashing-loop and mining questions and weighs benign compiler/runtime explanations. It also notes the absence of function, API and location evidence. It does not mention the top-k limit or the unverified SHAP target-class assumption.\",\"actionable_utility\":\"The steps are concrete and proportionate: locate the functions holding the rotate/XOR/ADC sequences, look for hash-round loops, run a sandbox for sustained CPU and pool-style network traffic, and review strings and config. They are conditional and use no fabricated indicators. They are not explicitly prioritized and give no detail on how to get function-level context.\"},\"unsupported_claims\":[{\"quote\":\"Consecutive SSE register-clearing or XOR operations.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/top_features/6\",\"reason\":\"Only a 2-gram name and a value are supplied. There is no extraction or context evidence for adjacency, or for the same register being cleared. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Back-to-back x87 stores.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"/evidence/top_features/13\",\"reason\":\"Adjacency or control flow is inferred from the n-gram name alone, with no occurrence or context data.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The most frequent n-gram (0.004763).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/top_features/17/value\",\"reason\":\"Only the top-20 subset is available, and feature_value_semantics says the values are not established as frequencies or counts. 'Most frequent' can only hold within the displayed subset.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Their frequencies are very low (about 0.000003 to 0.00040), so they do not show a hot compute loop.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The feature values are treated as frequencies and used to rule out a hot loop, although their semantics are explicitly unconfirmed. The numeric range itself matches the supplied values.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All SHAP values are quoted correctly within stated rounding, and the direction (all positive toward the configured class 1) is accurate. The 'small and evenly spread' description fits the displayed range of +0.0139 to +0.0063. The candidate does not claim that omitted features are irrelevant, but it also does not state the top-k or target-class-assumption limits.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"The SHAP baseline and full attributions are null, and omitted features are unknown.\",\"Feature value semantics are not established, so the values may not be frequencies or counts.\",\"No occurrences, function context, API calls, strings or network evidence were supplied.\",\"Adjacency and control flow between n-gram instructions cannot be inferred.\"],\"summary\":\"This is a largely grounded, appropriately hedged explanation with accurate SHAP reporting. Its flaws are minor: it assumes adjacency, it treats feature values as frequencies, and it overstates 'most frequent' beyond the top-20 subset. The recommended actions are sensible and conditional.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_250f4d603c1d70c8",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability 0.95 and all 20 SHAP values are reported correctly within rounding. Instruction semantics are mostly sound and the mining link is hedged. Minor overreach: adjacency wording ('Consecutive', 'Back-to-back'), treating feature values as 'frequencies', and calling CALL ADD 'the most frequent n-gram' when only the top-20 subset was seen.",
+      "coherence": "Tier (low-confidence), the 0.55 confidence score, the 'inconclusive, leaning-suspicious' framing and the recommended action are consistent with each other. The structure is clear. There is some repetition across the explanation, per-feature assessments and key_indicators.",
+      "cybersecurity_relevance": "It ties specific n-grams (ARX/rotate/ADC patterns, SSE idioms, x87 code) to hashing-loop and mining questions and weighs benign compiler/runtime explanations. It also notes the absence of function, API and location evidence. It does not mention the top-k limit or the unverified SHAP target-class assumption.",
+      "actionable_utility": "The steps are concrete and proportionate: locate the functions holding the rotate/XOR/ADC sequences, look for hash-round loops, run a sandbox for sustained CPU and pool-style network traffic, and review strings and config. They are conditional and use no fabricated indicators. They are not explicitly prioritized and give no detail on how to get function-level context."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Consecutive SSE register-clearing or XOR operations.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+        "evidence_reference": "/evidence/top_features/6",
+        "reason": "Only a 2-gram name and a value are supplied. There is no extraction or context evidence for adjacency, or for the same register being cleared. Graph-aware n-grams need not be adjacent.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Back-to-back x87 stores.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+        "evidence_reference": "/evidence/top_features/13",
+        "reason": "Adjacency or control flow is inferred from the n-gram name alone, with no occurrence or context data.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "The most frequent n-gram (0.004763).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+        "evidence_reference": "/evidence/top_features/17/value",
+        "reason": "Only the top-20 subset is available, and feature_value_semantics says the values are not established as frequencies or counts. 'Most frequent' can only hold within the displayed subset.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Their frequencies are very low (about 0.000003 to 0.00040), so they do not show a hot compute loop.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The feature values are treated as frequencies and used to rule out a hot loop, although their semantics are explicitly unconfirmed. The numeric range itself matches the supplied values.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All SHAP values are quoted correctly within stated rounding, and the direction (all positive toward the configured class 1) is accurate. The 'small and evenly spread' description fits the displayed range of +0.0139 to +0.0063. The candidate does not claim that omitted features are irrelevant, but it also does not state the top-k or target-class-assumption limits.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "The SHAP baseline and full attributions are null, and omitted features are unknown.",
+      "Feature value semantics are not established, so the values may not be frequencies or counts.",
+      "No occurrences, function context, API calls, strings or network evidence were supplied.",
+      "Adjacency and control flow between n-gram instructions cannot be inferred."
+    ],
+    "summary": "This is a largely grounded, appropriately hedged explanation with accurate SHAP reporting. Its flaws are minor: it assumes adjacency, it treats feature values as frequencies, and it overstates 'most frequent' beyond the top-20 subset. The recommended actions are sensible and conditional."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Consecutive SSE register-clearing or XOR operations.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+      "evidence_reference": "/evidence/top_features/6",
+      "reason": "Only a 2-gram name and a value are supplied. There is no extraction or context evidence for adjacency, or for the same register being cleared. Graph-aware n-grams need not be adjacent.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Back-to-back x87 stores.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+      "evidence_reference": "/evidence/top_features/13",
+      "reason": "Adjacency or control flow is inferred from the n-gram name alone, with no occurrence or context data.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The most frequent n-gram (0.004763).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+      "evidence_reference": "/evidence/top_features/17/value",
+      "reason": "Only the top-20 subset is available, and feature_value_semantics says the values are not established as frequencies or counts. 'Most frequent' can only hold within the displayed subset.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Their frequencies are very low (about 0.000003 to 0.00040), so they do not show a hot compute loop.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The feature values are treated as frequencies and used to rule out a hot loop, although their semantics are explicitly unconfirmed. The numeric range itself matches the supplied values.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "9be5a7e0652d43093c9b8635a693a61db8a08a240ce390e6208ed9fda8f2c445.exe_analysis.json"
+}

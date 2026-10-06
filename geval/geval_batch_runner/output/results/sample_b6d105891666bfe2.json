@@ -1,0 +1,235 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_b6d105891666bfe2",
+  "status": "success",
+  "source_sha256": "7961b18cc87982093d9956cca2d04181398663340ba2fa6d04bea8829a1942de",
+  "input_sha256": "9f7628f13cadede88901af6ea54bc97daa49180c7fd788d50398145bc541a688",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "48a9a9ec75caf2b45a7a78c63d339aae96c2eab2d5510c974544bb04f49e0948.elf",
+      "source_name": "48a9a9ec75caf2b45a7a78c63d339aae96c2eab2d5510c974544bb04f49e0948.elf.json",
+      "source_path": "ml/dataset/cryptojacking/48a9a9ec75caf2b45a7a78c63d339aae96c2eab2d5510c974544bb04f49e0948.elf.json",
+      "split": "test",
+      "batch_number": 0,
+      "row_index_in_batch": 25,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "48a9a9ec75caf2b45a7a78c63d339aae96c2eab2d5510c974544bb04f49e0948.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:33:43.783908+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:33:43.783935+00:00",
+      "error": null,
+      "request_sha256": "367799c108c219b9ad7cf0648e06b3d45acfbc347be8df326268923293149a5f",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkzQN56DszD3Vsy29ywQ",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_b6d105891666bfe2\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP values and n-gram names match the evidence, and most semantics are accurate and hedged. But a few claims overreach: 'all 20 listed n-grams push toward cryptojacking' relies on an unverified target-class assumption, and the 'freq' and 'typical of 32-bit-style compiled code' wording is not supported. 'CALL RET' as thunks/wrappers is also read from a non-adjacent-capable n-gram.\",\"coherence\":\"Well organized (summary, per-n-gram analysis, indicators, action) and consistent in saying the evidence is inconclusive. Minor tension between the 'low-confidence' tier, 'Treat as suspicious' and 'clearly confident'. The text is also somewhat repetitive.\",\"cybersecurity_relevance\":\"Ties the sample's n-grams to cryptojacking questions (hash loops, big-integer routines, network/CPU behavior) and notes that the style is common in benign code. It does not explicitly name benign alternatives beyond generic compiled code, and it mentions packing/shellcode only as unconfirmed speculation.\",\"actionable_utility\":\"Concrete, proportionate steps: locate the functions containing the key n-grams, look for compute loops and hashing, and sandbox with CPU and network monitoring. These are conditional and tied to the missing function attribution, but the prioritization is limited and no specific indicators are given.\"},\"unsupported_claims\":[{\"quote\":\"Together they suggest a push-heavy, stack-argument call style typical of 32-bit-style compiled code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/occurrences (empty); /evidence/function_context (empty)\",\"reason\":\"Architecture or compiler style is inferred from mnemonic n-grams alone, with no extraction context, adjacency, bitness or operand evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It marks very short or stub-like call-and-return sequences, such as thunks or wrappers.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0; /evidence/function_context (empty)\",\"reason\":\"The n-gram need not be adjacent and no function context exists, so stub, thunk or wrapper structure is not established.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Subtract-with-borrow chain, characteristic of multi-precision (64-bit-on-32-bit or big-integer) arithmetic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features/18; /evidence/occurrences (empty)\",\"reason\":\"A multi-precision interpretation is inferred from a single SUB SBB bigram without context or any chain evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Restoring a register and then calling.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/top_features/10; /evidence/occurrences (empty)\",\"reason\":\"The specific role of POP before CALL as register restoration is asserted without context.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs, values and ranking are mostly represented accurately, and feature frequencies for the listed n-grams match. But the candidate treats the feature values as frequencies despite the artifact disclaiming raw-count semantics, and it asserts direction toward cryptojacking without noting the target-class assumption.\",\"discrepancies\":[{\"quote\":\"CALL PUSH (+0.014588, freq 0.050109)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The evidence states feature value semantics are not established and should not be treated as raw counts; 'freq' presents them as frequencies.\"},{\"quote\":\"High frequency (0.050109).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"reason\":\"Same issue: the value's semantics are unconfirmed upstream, yet it is described as a frequency and as 'High'.\"},{\"quote\":\"all 20 listed n-grams push toward cryptojacking\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The target class 1 is only a configured assumption, flagged to verify upstream, and the candidate states the direction without that caveat.\"}]},\"evidence_limitations\":[\"No function context, occurrences, strings, APIs or addresses supplied.\",\"Feature value semantics not established; the values are not confirmed as counts or frequencies.\",\"SHAP baseline and full attributions absent; only a positive top-k subset is shown.\",\"SHAP target class is a configured assumption pending upstream verification.\",\"RF probability of 1.0 is not behavioral proof.\"],\"summary\":\"The explanation reports the RF output and SHAP values accurately and is appropriately cautious about mining behavior, with sensible follow-up steps. It loses some accuracy and SHAP faithfulness by treating feature values as frequencies, asserting 32-bit style, stub/thunk and multi-precision interpretations from isolated bigrams, and stating direction without the target-class caveat.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7018,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 1852,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7018,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1852,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_b6d105891666bfe2\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP values and n-gram names match the evidence, and most semantics are accurate and hedged. But a few claims overreach: 'all 20 listed n-grams push toward cryptojacking' relies on an unverified target-class assumption, and the 'freq' and 'typical of 32-bit-style compiled code' wording is not supported. 'CALL RET' as thunks/wrappers is also read from a non-adjacent-capable n-gram.\",\"coherence\":\"Well organized (summary, per-n-gram analysis, indicators, action) and consistent in saying the evidence is inconclusive. Minor tension between the 'low-confidence' tier, 'Treat as suspicious' and 'clearly confident'. The text is also somewhat repetitive.\",\"cybersecurity_relevance\":\"Ties the sample's n-grams to cryptojacking questions (hash loops, big-integer routines, network/CPU behavior) and notes that the style is common in benign code. It does not explicitly name benign alternatives beyond generic compiled code, and it mentions packing/shellcode only as unconfirmed speculation.\",\"actionable_utility\":\"Concrete, proportionate steps: locate the functions containing the key n-grams, look for compute loops and hashing, and sandbox with CPU and network monitoring. These are conditional and tied to the missing function attribution, but the prioritization is limited and no specific indicators are given.\"},\"unsupported_claims\":[{\"quote\":\"Together they suggest a push-heavy, stack-argument call style typical of 32-bit-style compiled code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/occurrences (empty); /evidence/function_context (empty)\",\"reason\":\"Architecture or compiler style is inferred from mnemonic n-grams alone, with no extraction context, adjacency, bitness or operand evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It marks very short or stub-like call-and-return sequences, such as thunks or wrappers.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0; /evidence/function_context (empty)\",\"reason\":\"The n-gram need not be adjacent and no function context exists, so stub, thunk or wrapper structure is not established.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Subtract-with-borrow chain, characteristic of multi-precision (64-bit-on-32-bit or big-integer) arithmetic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features/18; /evidence/occurrences (empty)\",\"reason\":\"A multi-precision interpretation is inferred from a single SUB SBB bigram without context or any chain evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Restoring a register and then calling.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/top_features/10; /evidence/occurrences (empty)\",\"reason\":\"The specific role of POP before CALL as register restoration is asserted without context.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs, values and ranking are mostly represented accurately, and feature frequencies for the listed n-grams match. But the candidate treats the feature values as frequencies despite the artifact disclaiming raw-count semantics, and it asserts direction toward cryptojacking without noting the target-class assumption.\",\"discrepancies\":[{\"quote\":\"CALL PUSH (+0.014588, freq 0.050109)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The evidence states feature value semantics are not established and should not be treated as raw counts; 'freq' presents them as frequencies.\"},{\"quote\":\"High frequency (0.050109).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"reason\":\"Same issue: the value's semantics are unconfirmed upstream, yet it is described as a frequency and as 'High'.\"},{\"quote\":\"all 20 listed n-grams push toward cryptojacking\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The target class 1 is only a configured assumption, flagged to verify upstream, and the candidate states the direction without that caveat.\"}]},\"evidence_limitations\":[\"No function context, occurrences, strings, APIs or addresses supplied.\",\"Feature value semantics not established; the values are not confirmed as counts or frequencies.\",\"SHAP baseline and full attributions absent; only a positive top-k subset is shown.\",\"SHAP target class is a configured assumption pending upstream verification.\",\"RF probability of 1.0 is not behavioral proof.\"],\"summary\":\"The explanation reports the RF output and SHAP values accurately and is appropriately cautious about mining behavior, with sensible follow-up steps. It loses some accuracy and SHAP faithfulness by treating feature values as frequencies, asserting 32-bit style, stub/thunk and multi-precision interpretations from isolated bigrams, and stating direction without the target-class caveat.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_b6d105891666bfe2",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, SHAP values and n-gram names match the evidence, and most semantics are accurate and hedged. But a few claims overreach: 'all 20 listed n-grams push toward cryptojacking' relies on an unverified target-class assumption, and the 'freq' and 'typical of 32-bit-style compiled code' wording is not supported. 'CALL RET' as thunks/wrappers is also read from a non-adjacent-capable n-gram.",
+      "coherence": "Well organized (summary, per-n-gram analysis, indicators, action) and consistent in saying the evidence is inconclusive. Minor tension between the 'low-confidence' tier, 'Treat as suspicious' and 'clearly confident'. The text is also somewhat repetitive.",
+      "cybersecurity_relevance": "Ties the sample's n-grams to cryptojacking questions (hash loops, big-integer routines, network/CPU behavior) and notes that the style is common in benign code. It does not explicitly name benign alternatives beyond generic compiled code, and it mentions packing/shellcode only as unconfirmed speculation.",
+      "actionable_utility": "Concrete, proportionate steps: locate the functions containing the key n-grams, look for compute loops and hashing, and sandbox with CPU and network monitoring. These are conditional and tied to the missing function attribution, but the prioritization is limited and no specific indicators are given."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Together they suggest a push-heavy, stack-argument call style typical of 32-bit-style compiled code.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; /evidence/occurrences (empty); /evidence/function_context (empty)",
+        "reason": "Architecture or compiler style is inferred from mnemonic n-grams alone, with no extraction context, adjacency, bitness or operand evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "It marks very short or stub-like call-and-return sequences, such as thunks or wrappers.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/top_features/0; /evidence/function_context (empty)",
+        "reason": "The n-gram need not be adjacent and no function context exists, so stub, thunk or wrapper structure is not established.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Subtract-with-borrow chain, characteristic of multi-precision (64-bit-on-32-bit or big-integer) arithmetic.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+        "evidence_reference": "/evidence/top_features/18; /evidence/occurrences (empty)",
+        "reason": "A multi-precision interpretation is inferred from a single SUB SBB bigram without context or any chain evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Restoring a register and then calling.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+        "evidence_reference": "/evidence/top_features/10; /evidence/occurrences (empty)",
+        "reason": "The specific role of POP before CALL as register restoration is asserted without context.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "SHAP signs, values and ranking are mostly represented accurately, and feature frequencies for the listed n-grams match. But the candidate treats the feature values as frequencies despite the artifact disclaiming raw-count semantics, and it asserts direction toward cryptojacking without noting the target-class assumption.",
+      "discrepancies": [
+        {
+          "quote": "CALL PUSH (+0.014588, freq 0.050109)",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The evidence states feature value semantics are not established and should not be treated as raw counts; 'freq' presents them as frequencies."
+        },
+        {
+          "quote": "High frequency (0.050109).",
+          "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+          "reason": "Same issue: the value's semantics are unconfirmed upstream, yet it is described as a frequency and as 'High'."
+        },
+        {
+          "quote": "all 20 listed n-grams push toward cryptojacking",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The target class 1 is only a configured assumption, flagged to verify upstream, and the candidate states the direction without that caveat."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "No function context, occurrences, strings, APIs or addresses supplied.",
+      "Feature value semantics not established; the values are not confirmed as counts or frequencies.",
+      "SHAP baseline and full attributions absent; only a positive top-k subset is shown.",
+      "SHAP target class is a configured assumption pending upstream verification.",
+      "RF probability of 1.0 is not behavioral proof."
+    ],
+    "summary": "The explanation reports the RF output and SHAP values accurately and is appropriately cautious about mining behavior, with sensible follow-up steps. It loses some accuracy and SHAP faithfulness by treating feature values as frequencies, asserting 32-bit style, stub/thunk and multi-precision interpretations from isolated bigrams, and stating direction without the target-class caveat."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Together they suggest a push-heavy, stack-argument call style typical of 32-bit-style compiled code.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; /evidence/occurrences (empty); /evidence/function_context (empty)",
+      "reason": "Architecture or compiler style is inferred from mnemonic n-grams alone, with no extraction context, adjacency, bitness or operand evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "It marks very short or stub-like call-and-return sequences, such as thunks or wrappers.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/top_features/0; /evidence/function_context (empty)",
+      "reason": "The n-gram need not be adjacent and no function context exists, so stub, thunk or wrapper structure is not established.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Subtract-with-borrow chain, characteristic of multi-precision (64-bit-on-32-bit or big-integer) arithmetic.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+      "evidence_reference": "/evidence/top_features/18; /evidence/occurrences (empty)",
+      "reason": "A multi-precision interpretation is inferred from a single SUB SBB bigram without context or any chain evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Restoring a register and then calling.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+      "evidence_reference": "/evidence/top_features/10; /evidence/occurrences (empty)",
+      "reason": "The specific role of POP before CALL as register restoration is asserted without context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "CALL PUSH (+0.014588, freq 0.050109)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "The evidence states feature value semantics are not established and should not be treated as raw counts; 'freq' presents them as frequencies.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "High frequency (0.050109).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "reason": "Same issue: the value's semantics are unconfirmed upstream, yet it is described as a frequency and as 'High'.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "all 20 listed n-grams push toward cryptojacking",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "The target class 1 is only a configured assumption, flagged to verify upstream, and the candidate states the direction without that caveat.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "48a9a9ec75caf2b45a7a78c63d339aae96c2eab2d5510c974544bb04f49e0948.elf_analysis.json"
+}

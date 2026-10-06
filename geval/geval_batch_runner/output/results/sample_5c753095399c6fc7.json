@@ -1,0 +1,175 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_5c753095399c6fc7",
+  "status": "success",
+  "source_sha256": "749a0d71bccde079f2ccb1d26b8ec3e41f6deb1f7d72bfea94e307c799cb7794",
+  "input_sha256": "0da567b14e55cee9be56f0d14e61d907698f058a2d77d7969cbb61266a45060f",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "fc3f73647a48ceb5c3569a3fa01c666c8358a4c712bdc9817b046f1701be0383.exe",
+      "source_name": "fc3f73647a48ceb5c3569a3fa01c666c8358a4c712bdc9817b046f1701be0383.exe.json",
+      "source_path": "ml/dataset/cryptojacking/fc3f73647a48ceb5c3569a3fa01c666c8358a4c712bdc9817b046f1701be0383.exe.json",
+      "split": "test",
+      "batch_number": 3,
+      "row_index_in_batch": 34,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "fc3f73647a48ceb5c3569a3fa01c666c8358a4c712bdc9817b046f1701be0383.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T14:08:35.705283+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T14:08:35.705318+00:00",
+      "error": null,
+      "request_sha256": "222652b70ed91446d6219038c0a38e1447d812b6343955bbcb9c91dde21ed59e",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm7dwxi6PvUsBexJSFwo",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "The RF prediction looks solid at 0.9999, and the top n-grams all have positive values ranging from 0.0063 to 0.01685. But I'm noticing the candidate claims \"every n-gram has a reported frequency of 0.000000\" based on raw values of 0.0 — that's reading an unestablished semantic meaning into the data, since the guidance says not to treat these values as raw counts or frequencies without justification.\n\nThe candidate also attributes the SHAP contributions to pushing the prediction \"toward cryptojacking\" without flagging that this assumes class 1 corresponds to that label — a reasonable but unstated assumption. The instruction-level interpretations (epilogue patterns, stack adjustments, zero-checks, loop bounds) seem appropriately hedged as plausible generic hypotheses rather than definitive claims.\n\nI also notice the candidate repeatedly treats the n-grams as adjacent instruction pairs (\"consecutive XORs,\" \"XOR followed by a conditional move,\" \"stack adjustment after a call\") without acknowledging that graph-aware n-grams need not represent consecutive instructions — this adjacency assumption is a minor inferential overreach worth flagging.\n\nOn the confidence tier: low-confidence with 0.5 seems reasonable, and treating the strong model output as a statistical signal to be treated with suspicion is sound. The recommendations are appropriately conditional, calling for static/dynamic analysis and function-level locations as upstream dependencies.\n\nChecking the SHAP faithfulness, the values, signs, and ranks all line up correctly with the stated explanation.\n\nChecking the remaining evidence_analysis entries, all the frequency values match what's cited. I'm noting a couple minor gaps for limitations: the \"frequency\" label might be mislabeled, and there's no mention of a target-class assumption. I'm also flagging an unsupported claim around n-grams with zero reported frequency, since the semantics there aren't established, plus the adjacency note about consecutive XORs.\n\nFor scoring: technical accuracy lands at 4; coherence is strong but has some structural repetition between the explanation and evidence analysis, so I'll settle on 4 rather than 5; relevance is solid given the alternative-explanation discussion, landing at 4; actionability is concrete but not explicitly prioritized, so 4 there too.\n\nHallucination assessment stays minor, keeping the two unsupported claims noted. Now I'll assemble everything into the final single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_5c753095399c6fc7\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability (0.9999), top-20 count, all-positive signs and the +0.006300 to +0.016850 range match the evidence. It correctly says the mnemonics do not show mining, pool use or a specific algorithm. Minor flaws: it calls the 0.0 feature values 'frequency' although their semantics are unestablished, and it assumes adjacency in a few places (e.g. 'Consecutive XORs').\",\"coherence\":\"The explanation, tier, confidence_score 0.5 and recommendation are consistent: suspicious on model score, not confirmable as cryptojacking. Evidence and interpretation are easy to separate. The per-n-gram list repeats the 'generic' point many times.\",\"cybersecurity_relevance\":\"It ties the CMOV/XOR/SHL patterns to possible hash or mixing code while naming benign alternatives and the missing mining-loop, pool and algorithm evidence. Much of the per-n-gram commentary is generic compiler-idiom discussion.\",\"actionable_utility\":\"The follow-ups are concrete, conditional and proportionate: static search for pool/wallet strings and mining constants, sandbox CPU and network checks, function-level locations of the top n-grams, hash reputation and YARA. They address the evidence gaps without fabricated indicators. They are not explicitly prioritized, and the occurrences list is empty, so location recovery depends on upstream data.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a reported frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact reports 'value' 0.0 and says its semantics are not established and must not be treated as raw counts. Calling it a 'frequency' asserts a meaning the evidence does not support. The same wording appears in key_indicators.\",\"category\":\"other\"},{\"quote\":\"Consecutive XORs may indicate register zeroing or bitwise mixing.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/ngram_size\",\"reason\":\"Adjacency or consecutive execution is inferred, but no extraction, context or control-flow evidence is supplied and graph-aware n-grams need not be adjacent. The claim is hedged, so this is minor.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All cited SHAP values, signs, ranks (CMOVZ MOV top) and the range match the evidence within rounding. It describes them as top-20 only and does not claim omitted features. It does not repeat that target class 1 is a configured assumption, but it makes no contradicting claim.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature values are all 0.0 with unestablished semantics.\",\"occurrences and function_context are empty, so no location or adjacency evidence exists.\",\"shap_baseline and full_attributions are null, so omitted features are unknown.\",\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"RF probability is not behavioral proof.\"],\"summary\":\"A well-calibrated, mostly grounded explanation that reports the SHAP data faithfully and avoids overclaiming cryptojacking. Its flaws are minor: it labels the 0.0 values 'frequency' and in places assumes adjacency. Its follow-up recommendations are concrete and conditional.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6691,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3144,
+          "output_tokens_details": {
+            "thinking_tokens": 1906
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6691,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3144,
+        "output_tokens_details": {
+          "thinking_tokens": 1906
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_5c753095399c6fc7\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability (0.9999), top-20 count, all-positive signs and the +0.006300 to +0.016850 range match the evidence. It correctly says the mnemonics do not show mining, pool use or a specific algorithm. Minor flaws: it calls the 0.0 feature values 'frequency' although their semantics are unestablished, and it assumes adjacency in a few places (e.g. 'Consecutive XORs').\",\"coherence\":\"The explanation, tier, confidence_score 0.5 and recommendation are consistent: suspicious on model score, not confirmable as cryptojacking. Evidence and interpretation are easy to separate. The per-n-gram list repeats the 'generic' point many times.\",\"cybersecurity_relevance\":\"It ties the CMOV/XOR/SHL patterns to possible hash or mixing code while naming benign alternatives and the missing mining-loop, pool and algorithm evidence. Much of the per-n-gram commentary is generic compiler-idiom discussion.\",\"actionable_utility\":\"The follow-ups are concrete, conditional and proportionate: static search for pool/wallet strings and mining constants, sandbox CPU and network checks, function-level locations of the top n-grams, hash reputation and YARA. They address the evidence gaps without fabricated indicators. They are not explicitly prioritized, and the occurrences list is empty, so location recovery depends on upstream data.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a reported frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact reports 'value' 0.0 and says its semantics are not established and must not be treated as raw counts. Calling it a 'frequency' asserts a meaning the evidence does not support. The same wording appears in key_indicators.\",\"category\":\"other\"},{\"quote\":\"Consecutive XORs may indicate register zeroing or bitwise mixing.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/ngram_size\",\"reason\":\"Adjacency or consecutive execution is inferred, but no extraction, context or control-flow evidence is supplied and graph-aware n-grams need not be adjacent. The claim is hedged, so this is minor.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All cited SHAP values, signs, ranks (CMOVZ MOV top) and the range match the evidence within rounding. It describes them as top-20 only and does not claim omitted features. It does not repeat that target class 1 is a configured assumption, but it makes no contradicting claim.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature values are all 0.0 with unestablished semantics.\",\"occurrences and function_context are empty, so no location or adjacency evidence exists.\",\"shap_baseline and full_attributions are null, so omitted features are unknown.\",\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"RF probability is not behavioral proof.\"],\"summary\":\"A well-calibrated, mostly grounded explanation that reports the SHAP data faithfully and avoids overclaiming cryptojacking. Its flaws are minor: it labels the 0.0 values 'frequency' and in places assumes adjacency. Its follow-up recommendations are concrete and conditional.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_5c753095399c6fc7",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability (0.9999), top-20 count, all-positive signs and the +0.006300 to +0.016850 range match the evidence. It correctly says the mnemonics do not show mining, pool use or a specific algorithm. Minor flaws: it calls the 0.0 feature values 'frequency' although their semantics are unestablished, and it assumes adjacency in a few places (e.g. 'Consecutive XORs').",
+      "coherence": "The explanation, tier, confidence_score 0.5 and recommendation are consistent: suspicious on model score, not confirmable as cryptojacking. Evidence and interpretation are easy to separate. The per-n-gram list repeats the 'generic' point many times.",
+      "cybersecurity_relevance": "It ties the CMOV/XOR/SHL patterns to possible hash or mixing code while naming benign alternatives and the missing mining-loop, pool and algorithm evidence. Much of the per-n-gram commentary is generic compiler-idiom discussion.",
+      "actionable_utility": "The follow-ups are concrete, conditional and proportionate: static search for pool/wallet strings and mining constants, sandbox CPU and network checks, function-level locations of the top n-grams, hash reputation and YARA. They address the evidence gaps without fabricated indicators. They are not explicitly prioritized, and the occurrences list is empty, so location recovery depends on upstream data."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Every n-gram has a reported frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact reports 'value' 0.0 and says its semantics are not established and must not be treated as raw counts. Calling it a 'frequency' asserts a meaning the evidence does not support. The same wording appears in key_indicators.",
+        "category": "other"
+      },
+      {
+        "quote": "Consecutive XORs may indicate register zeroing or bitwise mixing.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+        "evidence_reference": "/evidence/ngram_size",
+        "reason": "Adjacency or consecutive execution is inferred, but no extraction, context or control-flow evidence is supplied and graph-aware n-grams need not be adjacent. The claim is hedged, so this is minor.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All cited SHAP values, signs, ranks (CMOVZ MOV top) and the range match the evidence within rounding. It describes them as top-20 only and does not claim omitted features. It does not repeat that target class 1 is a configured assumption, but it makes no contradicting claim.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Feature values are all 0.0 with unestablished semantics.",
+      "occurrences and function_context are empty, so no location or adjacency evidence exists.",
+      "shap_baseline and full_attributions are null, so omitted features are unknown.",
+      "SHAP target class 1 is a configured assumption pending upstream verification.",
+      "RF probability is not behavioral proof."
+    ],
+    "summary": "A well-calibrated, mostly grounded explanation that reports the SHAP data faithfully and avoids overclaiming cryptojacking. Its flaws are minor: it labels the 0.0 values 'frequency' and in places assumes adjacency. Its follow-up recommendations are concrete and conditional."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Every n-gram has a reported frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact reports 'value' 0.0 and says its semantics are not established and must not be treated as raw counts. Calling it a 'frequency' asserts a meaning the evidence does not support. The same wording appears in key_indicators.",
+      "category": "other"
+    },
+    {
+      "quote": "Consecutive XORs may indicate register zeroing or bitwise mixing.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+      "evidence_reference": "/evidence/ngram_size",
+      "reason": "Adjacency or consecutive execution is inferred, but no extraction, context or control-flow evidence is supplied and graph-aware n-grams need not be adjacent. The claim is hedged, so this is minor.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "fc3f73647a48ceb5c3569a3fa01c666c8358a4c712bdc9817b046f1701be0383.exe_analysis.json"
+}

@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_e98686eafad41317",
+  "status": "success",
+  "source_sha256": "bfa6e0f168c2321d1475057eae2b96613a1c3b9c4d5b813466ba76ef29748387",
+  "input_sha256": "91a979efaa07a99ab01f012af47efdeca0979680b9badd74b461ea2a665662f7",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "9d6d0bce1b37cb65deb9b158edf41bcb9c44ae07634de8563b53a05f158955af.elf",
+      "source_name": "9d6d0bce1b37cb65deb9b158edf41bcb9c44ae07634de8563b53a05f158955af.elf.json",
+      "source_path": "ml/dataset/cryptojacking/9d6d0bce1b37cb65deb9b158edf41bcb9c44ae07634de8563b53a05f158955af.elf.json",
+      "split": "test",
+      "batch_number": 4,
+      "row_index_in_batch": 80,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "9d6d0bce1b37cb65deb9b158edf41bcb9c44ae07634de8563b53a05f158955af.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:10:42.880609+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:10:42.880636+00:00",
+      "error": null,
+      "request_sha256": "380dc98e067ae72bee90bc359c16c86ccf5dc207d93fd40d4fa2d81f8914039d",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm3DwZ1rVH4NR1Err4GY",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm weighing the evidence carefully: the Random Forest model gives a 0.71 probability for class 1, with all top 20 SHAP features showing positive contributions, though the underlying feature semantics aren't clearly established. I'm being cautious about how to phrase claims—framing the 0.71 as the model's assigned probability for malware/cryptojacking seems reasonable, but I need to check whether asserting all 20 features point the same direction is fully justified.\n\nI'm checking the SHAP value ranges, confirming XOR ROL is indeed the most frequent among the rotate-pattern features at 0.000911, though calling these raw values \"frequency\" is an interpretive leap I should flag as unverified. The rotate-and-mix pattern suggesting hash or cipher primitives feels like a reasonable hedge, and MOVDQA PAND checks out as the top feature at 0.009438, with the SIMD-related features plausibly pointing to vectorized bitwise processing.\n\nI'm also flagging several overreaches: claiming ADD PUSH's contribution is \"probably from model interactions\" is unsupported speculation, interpreting SBB INC's rarity as explaining its SHAP weight relies on feature-value assumptions I haven't established, and the XOR ROL \"classic ARX-style\" claim along with phrases like \"rotate followed by byte extraction\" or \"consecutive SIMD XORs\" all assume adjacency between n-gram elements that the underlying graph-aware feature rules don't actually guarantee.\n\nThere's also a minor inconsistency where BSWAP LEA gets labeled as \"multi-precision arithmetic\" in the summary but as \"endianness-related\" in the evidence analysis — worth noting as a small technical error, though the overall hedged conclusion that the evidence suggests crypto-style computation without clear mining indicators like stratum or pool references seems reasonably supported.\n\nThe recommended action is appropriately conditional and proportionate given the low-confidence tier (0.55) and moderate Random Forest probability (0.71). On SHAP faithfulness, the direction and magnitude of feature contributions align well, the claim that \"no single feature is decisive\" is reasonable since it's based only on the top-k features, and the overall explanation holds up as faithful with just minor caveats.\n\nI'm now considering the speculative mechanistic claims—like attributing contributions to \"model interactions\" or feature \"rarity\"—which stretch beyond what SHAP values actually support; these feel like mild overreaches I should flag under unsupported behavior rather than the shap_misrepresentation category. For technical accuracy, I'm weighing a score of 3 or 4, since the core evidence (BSWAP/LEA grouping, adjacency assertions, the \"relatively strong crypto indicator\" framing) is mostly hedged but still contains several speculative leaps.\n\nI'm settling on 3 for accuracy given the mixed overreach despite heavy hedging, 4 for coherence given some repetition and inconsistency between BSWAP/LEA sections, 4 for relevance since it connects evidence with limits and alternatives well without being fully exhaustive, and 4 for actionability since it's concrete and conditional even without explicit prioritization. Now I'm mapping out the JSON pointer paths for each evidence index in the candidate analysis, covering the various instruction pairs like MOVDQA/PAND, MOV/ROL, PXOR/PXOR, and so on through the list.\n\nI'm flagging several unsupported claims across these evidence entries — cases where the assessment attributes SHAP weight to model interactions or rarity without established basis, and instances where adjacency of operations (like division/multiplication or consecutive SIMD XORs) is treated as meaningful without support, categorizing most as shap_misrepresentation or unsupported_behavior.\n\nI'm also noting the \"XOR then rotate\" claim as classic ARX/hash-round behavior is an unsupported_certainty, while claims about low relative frequency and multi-precision arithmetic (citing XOR ADC, SBB INC, SHRD SHR, DIV MUL, BSWAP LEA with their SHAP values) fall under \"other\" since the underlying semantics aren't established. I'll keep the quoted explanation partial rather than complete.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_e98686eafad41317\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.71), the top feature (MOVDQA PAND, +0.009438), the SHAP range and the 0.000911 value for XOR ROL are all reported correctly. However, several interpretations overreach: adjacency is assumed for graph-aware n-grams, XOR ROL is called a 'relatively strong' crypto indicator, BSWAP LEA is grouped under multi-precision arithmetic, and the SHAP weights of ADD PUSH and SBB INC are explained by speculation.\",\"coherence\":\"The explanation is well organized into a summary, per-feature assessments, indicators and actions. Tier, confidence score (0.55) and the 'inconclusive' conclusion agree with each other. Minor flaws: the evidence is repeated across sections, and BSWAP LEA is treated as multi-precision in the summary but as endianness handling in the per-feature note.\",\"cybersecurity_relevance\":\"It ties the n-gram clusters (rotate, SIMD, multi-word arithmetic) to hash and cipher computation relevant to mining. It names benign alternatives (crypto libraries, compression, numeric code), notes the lack of function context and of pool indicators, and does not claim mining. Some generic instruction-semantics discussion is extraneous.\",\"actionable_utility\":\"The recommendations are concrete, proportionate and conditional: sandbox run, CPU and pool connection monitoring, static inspection of the rotate/XOR/SIMD functions, search for pool or wallet strings, and escalate only on confirmed mining behavior. The actions are linked to the evidence gaps and are not presented as observed behavior. They are not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Consecutive SIMD XORs suggest state mixing or whitening in cryptographic or hashing routines.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2; occurrences and function_context are empty\",\"reason\":\"'Consecutive' asserts adjacency, but graph-aware n-grams need not be adjacent and no extraction context was supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Division and multiplication adjacent to each other suggest modular or big-number arithmetic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features/18; occurrences empty\",\"reason\":\"Adjacency and the resulting modular or big-number interpretation are not supported by the supplied evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"XOR-then-rotate is classic ARX-style or hash-round behavior, so this is a relatively strong crypto-computation indicator.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/top_features/8; feature_value_semantics not established\",\"reason\":\"Order and adjacency are assumed, and calling the feature a 'relatively strong' indicator overreaches. A mnemonic pair and a small SHAP value do not establish an ARX or hash round.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Generic arithmetic and stack operation. Not specific to cryptojacking, and its contribution is probably from model interactions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/evidence/top_features/7; shap_baseline and full_attributions are null\",\"reason\":\"Attributing the SHAP contribution to model interactions is speculation. No interaction values or model internals were supplied.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"It is rare, which may explain the SHAP weight, but it is not mining-specific.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"/evidence/top_features/13; feature_value_semantics: Not established by this artifact\",\"reason\":\"The rarity of the feature and the causal link to SHAP weight rest on unconfirmed value semantics. The hedge 'may' is present, but the explanation is still an unsupported mechanism.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"Multi-precision arithmetic is suggested by XOR ADC (+0.006924), SBB INC (+0.005739), SHRD SHR (+0.005546), DIV MUL (+0.005347) and BSWAP LEA (+0.005434).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (BSWAP LEA)\",\"reason\":\"BSWAP LEA (byte swap plus address computation) is not multi-precision arithmetic. The candidate's own per-feature note treats it as endianness handling.\",\"category\":\"other\"},{\"quote\":\"Most features occur at very low relative frequency\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states the feature values are not established as counts or frequencies, so calling them 'relative frequency' is an unsupported semantic label.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs (all positive for configured target class 1), the quoted magnitudes, the stated range (+0.0052 to +0.0094), the top-feature identification and the 'small, evenly spread, none decisive' characterization all match the top-20 evidence. The candidate also stays within the top-k subset and does not claim omitted features. The speculative explanations of why ADD PUSH and SBB INC carry weight are noted as unsupported claims but do not misstate SHAP direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The target class assumption is flagged as unverified upstream, so 'push toward cryptojacking' depends on the class 1 mapping.\",\"Feature value semantics are not established (counts versus frequencies).\",\"There are no occurrences or function context, so adjacency, control flow and routine identity cannot be assessed.\",\"The SHAP baseline and full attributions are null. Only the top 20 positive features are shown, so omitted features cannot be assessed.\",\"No dynamic, network or string evidence is provided.\"],\"summary\":\"The explanation is cautious, internally consistent and well matched to the SHAP evidence, concluding inconclusive/low-confidence with proportionate verification steps. Its main weaknesses are assumed adjacency, a few over-interpretations of mnemonic pairs, speculative explanations of SHAP weight, and calling feature values 'frequency'.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7202,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4965,
+          "output_tokens_details": {
+            "thinking_tokens": 2662
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7202,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4965,
+        "output_tokens_details": {
+          "thinking_tokens": 2662
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_e98686eafad41317\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.71), the top feature (MOVDQA PAND, +0.009438), the SHAP range and the 0.000911 value for XOR ROL are all reported correctly. However, several interpretations overreach: adjacency is assumed for graph-aware n-grams, XOR ROL is called a 'relatively strong' crypto indicator, BSWAP LEA is grouped under multi-precision arithmetic, and the SHAP weights of ADD PUSH and SBB INC are explained by speculation.\",\"coherence\":\"The explanation is well organized into a summary, per-feature assessments, indicators and actions. Tier, confidence score (0.55) and the 'inconclusive' conclusion agree with each other. Minor flaws: the evidence is repeated across sections, and BSWAP LEA is treated as multi-precision in the summary but as endianness handling in the per-feature note.\",\"cybersecurity_relevance\":\"It ties the n-gram clusters (rotate, SIMD, multi-word arithmetic) to hash and cipher computation relevant to mining. It names benign alternatives (crypto libraries, compression, numeric code), notes the lack of function context and of pool indicators, and does not claim mining. Some generic instruction-semantics discussion is extraneous.\",\"actionable_utility\":\"The recommendations are concrete, proportionate and conditional: sandbox run, CPU and pool connection monitoring, static inspection of the rotate/XOR/SIMD functions, search for pool or wallet strings, and escalate only on confirmed mining behavior. The actions are linked to the evidence gaps and are not presented as observed behavior. They are not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Consecutive SIMD XORs suggest state mixing or whitening in cryptographic or hashing routines.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2; occurrences and function_context are empty\",\"reason\":\"'Consecutive' asserts adjacency, but graph-aware n-grams need not be adjacent and no extraction context was supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Division and multiplication adjacent to each other suggest modular or big-number arithmetic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features/18; occurrences empty\",\"reason\":\"Adjacency and the resulting modular or big-number interpretation are not supported by the supplied evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"XOR-then-rotate is classic ARX-style or hash-round behavior, so this is a relatively strong crypto-computation indicator.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/top_features/8; feature_value_semantics not established\",\"reason\":\"Order and adjacency are assumed, and calling the feature a 'relatively strong' indicator overreaches. A mnemonic pair and a small SHAP value do not establish an ARX or hash round.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Generic arithmetic and stack operation. Not specific to cryptojacking, and its contribution is probably from model interactions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/evidence/top_features/7; shap_baseline and full_attributions are null\",\"reason\":\"Attributing the SHAP contribution to model interactions is speculation. No interaction values or model internals were supplied.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"It is rare, which may explain the SHAP weight, but it is not mining-specific.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"/evidence/top_features/13; feature_value_semantics: Not established by this artifact\",\"reason\":\"The rarity of the feature and the causal link to SHAP weight rest on unconfirmed value semantics. The hedge 'may' is present, but the explanation is still an unsupported mechanism.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"Multi-precision arithmetic is suggested by XOR ADC (+0.006924), SBB INC (+0.005739), SHRD SHR (+0.005546), DIV MUL (+0.005347) and BSWAP LEA (+0.005434).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (BSWAP LEA)\",\"reason\":\"BSWAP LEA (byte swap plus address computation) is not multi-precision arithmetic. The candidate's own per-feature note treats it as endianness handling.\",\"category\":\"other\"},{\"quote\":\"Most features occur at very low relative frequency\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states the feature values are not established as counts or frequencies, so calling them 'relative frequency' is an unsupported semantic label.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs (all positive for configured target class 1), the quoted magnitudes, the stated range (+0.0052 to +0.0094), the top-feature identification and the 'small, evenly spread, none decisive' characterization all match the top-20 evidence. The candidate also stays within the top-k subset and does not claim omitted features. The speculative explanations of why ADD PUSH and SBB INC carry weight are noted as unsupported claims but do not misstate SHAP direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The target class assumption is flagged as unverified upstream, so 'push toward cryptojacking' depends on the class 1 mapping.\",\"Feature value semantics are not established (counts versus frequencies).\",\"There are no occurrences or function context, so adjacency, control flow and routine identity cannot be assessed.\",\"The SHAP baseline and full attributions are null. Only the top 20 positive features are shown, so omitted features cannot be assessed.\",\"No dynamic, network or string evidence is provided.\"],\"summary\":\"The explanation is cautious, internally consistent and well matched to the SHAP evidence, concluding inconclusive/low-confidence with proportionate verification steps. Its main weaknesses are assumed adjacency, a few over-interpretations of mnemonic pairs, speculative explanations of SHAP weight, and calling feature values 'frequency'.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_e98686eafad41317",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability (0.71), the top feature (MOVDQA PAND, +0.009438), the SHAP range and the 0.000911 value for XOR ROL are all reported correctly. However, several interpretations overreach: adjacency is assumed for graph-aware n-grams, XOR ROL is called a 'relatively strong' crypto indicator, BSWAP LEA is grouped under multi-precision arithmetic, and the SHAP weights of ADD PUSH and SBB INC are explained by speculation.",
+      "coherence": "The explanation is well organized into a summary, per-feature assessments, indicators and actions. Tier, confidence score (0.55) and the 'inconclusive' conclusion agree with each other. Minor flaws: the evidence is repeated across sections, and BSWAP LEA is treated as multi-precision in the summary but as endianness handling in the per-feature note.",
+      "cybersecurity_relevance": "It ties the n-gram clusters (rotate, SIMD, multi-word arithmetic) to hash and cipher computation relevant to mining. It names benign alternatives (crypto libraries, compression, numeric code), notes the lack of function context and of pool indicators, and does not claim mining. Some generic instruction-semantics discussion is extraneous.",
+      "actionable_utility": "The recommendations are concrete, proportionate and conditional: sandbox run, CPU and pool connection monitoring, static inspection of the rotate/XOR/SIMD functions, search for pool or wallet strings, and escalate only on confirmed mining behavior. The actions are linked to the evidence gaps and are not presented as observed behavior. They are not explicitly prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Consecutive SIMD XORs suggest state mixing or whitening in cryptographic or hashing routines.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/top_features/2; occurrences and function_context are empty",
+        "reason": "'Consecutive' asserts adjacency, but graph-aware n-grams need not be adjacent and no extraction context was supplied.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Division and multiplication adjacent to each other suggest modular or big-number arithmetic.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+        "evidence_reference": "/evidence/top_features/18; occurrences empty",
+        "reason": "Adjacency and the resulting modular or big-number interpretation are not supported by the supplied evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "XOR-then-rotate is classic ARX-style or hash-round behavior, so this is a relatively strong crypto-computation indicator.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+        "evidence_reference": "/evidence/top_features/8; feature_value_semantics not established",
+        "reason": "Order and adjacency are assumed, and calling the feature a 'relatively strong' indicator overreaches. A mnemonic pair and a small SHAP value do not establish an ARX or hash round.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Generic arithmetic and stack operation. Not specific to cryptojacking, and its contribution is probably from model interactions.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+        "evidence_reference": "/evidence/top_features/7; shap_baseline and full_attributions are null",
+        "reason": "Attributing the SHAP contribution to model interactions is speculation. No interaction values or model internals were supplied.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "It is rare, which may explain the SHAP weight, but it is not mining-specific.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+        "evidence_reference": "/evidence/top_features/13; feature_value_semantics: Not established by this artifact",
+        "reason": "The rarity of the feature and the causal link to SHAP weight rest on unconfirmed value semantics. The hedge 'may' is present, but the explanation is still an unsupported mechanism.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "Multi-precision arithmetic is suggested by XOR ADC (+0.006924), SBB INC (+0.005739), SHRD SHR (+0.005546), DIV MUL (+0.005347) and BSWAP LEA (+0.005434).",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features (BSWAP LEA)",
+        "reason": "BSWAP LEA (byte swap plus address computation) is not multi-precision arithmetic. The candidate's own per-feature note treats it as endianness handling.",
+        "category": "other"
+      },
+      {
+        "quote": "Most features occur at very low relative frequency",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states the feature values are not established as counts or frequencies, so calling them 'relative frequency' is an unsupported semantic label.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP signs (all positive for configured target class 1), the quoted magnitudes, the stated range (+0.0052 to +0.0094), the top-feature identification and the 'small, evenly spread, none decisive' characterization all match the top-20 evidence. The candidate also stays within the top-k subset and does not claim omitted features. The speculative explanations of why ADD PUSH and SBB INC carry weight are noted as unsupported claims but do not misstate SHAP direction or magnitude.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The target class assumption is flagged as unverified upstream, so 'push toward cryptojacking' depends on the class 1 mapping.",
+      "Feature value semantics are not established (counts versus frequencies).",
+      "There are no occurrences or function context, so adjacency, control flow and routine identity cannot be assessed.",
+      "The SHAP baseline and full attributions are null. Only the top 20 positive features are shown, so omitted features cannot be assessed.",
+      "No dynamic, network or string evidence is provided."
+    ],
+    "summary": "The explanation is cautious, internally consistent and well matched to the SHAP evidence, concluding inconclusive/low-confidence with proportionate verification steps. Its main weaknesses are assumed adjacency, a few over-interpretations of mnemonic pairs, speculative explanations of SHAP weight, and calling feature values 'frequency'."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Consecutive SIMD XORs suggest state mixing or whitening in cryptographic or hashing routines.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/top_features/2; occurrences and function_context are empty",
+      "reason": "'Consecutive' asserts adjacency, but graph-aware n-grams need not be adjacent and no extraction context was supplied.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Division and multiplication adjacent to each other suggest modular or big-number arithmetic.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+      "evidence_reference": "/evidence/top_features/18; occurrences empty",
+      "reason": "Adjacency and the resulting modular or big-number interpretation are not supported by the supplied evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "XOR-then-rotate is classic ARX-style or hash-round behavior, so this is a relatively strong crypto-computation indicator.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+      "evidence_reference": "/evidence/top_features/8; feature_value_semantics not established",
+      "reason": "Order and adjacency are assumed, and calling the feature a 'relatively strong' indicator overreaches. A mnemonic pair and a small SHAP value do not establish an ARX or hash round.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Generic arithmetic and stack operation. Not specific to cryptojacking, and its contribution is probably from model interactions.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+      "evidence_reference": "/evidence/top_features/7; shap_baseline and full_attributions are null",
+      "reason": "Attributing the SHAP contribution to model interactions is speculation. No interaction values or model internals were supplied.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "It is rare, which may explain the SHAP weight, but it is not mining-specific.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+      "evidence_reference": "/evidence/top_features/13; feature_value_semantics: Not established by this artifact",
+      "reason": "The rarity of the feature and the causal link to SHAP weight rest on unconfirmed value semantics. The hedge 'may' is present, but the explanation is still an unsupported mechanism.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "Multi-precision arithmetic is suggested by XOR ADC (+0.006924), SBB INC (+0.005739), SHRD SHR (+0.005546), DIV MUL (+0.005347) and BSWAP LEA (+0.005434).",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features (BSWAP LEA)",
+      "reason": "BSWAP LEA (byte swap plus address computation) is not multi-precision arithmetic. The candidate's own per-feature note treats it as endianness handling.",
+      "category": "other"
+    },
+    {
+      "quote": "Most features occur at very low relative frequency",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states the feature values are not established as counts or frequencies, so calling them 'relative frequency' is an unsupported semantic label.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "9d6d0bce1b37cb65deb9b158edf41bcb9c44ae07634de8563b53a05f158955af.elf_analysis.json"
+}

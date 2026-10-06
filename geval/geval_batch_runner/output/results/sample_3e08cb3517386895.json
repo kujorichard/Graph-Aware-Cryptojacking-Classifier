@@ -1,0 +1,296 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_3e08cb3517386895",
+  "status": "success",
+  "source_sha256": "ab013b489ee7e3ec67609a6c565b48d881cd461aca95d9b2db9ae43c8bcc9f89",
+  "input_sha256": "a8f39d6153a0ad6e37ac36d77dc79a1978aefdc50ca288905ff69f9348deb940",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "af421881786af65cf89b28d2a88d37658625f21f9644cf298c438267c7c92572.exe",
+      "source_name": "af421881786af65cf89b28d2a88d37658625f21f9644cf298c438267c7c92572.exe.json",
+      "source_path": "ml/dataset/cryptojacking/af421881786af65cf89b28d2a88d37658625f21f9644cf298c438267c7c92572.exe.json",
+      "split": "test",
+      "batch_number": 6,
+      "row_index_in_batch": 1,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "af421881786af65cf89b28d2a88d37658625f21f9644cf298c438267c7c92572.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:17:44.151080+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:17:44.151108+00:00",
+      "error": null,
+      "request_sha256": "ea0dba52a6f7a6c1fb430e8fed66b8acd32ebfddf307875532c3ac75a94d6499",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm3kzjdhTHL6uK3zDo5g",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I need to weigh this carefully: the RF predicts class 1 with 0.965 probability, backed by all 20 top features showing positive SHAP values, but the feature values themselves weren't established as raw counts, so the candidate's claim that they're \"frequencies\" around 0.0012 isn't actually supported by the given semantics.\n\nChecking the SHAP numbers against the clusters: the rotate-instruction cluster (ADD ROR, ROL ADD, MOV ROL, etc.) checks out closely against stated ranges, and the SSE cluster (PXOR, MOVAPS, PAND) mostly lines up too, though the candidate's stated 0.0002–0.0008 range slightly misses the actual low end around 0.00008. Overall the numeric claims are mostly accurate but the \"frequency\" interpretation remains unsupported by the data provided.\n\nI'm also flagging several interpretive overreaches: calling PXOR/PAND usage \"heavy,\" asserting \"interleaving\" between ADD/ROL/ROR instructions, treating RF output probability as calibrated \"confidence,\" framing features as \"independent,\" and speculating about \"mining scratchpads\" or vector \"loops\" — none of which are directly supported by the adjacency-agnostic n-gram features, so these should be treated as unverified inferences rather than established facts.\n\nActually POP LEA and POP SUB rank third and fourth by magnitude, larger than most SSE contributions, so calling them \"smaller\" and giving them only \"weak support\" understates their actual weight in the explanation.\n\nAlso the claim of \"convergence of several independent feature families\" isn't really supported since SHAP values don't demonstrate independence. And checking the magnitudes again, several features labeled as \"smaller contributions\" are actually among the larger ones (0.0068-0.0084), which undercuts that description. I'd put technical accuracy around 3 and coherence around 4, since the explanation is mostly internally consistent aside from that mismatch, with relevance also around 4.\n\nFor actionable utility I'd give a 4 — the recommendation is concrete and prioritized, including sandboxing and quarantine steps, but it loops a bit and doesn't stress verifying the SHAP target class or feature semantics, nor does it surface benign alternative explanations the way the evidence analysis does. Now I'm pulling together the specific unsupported claims with their exact quotes and paths, starting with the claim that ADD ROR and ROL ADD occur at relatively high frequencies around 0.0012, which traces to the explanation section and the feature_value_semantics evidence category.\n\nI'm cataloguing several more unsupported claims: the assertion that ADD/ROL/ROR interleaving with byte extraction is typical of hash and cipher round functions including proof-of-work mining, the claim that heavy PXOR/PAND use with 128-bit moves fits memory-hard mining kernels, the overconfident statement that converging feature families supports a high-confidence cryptojacking classification, the recommended-action reference to \"PXOR/PAND/MOVDQA vector loops,\" the uncalibrated 0.88 confidence score, the claim that add-then-rotate-right is a core ARX/hash primitive, and the statement that features together strongly suggest hash round functions — I'll keep around six or seven of these and skip the \"very rare (0.000031)\" one, then assemble it all into compact JSON.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_3e08cb3517386895\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The 0.965 probability, SHAP values and signs are reported correctly, and the mining link is hedged as 'not definitive proof'. However, it treats feature values as frequencies and infers adjacency and hash/ARX round structure from n-gram names alone. It also calls POP LEA and POP SUB 'smaller contributions', although they are the 3rd and 4th largest SHAP values.\",\"coherence\":\"The explanation is well organized into clusters, an ambiguous tail, limits and an action list. Minor inconsistencies remain: the 'smaller contributions' wording conflicts with the SHAP values cited elsewhere, and it claims 'independent' families while all features come from one model.\",\"cybersecurity_relevance\":\"It stays tied to this sample's n-grams and the cryptojacking question. It also names benign alternatives (compiler-generated code, other crypto or compression code) and notes there are no function names or API calls.\",\"actionable_utility\":\"The recommended steps are concrete and mostly proportionate: locate functions, check for mining constants, examine network traffic for pools, look for wallet config, sandbox, and quarantine. They are framed as checks that can confirm or refute mining. They presuppose 'vector loops' and 'dense' sequences, and do not say to verify the SHAP target class or the feature-value semantics.\"},\"unsupported_claims\":[{\"quote\":\"ADD ROR and ROL ADD also occur at relatively high frequencies of about 0.0012.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the feature values are not established as raw counts or frequencies, so 'frequencies' and 'relatively high' are unsupported.\",\"category\":\"other\"},{\"quote\":\"This ADD/ROL/ROR interleaving with byte extraction is typical of hash and cipher round functions, including those in proof-of-work mining algorithms.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences and /evidence/function_context (both empty)\",\"reason\":\"Interleaving and adjacency are asserted without any extraction or context evidence, and the n-grams are separate features that need not be adjacent. Mnemonics alone do not establish hashing or mining algorithms.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Heavy PXOR and PAND use alongside aligned and unaligned 128-bit moves points to bulk XOR/mask operations on wide state, which fits memory-hard or vectorized mining kernels.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/feature_value_semantics\",\"reason\":\"'Heavy use' is not supported because the values are not confirmed counts, and no evidence shows co-occurrence or the structure of mining kernels.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Add-then-rotate-right is a core ARX/hash round primitive, consistent with mining hash computation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/occurrences (empty)\",\"reason\":\"Adjacent ordering and an ARX round structure are assumed with no extraction or control-flow evidence.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Together they strongly suggest hash round functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Two n-gram names with unconfirmed value semantics do not strongly indicate hash round functions.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Overall the convergence of several independent feature families supports a high-confidence cryptojacking classification.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /evidence/scope_notes\",\"reason\":\"The features are not shown to be independent. RF probability is not behavioral proof, and the target class and omitted features are unverified.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"0.88\",\"candidate_path\":\"/candidate_analysis/confidence_score\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"The confidence value has no stated basis. It differs from the RF probability and is not a calibrated confidence.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"the PXOR/PAND/MOVDQA vector loops\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/function_context (empty)\",\"reason\":\"Loops are asserted as present, but mnemonic n-grams do not establish loops.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Direction (all positive for the assumed class 1) and most magnitudes and ranges are reported correctly. However, the text labels two of the largest-SHAP features as 'smaller contributions' that give only weak support, which misrepresents their magnitude.\",\"discrepancies\":[{\"quote\":\"Smaller contributions come from ADD MOVQ, ADD FLD, MOV FLD, SHL NEG, POP LEA, POP SUB, ADD PUSH and MOVZX PUSH.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"POP LEA (+0.008433) and POP SUB (+0.008118) rank 3rd and 4th by SHAP, above most rotate and SSE features, and ADD PUSH (+0.006817) exceeds several cluster members. Calling them smaller and weak conflates their low value with SHAP magnitude.\"},{\"quote\":\"These are rare and individually ambiguous, and they could reflect compiler-generated code, so they add only weak support.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The 'weak support' conclusion contradicts the large SHAP contributions of POP LEA and POP SUB. 'Rare' also rests on value semantics the artifact does not establish.\"},{\"quote\":\"with frequencies of 0.0002 to 0.0008\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The SSE-cluster values run from about 0.00008 (PAND PXOR) to 0.0008, so the stated lower bound is imprecise, and the values are not confirmed as frequencies.\"}]},\"evidence_limitations\":[\"Occurrences, function context, the SHAP baseline and full attributions are absent, so adjacency, control flow and omitted-feature effects cannot be checked.\",\"The SHAP target class 1 is only a configured assumption that needs upstream verification.\",\"The feature values are explicitly not established as counts or frequencies.\",\"A positive top-20 subset cannot exclude omitted features that support the benign class.\",\"The hidden label and generator identity are withheld, so this rates explanation quality, not classification correctness.\"],\"summary\":\"The explanation reports probability and SHAP numbers accurately and gives relevant, mostly proportionate follow-up steps. It overreaches by inferring hash/ARX and mining-kernel structure, adjacency, 'heavy use' and 'vector loops' from n-gram names, and by presenting an unexplained 0.88 confidence and 'independent' families. It also understates POP LEA and POP SUB, two of the largest SHAP contributors, as 'smaller' and weak, so SHAP faithfulness fails.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7296,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 5257,
+          "output_tokens_details": {
+            "thinking_tokens": 2664
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7296,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 5257,
+        "output_tokens_details": {
+          "thinking_tokens": 2664
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_3e08cb3517386895\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The 0.965 probability, SHAP values and signs are reported correctly, and the mining link is hedged as 'not definitive proof'. However, it treats feature values as frequencies and infers adjacency and hash/ARX round structure from n-gram names alone. It also calls POP LEA and POP SUB 'smaller contributions', although they are the 3rd and 4th largest SHAP values.\",\"coherence\":\"The explanation is well organized into clusters, an ambiguous tail, limits and an action list. Minor inconsistencies remain: the 'smaller contributions' wording conflicts with the SHAP values cited elsewhere, and it claims 'independent' families while all features come from one model.\",\"cybersecurity_relevance\":\"It stays tied to this sample's n-grams and the cryptojacking question. It also names benign alternatives (compiler-generated code, other crypto or compression code) and notes there are no function names or API calls.\",\"actionable_utility\":\"The recommended steps are concrete and mostly proportionate: locate functions, check for mining constants, examine network traffic for pools, look for wallet config, sandbox, and quarantine. They are framed as checks that can confirm or refute mining. They presuppose 'vector loops' and 'dense' sequences, and do not say to verify the SHAP target class or the feature-value semantics.\"},\"unsupported_claims\":[{\"quote\":\"ADD ROR and ROL ADD also occur at relatively high frequencies of about 0.0012.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the feature values are not established as raw counts or frequencies, so 'frequencies' and 'relatively high' are unsupported.\",\"category\":\"other\"},{\"quote\":\"This ADD/ROL/ROR interleaving with byte extraction is typical of hash and cipher round functions, including those in proof-of-work mining algorithms.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences and /evidence/function_context (both empty)\",\"reason\":\"Interleaving and adjacency are asserted without any extraction or context evidence, and the n-grams are separate features that need not be adjacent. Mnemonics alone do not establish hashing or mining algorithms.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Heavy PXOR and PAND use alongside aligned and unaligned 128-bit moves points to bulk XOR/mask operations on wide state, which fits memory-hard or vectorized mining kernels.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/feature_value_semantics\",\"reason\":\"'Heavy use' is not supported because the values are not confirmed counts, and no evidence shows co-occurrence or the structure of mining kernels.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Add-then-rotate-right is a core ARX/hash round primitive, consistent with mining hash computation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/occurrences (empty)\",\"reason\":\"Adjacent ordering and an ARX round structure are assumed with no extraction or control-flow evidence.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Together they strongly suggest hash round functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Two n-gram names with unconfirmed value semantics do not strongly indicate hash round functions.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Overall the convergence of several independent feature families supports a high-confidence cryptojacking classification.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /evidence/scope_notes\",\"reason\":\"The features are not shown to be independent. RF probability is not behavioral proof, and the target class and omitted features are unverified.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"0.88\",\"candidate_path\":\"/candidate_analysis/confidence_score\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"The confidence value has no stated basis. It differs from the RF probability and is not a calibrated confidence.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"the PXOR/PAND/MOVDQA vector loops\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/function_context (empty)\",\"reason\":\"Loops are asserted as present, but mnemonic n-grams do not establish loops.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Direction (all positive for the assumed class 1) and most magnitudes and ranges are reported correctly. However, the text labels two of the largest-SHAP features as 'smaller contributions' that give only weak support, which misrepresents their magnitude.\",\"discrepancies\":[{\"quote\":\"Smaller contributions come from ADD MOVQ, ADD FLD, MOV FLD, SHL NEG, POP LEA, POP SUB, ADD PUSH and MOVZX PUSH.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"POP LEA (+0.008433) and POP SUB (+0.008118) rank 3rd and 4th by SHAP, above most rotate and SSE features, and ADD PUSH (+0.006817) exceeds several cluster members. Calling them smaller and weak conflates their low value with SHAP magnitude.\"},{\"quote\":\"These are rare and individually ambiguous, and they could reflect compiler-generated code, so they add only weak support.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The 'weak support' conclusion contradicts the large SHAP contributions of POP LEA and POP SUB. 'Rare' also rests on value semantics the artifact does not establish.\"},{\"quote\":\"with frequencies of 0.0002 to 0.0008\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The SSE-cluster values run from about 0.00008 (PAND PXOR) to 0.0008, so the stated lower bound is imprecise, and the values are not confirmed as frequencies.\"}]},\"evidence_limitations\":[\"Occurrences, function context, the SHAP baseline and full attributions are absent, so adjacency, control flow and omitted-feature effects cannot be checked.\",\"The SHAP target class 1 is only a configured assumption that needs upstream verification.\",\"The feature values are explicitly not established as counts or frequencies.\",\"A positive top-20 subset cannot exclude omitted features that support the benign class.\",\"The hidden label and generator identity are withheld, so this rates explanation quality, not classification correctness.\"],\"summary\":\"The explanation reports probability and SHAP numbers accurately and gives relevant, mostly proportionate follow-up steps. It overreaches by inferring hash/ARX and mining-kernel structure, adjacency, 'heavy use' and 'vector loops' from n-gram names, and by presenting an unexplained 0.88 confidence and 'independent' families. It also understates POP LEA and POP SUB, two of the largest SHAP contributors, as 'smaller' and weak, so SHAP faithfulness fails.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_3e08cb3517386895",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The 0.965 probability, SHAP values and signs are reported correctly, and the mining link is hedged as 'not definitive proof'. However, it treats feature values as frequencies and infers adjacency and hash/ARX round structure from n-gram names alone. It also calls POP LEA and POP SUB 'smaller contributions', although they are the 3rd and 4th largest SHAP values.",
+      "coherence": "The explanation is well organized into clusters, an ambiguous tail, limits and an action list. Minor inconsistencies remain: the 'smaller contributions' wording conflicts with the SHAP values cited elsewhere, and it claims 'independent' families while all features come from one model.",
+      "cybersecurity_relevance": "It stays tied to this sample's n-grams and the cryptojacking question. It also names benign alternatives (compiler-generated code, other crypto or compression code) and notes there are no function names or API calls.",
+      "actionable_utility": "The recommended steps are concrete and mostly proportionate: locate functions, check for mining constants, examine network traffic for pools, look for wallet config, sandbox, and quarantine. They are framed as checks that can confirm or refute mining. They presuppose 'vector loops' and 'dense' sequences, and do not say to verify the SHAP target class or the feature-value semantics."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "ADD ROR and ROL ADD also occur at relatively high frequencies of about 0.0012.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says the feature values are not established as raw counts or frequencies, so 'frequencies' and 'relatively high' are unsupported.",
+        "category": "other"
+      },
+      {
+        "quote": "This ADD/ROL/ROR interleaving with byte extraction is typical of hash and cipher round functions, including those in proof-of-work mining algorithms.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/occurrences and /evidence/function_context (both empty)",
+        "reason": "Interleaving and adjacency are asserted without any extraction or context evidence, and the n-grams are separate features that need not be adjacent. Mnemonics alone do not establish hashing or mining algorithms.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "Heavy PXOR and PAND use alongside aligned and unaligned 128-bit moves points to bulk XOR/mask operations on wide state, which fits memory-hard or vectorized mining kernels.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; /evidence/feature_value_semantics",
+        "reason": "'Heavy use' is not supported because the values are not confirmed counts, and no evidence shows co-occurrence or the structure of mining kernels.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "Add-then-rotate-right is a core ARX/hash round primitive, consistent with mining hash computation.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/occurrences (empty)",
+        "reason": "Adjacent ordering and an ARX round structure are assumed with no extraction or control-flow evidence.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "Together they strongly suggest hash round functions.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "Two n-gram names with unconfirmed value semantics do not strongly indicate hash round functions.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Overall the convergence of several independent feature families supports a high-confidence cryptojacking classification.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/rf_probability_class_1; /evidence/scope_notes",
+        "reason": "The features are not shown to be independent. RF probability is not behavioral proof, and the target class and omitted features are unverified.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "0.88",
+        "candidate_path": "/candidate_analysis/confidence_score",
+        "evidence_reference": "/evidence/rf_probability_class_1",
+        "reason": "The confidence value has no stated basis. It differs from the RF probability and is not a calibrated confidence.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "the PXOR/PAND/MOVDQA vector loops",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "/evidence/function_context (empty)",
+        "reason": "Loops are asserted as present, but mnemonic n-grams do not establish loops.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "Direction (all positive for the assumed class 1) and most magnitudes and ranges are reported correctly. However, the text labels two of the largest-SHAP features as 'smaller contributions' that give only weak support, which misrepresents their magnitude.",
+      "discrepancies": [
+        {
+          "quote": "Smaller contributions come from ADD MOVQ, ADD FLD, MOV FLD, SHL NEG, POP LEA, POP SUB, ADD PUSH and MOVZX PUSH.",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "POP LEA (+0.008433) and POP SUB (+0.008118) rank 3rd and 4th by SHAP, above most rotate and SSE features, and ADD PUSH (+0.006817) exceeds several cluster members. Calling them smaller and weak conflates their low value with SHAP magnitude."
+        },
+        {
+          "quote": "These are rare and individually ambiguous, and they could reflect compiler-generated code, so they add only weak support.",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The 'weak support' conclusion contradicts the large SHAP contributions of POP LEA and POP SUB. 'Rare' also rests on value semantics the artifact does not establish."
+        },
+        {
+          "quote": "with frequencies of 0.0002 to 0.0008",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The SSE-cluster values run from about 0.00008 (PAND PXOR) to 0.0008, so the stated lower bound is imprecise, and the values are not confirmed as frequencies."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "Occurrences, function context, the SHAP baseline and full attributions are absent, so adjacency, control flow and omitted-feature effects cannot be checked.",
+      "The SHAP target class 1 is only a configured assumption that needs upstream verification.",
+      "The feature values are explicitly not established as counts or frequencies.",
+      "A positive top-20 subset cannot exclude omitted features that support the benign class.",
+      "The hidden label and generator identity are withheld, so this rates explanation quality, not classification correctness."
+    ],
+    "summary": "The explanation reports probability and SHAP numbers accurately and gives relevant, mostly proportionate follow-up steps. It overreaches by inferring hash/ARX and mining-kernel structure, adjacency, 'heavy use' and 'vector loops' from n-gram names, and by presenting an unexplained 0.88 confidence and 'independent' families. It also understates POP LEA and POP SUB, two of the largest SHAP contributors, as 'smaller' and weak, so SHAP faithfulness fails."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "ADD ROR and ROL ADD also occur at relatively high frequencies of about 0.0012.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says the feature values are not established as raw counts or frequencies, so 'frequencies' and 'relatively high' are unsupported.",
+      "category": "other"
+    },
+    {
+      "quote": "This ADD/ROL/ROR interleaving with byte extraction is typical of hash and cipher round functions, including those in proof-of-work mining algorithms.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/occurrences and /evidence/function_context (both empty)",
+      "reason": "Interleaving and adjacency are asserted without any extraction or context evidence, and the n-grams are separate features that need not be adjacent. Mnemonics alone do not establish hashing or mining algorithms.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "Heavy PXOR and PAND use alongside aligned and unaligned 128-bit moves points to bulk XOR/mask operations on wide state, which fits memory-hard or vectorized mining kernels.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; /evidence/feature_value_semantics",
+      "reason": "'Heavy use' is not supported because the values are not confirmed counts, and no evidence shows co-occurrence or the structure of mining kernels.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "Add-then-rotate-right is a core ARX/hash round primitive, consistent with mining hash computation.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/occurrences (empty)",
+      "reason": "Adjacent ordering and an ARX round structure are assumed with no extraction or control-flow evidence.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "Together they strongly suggest hash round functions.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "Two n-gram names with unconfirmed value semantics do not strongly indicate hash round functions.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Overall the convergence of several independent feature families supports a high-confidence cryptojacking classification.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/rf_probability_class_1; /evidence/scope_notes",
+      "reason": "The features are not shown to be independent. RF probability is not behavioral proof, and the target class and omitted features are unverified.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "0.88",
+      "candidate_path": "/candidate_analysis/confidence_score",
+      "evidence_reference": "/evidence/rf_probability_class_1",
+      "reason": "The confidence value has no stated basis. It differs from the RF probability and is not a calibrated confidence.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "the PXOR/PAND/MOVDQA vector loops",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "/evidence/function_context (empty)",
+      "reason": "Loops are asserted as present, but mnemonic n-grams do not establish loops.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Smaller contributions come from ADD MOVQ, ADD FLD, MOV FLD, SHL NEG, POP LEA, POP SUB, ADD PUSH and MOVZX PUSH.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "POP LEA (+0.008433) and POP SUB (+0.008118) rank 3rd and 4th by SHAP, above most rotate and SSE features, and ADD PUSH (+0.006817) exceeds several cluster members. Calling them smaller and weak conflates their low value with SHAP magnitude.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "These are rare and individually ambiguous, and they could reflect compiler-generated code, so they add only weak support.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "The 'weak support' conclusion contradicts the large SHAP contributions of POP LEA and POP SUB. 'Rare' also rests on value semantics the artifact does not establish.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "with frequencies of 0.0002 to 0.0008",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "The SSE-cluster values run from about 0.00008 (PAND PXOR) to 0.0008, so the stated lower bound is imprecise, and the values are not confirmed as frequencies.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "af421881786af65cf89b28d2a88d37658625f21f9644cf298c438267c7c92572.exe_analysis.json"
+}

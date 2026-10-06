@@ -1,0 +1,209 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_1929713fbdc101d6",
+  "status": "success",
+  "source_sha256": "f6d3e5acd41da9c638ff80d8d801c1a084d500b40aef17959329d590e0231e19",
+  "input_sha256": "2d7672ce91b66cbaeeb60cffdbd98aeb4597b2a21341cae09868bd4c2704c42a",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "1959cf04d47f1ea97d4498eb8e5a67dbc4c61434920771e44005fedb572ad7be.exe",
+      "source_name": "1959cf04d47f1ea97d4498eb8e5a67dbc4c61434920771e44005fedb572ad7be.exe.json",
+      "source_path": "ml/dataset/cryptojacking/1959cf04d47f1ea97d4498eb8e5a67dbc4c61434920771e44005fedb572ad7be.exe.json",
+      "split": "test",
+      "batch_number": 6,
+      "row_index_in_batch": 66,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "1959cf04d47f1ea97d4498eb8e5a67dbc4c61434920771e44005fedb572ad7be.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:13:31.165627+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:13:31.165654+00:00",
+      "error": null,
+      "request_sha256": "50fc54664e508d1f38f54ebb38fc350cdb21a9b467c3dedafd1c4b4329d357ab",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkxryZWhXdck7ro4fjdx",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking whether the candidate's claim about treating SHAP values as \"frequency\" is actually supported, since the evidence explicitly says feature value semantics weren't established—so labeling them as frequencies looks like an unsupported interpretation.\n\nLooking at the rare n-gram values (CDQ MOV, POP SUB, PUSH RET, etc., ranging roughly 0.000004 to 0.000101), the claim that these \"carry high SHAP weight, suggesting distributional quirks rather than a recognizable hash loop\" is speculative but plausible given they're only high relative to other top-k features. The follow-up claim that high-frequency n-grams mainly reflect code style or compiler/packer characteristics also reads as interpretive rather than directly evidenced.\n\nI'm also flagging several per-n-gram narrative leaps: asserting adjacency for CALL RET as \"a call directly followed by a return\" overreaches since graph-aware n-grams don't guarantee adjacency, and similar unsupported assertions appear for CALL PUSH, division/multiplication sequencing, and MOV LEAVE being called a \"standard compiler output\" epilogue pattern — none of these are directly supported by the evidence provided.\n\nContinuing through SUB PUSH, POP SUB, and POP CALL interpretations, these are hedged reasonably well as generic stack-frame or epilogue/prologue patterns, though they still assume adjacency between opcodes. Overall I'd rate the technical accuracy around 3-4: the core evidence citations are correct, but there's consistent overreach on adjacency assumptions, causal claims about SHAP values, and speculative packer/compiler attribution.\n\nI'm settling on coherence around 4 — there's some repetition between the explanation and evidence analysis sections, but the reasoning stays internally consistent, and I'll note the low-confidence tier aligns reasonably with the stated probability.\n\nFor relevance, I'm landing on 4 given it weighs sample evidence, acknowledges limits, and considers alternatives like benign numeric code or packing, though some of the per-n-gram discussion feels generic.\n\nOn actionability, I'd say 4-5: the steps are fairly concrete (mapping n-grams to functions, packing checks, sandboxing, YARA rules), though they aren't strongly prioritized and depend on upstream extraction work not yet done.\n\nChecking SHAP faithfulness, the directions and magnitudes generally check out, but I'm flagging a few misrepresentations: claiming a feature's SHAP contribution \"comes from volume\" misstates the actual cause, and labeling the rare n-gram group as carrying \"high\" SHAP weight is questionable since their values (0.0068-0.0132) are only middling compared to the top contributors like CDQ MOV and POP SUB.\n\nI'll settle on faithful true with empty discrepancies, and move the volume-causation claim into unsupported_claims instead, since it's about cause rather than direction/magnitude accuracy.\n\nI'm flagging the unsupported claim that the SHAP contribution comes from volume rather than mining, located in the evidence_analysis assessment for item 8, and starting to note another suspicious claim about high values that needs checking too.\n\nContinuing through the list: the claim about compiler/packer style being unsupported certainty, the thin wrapper/thunk inference being an unsupported adjacency guess, and the oddly specific frequency value (0.058592) whose semantics aren't established — I'm marking that one as a different category of issue. I'm also considering whether the \"Standard compiler output\" label for MOV LEAVE should be flagged, since it suggests the model is latching onto distributional quirks rather than any recognizable pattern.\n\nI've settled on my four exact quotes to cite, and I'm noting the key limitations: the target class assumption, unclear feature semantics, missing function context, and the fact I'm only working from top-k attributions without a full baseline. Now I just need to format this as a single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_1929713fbdc101d6\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability (1.0000), the 20 positive SHAP signs, the +0.0068 to +0.0150 range and the rare-feature values match the evidence. However, several interpretations overreach: it assumes adjacency (\\\"A call directly followed by a return\\\"), attributes MOV PUSH's SHAP to volume, and calls the generic bigrams compiler/packer characteristics. It also treats the feature values as frequencies although the artifact says their semantics are unestablished.\",\"coherence\":\"The verdict, the argument that the n-grams are non-specific, the low-confidence tier and the next steps are consistent and easy to follow. There is some repetition between the explanation, evidence_analysis and key_indicators.\",\"cybersecurity_relevance\":\"It ties the sample's specific n-grams to cryptojacking questions (hash loops, XOR, arithmetic, missing function locations). It names benign alternatives such as ordinary compiled code, numeric code and packing, and states that the evidence cannot confirm mining. Much of the per-n-gram commentary is generic.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: map rare n-grams to functions, check for packing, run a sandbox for CPU and pool/Stratum traffic, and scan with YARA. The checks are conditional and tied to the evidence gaps. It is not strongly prioritized, and it does not suggest verifying the SHAP target class or the feature-value semantics.\"},\"unsupported_claims\":[{\"quote\":\"Its SHAP contribution comes from volume and is not an indicator of mining.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics and /evidence/top_features/8\",\"reason\":\"The artifact does not establish what the values mean or why SHAP is large, so attributing the SHAP contribution to volume is unsupported.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"The high-frequency ones mainly reflect overall code style or compiler and packer characteristics.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"No evidence shows compiler, packer or code-style provenance. The claim is stated with moderate certainty rather than as a hypothesis.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"A call directly followed by a return, suggesting thin wrapper or thunk functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"There is no occurrence or control-flow context. Adjacency of the instructions and the existence of thunk functions cannot be inferred from the bigram name alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"MOV PUSH (0.011256, frequency 0.058592)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says not to treat feature values as raw counts without upstream confirmation. Labeling them frequencies, and ranking by them as \\\"most frequent\\\", assumes semantics that are not established.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"The reported SHAP signs, ranks and magnitudes match the evidence, and the explanation correctly notes the diffuse positive contributions. It also asserts a cause for MOV PUSH's SHAP value that the evidence does not support.\",\"discrepancies\":[{\"quote\":\"Its SHAP contribution comes from volume and is not an indicator of mining.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"reason\":\"This states a causal source for the SHAP contribution without a baseline, full attributions or established feature-value semantics.\"}]},\"evidence_limitations\":[\"SHAP target class 1 is a configured assumption and needs upstream verification.\",\"Feature value semantics are not established, so they cannot be treated as frequencies or counts.\",\"Occurrences and function context are empty, so instruction adjacency, loops and locations cannot be checked.\",\"The SHAP baseline and full attributions are missing, and the top 20 are only a subset of all features.\",\"The RF probability of 1.0 is not behavioral proof.\"],\"summary\":\"The explanation is well organized, appropriately cautious about confirming cryptojacking, and proposes sensible verification steps. It is weakened by some overreaching interpretations (adjacency, packer/compiler attributions, a volume-based SHAP cause, frequency labeling) and by treating the unestablished feature values as frequencies.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7144,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 5016,
+          "output_tokens_details": {
+            "thinking_tokens": 3378
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7144,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 5016,
+        "output_tokens_details": {
+          "thinking_tokens": 3378
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_1929713fbdc101d6\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability (1.0000), the 20 positive SHAP signs, the +0.0068 to +0.0150 range and the rare-feature values match the evidence. However, several interpretations overreach: it assumes adjacency (\\\"A call directly followed by a return\\\"), attributes MOV PUSH's SHAP to volume, and calls the generic bigrams compiler/packer characteristics. It also treats the feature values as frequencies although the artifact says their semantics are unestablished.\",\"coherence\":\"The verdict, the argument that the n-grams are non-specific, the low-confidence tier and the next steps are consistent and easy to follow. There is some repetition between the explanation, evidence_analysis and key_indicators.\",\"cybersecurity_relevance\":\"It ties the sample's specific n-grams to cryptojacking questions (hash loops, XOR, arithmetic, missing function locations). It names benign alternatives such as ordinary compiled code, numeric code and packing, and states that the evidence cannot confirm mining. Much of the per-n-gram commentary is generic.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: map rare n-grams to functions, check for packing, run a sandbox for CPU and pool/Stratum traffic, and scan with YARA. The checks are conditional and tied to the evidence gaps. It is not strongly prioritized, and it does not suggest verifying the SHAP target class or the feature-value semantics.\"},\"unsupported_claims\":[{\"quote\":\"Its SHAP contribution comes from volume and is not an indicator of mining.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics and /evidence/top_features/8\",\"reason\":\"The artifact does not establish what the values mean or why SHAP is large, so attributing the SHAP contribution to volume is unsupported.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"The high-frequency ones mainly reflect overall code style or compiler and packer characteristics.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"No evidence shows compiler, packer or code-style provenance. The claim is stated with moderate certainty rather than as a hypothesis.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"A call directly followed by a return, suggesting thin wrapper or thunk functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"There is no occurrence or control-flow context. Adjacency of the instructions and the existence of thunk functions cannot be inferred from the bigram name alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"MOV PUSH (0.011256, frequency 0.058592)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says not to treat feature values as raw counts without upstream confirmation. Labeling them frequencies, and ranking by them as \\\"most frequent\\\", assumes semantics that are not established.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"The reported SHAP signs, ranks and magnitudes match the evidence, and the explanation correctly notes the diffuse positive contributions. It also asserts a cause for MOV PUSH's SHAP value that the evidence does not support.\",\"discrepancies\":[{\"quote\":\"Its SHAP contribution comes from volume and is not an indicator of mining.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"reason\":\"This states a causal source for the SHAP contribution without a baseline, full attributions or established feature-value semantics.\"}]},\"evidence_limitations\":[\"SHAP target class 1 is a configured assumption and needs upstream verification.\",\"Feature value semantics are not established, so they cannot be treated as frequencies or counts.\",\"Occurrences and function context are empty, so instruction adjacency, loops and locations cannot be checked.\",\"The SHAP baseline and full attributions are missing, and the top 20 are only a subset of all features.\",\"The RF probability of 1.0 is not behavioral proof.\"],\"summary\":\"The explanation is well organized, appropriately cautious about confirming cryptojacking, and proposes sensible verification steps. It is weakened by some overreaching interpretations (adjacency, packer/compiler attributions, a volume-based SHAP cause, frequency labeling) and by treating the unestablished feature values as frequencies.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_1929713fbdc101d6",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability (1.0000), the 20 positive SHAP signs, the +0.0068 to +0.0150 range and the rare-feature values match the evidence. However, several interpretations overreach: it assumes adjacency (\"A call directly followed by a return\"), attributes MOV PUSH's SHAP to volume, and calls the generic bigrams compiler/packer characteristics. It also treats the feature values as frequencies although the artifact says their semantics are unestablished.",
+      "coherence": "The verdict, the argument that the n-grams are non-specific, the low-confidence tier and the next steps are consistent and easy to follow. There is some repetition between the explanation, evidence_analysis and key_indicators.",
+      "cybersecurity_relevance": "It ties the sample's specific n-grams to cryptojacking questions (hash loops, XOR, arithmetic, missing function locations). It names benign alternatives such as ordinary compiled code, numeric code and packing, and states that the evidence cannot confirm mining. Much of the per-n-gram commentary is generic.",
+      "actionable_utility": "The follow-up is concrete and proportionate: map rare n-grams to functions, check for packing, run a sandbox for CPU and pool/Stratum traffic, and scan with YARA. The checks are conditional and tied to the evidence gaps. It is not strongly prioritized, and it does not suggest verifying the SHAP target class or the feature-value semantics."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Its SHAP contribution comes from volume and is not an indicator of mining.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics and /evidence/top_features/8",
+        "reason": "The artifact does not establish what the values mean or why SHAP is large, so attributing the SHAP contribution to volume is unsupported.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "The high-frequency ones mainly reflect overall code style or compiler and packer characteristics.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "No evidence shows compiler, packer or code-style provenance. The claim is stated with moderate certainty rather than as a hypothesis.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "A call directly followed by a return, suggesting thin wrapper or thunk functions.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "There is no occurrence or control-flow context. Adjacency of the instructions and the existence of thunk functions cannot be inferred from the bigram name alone.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "MOV PUSH (0.011256, frequency 0.058592)",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says not to treat feature values as raw counts without upstream confirmation. Labeling them frequencies, and ranking by them as \"most frequent\", assumes semantics that are not established.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "The reported SHAP signs, ranks and magnitudes match the evidence, and the explanation correctly notes the diffuse positive contributions. It also asserts a cause for MOV PUSH's SHAP value that the evidence does not support.",
+      "discrepancies": [
+        {
+          "quote": "Its SHAP contribution comes from volume and is not an indicator of mining.",
+          "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+          "reason": "This states a causal source for the SHAP contribution without a baseline, full attributions or established feature-value semantics."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "SHAP target class 1 is a configured assumption and needs upstream verification.",
+      "Feature value semantics are not established, so they cannot be treated as frequencies or counts.",
+      "Occurrences and function context are empty, so instruction adjacency, loops and locations cannot be checked.",
+      "The SHAP baseline and full attributions are missing, and the top 20 are only a subset of all features.",
+      "The RF probability of 1.0 is not behavioral proof."
+    ],
+    "summary": "The explanation is well organized, appropriately cautious about confirming cryptojacking, and proposes sensible verification steps. It is weakened by some overreaching interpretations (adjacency, packer/compiler attributions, a volume-based SHAP cause, frequency labeling) and by treating the unestablished feature values as frequencies."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Its SHAP contribution comes from volume and is not an indicator of mining.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics and /evidence/top_features/8",
+      "reason": "The artifact does not establish what the values mean or why SHAP is large, so attributing the SHAP contribution to volume is unsupported.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "The high-frequency ones mainly reflect overall code style or compiler and packer characteristics.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "No evidence shows compiler, packer or code-style provenance. The claim is stated with moderate certainty rather than as a hypothesis.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "A call directly followed by a return, suggesting thin wrapper or thunk functions.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "There is no occurrence or control-flow context. Adjacency of the instructions and the existence of thunk functions cannot be inferred from the bigram name alone.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "MOV PUSH (0.011256, frequency 0.058592)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says not to treat feature values as raw counts without upstream confirmation. Labeling them frequencies, and ranking by them as \"most frequent\", assumes semantics that are not established.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "1959cf04d47f1ea97d4498eb8e5a67dbc4c61434920771e44005fedb572ad7be.exe_analysis.json"
+}

@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_a9a92d22066e9aa2",
+  "status": "success",
+  "source_sha256": "7033bda287f803b8f85aba6dc66b33385ae64d0918aa3ca43d2d062a356b009b",
+  "input_sha256": "bab4d82e4a5f105dbe642e3a1dbe48cf6583d90f3ff2dcd54755c34b75ef245c",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "7c82302ecd14f21edfceec918d47b51b5d4bc1792cf77bde61527111d8fdb56c.exe",
+      "source_name": "7c82302ecd14f21edfceec918d47b51b5d4bc1792cf77bde61527111d8fdb56c.exe.json",
+      "source_path": "ml/dataset/cryptojacking/7c82302ecd14f21edfceec918d47b51b5d4bc1792cf77bde61527111d8fdb56c.exe.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 97,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "7c82302ecd14f21edfceec918d47b51b5d4bc1792cf77bde61527111d8fdb56c.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:56:46.343731+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:56:46.343758+00:00",
+      "error": null,
+      "request_sha256": "b28cda96d400b3109d0d518cd8f72cab988d8f460c79d6a48a3c2890fdce7fdb",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm2AHgW35TCmjPDaLH36",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm adding up the SHAP values for the top 20 features to see their cumulative contribution.\n\n0.141101+0.005841=0.146942, confirming the total is about 0.147, which checks out.\n\nNow I'm reviewing the family grouping the candidate proposed—verifying the counts of n-grams in each cluster (7, 6, 6, plus CALL RET separate) and checking that the frequency claims match up, like ADD ROR having the highest frequency at 0.002919. I'm also noticing some shaky reasoning around how rare n-grams are characterized as \"weak signals\" despite one being called \"highly discriminative,\" which seems like an internal inconsistency worth flagging, along with the unclear interpretation of what frequency actually represents here.\n\nI'm catching several unsupported claims in the candidate's reasoning: treating static n-gram frequency as evidence of \"repeated, loop-like execution,\" inferring adjacency between opcodes like CALL and RET to suggest \"small stub functions,\" and making interpretive leaps like calling ADD ROR a \"classic add-rotate-xor\" pattern when XOR isn't even in the n-gram. These adjacency and execution-behavior inferences aren't justified by the data, and I'm noting them as problems with the candidate's over-certainty across all 20 features.\n\nI'm also flagging the confidence calibration issue—stating 0.84 confidence and labeling it a \"high-confidence tier\" while simultaneously hedging that \"the case is strong but not conclusive\" is internally inconsistent. The frequency values themselves check out against the source data (ADD MOVQ at 0.000031, MOV ROL at 0.000071, and so on), and the SHAP directional claim that all 20 top features push toward cryptojacking is technically fine, but attaching outsized interpretive weight to any single feature like \"MOV ROL\" as a \"highly discriminative marker\" goes beyond what the magnitudes actually support.\n\nI'm scoring this: technical accuracy around 3, since numbers are correct but there's overreach on things like loop-like execution, adjacency claims, and treating frequency as if it carries deeper semantic meaning. Coherence and relevance both land around 4, since it acknowledges alternative explanations. Actionability sits near 4 too—proportionate and concrete, though \"treat as likely cryptojacker\" is a bit of an overreach given the hedged confidence.\n\nNow I'm compiling the list of unsupported claims with their JSON pointer locations—the explanation node, specific evidence_analysis indices for ADD ROR, CALL RET, and MOV ROL, and the key_indicators field, matching each flagged claim back to its index in the evidence array.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_a9a92d22066e9aa2\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.885), the 20 SHAP values, the ~+0.147 top-20 sum and the per-n-gram values all match the evidence. Several interpretations overreach: it treats values as execution frequency, infers adjacency and loops, and reads hashing/mining intent from mnemonics alone.\",\"coherence\":\"Organized into three families, per-feature notes, indicators and actions, with a clear limitations paragraph. Minor inconsistency: it calls MOV ROL and similar rare n-grams 'highly discriminative' while dismissing other rare n-grams as weak, and it calls the case 'not conclusive' yet assigns a high-confidence tier.\",\"cybersecurity_relevance\":\"Ties sample-specific n-grams to hashing, big-integer and SIMD themes, and names legitimate crypto, compression and checksum code as alternatives. It also notes the lack of function, string and API context. It leans on mining-specific narratives that the evidence does not establish.\",\"actionable_utility\":\"Recommends concrete, feasible steps: locate the functions, check for tight loops, sandbox CPU/network/persistence monitoring, compare against known miners, extract strings, and rule out benign crypto libraries. They are mostly conditional and proportionate, but opening with 'Treat as a likely cryptojacker' somewhat prejudges the outcome.\"},\"unsupported_claims\":[{\"quote\":\"which indicates repeated, loop-like execution of this pattern\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation; occurrences and function_context are empty\",\"reason\":\"The feature value is not confirmed as frequency, and static n-gram statistics cannot show loop-like execution.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"which fits a compute-intensive hashing loop\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"occurrences: []; function_context: []\",\"reason\":\"The sample provides no loop, control-flow or function evidence. Mnemonic n-grams alone do not establish a hashing loop.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"An add followed by a rotate-right is the classic add-rotate-xor pattern of ARX hash designs.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"ngram: ADD ROR (graph-aware n-grams need not be adjacent; no extraction or context evidence)\",\"reason\":\"It assumes adjacency and an XOR step that is not in the n-gram, and it attributes a specific algorithm family to the mnemonics.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"A call immediately followed by a return indicates very small stub or thunk functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"ngram: CALL RET; function_context: []\",\"reason\":\"It infers immediate adjacency and stub/thunk structure without function context or extraction evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"so it is a sparse but highly discriminative marker\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"MOV ROL shap_value 0.00997 vs. other top features 0.0058-0.0092; shap_baseline and full_attributions are null\",\"reason\":\"The SHAP gap to other top-k features is small, and nothing supports 'highly discriminative' beyond a slightly larger value.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"The consistency of all 20 features and the high model probability still support a high-confidence tier.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"scope_notes: a positive top-k subset is not all features; RF probability is not behavioral proof\",\"reason\":\"It treats consistency within a top-k subset as strengthening confidence, although omitted features are unknown and the RF probability is not calibrated confidence.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Treat as a likely cryptojacker and prioritize it for deeper analysis.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"Evidence limited to mnemonic n-grams; no strings, API or function context\",\"reason\":\"'Likely cryptojacker' is stronger than the static n-gram evidence supports, though the recommended checks themselves are appropriate.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 signs are positive toward the configured target class 1, the magnitudes match within tolerance, and the ~+0.147 top-20 sum is correct. It does not claim omitted features are all positive. The minor issue is the 'highly discriminative' emphasis on MOV ROL.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature values are not confirmed as raw counts or frequencies.\",\"No occurrences, function context, strings or API evidence is supplied.\",\"The SHAP baseline and full attributions are null, and only the top-20 positive features are shown.\",\"The SHAP target class is a configured assumption pending upstream verification.\",\"The n-gram adjacency and control flow are unknown.\"],\"summary\":\"Numbers and SHAP direction/magnitude are accurately reported, and the explanation is well organized with concrete follow-up checks and benign alternatives. It overreaches by treating values as frequencies, inferring adjacency, loops and specific hashing/mining roles from mnemonics, and asserting a high-confidence tier and 'likely cryptojacker' framing.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7736,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4417,
+          "output_tokens_details": {
+            "thinking_tokens": 2406
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7736,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4417,
+        "output_tokens_details": {
+          "thinking_tokens": 2406
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_a9a92d22066e9aa2\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.885), the 20 SHAP values, the ~+0.147 top-20 sum and the per-n-gram values all match the evidence. Several interpretations overreach: it treats values as execution frequency, infers adjacency and loops, and reads hashing/mining intent from mnemonics alone.\",\"coherence\":\"Organized into three families, per-feature notes, indicators and actions, with a clear limitations paragraph. Minor inconsistency: it calls MOV ROL and similar rare n-grams 'highly discriminative' while dismissing other rare n-grams as weak, and it calls the case 'not conclusive' yet assigns a high-confidence tier.\",\"cybersecurity_relevance\":\"Ties sample-specific n-grams to hashing, big-integer and SIMD themes, and names legitimate crypto, compression and checksum code as alternatives. It also notes the lack of function, string and API context. It leans on mining-specific narratives that the evidence does not establish.\",\"actionable_utility\":\"Recommends concrete, feasible steps: locate the functions, check for tight loops, sandbox CPU/network/persistence monitoring, compare against known miners, extract strings, and rule out benign crypto libraries. They are mostly conditional and proportionate, but opening with 'Treat as a likely cryptojacker' somewhat prejudges the outcome.\"},\"unsupported_claims\":[{\"quote\":\"which indicates repeated, loop-like execution of this pattern\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation; occurrences and function_context are empty\",\"reason\":\"The feature value is not confirmed as frequency, and static n-gram statistics cannot show loop-like execution.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"which fits a compute-intensive hashing loop\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"occurrences: []; function_context: []\",\"reason\":\"The sample provides no loop, control-flow or function evidence. Mnemonic n-grams alone do not establish a hashing loop.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"An add followed by a rotate-right is the classic add-rotate-xor pattern of ARX hash designs.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"ngram: ADD ROR (graph-aware n-grams need not be adjacent; no extraction or context evidence)\",\"reason\":\"It assumes adjacency and an XOR step that is not in the n-gram, and it attributes a specific algorithm family to the mnemonics.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"A call immediately followed by a return indicates very small stub or thunk functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"ngram: CALL RET; function_context: []\",\"reason\":\"It infers immediate adjacency and stub/thunk structure without function context or extraction evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"so it is a sparse but highly discriminative marker\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"MOV ROL shap_value 0.00997 vs. other top features 0.0058-0.0092; shap_baseline and full_attributions are null\",\"reason\":\"The SHAP gap to other top-k features is small, and nothing supports 'highly discriminative' beyond a slightly larger value.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"The consistency of all 20 features and the high model probability still support a high-confidence tier.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"scope_notes: a positive top-k subset is not all features; RF probability is not behavioral proof\",\"reason\":\"It treats consistency within a top-k subset as strengthening confidence, although omitted features are unknown and the RF probability is not calibrated confidence.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Treat as a likely cryptojacker and prioritize it for deeper analysis.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"Evidence limited to mnemonic n-grams; no strings, API or function context\",\"reason\":\"'Likely cryptojacker' is stronger than the static n-gram evidence supports, though the recommended checks themselves are appropriate.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 signs are positive toward the configured target class 1, the magnitudes match within tolerance, and the ~+0.147 top-20 sum is correct. It does not claim omitted features are all positive. The minor issue is the 'highly discriminative' emphasis on MOV ROL.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature values are not confirmed as raw counts or frequencies.\",\"No occurrences, function context, strings or API evidence is supplied.\",\"The SHAP baseline and full attributions are null, and only the top-20 positive features are shown.\",\"The SHAP target class is a configured assumption pending upstream verification.\",\"The n-gram adjacency and control flow are unknown.\"],\"summary\":\"Numbers and SHAP direction/magnitude are accurately reported, and the explanation is well organized with concrete follow-up checks and benign alternatives. It overreaches by treating values as frequencies, inferring adjacency, loops and specific hashing/mining roles from mnemonics, and asserting a high-confidence tier and 'likely cryptojacker' framing.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_a9a92d22066e9aa2",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability (0.885), the 20 SHAP values, the ~+0.147 top-20 sum and the per-n-gram values all match the evidence. Several interpretations overreach: it treats values as execution frequency, infers adjacency and loops, and reads hashing/mining intent from mnemonics alone.",
+      "coherence": "Organized into three families, per-feature notes, indicators and actions, with a clear limitations paragraph. Minor inconsistency: it calls MOV ROL and similar rare n-grams 'highly discriminative' while dismissing other rare n-grams as weak, and it calls the case 'not conclusive' yet assigns a high-confidence tier.",
+      "cybersecurity_relevance": "Ties sample-specific n-grams to hashing, big-integer and SIMD themes, and names legitimate crypto, compression and checksum code as alternatives. It also notes the lack of function, string and API context. It leans on mining-specific narratives that the evidence does not establish.",
+      "actionable_utility": "Recommends concrete, feasible steps: locate the functions, check for tight loops, sandbox CPU/network/persistence monitoring, compare against known miners, extract strings, and rule out benign crypto libraries. They are mostly conditional and proportionate, but opening with 'Treat as a likely cryptojacker' somewhat prejudges the outcome."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "which indicates repeated, loop-like execution of this pattern",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation; occurrences and function_context are empty",
+        "reason": "The feature value is not confirmed as frequency, and static n-gram statistics cannot show loop-like execution.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "which fits a compute-intensive hashing loop",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "occurrences: []; function_context: []",
+        "reason": "The sample provides no loop, control-flow or function evidence. Mnemonic n-grams alone do not establish a hashing loop.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "An add followed by a rotate-right is the classic add-rotate-xor pattern of ARX hash designs.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "ngram: ADD ROR (graph-aware n-grams need not be adjacent; no extraction or context evidence)",
+        "reason": "It assumes adjacency and an XOR step that is not in the n-gram, and it attributes a specific algorithm family to the mnemonics.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "A call immediately followed by a return indicates very small stub or thunk functions.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "ngram: CALL RET; function_context: []",
+        "reason": "It infers immediate adjacency and stub/thunk structure without function context or extraction evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "so it is a sparse but highly discriminative marker",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "MOV ROL shap_value 0.00997 vs. other top features 0.0058-0.0092; shap_baseline and full_attributions are null",
+        "reason": "The SHAP gap to other top-k features is small, and nothing supports 'highly discriminative' beyond a slightly larger value.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "The consistency of all 20 features and the high model probability still support a high-confidence tier.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "scope_notes: a positive top-k subset is not all features; RF probability is not behavioral proof",
+        "reason": "It treats consistency within a top-k subset as strengthening confidence, although omitted features are unknown and the RF probability is not calibrated confidence.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Treat as a likely cryptojacker and prioritize it for deeper analysis.",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "Evidence limited to mnemonic n-grams; no strings, API or function context",
+        "reason": "'Likely cryptojacker' is stronger than the static n-gram evidence supports, though the recommended checks themselves are appropriate.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 signs are positive toward the configured target class 1, the magnitudes match within tolerance, and the ~+0.147 top-20 sum is correct. It does not claim omitted features are all positive. The minor issue is the 'highly discriminative' emphasis on MOV ROL.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Feature values are not confirmed as raw counts or frequencies.",
+      "No occurrences, function context, strings or API evidence is supplied.",
+      "The SHAP baseline and full attributions are null, and only the top-20 positive features are shown.",
+      "The SHAP target class is a configured assumption pending upstream verification.",
+      "The n-gram adjacency and control flow are unknown."
+    ],
+    "summary": "Numbers and SHAP direction/magnitude are accurately reported, and the explanation is well organized with concrete follow-up checks and benign alternatives. It overreaches by treating values as frequencies, inferring adjacency, loops and specific hashing/mining roles from mnemonics, and asserting a high-confidence tier and 'likely cryptojacker' framing."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "which indicates repeated, loop-like execution of this pattern",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation; occurrences and function_context are empty",
+      "reason": "The feature value is not confirmed as frequency, and static n-gram statistics cannot show loop-like execution.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "which fits a compute-intensive hashing loop",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "occurrences: []; function_context: []",
+      "reason": "The sample provides no loop, control-flow or function evidence. Mnemonic n-grams alone do not establish a hashing loop.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "An add followed by a rotate-right is the classic add-rotate-xor pattern of ARX hash designs.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "ngram: ADD ROR (graph-aware n-grams need not be adjacent; no extraction or context evidence)",
+      "reason": "It assumes adjacency and an XOR step that is not in the n-gram, and it attributes a specific algorithm family to the mnemonics.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "A call immediately followed by a return indicates very small stub or thunk functions.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "ngram: CALL RET; function_context: []",
+      "reason": "It infers immediate adjacency and stub/thunk structure without function context or extraction evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "so it is a sparse but highly discriminative marker",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "MOV ROL shap_value 0.00997 vs. other top features 0.0058-0.0092; shap_baseline and full_attributions are null",
+      "reason": "The SHAP gap to other top-k features is small, and nothing supports 'highly discriminative' beyond a slightly larger value.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "The consistency of all 20 features and the high model probability still support a high-confidence tier.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "scope_notes: a positive top-k subset is not all features; RF probability is not behavioral proof",
+      "reason": "It treats consistency within a top-k subset as strengthening confidence, although omitted features are unknown and the RF probability is not calibrated confidence.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Treat as a likely cryptojacker and prioritize it for deeper analysis.",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "Evidence limited to mnemonic n-grams; no strings, API or function context",
+      "reason": "'Likely cryptojacker' is stronger than the static n-gram evidence supports, though the recommended checks themselves are appropriate.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "7c82302ecd14f21edfceec918d47b51b5d4bc1792cf77bde61527111d8fdb56c.exe_analysis.json"
+}

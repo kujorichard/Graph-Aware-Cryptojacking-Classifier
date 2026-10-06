@@ -1,0 +1,198 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_831a719f8b706f5d",
+  "status": "success",
+  "source_sha256": "e5bcd9e1a8513656fc9f95c720be83709f1090ae076953ce4628dcbac76a807b",
+  "input_sha256": "9ace9e0285acaad2ca0a5d1c39d96c4bbf3f5776a80e63fdf24af8cc66c6ff43",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "c94b9721e51580933e922c1c3b264db867eecd99f1a6e36a83de8d9635cf3628.exe",
+      "source_name": "c94b9721e51580933e922c1c3b264db867eecd99f1a6e36a83de8d9635cf3628.exe.json",
+      "source_path": "ml/dataset/cryptojacking/c94b9721e51580933e922c1c3b264db867eecd99f1a6e36a83de8d9635cf3628.exe.json",
+      "split": "test",
+      "batch_number": 4,
+      "row_index_in_batch": 17,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "c94b9721e51580933e922c1c3b264db867eecd99f1a6e36a83de8d9635cf3628.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:31:14.973464+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:31:14.973491+00:00",
+      "error": null,
+      "request_sha256": "1f9964af277f01db111aa7086dbb04a325cc0555a8f692e0b91a8c6a89579a72",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm4nmVpRiq9FfiNDPEt9",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_831a719f8b706f5d\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP values and frequencies match the evidence, and the explanation admits there is no direct mining evidence. But it overreaches in places: it calls the top-20 positive SHAP and high probability support for a \\\"high-confidence cryptojacking classification\\\", and it calls the ROL/SHRD/SIMD n-grams \\\"consistent with hashing or proof-of-work code\\\". It also labels MOV MOVZX \\\"high-frequency\\\" and \\\"Very frequent\\\" with no feature-value semantics, and it gives \\\"Standard decrement-and-branch loop control\\\" for DEC JZ, which assumes loop and control-flow context.\",\"coherence\":\"Well organized: summary, per-n-gram table, indicators, then action. The caveat is stated clearly. Minor tension between the \\\"high-confidence\\\" tier, 0.9 confidence and \\\"Treat as likely cryptojacking malware\\\" versus the admitted lack of mining-specific evidence.\",\"cybersecurity_relevance\":\"Connects the specific n-grams to cryptojacking hypotheses and names benign alternatives (legitimate crypto or compression code), and it notes the lack of function or API context. It could say more about other benign sources, such as codecs or compiler-generated SIMD code, but links to the sample evidence are strong.\",\"actionable_utility\":\"Concrete, feasible steps: sandbox monitoring of CPU use and Stratum/pool traffic, static location of the rotate/shift and SIMD functions, packing checks, and extraction of wallet and pool strings. They are explicitly conditional on confirmation. The \\\"Treat as likely cryptojacking malware\\\" and isolation framing is somewhat premature, but the steps are proportionate.\"},\"unsupported_claims\":[{\"quote\":\"supports a high-confidence cryptojacking classification\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /scope_notes/1\",\"reason\":\"RF probability and a positive top-k subset do not establish cryptojacking or behavior, and omitted features are unknown.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Rotate followed by add is a classic ARX-style hashing and cipher primitive, and it supports a proof-of-work hashing interpretation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/evidence/top_features/7\",\"reason\":\"A mnemonic pair does not establish hashing or proof-of-work, and it is unclear whether the instructions are adjacent in the code.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Standard decrement-and-branch loop control. It is generic, but it is consistent with tight iteration over rounds or blocks.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/top_features/19; /evidence/occurrences; /evidence/function_context\",\"reason\":\"Loop control or iteration over rounds is inferred from n-grams that may not be adjacent, with no control-flow or function context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Very frequent (0.062140) load and zero-extend pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The semantics of feature values are not established, so describing 0.062 as a frequency is unsupported.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP values and signs for the listed n-grams match the evidence, all are positive for target class 1, and the explanation notes that no feature argues against cryptojacking. It does not claim to see omitted features, though it could be more explicit that they are unknown. Rankings and magnitudes (POP SUB as the top contributor) are correct.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function names, API calls, occurrences or function context.\",\"Feature value semantics unestablished, so the \\\"frequency\\\" claims are uncertain.\",\"SHAP baseline and full attributions are missing; top-k only.\",\"SHAP target class 1 is a configured assumption requiring upstream verification.\",\"The artifact gives no evidence that n-grams are adjacent or tied to control flow.\"],\"summary\":\"The numbers and SHAP directions are accurately reported and the caveats are well stated, with feasible follow-up steps. Technical accuracy is reduced by overreach in interpreting n-grams as hashing, proof-of-work, loops and \\\"high-confidence cryptojacking\\\", and by treating feature values as frequencies without established semantics.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7299,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 1646,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7299,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1646,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_831a719f8b706f5d\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP values and frequencies match the evidence, and the explanation admits there is no direct mining evidence. But it overreaches in places: it calls the top-20 positive SHAP and high probability support for a \\\"high-confidence cryptojacking classification\\\", and it calls the ROL/SHRD/SIMD n-grams \\\"consistent with hashing or proof-of-work code\\\". It also labels MOV MOVZX \\\"high-frequency\\\" and \\\"Very frequent\\\" with no feature-value semantics, and it gives \\\"Standard decrement-and-branch loop control\\\" for DEC JZ, which assumes loop and control-flow context.\",\"coherence\":\"Well organized: summary, per-n-gram table, indicators, then action. The caveat is stated clearly. Minor tension between the \\\"high-confidence\\\" tier, 0.9 confidence and \\\"Treat as likely cryptojacking malware\\\" versus the admitted lack of mining-specific evidence.\",\"cybersecurity_relevance\":\"Connects the specific n-grams to cryptojacking hypotheses and names benign alternatives (legitimate crypto or compression code), and it notes the lack of function or API context. It could say more about other benign sources, such as codecs or compiler-generated SIMD code, but links to the sample evidence are strong.\",\"actionable_utility\":\"Concrete, feasible steps: sandbox monitoring of CPU use and Stratum/pool traffic, static location of the rotate/shift and SIMD functions, packing checks, and extraction of wallet and pool strings. They are explicitly conditional on confirmation. The \\\"Treat as likely cryptojacking malware\\\" and isolation framing is somewhat premature, but the steps are proportionate.\"},\"unsupported_claims\":[{\"quote\":\"supports a high-confidence cryptojacking classification\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /scope_notes/1\",\"reason\":\"RF probability and a positive top-k subset do not establish cryptojacking or behavior, and omitted features are unknown.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Rotate followed by add is a classic ARX-style hashing and cipher primitive, and it supports a proof-of-work hashing interpretation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/evidence/top_features/7\",\"reason\":\"A mnemonic pair does not establish hashing or proof-of-work, and it is unclear whether the instructions are adjacent in the code.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Standard decrement-and-branch loop control. It is generic, but it is consistent with tight iteration over rounds or blocks.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/top_features/19; /evidence/occurrences; /evidence/function_context\",\"reason\":\"Loop control or iteration over rounds is inferred from n-grams that may not be adjacent, with no control-flow or function context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Very frequent (0.062140) load and zero-extend pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The semantics of feature values are not established, so describing 0.062 as a frequency is unsupported.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP values and signs for the listed n-grams match the evidence, all are positive for target class 1, and the explanation notes that no feature argues against cryptojacking. It does not claim to see omitted features, though it could be more explicit that they are unknown. Rankings and magnitudes (POP SUB as the top contributor) are correct.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function names, API calls, occurrences or function context.\",\"Feature value semantics unestablished, so the \\\"frequency\\\" claims are uncertain.\",\"SHAP baseline and full attributions are missing; top-k only.\",\"SHAP target class 1 is a configured assumption requiring upstream verification.\",\"The artifact gives no evidence that n-grams are adjacent or tied to control flow.\"],\"summary\":\"The numbers and SHAP directions are accurately reported and the caveats are well stated, with feasible follow-up steps. Technical accuracy is reduced by overreach in interpreting n-grams as hashing, proof-of-work, loops and \\\"high-confidence cryptojacking\\\", and by treating feature values as frequencies without established semantics.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_831a719f8b706f5d",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability, SHAP values and frequencies match the evidence, and the explanation admits there is no direct mining evidence. But it overreaches in places: it calls the top-20 positive SHAP and high probability support for a \"high-confidence cryptojacking classification\", and it calls the ROL/SHRD/SIMD n-grams \"consistent with hashing or proof-of-work code\". It also labels MOV MOVZX \"high-frequency\" and \"Very frequent\" with no feature-value semantics, and it gives \"Standard decrement-and-branch loop control\" for DEC JZ, which assumes loop and control-flow context.",
+      "coherence": "Well organized: summary, per-n-gram table, indicators, then action. The caveat is stated clearly. Minor tension between the \"high-confidence\" tier, 0.9 confidence and \"Treat as likely cryptojacking malware\" versus the admitted lack of mining-specific evidence.",
+      "cybersecurity_relevance": "Connects the specific n-grams to cryptojacking hypotheses and names benign alternatives (legitimate crypto or compression code), and it notes the lack of function or API context. It could say more about other benign sources, such as codecs or compiler-generated SIMD code, but links to the sample evidence are strong.",
+      "actionable_utility": "Concrete, feasible steps: sandbox monitoring of CPU use and Stratum/pool traffic, static location of the rotate/shift and SIMD functions, packing checks, and extraction of wallet and pool strings. They are explicitly conditional on confirmation. The \"Treat as likely cryptojacking malware\" and isolation framing is somewhat premature, but the steps are proportionate."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "supports a high-confidence cryptojacking classification",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/rf_probability_class_1; /scope_notes/1",
+        "reason": "RF probability and a positive top-k subset do not establish cryptojacking or behavior, and omitted features are unknown.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Rotate followed by add is a classic ARX-style hashing and cipher primitive, and it supports a proof-of-work hashing interpretation.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+        "evidence_reference": "/evidence/top_features/7",
+        "reason": "A mnemonic pair does not establish hashing or proof-of-work, and it is unclear whether the instructions are adjacent in the code.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "Standard decrement-and-branch loop control. It is generic, but it is consistent with tight iteration over rounds or blocks.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+        "evidence_reference": "/evidence/top_features/19; /evidence/occurrences; /evidence/function_context",
+        "reason": "Loop control or iteration over rounds is inferred from n-grams that may not be adjacent, with no control-flow or function context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Very frequent (0.062140) load and zero-extend pattern.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The semantics of feature values are not established, so describing 0.062 as a frequency is unsupported.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP values and signs for the listed n-grams match the evidence, all are positive for target class 1, and the explanation notes that no feature argues against cryptojacking. It does not claim to see omitted features, though it could be more explicit that they are unknown. Rankings and magnitudes (POP SUB as the top contributor) are correct.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No function names, API calls, occurrences or function context.",
+      "Feature value semantics unestablished, so the \"frequency\" claims are uncertain.",
+      "SHAP baseline and full attributions are missing; top-k only.",
+      "SHAP target class 1 is a configured assumption requiring upstream verification.",
+      "The artifact gives no evidence that n-grams are adjacent or tied to control flow."
+    ],
+    "summary": "The numbers and SHAP directions are accurately reported and the caveats are well stated, with feasible follow-up steps. Technical accuracy is reduced by overreach in interpreting n-grams as hashing, proof-of-work, loops and \"high-confidence cryptojacking\", and by treating feature values as frequencies without established semantics."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "supports a high-confidence cryptojacking classification",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/rf_probability_class_1; /scope_notes/1",
+      "reason": "RF probability and a positive top-k subset do not establish cryptojacking or behavior, and omitted features are unknown.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Rotate followed by add is a classic ARX-style hashing and cipher primitive, and it supports a proof-of-work hashing interpretation.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+      "evidence_reference": "/evidence/top_features/7",
+      "reason": "A mnemonic pair does not establish hashing or proof-of-work, and it is unclear whether the instructions are adjacent in the code.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "Standard decrement-and-branch loop control. It is generic, but it is consistent with tight iteration over rounds or blocks.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+      "evidence_reference": "/evidence/top_features/19; /evidence/occurrences; /evidence/function_context",
+      "reason": "Loop control or iteration over rounds is inferred from n-grams that may not be adjacent, with no control-flow or function context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Very frequent (0.062140) load and zero-extend pattern.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The semantics of feature values are not established, so describing 0.062 as a frequency is unsupported.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "c94b9721e51580933e922c1c3b264db867eecd99f1a6e36a83de8d9635cf3628.exe_analysis.json"
+}

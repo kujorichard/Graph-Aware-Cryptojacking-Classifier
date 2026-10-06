@@ -1,0 +1,259 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_6dd2cc5f8fc827e3",
+  "status": "success",
+  "source_sha256": "de1c51e98633d9b6cd1eb109f5c99b6d5fbb7fa26a03f7ae2f41abc19bd55adb",
+  "input_sha256": "03e569657c744f8824ca7a4edf04ce0839f6f46b3957fe92739b76ad15913727",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "eb6a79fcecb598b626b10d34951d6b51b7c56af25c340a59c208b879f3d2e151.exe",
+      "source_name": "eb6a79fcecb598b626b10d34951d6b51b7c56af25c340a59c208b879f3d2e151.exe.json",
+      "source_path": "ml/dataset/cryptojacking/eb6a79fcecb598b626b10d34951d6b51b7c56af25c340a59c208b879f3d2e151.exe.json",
+      "split": "test",
+      "batch_number": 3,
+      "row_index_in_batch": 19,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "eb6a79fcecb598b626b10d34951d6b51b7c56af25c340a59c208b879f3d2e151.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:59:55.402935+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:59:55.402968+00:00",
+      "error": null,
+      "request_sha256": "b13e679534a6c59933a18f581082aeed146b94f61df094ad911807692a121e5a",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm6ybueLgYqpdqNU9E2V",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the candidate claim that all 20 top SHAP features point toward cryptojacking with none opposing, confirming this holds for the listed top-k subset and that the malware probability of 0.975 aligns with class 1. I'm also noting these features correspond to the most frequent n-grams, occurring at roughly similar low frequency rates.\n\nLooking closer, though, some values like PADDQ MOVDQA fall outside that claimed frequency range, and since feature value semantics (counts vs. frequencies) aren't firmly established, the \"most frequent n-grams\" claim seems unsupported. I'm also flagging overreach in statements tying instruction patterns to \"inner loops\" of hash and cipher routines or ARX-style hash rounds, since there's no real evidence of looping or required adjacency given these are graph-aware n-grams.\n\nOther claims like \"hot loop\" for vectorized mixing, \"thin wrapper or stub functions\" for CALL/RET, and endianness conversion via BSWAP/LEA are speculative extrapolations from adjacency alone, as is linking crypto-primitive instruction profiles to memory-hard mining algorithms or a high-confidence tier. The 0.82 confidence score isn't derived from anything concrete, and the random forest probability isn't calibrated, so labeling this \"likely cryptojacking\" feels overcertain -- though some of the simpler generic descriptions (zeroing registers, double-precision moves, aligned vector moves, multi-precision arithmetic, stack restore) seem fine as-is.\n\nLooking at the SHAP values themselves, they're quite small (roughly 0.005-0.01 per feature), so calling the combination \"strong\" without a baseline for comparison is questionable, especially when features ranked second or third are described as being \"weighted strongly\" by the model. I'm cross-checking the individual SHAP numbers for each instruction pair against what's cited, and they mostly line up correctly.\n\nVerifying the frequency values for each n-gram and the claim that ADD ROR is the top contributor — these check out, and all 20 features are accounted for. The direction and magnitude of the SHAP values seem faithfully reported overall, with maybe one discrepancy about feature frequency falling outside the stated range, though that's a feature-value issue rather than a SHAP faithfulness issue.\n\nFor scoring, I'm leaning toward a technical accuracy of 2-3 — the main evidence is correct, but several interpretive claims (hot loop characterization, mining-specific attribution) overreach what the data actually supports, even though they're appropriately hedged with words like \"suggests\" and \"consistent.\"\n\nCoherence gets a 4, relevance a 4, and actionability a 4: the recommendations are concrete, targeted, proportionate, and acknowledge limitations, though it leans toward \"treat as likely cryptojacking\" without fully prioritizing benign alternatives like crypto libraries or compression tools, even though compiler/runtime/packer explanations are mentioned. I'm now checking which paths in the candidate's explanation correspond to unsupported claims.\n\nI'm going through each claim and flagging them as unsupported where the evidence doesn't clearly establish the behavior being described—things like frequency claims, hash/cipher mixing patterns, and thin wrapper functions all need more grounding before they can be treated as confirmed rather than speculative.\n\nI'm also flagging the rotate-right-plus-addition pattern and byte-swap instruction as unsupported crypto inferences, along with the overall confidence score itself, since the combination of strong SHAP values and a crypto-like instruction profile doesn't yet justify the stated certainty level.\n\n",
+            "signature": "CAQSqjQKEAgSGAI4AUIIdGhpbmtpbmcSDC8mUErXQKjBj5/yFBoMUBkEXHAQP/mp9b9RIjDjsMd2tYcOEwDTrv71+6NB0TlLjwG05g2SxqTG1AVfdINmYRCccYU9bRAucgjZ9qAqxzMZKzIQITKi91Gk96IQIFDxWTvrBJs59K+TBkMBRiRkgru5FqbWTG2MnXZCK7IPwLFreWa3KRs0yCFZNu4szEfmXtV2Q+CUFT22qsgJtBIZQrqYEDP3QKnsOHbwjeLk+7OfmOdWjSF0kviQS5tAKDE0VAgxi63xHdncbSGDrGQBKCiTWzoQxPhCfvk6P/NzCDUlLuzDd13BciopTM5IC+7Xk2dcDdQ9aACiYb65r2ayhtZZ1X+9v0KnuegPN/9vinJvEgp/xCQOAeWuNQ6PEEUHmxrRpb6oQrGsJDk/wtI7i8Mk4+rvUtJWPZcqhBAIlzflhwWy5uFa8nAtr8MRZBPuVEY8W38mSBwVVxDpenD0V5YOcaoL4kW8ejAZfAWy17o4kmrfbbqG4ybCHihbLJLWKmeYr8F0qmKl3XqVpNNmr6cX+I9m/1DVeUMzHgSK0jAcpeP69ETyCSNibaP5JZp1RTHlVwJTYLEWcyQiGYY1565pI5gPwn41MJbun2uyj7syq/OqLL4F5fvZgKH3XarwXaU8AsxaN9GV5eD7MgnKhjOMxgDG4wZPCqsaV1bBsrBMCfbM55tHNczOpCLQykqca0N4Z471GVXBB49TMmB6LAd2ie0jzh0cxGzsUAon253FlRS1c7KL7qdU8EDwiJu5YbU9mMzlbmejY3CcVrW0MwnMGP2NJdOXXNxSvfdZpjNFNcfRZVjKNPAXwdEfmP9XQFW+t7XawV+genQ1ld0TIVPKpajmi86J7PtMssaiwoQkCaAPvaw7ly7enUEXqq9PSE5PBq1gsd578IZyQmtqHWYWcEHKaImvDUx3H0Q7kibmEK0sn4yoXBNIS6zs9IMCIWlq+IcYMy115ZPZEI/nLyOnZrraDuF6iUiZ3cg4Pu/csTsaBpOWcq5x3vmSnGYni1Vb3aYD/Z/cPQfWjFwLmIXaYxbYIhznq/llzAJBNopxPxgo/YSKltAC5/C1fp89VrVSq6CWUQSk+YPWKlePXVb5MqJ+bjk1AHOKCsnnQLRmikGUOP0W0+HqVnCS9WBVjY80AijKe+2yLHMThJ9bJBXYaWxjKe8tOPazGbKRRJYvTYEFWFTCfmDzA8J8zADQoda1/kuH5t+5Uzt5U4gWxaqKWoUewWU5nlhAHlncsIJ4FDm7qmJb6KA4JAd46bZ0qo0LglP1kG4u5Vbks7N+N6NAfNclIi13tostKRFB+eCzbMzyRofxjlkwCCdWBon64FzskAuiwPX5mK1QvLka490evSLQs9/uvooBVXYyEw+HSfctxVXUcu3P1JU8ZCmy95LiHt5Wv8L8r8KfQMRnW+4/+R+IqPF01bsAZ9/+jluuxeXpFSrUQAQCz9tvtxZYd776oSb28WSP2D7X33aTk4/TQDkBwZh17RkFwvUEi854KKych0oKfUQi8VPkIbHTU6XLjnCP7ZOLnXKA4Mgg3iislJKONyDxd97WP66wtz6wO51/joiF9iEIea1N4B9snoM5SQsZF8lqL0vo2dk+PD9pqZaQ903jhvT3U6SOZEwxPKwk/JJk3+cMCHBm5zZra3Za/d9m2oBjabJIijiP0LIMJIy4yvSoQYq+AAR74VKCGEGpN5uva90ZFpus92m4vofftSIhPeL8khJP7s1b+iEE2KmS5ec6Q4g+Tpl9l3+V9ZSOHjrDfwSbqwdtPCqYAiRvIB/ZbctIBnTqKM45XHX+LFmv7hNpOs3IPyDRqtmaCjU9dCvHXbVx0D1Dac+aL0Q9qFFc/1gxasGQWyHazNeBKGNKMm9Lng9+/XlrdktrzhgthW6ep7s1lczKxIlNB1DADpxh/t6Ab3rwGDULx3oG6yz10yOx9uDAtONn/6s9THrXi23Z0sF4xH+WBM7WpqccLl886CReD2fCuX2cPBgo2/4PflHsYSXTiReRXOtwGJ6A5XbuT/jVtN/uN/gjkb4eofvB2MlTOjkqHQyuSjqfIqhnOAOEqny3s23mK7JIzVsvMlHtqIiY+l0Wp0dTVX+/Zzmdc9lm4bC32dkzHyXDAABeDVRN+utvJ0SpOCwE6y1ZhLaV4XxJbyY4GojV9Gwul+M1BYhmnl33A/wj4DlN3oCVk8DjMJBfzI2azIIaVi9lZMbkIv8LCtf7Yt07GK5QhF0g2wiFLDrNIy2MJcTeYmib3WRwPg3Jj2BmUqjEH0kE9w45+QjitIfhSM/D0TwNHa7DQM7xvFuUDTlD8cawl0XqujX9YWvvhxJkbE0IjHuHedgwwuk3rDiqra3gM96KbG/gPQJva9lKBUcnWHu+m2vXODvolHVsAox535Inj1mX3JnrhOYZghCtCzcwWnnLlwIQkKusiMveEAxZijjCZwEdZez93RyorD2hL6lXw1nW5iJfbnNcKj13yaC+NJTjFvmtgcZ/QANTB0hBBORMyoqUfMRiP5GRTI336dfml3S3idAUBh0zQoN1Z35bd+MKI9ju4lYMlunS0tciZncHfqLJXlNKWeGclCthaVZ0todTr0sl/PTTFHNVkcb/dj1Rj2FR0apmHkoiamveqXrC8e739nNaJiHRz5sDHh+mrC9SsK5B81iQndEIvUx3SDQVeQvrdcJyOT/rXgfITBYaSn/V2V6s2WSoZxH9kyXTDQxd5Xi7WFOakjCz3qLuMHUE15VG8d8bZzQ3HjvHGVqAv7kU5EEOLAUqCqvuAvIkr0nLdCtG44MuJjvt6KKZqCuRtOm+lNCbf4ox1hqnFAfAKPx654EnArE2W4s84/W3T/7/oH7NTOH4+0EJGJd10KCY/K6u3NHaTc7+kmrKZnW6fkSFwGKndQGZY6WvoLDNsEg39FV9YveJCVY/CYofMwXm0MTDfDC7njh8jwKy3RztknehoWcaKunWRvxVnjvlA2ePdcmcu+ZkLjVqNmOd0j5T7CreSFhrMZjAsaEy28+8v/LVCTWaX6QuPdI9YGZGnLJOSEFZ21grTSPCP+2eEPg2eTq3di0cHUQOv3wLsZ9MsrLmRJIxaPppFdcOCXjZPC++Fn4lGhQUq6UwoGbcVk+Z/qNIziyxHc48/PpIO01Uz8C37nc60LS9Iafl2QOXw2ylsXpz52Lw+uvxIaxzz88aUqOByxSqKVQ8MnBLELhlEIc2sJiHhH3FA/ZZB0S5c+M3LaYS2mGmOzfkCJb9BzinnYPospDjSJHNt46s3WsJo3GHibELHUNGl9TIoPyO5JA7KWyuwj2cXhe/bKKSKmrUEegA/DJ6bz9yJfNldOKZsz/3pPBkPUzsl1ERj4IblMa9JEROlG7JiZE6kLwaKdPdxvhe09O8DyH7UHMoaNzUYE0O42iVkQ2isjcmVf0+bxA3kE4WBrqts1+TUlqyKhxHTYCWy45dsky7UZ+jkFn3iayW5dodh3AmLE4PUeK2OpaJ4uH1KWR0JumYc2NnijA6ySlSjc6+O097J1bOo1Dc+Nb1eJ5y1BPzyzXU6YEtjt6qlbWg9qdoVf++i7HqPu+FF1MD8YOuXNzCG0FgQJ0QvApkZAskUoiwjaNO0/Dsv9/GE94ESUTT3fo943jCdJu5jemdhmpb21ReJqNIAI3XXpHWco41n6HDKyvjdxfDTNqj9CmT21ysRCsrCBOx+nV9KTtM/kaUWoP/EhZ/uku5nXKA/kcJxfl3PJe4irCbqSiFoaE7J837L4lRQiprUPbt0P7MArgi3xuO/H/G7T+RJm/yJB+LjVLLgKs1Vt5hnormFxD1bCU80z9vPOkLPv+JFVZrBrnGeuSb0iOMuieW306fkAJewqgpjM94HKkvq9UdNspSxXlYpbR+prixC55zTlL+E3PovnUCLnZGJ0wgRR33l9as9WtKiOJJJGB4R9blCJ5jhtFNNlTMElTHsQr05F7gqEr7+rA3RPcQps9exgMYbG0r+VFmsp/VqIDRhn0FghxGlwB1IoEs5XfAEAybtjFyxs2htq6qY/IYwI1eHprITC0H+l2JsPHTHbcnHrla1luAPHZRvCQUH1Yn692LceTbmEf+dedAOquoEYJ2hmvhxi4DFWtvItP3nXJ357IrwVgs14WRHvXkN95mdBMYv4fPSoBjqn9SAJDLCokvagN2C0UhNmlQ5tv/uWbIVs08T5LA/WhagxeE9PFxKufX9BFXExNJ1YeBRcASrxN81ZXTdyMyCma/Sg4UXPTeGos+A65qld4u+C2fotrJ5Tja+NzTjzAzGmPKT5N8aBGf/myh5nKSO4D7HjkBK/lwY0WDREknAcoXg2jIXs3kWkaZSjvP3564RReEy41NZXd4zbG8ONz9I8oX3I47x6L2ysNNOg0PajX2lDeAFxsIW74H33XUKycyL+kTx+27Fi9EF6IpnLIrv5XgrMSa/Lsk4ev/B8+1aeh1gnrtXvP/BkktNFeDTWm/WemmXBl8kzAoSo5LPntzDM6Y130n5+7o6ey4YzYIFpJHudfF8+IJO0aS7zgxLe8snTjRugN+mcFdW5mxDtP/zkgZuD3bU4T82AGf66xVv1XOYKMufjn4hZEhCZ8ZM6bpzzv+xyIpJn1B+mc5qbmcrq3AlnAW7VoiIvQN97RCrprykxwI5qUlhMVJfwbwiYMfJvdYVXQ5VdrrP1UgXGb5pSE9X+EtLtp5smkK1wfqbEpJdPp+tPtPLuC+uyH16IyI02sC7fj+2wJC685RDLHxP8hhkeB+QDOG9HHF9akspozU9E7C1sTg6YPos7knqW1USfnm6kPd1gFLcbT/2YXWk/+VTCIbZ+dSu5hSRGO3hCIu1X1vteQr9wYxY0SJRp3nbrrGEJftorAxk+aIs/7Ulg1uymMY0sunkgJ4aGPLzguziQ6Fr2GOzK64FaRaDbhITO5DUjYCZRPUGU64qLqwYG/ohZMSsiMX7lw17w4iZbdtD9qlkrW8vSqILs8gXO7eLICgyuXPqnFv4DDozpQvgQz0VuqHbiISaPmTzmzT74VDETUSso53xohrGUL4GHWylFZDSLqsLyVfEgVnd1j3o/T8CC3YQ9w7a5dOwNDpky046c6+wL+JKhpiij27cM2282DtgFbGoaysTk9zVMsCRGzC86tKrt+N3Dy30Z9ASJEUXmHiYL0J8+9cQJ/rjKVTBhqDOANmNYYIcsjUn+cqhEvsnqxjP8Ea6sW2hcri2UaIGu53ub5CKN0nOFw2SPX4A3fieUK4ksGZEI9mSUpQNyn1eqVjmiqg2K++W4Uu8ahfjyoN1REBmF0qI6WLC1qnzSuxLN9R7WrOsDpdaV6KlncepHZBjJt1dgWoDDHAq2lW2lATnV+ex0wchwzsO4C0l8X8cScxHkz9BPS5TqqhQ6770KHOKYWnx9v8Nx4faG2UQZc/EwDX5B8Xl53BqHMaM8lvMae9BR3fO6A5LL8KjXC+zD2ruxR/LPapYUeRYgmBaExqSfdOrA5kjd8K3hm7cknArI26oMzwpFZkWK5h7M0/9FSn43iJ7zL0C/hEiLqSOcaAoplMG7xOPOIkj29vxIaRLQU5O+k8Z/oSzU8KeuEmDYOk8/bxF0GJlB+k5EX6HAtgoEjAMwhP8iftPtt58SfmCS0IbwzspAyww3084Px9avQMljE11iHghqgr0emDu8JcKVT7h2MvswS5ObdWvzY+iyQQSOdSJ301HVNNRtZbFDX57vOfDd3H0itAqySEgjKsLDLD19GhNtBQF0EdF5w0w7cI6YGKqkc4JSlyNlhvG0GfEG4MS44o+PJ6V3j0b88WKVWW6VSQfh177/fUkhnsc9KW96OFqoKwUm5AKolpaylVslkiILtOJGhn5bvUXB5niWcf5tJj6zZgNiYOrgug1SoWVEdS4vaW32b54UhqEJUQe7MulcRJ7eNefi6tWSxxJQ8ajyo9vXBedZzXXHMJhIj5Z8jjMJKZiueGSuvNnS1+L69n/Ph0WvBvGr1ZCTUGWxfGz0F/FDMzPVx10iGV3fSzflCj6CuvYgqakZdh80+hjxRxAnzyImp+JeK+623JXBJew0b2VpLnLrHGro+3Efj9IvOuiO5K80e2QOGLYgjAidtKfvYPdNVS2YfEXsumRDZVn0/3wkUbgqx6/Q9rlKYfvy6gjiFMtd88kL9xj4blqDE0jZngHYue7vka+np+S35YlR7hZpnwKXNLkZAHMxKfGNPUj11PnXIcwDU/H/BIzMSVu14XLB/it65tg7VszjAAW4pqsrNPrOKdvSFGxXKgOfjepYW6NpmEZrBdUI/6vxy/Vibb3X5Ik4KaDg3E/UGBf64hrMZnt4FaxIobHp/FmLcdwDCidDIVWFjWFlnY/DxAlTd09UddQqAn17jLUs74fUEwAisY4EZHz3cAxXC/JmKVjXQwaYdspjawlQP3zN8yMaVJYNtWEFjZwc/zUaZGpnuhx+HFbP9yl9g9h/b3lo8JMedqyhhv014TWi5BhmdbrmWSqVJ78xJ6lveroyiDNtERWCIoqxZjUmLTJijgxpvDhRxCpPyh18IRZtJzp1pYDDqESAU7gUxj6Tmpwg/rgs/PgmL1NFwy5Q8rPZTOWAkZLFTQMuVB0Jn6PbYW9qbOxEY0YOmoWAQYoSOPmSSqN1GTB9DwIPJooQsnXQgsTmFC3+IcOFdFgiHaZcRZcYPNj3OOL1yRSWJVKQigxoZYPDBBxu5K9QIzyHLrtF5vTEsjaWT3elswuuS6eGASIL7xK+O4LLm9U3P98r2F1G+yywTVAdQdFjq+2QohbEait4tJD1oRmhbA369zq8Hu/i1WK6GEcw7W8SWkYRfT4OUun7OpoV4/+gTgPT3Kma3LOx4qxeAfMRURjEphMkFMYmRe7yJeatB3G1Q/LFWN6UXD1bNYNaZR1YUEE/afQ/aoDVddHYxMgQ91TUOpw0iJ4huLpiNr4Vk+yRsFIMC/vS8uVRutwlqP7gGvlkGXjvhsXxgVPm/RaA98Q+Ylj4sULL+xAhbInUUM5tLSAi7FS6wBe9Hee0ZV9+uXfbWukfDZB9UeHqGAc73PW5IkOVo3pr6pjDa2L09PaBdxq/gg+GOgpBLHKbvZP4yn8pRaLoxSftS14W1NgtSJKRO7MkfSgF/VMwyaUJ0ARhzu+Lb8UlD0z/ApYrTIVRqdUEMDnoSncCIp108/fuhnrhErHFilljLolyImssncgy2ZDOWl8WjWHUqQPJj9/bdTFmWXogkbrA9MfGCOtiY//+qEC3IsstpFLx1EFNoBBYyKIEJp+awn6IIDKXeLFXySVNn732fj1WtEIyxeHgMvqjdC8KMqTz8hwzaR4struzNcQWKCG6ZCV3Qvc5nUjMFRq52LPAIOCZn+wuCut0yB0leXPgb9wRF7jibz4hzZgnbA5EUBEyGOYNpUxeUqkgczx+0fX3cDIIspQ2iePqDMMR2E8HRK9V0rtv8/w9veKqSCYniC8VrnHfvAiulNoWV/H9S1T6mVM0/nkWCfgLA7djuhagT+A86jo5K7v+GhgleBonPMxAgyoEyso6PELJEiNK/lDdkIsAcH2DWXfubITA2GZAM5mTKnN8q4n2rw6pNV4hCUYPlOupt1QjjofrpoRI7pXIYt67zoSx1lUWIJzJDO1lgIeZP/elikNC2szf3wDNd0V+JvhPFpaNTlzf/kfRdAG5EBhDBx98fVtSX0j89RfwNQaaFQNsPv/BdCEfeHYyUoB/efJjLNrAAxCCiMSu62CJniEAQkfFs1JkivDF6Qa9vKqbQYHRBn7pTL1LFm+KLi4ityPiBBJZLRgtAHLowcuV+P1X4Qcldm9B4fjXyUieknTj0VxejudBYuoYq65OcIyCkk9MVJ/ENKkqSRjhW2r4B+3XKrbk5nuICN+PI4qgqs70EknvJ/FXtJIKcklKj/OoeY4P3FE7Xz58DSBp67kjY8jmw1i2/naQwn3QSfaVNakYUiHsYw/rZSwJ7vFDhPYp0QtF7xuUn97iWOtRmhYxYjPhOs4nY+N93egbUhA4sDisKpvq7jnRNkAwwNv5jS+46y2ByqW+eNRvjEmD/xShL1z3Cvn5HMJiqclXKIVdH21VLCWPXPP6nr7FxYhmsQQXvNQ/ppNsyvpAdmOT2ne/hiVYgedyXsny7ZeJpfmiwzL+M5h7Wyi/7dLKXcnWpumuH7he9Pf9u/mbC6FACMgIOB8IQa/23LikhJJVOSvXfdwIBsHFz6mrY3g1IHWnbdX6zKlVEt/c+Rc4z76cQdZK8jXpT4Di4bpnM2g8c2bLf7fNjfzA8AlV0t8DlUypHs/zXSecPJnx6lDbs3CYoiF6H+pern+nRTa1nbTyyGO5fK4DWn+afpBMywCtKxwgzgpAPnO/uFgXUfl7X+FZLeN0zOy/BBg6rP4gL4u5aBCwt/WbzL0m1glVX4bTp+I27Tk/S0541IWLkXfT8K+wRC2mHQN3K59Z1wvmTP7ux8xovfeY7/1koJRJ9pbQwmfY9qcqs3XahkKma3QfKSqDtd+emBb98unhR54O47NlJIvfbHAug9ebMwEFv/qJrGLjD9F7pm4MtasoPFa7VBLi3BuiYts79gBxmb/CjGP9sVaZfkKssvC66km7BIYrv0cTc6vRuFm0tnBjWIpximJrpMfGYqR3uAWAR4EvgHE/3KUuCNtW5+s4AFUGb+fGW8/3MbrvP7ZAQlFVg/GRf1gnNP+mm88vDZFHzqE9LPs7QqM8j7JcC13yZRng1voEkfEugpLOirZQvwuz764/FDK0Pl4U/XF8VADd4tDGawFUJB9mpVhRf/rfJgKxap4S6vYf+X6+v7pA2ptVkDRLnOwCSw8vF4Gj7vnJdCmRm2iQU66bUnIcAx3qy1Acx63I1XSrq9fBxHFZn+nKfQ0BgB"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_6dd2cc5f8fc827e3\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, n-gram names, SHAP signs and rounded values match the evidence, and generic instruction semantics are mostly right. But it infers hot loops, adjacency and mining-specific hash rounds from mnemonic pairs alone. It also calls the SSE2 n-grams 'the most frequent' although value semantics are unconfirmed and PADDQ MOVDQA (~0.0001) falls outside its stated range.\",\"coherence\":\"The summary, per-feature assessments, indicators and actions are consistently organized. Ambiguous floating-point and stack n-grams are separated from the ARX/SIMD groups. Minor flaws are repetition and a high-confidence tier that rests on weaker reasoning than the text implies.\",\"cybersecurity_relevance\":\"It ties the top n-grams to cryptojacking questions (hash/crypto-like arithmetic, SIMD) and names benign alternatives: compiler, runtime and packer code. It notes the lack of function context. It overweights mining-specific interpretation and does not discuss other legitimate crypto, compression or media code.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: locate the functions, check for a known hash algorithm, run a sandbox for CPU and pool traffic, check pool and wallet strings, and extract IOCs. It states that function-level context is missing and that dynamic and static confirmation is needed. The opening 'Treat as likely cryptojacking' is stronger than the evidence supports.\"},\"unsupported_claims\":[{\"quote\":\"These are also the most frequent n-grams, at roughly 0.0005 to 0.0015 each.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics; /evidence/top_features/18/value\",\"reason\":\"Feature values are not established as frequencies or counts, and omitted features are unknown. PADDQ MOVDQA is about 0.0001, outside the stated range, and ADD ROR is also high.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Several of them match the instruction mix of hash and cipher inner loops used in mining.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context; /evidence/occurrences\",\"reason\":\"Mnemonic n-grams without loop, function or occurrence context do not establish inner loops or a mining instruction mix.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"This is consistent with vectorized mixing of hash or cipher state blocks in a hot loop.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"It assumes instruction adjacency and a hot loop, but no extraction or control-flow context supports either.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It suggests thin wrapper or stub functions, which is structurally unusual.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"No function boundaries or adjacency evidence support inferring wrapper or stub functions or an unusual structure.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Rotate-right combined with addition is characteristic of ARX-style hash and cipher rounds used in proof-of-work computation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0\",\"reason\":\"ROR and ADD mnemonics alone do not establish ARX rounds or proof-of-work computation. They are common in benign code.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"BSWAP LEA (+0.0056) suggests byte-order conversion of hash words.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/12\",\"reason\":\"Speculating about hash-word endianness from BSWAP and LEA is unsupported. BSWAP is common in benign byte handling.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Even so, the combination of many strong, consistent SHAP contributions and a crypto-primitive-like instruction profile supports a high-confidence tier.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/shap_baseline; /evidence/full_attributions\",\"reason\":\"The baseline and omitted features are unknown, SHAP values are small and the profile is not shown to be crypto-specific. The RF probability is not behavioral proof, so the certainty is overstated.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"0.82\",\"candidate_path\":\"/candidate_analysis/confidence_score\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"The 0.82 confidence is not derived from any supplied evidence and is unrelated to the RF probability of 0.975.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 listed top features are positive for configured target class 1, and the reported values match the evidence within rounding. The 'none opposing' claim is confined to the top 20. Calling the contributions 'strong' is loose without a baseline or full attributions, but it does not misstate sign or rank.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function names, occurrences, call context or adjacency/control-flow information are supplied.\",\"feature_value_semantics are not established, so the values cannot be read as frequencies or counts.\",\"The SHAP baseline and full attributions are null, and only the top 20 positive features are given, so omitted features cannot be assessed.\",\"The SHAP target class is a configured assumption pending upstream verification.\",\"The RF probability is not calibrated behavioral proof of cryptojacking.\"],\"summary\":\"SHAP signs, magnitudes and probabilities are reported faithfully. The explanation overreaches by inferring hash loops, mining algorithms, function wrappers and 'most frequent' status from mnemonic n-grams alone, and its high-confidence tier is overstated. Its follow-up actions are practical and appropriately note the missing function context.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7283,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4837,
+          "output_tokens_details": {
+            "thinking_tokens": 2666
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7283,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4837,
+        "output_tokens_details": {
+          "thinking_tokens": 2666
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_6dd2cc5f8fc827e3\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, n-gram names, SHAP signs and rounded values match the evidence, and generic instruction semantics are mostly right. But it infers hot loops, adjacency and mining-specific hash rounds from mnemonic pairs alone. It also calls the SSE2 n-grams 'the most frequent' although value semantics are unconfirmed and PADDQ MOVDQA (~0.0001) falls outside its stated range.\",\"coherence\":\"The summary, per-feature assessments, indicators and actions are consistently organized. Ambiguous floating-point and stack n-grams are separated from the ARX/SIMD groups. Minor flaws are repetition and a high-confidence tier that rests on weaker reasoning than the text implies.\",\"cybersecurity_relevance\":\"It ties the top n-grams to cryptojacking questions (hash/crypto-like arithmetic, SIMD) and names benign alternatives: compiler, runtime and packer code. It notes the lack of function context. It overweights mining-specific interpretation and does not discuss other legitimate crypto, compression or media code.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: locate the functions, check for a known hash algorithm, run a sandbox for CPU and pool traffic, check pool and wallet strings, and extract IOCs. It states that function-level context is missing and that dynamic and static confirmation is needed. The opening 'Treat as likely cryptojacking' is stronger than the evidence supports.\"},\"unsupported_claims\":[{\"quote\":\"These are also the most frequent n-grams, at roughly 0.0005 to 0.0015 each.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics; /evidence/top_features/18/value\",\"reason\":\"Feature values are not established as frequencies or counts, and omitted features are unknown. PADDQ MOVDQA is about 0.0001, outside the stated range, and ADD ROR is also high.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Several of them match the instruction mix of hash and cipher inner loops used in mining.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context; /evidence/occurrences\",\"reason\":\"Mnemonic n-grams without loop, function or occurrence context do not establish inner loops or a mining instruction mix.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"This is consistent with vectorized mixing of hash or cipher state blocks in a hot loop.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"It assumes instruction adjacency and a hot loop, but no extraction or control-flow context supports either.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It suggests thin wrapper or stub functions, which is structurally unusual.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"No function boundaries or adjacency evidence support inferring wrapper or stub functions or an unusual structure.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Rotate-right combined with addition is characteristic of ARX-style hash and cipher rounds used in proof-of-work computation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0\",\"reason\":\"ROR and ADD mnemonics alone do not establish ARX rounds or proof-of-work computation. They are common in benign code.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"BSWAP LEA (+0.0056) suggests byte-order conversion of hash words.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/12\",\"reason\":\"Speculating about hash-word endianness from BSWAP and LEA is unsupported. BSWAP is common in benign byte handling.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Even so, the combination of many strong, consistent SHAP contributions and a crypto-primitive-like instruction profile supports a high-confidence tier.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/shap_baseline; /evidence/full_attributions\",\"reason\":\"The baseline and omitted features are unknown, SHAP values are small and the profile is not shown to be crypto-specific. The RF probability is not behavioral proof, so the certainty is overstated.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"0.82\",\"candidate_path\":\"/candidate_analysis/confidence_score\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"The 0.82 confidence is not derived from any supplied evidence and is unrelated to the RF probability of 0.975.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 listed top features are positive for configured target class 1, and the reported values match the evidence within rounding. The 'none opposing' claim is confined to the top 20. Calling the contributions 'strong' is loose without a baseline or full attributions, but it does not misstate sign or rank.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function names, occurrences, call context or adjacency/control-flow information are supplied.\",\"feature_value_semantics are not established, so the values cannot be read as frequencies or counts.\",\"The SHAP baseline and full attributions are null, and only the top 20 positive features are given, so omitted features cannot be assessed.\",\"The SHAP target class is a configured assumption pending upstream verification.\",\"The RF probability is not calibrated behavioral proof of cryptojacking.\"],\"summary\":\"SHAP signs, magnitudes and probabilities are reported faithfully. The explanation overreaches by inferring hash loops, mining algorithms, function wrappers and 'most frequent' status from mnemonic n-grams alone, and its high-confidence tier is overstated. Its follow-up actions are practical and appropriately note the missing function context.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_6dd2cc5f8fc827e3",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, n-gram names, SHAP signs and rounded values match the evidence, and generic instruction semantics are mostly right. But it infers hot loops, adjacency and mining-specific hash rounds from mnemonic pairs alone. It also calls the SSE2 n-grams 'the most frequent' although value semantics are unconfirmed and PADDQ MOVDQA (~0.0001) falls outside its stated range.",
+      "coherence": "The summary, per-feature assessments, indicators and actions are consistently organized. Ambiguous floating-point and stack n-grams are separated from the ARX/SIMD groups. Minor flaws are repetition and a high-confidence tier that rests on weaker reasoning than the text implies.",
+      "cybersecurity_relevance": "It ties the top n-grams to cryptojacking questions (hash/crypto-like arithmetic, SIMD) and names benign alternatives: compiler, runtime and packer code. It notes the lack of function context. It overweights mining-specific interpretation and does not discuss other legitimate crypto, compression or media code.",
+      "actionable_utility": "The follow-up is concrete and proportionate: locate the functions, check for a known hash algorithm, run a sandbox for CPU and pool traffic, check pool and wallet strings, and extract IOCs. It states that function-level context is missing and that dynamic and static confirmation is needed. The opening 'Treat as likely cryptojacking' is stronger than the evidence supports."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "These are also the most frequent n-grams, at roughly 0.0005 to 0.0015 each.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics; /evidence/top_features/18/value",
+        "reason": "Feature values are not established as frequencies or counts, and omitted features are unknown. PADDQ MOVDQA is about 0.0001, outside the stated range, and ADD ROR is also high.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Several of them match the instruction mix of hash and cipher inner loops used in mining.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/function_context; /evidence/occurrences",
+        "reason": "Mnemonic n-grams without loop, function or occurrence context do not establish inner loops or a mining instruction mix.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "This is consistent with vectorized mixing of hash or cipher state blocks in a hot loop.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "It assumes instruction adjacency and a hot loop, but no extraction or control-flow context supports either.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "It suggests thin wrapper or stub functions, which is structurally unusual.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/function_context",
+        "reason": "No function boundaries or adjacency evidence support inferring wrapper or stub functions or an unusual structure.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Rotate-right combined with addition is characteristic of ARX-style hash and cipher rounds used in proof-of-work computation.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/top_features/0",
+        "reason": "ROR and ADD mnemonics alone do not establish ARX rounds or proof-of-work computation. They are common in benign code.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "BSWAP LEA (+0.0056) suggests byte-order conversion of hash words.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/12",
+        "reason": "Speculating about hash-word endianness from BSWAP and LEA is unsupported. BSWAP is common in benign byte handling.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "Even so, the combination of many strong, consistent SHAP contributions and a crypto-primitive-like instruction profile supports a high-confidence tier.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/shap_baseline; /evidence/full_attributions",
+        "reason": "The baseline and omitted features are unknown, SHAP values are small and the profile is not shown to be crypto-specific. The RF probability is not behavioral proof, so the certainty is overstated.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "0.82",
+        "candidate_path": "/candidate_analysis/confidence_score",
+        "evidence_reference": "/evidence/rf_probability_class_1",
+        "reason": "The 0.82 confidence is not derived from any supplied evidence and is unrelated to the RF probability of 0.975.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 listed top features are positive for configured target class 1, and the reported values match the evidence within rounding. The 'none opposing' claim is confined to the top 20. Calling the contributions 'strong' is loose without a baseline or full attributions, but it does not misstate sign or rank.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No function names, occurrences, call context or adjacency/control-flow information are supplied.",
+      "feature_value_semantics are not established, so the values cannot be read as frequencies or counts.",
+      "The SHAP baseline and full attributions are null, and only the top 20 positive features are given, so omitted features cannot be assessed.",
+      "The SHAP target class is a configured assumption pending upstream verification.",
+      "The RF probability is not calibrated behavioral proof of cryptojacking."
+    ],
+    "summary": "SHAP signs, magnitudes and probabilities are reported faithfully. The explanation overreaches by inferring hash loops, mining algorithms, function wrappers and 'most frequent' status from mnemonic n-grams alone, and its high-confidence tier is overstated. Its follow-up actions are practical and appropriately note the missing function context."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "These are also the most frequent n-grams, at roughly 0.0005 to 0.0015 each.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics; /evidence/top_features/18/value",
+      "reason": "Feature values are not established as frequencies or counts, and omitted features are unknown. PADDQ MOVDQA is about 0.0001, outside the stated range, and ADD ROR is also high.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Several of them match the instruction mix of hash and cipher inner loops used in mining.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/function_context; /evidence/occurrences",
+      "reason": "Mnemonic n-grams without loop, function or occurrence context do not establish inner loops or a mining instruction mix.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "This is consistent with vectorized mixing of hash or cipher state blocks in a hot loop.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "It assumes instruction adjacency and a hot loop, but no extraction or control-flow context supports either.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "It suggests thin wrapper or stub functions, which is structurally unusual.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/function_context",
+      "reason": "No function boundaries or adjacency evidence support inferring wrapper or stub functions or an unusual structure.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Rotate-right combined with addition is characteristic of ARX-style hash and cipher rounds used in proof-of-work computation.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/top_features/0",
+      "reason": "ROR and ADD mnemonics alone do not establish ARX rounds or proof-of-work computation. They are common in benign code.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "BSWAP LEA (+0.0056) suggests byte-order conversion of hash words.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/12",
+      "reason": "Speculating about hash-word endianness from BSWAP and LEA is unsupported. BSWAP is common in benign byte handling.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "Even so, the combination of many strong, consistent SHAP contributions and a crypto-primitive-like instruction profile supports a high-confidence tier.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/shap_baseline; /evidence/full_attributions",
+      "reason": "The baseline and omitted features are unknown, SHAP values are small and the profile is not shown to be crypto-specific. The RF probability is not behavioral proof, so the certainty is overstated.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "0.82",
+      "candidate_path": "/candidate_analysis/confidence_score",
+      "evidence_reference": "/evidence/rf_probability_class_1",
+      "reason": "The 0.82 confidence is not derived from any supplied evidence and is unrelated to the RF probability of 0.975.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "eb6a79fcecb598b626b10d34951d6b51b7c56af25c340a59c208b879f3d2e151.exe_analysis.json"
+}

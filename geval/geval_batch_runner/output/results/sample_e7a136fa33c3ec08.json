@@ -1,0 +1,277 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_e7a136fa33c3ec08",
+  "status": "success",
+  "source_sha256": "73c0349ff5f0b854d37f33c9f3569083d43612f8ccf7f17109edaabbf570b57c",
+  "input_sha256": "61ab8c3037aea191fcec8caf336c77633a96cab31828ed78d32b95e494f6ebb2",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "1961897112dcec4c7074ced36e6fb62994cf987c1b24455c726989f4ee03d2ab.exe",
+      "source_name": "1961897112dcec4c7074ced36e6fb62994cf987c1b24455c726989f4ee03d2ab.exe.json",
+      "source_path": "ml/dataset/cryptojacking/1961897112dcec4c7074ced36e6fb62994cf987c1b24455c726989f4ee03d2ab.exe.json",
+      "split": "test",
+      "batch_number": 1,
+      "row_index_in_batch": 66,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "1961897112dcec4c7074ced36e6fb62994cf987c1b24455c726989f4ee03d2ab.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:14:06.909786+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:14:06.909813+00:00",
+      "error": null,
+      "request_sha256": "fe4dea723c3a1b66fcd86b71ae78790f7caf48bcff93284dc500c0f3f6ca0df3",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkxucULrNMVRCSnj1Wa9",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_e7a136fa33c3ec08\",\"scores\":{\"technical_accuracy\":2,\"coherence\":3,\"cybersecurity_relevance\":3,\"actionable_utility\":3},\"justifications\":{\"technical_accuracy\":\"SHAP values, signs and the RF probability are reported correctly. The interpretations overreach: n-gram mnemonics are turned into 'ARX hash rounds', 'mining or hashing loops' and 'iterative hashing', and 'high-confidence cryptojacking' is asserted. 'ADD ROR has the highest frequency... so it recurs throughout the code' also misreads feature values, which the artifact says are not established as counts. 'Unusual call structure' is only partly hedged.\",\"coherence\":\"The text is organized into clusters and the per-feature list is readable. It contradicts itself: it admits the evidence 'cannot prove mining or network behavior' but then asserts a 'high-confidence cryptojacking assessment'. The recommended action says 'Treat as likely cryptojacking malware'. The explanation, key indicators and per-feature analysis repeat each other heavily.\",\"cybersecurity_relevance\":\"The explanation links the sample's features to crypto-compute patterns and gives investigation steps (sandbox, Stratum, packing). It does not discuss benign alternatives such as legitimate crypto libraries, compression, media codecs or SIMD-optimized libraries. It also ignores that the top-k subset omits other features and that no function context was supplied.\",\"actionable_utility\":\"The follow-up steps are concrete and feasible: sandbox for CPU use and pool connections, locate the functions, check hash constants, inspect CALL RET sites, extract config. They are framed as conditional checks. They are framed around confirming the cryptojacking verdict, with no step to rule out benign crypto code. 'Block the hash and add IOCs' is premature given the stated evidence gaps.\"},\"unsupported_claims\":[{\"quote\":\"ADD ROR has the highest frequency (0.000617), so it recurs throughout the code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence/feature_value_semantics: 'Not established by this artifact; do not treat as raw counts'; no occurrences or function_context\",\"reason\":\"Treats the feature value as a frequency and infers code-wide recurrence, which the artifact does not support.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Rotate-then-add is the core ARX round pattern in hash functions, and its moderate frequency (0.000230) indicates repeated use.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"evidence/top_features[4] value 0.00022977; feature_value_semantics not established\",\"reason\":\"Infers repeated use and a hash-round pattern from an unconfirmed feature value and a two-instruction n-gram.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"SIMD XOR with an unaligned vector store or load matches the vectorized data-mixing seen in mining or hashing loops.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"evidence/occurrences and function_context are empty\",\"reason\":\"Asserts mining or hashing loops without loop, adjacency or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A compare adjacent to a rotate suggests rotation inside loop-controlled rounds, consistent with iterative hashing.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"scope_notes/rules: do not infer adjacency or control flow without extraction/context evidence\",\"reason\":\"Infers loops and iterative hashing from a CMP/ROL n-gram with no control-flow context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"supports a high-confidence cryptojacking assessment\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence/rf_probability_class_1 = 1.0; no strings, APIs or function context\",\"reason\":\"RF probability is not behavioral proof, and the explanation itself concedes it cannot prove mining. This is unsupported certainty.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Treat as likely cryptojacking malware.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"evidence contains only static n-gram SHAP features; no behavioral evidence\",\"reason\":\"Asserts likely cryptojacking as an operational verdict from mnemonic n-grams alone.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Rotation-heavy integer sequences are characteristic of ARX-style hash and cipher rounds.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence/top_features (mnemonic pairs only)\",\"reason\":\"Mnemonics alone do not establish ARX algorithms or hash rounds; the claim is stated as characteristic of this sample.\",\"category\":\"unsupported_crypto\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, magnitudes and the top feature are accurate, and the explanation notes that omitted features are unknown only implicitly. It overstates the SHAP signal as a 'unanimous, strongly weighted signal' supporting high confidence, though the values are small (0.0055 to 0.015) and the top-k subset cannot rule out omitted benign-supporting features. It also reads feature values as frequencies.\",\"discrepancies\":[{\"quote\":\"No n-gram pushes toward benign.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only the top-20 positive features are supplied. This cannot establish that no omitted n-gram supports benign.\"},{\"quote\":\"the model's unanimous, strongly weighted signal from compute-intensive crypto primitives\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The SHAP contributions are small, the subset is partial, and the n-grams are not shown to be crypto primitives.\"},{\"quote\":\"ADD ROR has the highest frequency (0.000617)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The artifact says feature values must not be treated as raw counts without upstream confirmation.\"}]},\"evidence_limitations\":[\"No function names, APIs, strings, occurrences or function context are supplied.\",\"feature_value_semantics is unconfirmed, so values cannot be read as counts or frequencies.\",\"The SHAP baseline and full attributions are null, so omitted features are unknown.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"No behavioral or dynamic evidence is supplied.\"],\"summary\":\"SHAP numbers and signs are reported correctly, but the explanation repeatedly turns mnemonic n-grams into hashing, mining and loop claims. It treats feature values as frequencies and issues a high-confidence cryptojacking verdict while conceding the evidence cannot prove mining. The follow-up steps are concrete, but they lack benign alternatives.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7478,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2411,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7478,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2411,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_e7a136fa33c3ec08\",\"scores\":{\"technical_accuracy\":2,\"coherence\":3,\"cybersecurity_relevance\":3,\"actionable_utility\":3},\"justifications\":{\"technical_accuracy\":\"SHAP values, signs and the RF probability are reported correctly. The interpretations overreach: n-gram mnemonics are turned into 'ARX hash rounds', 'mining or hashing loops' and 'iterative hashing', and 'high-confidence cryptojacking' is asserted. 'ADD ROR has the highest frequency... so it recurs throughout the code' also misreads feature values, which the artifact says are not established as counts. 'Unusual call structure' is only partly hedged.\",\"coherence\":\"The text is organized into clusters and the per-feature list is readable. It contradicts itself: it admits the evidence 'cannot prove mining or network behavior' but then asserts a 'high-confidence cryptojacking assessment'. The recommended action says 'Treat as likely cryptojacking malware'. The explanation, key indicators and per-feature analysis repeat each other heavily.\",\"cybersecurity_relevance\":\"The explanation links the sample's features to crypto-compute patterns and gives investigation steps (sandbox, Stratum, packing). It does not discuss benign alternatives such as legitimate crypto libraries, compression, media codecs or SIMD-optimized libraries. It also ignores that the top-k subset omits other features and that no function context was supplied.\",\"actionable_utility\":\"The follow-up steps are concrete and feasible: sandbox for CPU use and pool connections, locate the functions, check hash constants, inspect CALL RET sites, extract config. They are framed as conditional checks. They are framed around confirming the cryptojacking verdict, with no step to rule out benign crypto code. 'Block the hash and add IOCs' is premature given the stated evidence gaps.\"},\"unsupported_claims\":[{\"quote\":\"ADD ROR has the highest frequency (0.000617), so it recurs throughout the code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence/feature_value_semantics: 'Not established by this artifact; do not treat as raw counts'; no occurrences or function_context\",\"reason\":\"Treats the feature value as a frequency and infers code-wide recurrence, which the artifact does not support.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Rotate-then-add is the core ARX round pattern in hash functions, and its moderate frequency (0.000230) indicates repeated use.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"evidence/top_features[4] value 0.00022977; feature_value_semantics not established\",\"reason\":\"Infers repeated use and a hash-round pattern from an unconfirmed feature value and a two-instruction n-gram.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"SIMD XOR with an unaligned vector store or load matches the vectorized data-mixing seen in mining or hashing loops.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"evidence/occurrences and function_context are empty\",\"reason\":\"Asserts mining or hashing loops without loop, adjacency or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A compare adjacent to a rotate suggests rotation inside loop-controlled rounds, consistent with iterative hashing.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"scope_notes/rules: do not infer adjacency or control flow without extraction/context evidence\",\"reason\":\"Infers loops and iterative hashing from a CMP/ROL n-gram with no control-flow context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"supports a high-confidence cryptojacking assessment\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence/rf_probability_class_1 = 1.0; no strings, APIs or function context\",\"reason\":\"RF probability is not behavioral proof, and the explanation itself concedes it cannot prove mining. This is unsupported certainty.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Treat as likely cryptojacking malware.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"evidence contains only static n-gram SHAP features; no behavioral evidence\",\"reason\":\"Asserts likely cryptojacking as an operational verdict from mnemonic n-grams alone.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Rotation-heavy integer sequences are characteristic of ARX-style hash and cipher rounds.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence/top_features (mnemonic pairs only)\",\"reason\":\"Mnemonics alone do not establish ARX algorithms or hash rounds; the claim is stated as characteristic of this sample.\",\"category\":\"unsupported_crypto\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, magnitudes and the top feature are accurate, and the explanation notes that omitted features are unknown only implicitly. It overstates the SHAP signal as a 'unanimous, strongly weighted signal' supporting high confidence, though the values are small (0.0055 to 0.015) and the top-k subset cannot rule out omitted benign-supporting features. It also reads feature values as frequencies.\",\"discrepancies\":[{\"quote\":\"No n-gram pushes toward benign.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only the top-20 positive features are supplied. This cannot establish that no omitted n-gram supports benign.\"},{\"quote\":\"the model's unanimous, strongly weighted signal from compute-intensive crypto primitives\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The SHAP contributions are small, the subset is partial, and the n-grams are not shown to be crypto primitives.\"},{\"quote\":\"ADD ROR has the highest frequency (0.000617)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The artifact says feature values must not be treated as raw counts without upstream confirmation.\"}]},\"evidence_limitations\":[\"No function names, APIs, strings, occurrences or function context are supplied.\",\"feature_value_semantics is unconfirmed, so values cannot be read as counts or frequencies.\",\"The SHAP baseline and full attributions are null, so omitted features are unknown.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"No behavioral or dynamic evidence is supplied.\"],\"summary\":\"SHAP numbers and signs are reported correctly, but the explanation repeatedly turns mnemonic n-grams into hashing, mining and loop claims. It treats feature values as frequencies and issues a high-confidence cryptojacking verdict while conceding the evidence cannot prove mining. The follow-up steps are concrete, but they lack benign alternatives.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_e7a136fa33c3ec08",
+    "scores": {
+      "technical_accuracy": 2,
+      "coherence": 3,
+      "cybersecurity_relevance": 3,
+      "actionable_utility": 3
+    },
+    "justifications": {
+      "technical_accuracy": "SHAP values, signs and the RF probability are reported correctly. The interpretations overreach: n-gram mnemonics are turned into 'ARX hash rounds', 'mining or hashing loops' and 'iterative hashing', and 'high-confidence cryptojacking' is asserted. 'ADD ROR has the highest frequency... so it recurs throughout the code' also misreads feature values, which the artifact says are not established as counts. 'Unusual call structure' is only partly hedged.",
+      "coherence": "The text is organized into clusters and the per-feature list is readable. It contradicts itself: it admits the evidence 'cannot prove mining or network behavior' but then asserts a 'high-confidence cryptojacking assessment'. The recommended action says 'Treat as likely cryptojacking malware'. The explanation, key indicators and per-feature analysis repeat each other heavily.",
+      "cybersecurity_relevance": "The explanation links the sample's features to crypto-compute patterns and gives investigation steps (sandbox, Stratum, packing). It does not discuss benign alternatives such as legitimate crypto libraries, compression, media codecs or SIMD-optimized libraries. It also ignores that the top-k subset omits other features and that no function context was supplied.",
+      "actionable_utility": "The follow-up steps are concrete and feasible: sandbox for CPU use and pool connections, locate the functions, check hash constants, inspect CALL RET sites, extract config. They are framed as conditional checks. They are framed around confirming the cryptojacking verdict, with no step to rule out benign crypto code. 'Block the hash and add IOCs' is premature given the stated evidence gaps."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "ADD ROR has the highest frequency (0.000617), so it recurs throughout the code.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "evidence/feature_value_semantics: 'Not established by this artifact; do not treat as raw counts'; no occurrences or function_context",
+        "reason": "Treats the feature value as a frequency and infers code-wide recurrence, which the artifact does not support.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Rotate-then-add is the core ARX round pattern in hash functions, and its moderate frequency (0.000230) indicates repeated use.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "evidence/top_features[4] value 0.00022977; feature_value_semantics not established",
+        "reason": "Infers repeated use and a hash-round pattern from an unconfirmed feature value and a two-instruction n-gram.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "SIMD XOR with an unaligned vector store or load matches the vectorized data-mixing seen in mining or hashing loops.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+        "evidence_reference": "evidence/occurrences and function_context are empty",
+        "reason": "Asserts mining or hashing loops without loop, adjacency or context evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "A compare adjacent to a rotate suggests rotation inside loop-controlled rounds, consistent with iterative hashing.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+        "evidence_reference": "scope_notes/rules: do not infer adjacency or control flow without extraction/context evidence",
+        "reason": "Infers loops and iterative hashing from a CMP/ROL n-gram with no control-flow context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "supports a high-confidence cryptojacking assessment",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "evidence/rf_probability_class_1 = 1.0; no strings, APIs or function context",
+        "reason": "RF probability is not behavioral proof, and the explanation itself concedes it cannot prove mining. This is unsupported certainty.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Treat as likely cryptojacking malware.",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "evidence contains only static n-gram SHAP features; no behavioral evidence",
+        "reason": "Asserts likely cryptojacking as an operational verdict from mnemonic n-grams alone.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Rotation-heavy integer sequences are characteristic of ARX-style hash and cipher rounds.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "evidence/top_features (mnemonic pairs only)",
+        "reason": "Mnemonics alone do not establish ARX algorithms or hash rounds; the claim is stated as characteristic of this sample.",
+        "category": "unsupported_crypto"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "Signs, magnitudes and the top feature are accurate, and the explanation notes that omitted features are unknown only implicitly. It overstates the SHAP signal as a 'unanimous, strongly weighted signal' supporting high confidence, though the values are small (0.0055 to 0.015) and the top-k subset cannot rule out omitted benign-supporting features. It also reads feature values as frequencies.",
+      "discrepancies": [
+        {
+          "quote": "No n-gram pushes toward benign.",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "Only the top-20 positive features are supplied. This cannot establish that no omitted n-gram supports benign."
+        },
+        {
+          "quote": "the model's unanimous, strongly weighted signal from compute-intensive crypto primitives",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The SHAP contributions are small, the subset is partial, and the n-grams are not shown to be crypto primitives."
+        },
+        {
+          "quote": "ADD ROR has the highest frequency (0.000617)",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The artifact says feature values must not be treated as raw counts without upstream confirmation."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "No function names, APIs, strings, occurrences or function context are supplied.",
+      "feature_value_semantics is unconfirmed, so values cannot be read as counts or frequencies.",
+      "The SHAP baseline and full attributions are null, so omitted features are unknown.",
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "No behavioral or dynamic evidence is supplied."
+    ],
+    "summary": "SHAP numbers and signs are reported correctly, but the explanation repeatedly turns mnemonic n-grams into hashing, mining and loop claims. It treats feature values as frequencies and issues a high-confidence cryptojacking verdict while conceding the evidence cannot prove mining. The follow-up steps are concrete, but they lack benign alternatives."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "ADD ROR has the highest frequency (0.000617), so it recurs throughout the code.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "evidence/feature_value_semantics: 'Not established by this artifact; do not treat as raw counts'; no occurrences or function_context",
+      "reason": "Treats the feature value as a frequency and infers code-wide recurrence, which the artifact does not support.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Rotate-then-add is the core ARX round pattern in hash functions, and its moderate frequency (0.000230) indicates repeated use.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "evidence/top_features[4] value 0.00022977; feature_value_semantics not established",
+      "reason": "Infers repeated use and a hash-round pattern from an unconfirmed feature value and a two-instruction n-gram.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "SIMD XOR with an unaligned vector store or load matches the vectorized data-mixing seen in mining or hashing loops.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+      "evidence_reference": "evidence/occurrences and function_context are empty",
+      "reason": "Asserts mining or hashing loops without loop, adjacency or context evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "A compare adjacent to a rotate suggests rotation inside loop-controlled rounds, consistent with iterative hashing.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+      "evidence_reference": "scope_notes/rules: do not infer adjacency or control flow without extraction/context evidence",
+      "reason": "Infers loops and iterative hashing from a CMP/ROL n-gram with no control-flow context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "supports a high-confidence cryptojacking assessment",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "evidence/rf_probability_class_1 = 1.0; no strings, APIs or function context",
+      "reason": "RF probability is not behavioral proof, and the explanation itself concedes it cannot prove mining. This is unsupported certainty.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Treat as likely cryptojacking malware.",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "evidence contains only static n-gram SHAP features; no behavioral evidence",
+      "reason": "Asserts likely cryptojacking as an operational verdict from mnemonic n-grams alone.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Rotation-heavy integer sequences are characteristic of ARX-style hash and cipher rounds.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "evidence/top_features (mnemonic pairs only)",
+      "reason": "Mnemonics alone do not establish ARX algorithms or hash rounds; the claim is stated as characteristic of this sample.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "No n-gram pushes toward benign.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "Only the top-20 positive features are supplied. This cannot establish that no omitted n-gram supports benign.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "the model's unanimous, strongly weighted signal from compute-intensive crypto primitives",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "The SHAP contributions are small, the subset is partial, and the n-grams are not shown to be crypto primitives.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "ADD ROR has the highest frequency (0.000617)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "The artifact says feature values must not be treated as raw counts without upstream confirmation.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "1961897112dcec4c7074ced36e6fb62994cf987c1b24455c726989f4ee03d2ab.exe_analysis.json"
+}

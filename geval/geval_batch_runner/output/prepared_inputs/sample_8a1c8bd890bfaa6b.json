@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_8a1c8bd890bfaa6b",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.625,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "SBB INC",
+        "value": 6.552392733283341e-05,
+        "shap_value": 0.012728726201530247
+      },
+      {
+        "ngram": "DEC JZ",
+        "value": 0.00031451485119760036,
+        "shap_value": 0.010464623635305802
+      },
+      {
+        "ngram": "MOVDQA MOVAPS",
+        "value": 0.00015725742559880018,
+        "shap_value": 0.010405702256871966
+      },
+      {
+        "ngram": "MOV SHRD",
+        "value": 6.552392733283341e-05,
+        "shap_value": 0.009353585945663948
+      },
+      {
+        "ngram": "ADC SUB",
+        "value": 6.552392733283341e-05,
+        "shap_value": 0.009295037441746489
+      },
+      {
+        "ngram": "MOV ROL",
+        "value": 5.241914186626673e-05,
+        "shap_value": 0.009004916187062837
+      },
+      {
+        "ngram": "ROL MOV",
+        "value": 0.00010483828373253345,
+        "shap_value": 0.008439492292792665
+      },
+      {
+        "ngram": "XOR ADC",
+        "value": 0.00019657178199850023,
+        "shap_value": 0.007129189153053534
+      },
+      {
+        "ngram": "PXOR MOVDQA",
+        "value": 6.552392733283341e-05,
+        "shap_value": 0.007028410423548508
+      },
+      {
+        "ngram": "CALL RET",
+        "value": 1.3104785466566682e-05,
+        "shap_value": 0.007026597305693005
+      },
+      {
+        "ngram": "ADD JMP",
+        "value": 0.0012056402629241347,
+        "shap_value": 0.0069598415547987725
+      },
+      {
+        "ngram": "SHRD XOR",
+        "value": 3.9314356399700046e-05,
+        "shap_value": 0.006780216410145075
+      },
+      {
+        "ngram": "SHRD MOV",
+        "value": 0.0008911254117265344,
+        "shap_value": 0.006753846190921479
+      },
+      {
+        "ngram": "ADC XOR",
+        "value": 3.9314356399700046e-05,
+        "shap_value": 0.0066190193467435855
+      },
+      {
+        "ngram": "PXOR MOVDQU",
+        "value": 0.00013104785466566682,
+        "shap_value": 0.0063734731582394885
+      },
+      {
+        "ngram": "PAND PMOVMSKB",
+        "value": 0.00011794306919910014,
+        "shap_value": 0.006369476241427492
+      },
+      {
+        "ngram": "SHRD SHR",
+        "value": 0.0010483828373253345,
+        "shap_value": 0.006353832344391699
+      },
+      {
+        "ngram": "ROL ADD",
+        "value": 0.0003669339930638671,
+        "shap_value": 0.006118020678995096
+      },
+      {
+        "ngram": "POP CALL",
+        "value": 1.3104785466566682e-05,
+        "shap_value": 0.005887185600644767
+      },
+      {
+        "ngram": "MUL SETO",
+        "value": 3.9314356399700046e-05,
+        "shap_value": 0.0057103003312553155
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest assigns a probability of 0.6250 to the malware class, which is above the decision boundary but not decisive. All 20 top n-grams push toward cryptojacking, with SHAP values between +0.0057 and +0.0127. No single feature dominates, and each n-gram appears at a very low relative frequency (0.000013 to 0.001206). The evidence contains no function names, API calls, or strings, so nothing ties the patterns to mining behavior directly. The strongest theme is multi-precision and bit-rotation arithmetic: SBB INC, ADC SUB, XOR ADC, ADC XOR, MOV SHRD, SHRD XOR, SHRD MOV, SHRD SHR, MOV ROL, ROL MOV, ROL ADD, and MUL SETO. This kind of code is typical of hashing and big-number routines, which proof-of-work mining uses. Cryptographic libraries, compression code, and checksum code use the same instructions, so they are not specific to mining. A second theme is SIMD data handling: MOVDQA MOVAPS, PXOR MOVDQA, PXOR MOVDQU, and PAND PMOVMSKB. This is consistent with vectorized hashing or XOR-based state manipulation, but PAND PMOVMSKB is also a common idiom in optimized string and memory routines. The remaining n-grams (DEC JZ, ADD JMP, CALL RET, POP CALL) are generic control-flow patterns with little discriminative meaning on their own. Overall, the profile fits compute-heavy crypto or hash code but cannot separate a miner from a legitimate crypto library, so the classification is inconclusive.",
+    "evidence_analysis": [
+      {
+        "ngram": "SBB INC",
+        "shap_contribution": 0.012729,
+        "assessment": "Borrow-propagating subtract followed by an increment. This suggests multi-word arithmetic found in big-integer or hash routines. It is the top contributor but not mining-specific."
+      },
+      {
+        "ngram": "DEC JZ",
+        "shap_contribution": 0.010465,
+        "assessment": "A loop counter decrement with a conditional exit. Generic control flow that may reflect tight hashing loops, but it is weak evidence."
+      },
+      {
+        "ngram": "MOVDQA MOVAPS",
+        "shap_contribution": 0.010406,
+        "assessment": "Aligned 128-bit SIMD moves, consistent with vectorized processing of hash state or buffers. Also common in compiler-generated memory code."
+      },
+      {
+        "ngram": "MOV SHRD",
+        "shap_contribution": 0.009354,
+        "assessment": "Double-precision shift on multi-word values. This points to 64-bit-style arithmetic on 32-bit code or big-number operations, relevant to crypto primitives."
+      },
+      {
+        "ngram": "ADC SUB",
+        "shap_contribution": 0.009295,
+        "assessment": "Carry-propagating arithmetic that suggests multi-precision math. Supports a crypto-computation theme but is not conclusive."
+      },
+      {
+        "ngram": "MOV ROL",
+        "shap_contribution": 0.009005,
+        "assessment": "Bit rotation is characteristic of hash and cipher rounds, such as those in mining algorithms, but it also appears in many legitimate hash functions."
+      },
+      {
+        "ngram": "ROL MOV",
+        "shap_contribution": 0.008439,
+        "assessment": "Rotation followed by a move. This reinforces the rotate-heavy hashing theme and is consistent with the MOV ROL signal."
+      },
+      {
+        "ngram": "XOR ADC",
+        "shap_contribution": 0.007129,
+        "assessment": "Mixing XOR with carry arithmetic is typical of round functions or big-number operations. Moderately suggestive of crypto computation."
+      },
+      {
+        "ngram": "PXOR MOVDQA",
+        "shap_contribution": 0.007028,
+        "assessment": "SIMD XOR with an aligned move, consistent with vectorized state mixing in hash or cipher code."
+      },
+      {
+        "ngram": "CALL RET",
+        "shap_contribution": 0.007027,
+        "assessment": "Very rare (frequency 0.000013) and generic. It may indicate small thunk or wrapper functions and has little interpretable meaning."
+      },
+      {
+        "ngram": "ADD JMP",
+        "shap_contribution": 0.00696,
+        "assessment": "The most frequent of the top n-grams, but generic control flow. It contributes little specific evidence."
+      },
+      {
+        "ngram": "SHRD XOR",
+        "shap_contribution": 0.00678,
+        "assessment": "Multi-word shifts combined with XOR, consistent with wide-integer bit mixing in hashing or big-number code."
+      },
+      {
+        "ngram": "SHRD MOV",
+        "shap_contribution": 0.006754,
+        "assessment": "Relatively frequent (0.000891). It indicates repeated double-precision shift operations, which fits arithmetic-heavy routines."
+      },
+      {
+        "ngram": "ADC XOR",
+        "shap_contribution": 0.006619,
+        "assessment": "The reverse ordering of XOR ADC, which together suggest carry arithmetic interleaved with XOR mixing."
+      },
+      {
+        "ngram": "PXOR MOVDQU",
+        "shap_contribution": 0.006373,
+        "assessment": "SIMD XOR with unaligned loads or stores, consistent with vectorized buffer processing. Not mining-specific."
+      },
+      {
+        "ngram": "PAND PMOVMSKB",
+        "shap_contribution": 0.006369,
+        "assessment": "A SIMD mask-and-extract idiom common in optimized string and memory routines, so it is ambiguous for cryptojacking."
+      },
+      {
+        "ngram": "SHRD SHR",
+        "shap_contribution": 0.006354,
+        "assessment": "Frequent (0.001048) shift chains for multi-word values. This supports the arithmetic-heavy profile and is also seen in legitimate big-number code."
+      },
+      {
+        "ngram": "ROL ADD",
+        "shap_contribution": 0.006118,
+        "assessment": "Rotate-and-add pairs resemble ARX-style hash and cipher round operations, a moderate indicator of crypto computation."
+      },
+      {
+        "ngram": "POP CALL",
+        "shap_contribution": 0.005887,
+        "assessment": "Generic stack and call sequence with very low frequency. It has minimal interpretive value."
+      },
+      {
+        "ngram": "MUL SETO",
+        "shap_contribution": 0.00571,
+        "assessment": "Multiplication with overflow detection, which suggests checked or big-number arithmetic. It is weakly related to crypto computation."
+      }
+    ],
+    "confidence_score": 0.55,
+    "key_indicators": [
+      "Multi-precision arithmetic n-grams (SBB INC, ADC SUB, XOR ADC, ADC XOR, MUL SETO)",
+      "Rotate and double-shift patterns (MOV ROL, ROL MOV, ROL ADD, SHRD XOR, SHRD MOV, SHRD SHR) consistent with hash or cipher rounds",
+      "SIMD XOR and move patterns (PXOR MOVDQA, PXOR MOVDQU, MOVDQA MOVAPS, PAND PMOVMSKB)",
+      "All 20 top features push toward cryptojacking, but with small, evenly spread SHAP values and no single dominant signal",
+      "No function names, APIs, or strings in the evidence to confirm mining behavior",
+      "Model probability of 0.625 is only moderately above the decision threshold"
+    ],
+    "recommended_action": "Treat as suspicious but unconfirmed. Run dynamic analysis in a sandbox and check for sustained high CPU use, mining-pool network connections, and Stratum protocol traffic. Statically, look for mining-algorithm constants and configuration strings such as wallet addresses and pool URLs. Also check whether the rotate, shift, and SIMD routines belong to a legitimate crypto or compression library. Compare against known miner families and check reputation sources before escalating or clearing."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

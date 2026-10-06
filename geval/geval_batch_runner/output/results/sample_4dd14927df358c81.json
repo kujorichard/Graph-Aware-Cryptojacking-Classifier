@@ -1,0 +1,249 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_4dd14927df358c81",
+  "status": "success",
+  "source_sha256": "132585ecf75b729b776b1ff77db9286bae102d92e1cefa0a50d682695d3154bc",
+  "input_sha256": "5f77fcb3c2312e211e4d0f676ae679dcb971944e1ec9c554434e905c1006991a",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "47b268c21591069bfe4099833ad66b8138a53ab2dcb866e040d466aee1f8624c.elf",
+      "source_name": "47b268c21591069bfe4099833ad66b8138a53ab2dcb866e040d466aee1f8624c.elf.json",
+      "source_path": "ml/dataset/cryptojacking/47b268c21591069bfe4099833ad66b8138a53ab2dcb866e040d466aee1f8624c.elf.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 35,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "47b268c21591069bfe4099833ad66b8138a53ab2dcb866e040d466aee1f8624c.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:31:40.049375+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:31:40.049420+00:00",
+      "error": null,
+      "request_sha256": "a3849146c4ee2b7d6c1bd1978e9b52fe4015593a9394a17656049b52c8a54cd2",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkzFF4u1dyFzezSbkuLa",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF prediction with probability 1.0, confirming the top 20 SHAP features all point positively toward class 1, and verifying that the candidate's claim about unanimous direction holds true within that top-20 set, though I'm noting the slight wording discrepancy between \"malware\" and \"cryptojacking.\"\n\nGoing through the SHAP values one by one, I'm cross-checking each rounded number against the original data for instruction pairs like CALL-RET, PUSH-RET, CDQ-MOV, and others, confirming they all match correctly.\n\nI also catch a small inconsistency: the claim that POP XCHG carries one of the highest SHAP weights doesn't hold up since it ranks 12th, well behind CALL RET, PUSH RET, and CDQ MOV at the top — a minor misrepresentation worth flagging.\n\nLooking at the rest of the candidate's reasoning, several statements overreach the evidence: calling CALL RET \"short functions or call-then-return thunks\" asserts a structural claim with unwarranted certainty, and the graph-aware n-gram point is glossed over since these patterns need not be adjacent. The description of sign-extension-before-division and XOR-as-zeroing are reasonable instructional interpretations but still stated as fact rather than hedged possibilities, and the \"standard frame-pointer teardown\" claim for MOV/LEAVE is similarly asserted without qualification.\n\nI also notice the candidate leans on a signed-division narrative across CDQ, LEA IDIV, and SUB SBB bigrams, which is somewhat overreaching since CDQ alone doesn't prove division is happening, though it does hedge this later by calling the reading speculative. There's a minor tension between labeling the result \"low-confidence\" while still assigning a 0.6 confidence score, and the candidate treats numeric feature values as frequencies despite semantics not being established.\n\nCalling one n-gram \"the most frequent\" is actually just the top entry among the top-20 shown, not a verified global maximum — that's an unsupported certainty claim worth flagging. Similarly, describing a rare sequence as \"atypical of plain compiler output\" or \"usually hand-written\" is an unsupported assumption, and labeling the binary as MALWARE based on rf_prediction=1 skips over the fact that the target class (possibly \"cryptojacking\") is itself a configured assumption the candidate doesn't acknowledge.\n\nOn SHAP faithfulness, the direction and magnitude mostly track correctly, with CALL/RET correctly called the strongest driver, but claiming POP XCHG carries \"the highest SHAP weights\" is wrong since it ranks around 12th of 20 — that's a real misattribution, not just a minor wording issue, so I'm leaning toward marking faithfulness as false. There's also an overgeneralization risk: the \"unanimous\" framing is scoped to just the top-20 n-grams, yet the recommendation language about \"unanimous malware signal\" could be read as applying more broadly than the evidence supports.\n\nFor scoring, technical accuracy lands around 3 — the numbers themselves are correct but there's overreach in claims like \"most frequent,\" the thunk/signed-division theme, and \"atypical of compiler output,\" plus the POP XCHG ranking error and treating raw values as frequencies despite the stated caveat. Coherence and relevance both come in around 4, with a minor inconsistency between the \"low-confidence\" tier language and the stated 0.6 confidence score, and some repetition. Actionability also scores around 4 since the recommended steps are concrete, proportionate, and include sandboxing, though step 1 depends on mapping occurrences that aren't fully specified.\n\nNow I'm cataloging specific unsupported claims with their JSON pointers so I can flag each one precisely — starting with the \"most frequent n-gram\" claim at evidence_analysis/16, which overstates certainty since this is only a top-k list without established value semantics, and the claim about call-then-return thunks at evidence_analysis/0, which asserts behavioral context that isn't supported by any adjacency or surrounding evidence.\n\nContinuing through the list: I'm noting claims about the pattern being \"atypical of plain compiler output,\" the \"signed-division theme\" assertion (which overreaches since only IDIV appears, not confirmed adjacency with CDQ/XOR), the SHAP-weight misrepresentation for short-sequence patterns, and the frame-pointer teardown claim — along with the \"unanimous malware signal\" phrase in the recommended action, which also overstates certainty given this is only top-k data.\n\nI'll keep items 5-6 and now put together the final output as a single compact JSON line.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_4dd14927df358c81\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, top n-gram names, SHAP values and feature values are all reported correctly within rounding. However, several interpretations go beyond the evidence: 'The most frequent n-gram', 'very short functions or call-then-return thunks', 'a consistent signed-division theme', and POP XCHG listed among the 'highest SHAP weights'. It also treats feature values as frequencies, although the artifact says their semantics are not established.\",\"coherence\":\"The explanation is organized from model signal to caveats to interpretation to tier to actions, and the low-confidence tier matches the hedged conclusion. Minor issues are some repetition and the tension between the 'low-confidence' tier and the 0.6 confidence_score. 'Unanimous malware signal' also loosely generalizes the top-20 result.\",\"cybersecurity_relevance\":\"It ties sample-specific n-grams to cryptojacking questions, states that no APIs, strings or function context are available, and offers benign alternatives such as ordinary compiled call-heavy code. Hash and numeric-routine readings are labeled speculative. Some per-n-gram commentary is generic, and it assumes adjacent control-flow semantics.\",\"actionable_utility\":\"The recommended steps are concrete, feasible and proportionate: locate where the n-grams occur, check strings, config and network indicators, run a sandbox with CPU and network monitoring, and compare against known miner families. Each step is tied to the evidence gaps and framed as verification rather than observed behavior. They are not strictly prioritized, and step 1 depends on occurrence data the artifact lacks.\"},\"unsupported_claims\":[{\"quote\":\"The most frequent n-gram (0.075261).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"evidence.top_features[16]; evidence.feature_value_semantics; evidence.full_attributions=null\",\"reason\":\"Only the top 20 SHAP-ranked features are supplied, so this value cannot be the global most-frequent n-gram. The artifact also says feature values should not be treated as counts or frequencies.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"It points to very short functions or call-then-return thunks.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"evidence.occurrences=[]; evidence.function_context=[]\",\"reason\":\"Function boundaries, adjacency and control flow are not supplied. Graph-aware n-grams need not be adjacent, so the structural claim is not supported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It is atypical of plain compiler output, but the evidence does not show its context.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"evidence.top_features[1]; no baseline or corpus data (shap_baseline=null)\",\"reason\":\"There is no compiler or corpus comparison data to support this typicality claim.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Along with CDQ MOV and LEA IDIV, it shows a consistent signed-division theme.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"evidence.top_features (CDQ MOV, LEA IDIV, XOR CDQ); occurrences=[]\",\"reason\":\"Only LEA IDIV contains a division mnemonic. Without occurrence or adjacency context, the bigrams cannot be shown to form a division pattern, and 'shows' is stated with too much certainty.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Unusual short-sequence patterns (CALL RET, PUSH RET, POP XCHG) that carry the highest SHAP weights\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"evidence_reference\":\"evidence.top_features[11] (POP XCHG shap_value 0.010773)\",\"reason\":\"POP XCHG is the 12th of 20 features, below CDQ MOV, CALL PUSH, MOV RET and others. It does not carry the highest SHAP weights.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"Treat the sample as suspicious, given the model's unanimous malware signal\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"evidence.full_attributions=null; scope_notes (omitted features unknown)\",\"reason\":\"Unanimity is established only for the displayed top-20 features, not for the model's full attribution set.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, magnitudes and the 'all 20 positive' statement for the top-k subset are reported accurately. One ranking misrepresentation and one loose generalization of the top-k result remain.\",\"discrepancies\":[{\"quote\":\"Unusual short-sequence patterns (CALL RET, PUSH RET, POP XCHG) that carry the highest SHAP weights\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"reason\":\"POP XCHG ranks 12th of 20 (+0.010773), so it is not among the highest SHAP weights.\"},{\"quote\":\"given the model's unanimous malware signal\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"reason\":\"Unanimity applies only to the displayed top-20 subset, not to all features.\"}]},\"evidence_limitations\":[\"The artifact has no occurrences, function context, strings, API references or SHAP baseline, and full_attributions is null.\",\"The SHAP target class is a configured assumption that needs upstream verification. The 'malware' and 'cryptojacking' labels rest on that assumption.\",\"The feature value semantics are not established, so frequency or count interpretations are unsupported.\",\"The top-k subset cannot show that omitted features do not support the benign class.\",\"An RF probability of 1.0 is not behavioral proof.\"],\"summary\":\"The explanation reports the numbers and SHAP directions accurately and is appropriately cautious about confirming cryptojacking. It overreaches on structural and frequency claims, 'signed-division theme' and the POP XCHG ranking, and its follow-up actions are good.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7134,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 5211,
+          "output_tokens_details": {
+            "thinking_tokens": 3042
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7134,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 5211,
+        "output_tokens_details": {
+          "thinking_tokens": 3042
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_4dd14927df358c81\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, top n-gram names, SHAP values and feature values are all reported correctly within rounding. However, several interpretations go beyond the evidence: 'The most frequent n-gram', 'very short functions or call-then-return thunks', 'a consistent signed-division theme', and POP XCHG listed among the 'highest SHAP weights'. It also treats feature values as frequencies, although the artifact says their semantics are not established.\",\"coherence\":\"The explanation is organized from model signal to caveats to interpretation to tier to actions, and the low-confidence tier matches the hedged conclusion. Minor issues are some repetition and the tension between the 'low-confidence' tier and the 0.6 confidence_score. 'Unanimous malware signal' also loosely generalizes the top-20 result.\",\"cybersecurity_relevance\":\"It ties sample-specific n-grams to cryptojacking questions, states that no APIs, strings or function context are available, and offers benign alternatives such as ordinary compiled call-heavy code. Hash and numeric-routine readings are labeled speculative. Some per-n-gram commentary is generic, and it assumes adjacent control-flow semantics.\",\"actionable_utility\":\"The recommended steps are concrete, feasible and proportionate: locate where the n-grams occur, check strings, config and network indicators, run a sandbox with CPU and network monitoring, and compare against known miner families. Each step is tied to the evidence gaps and framed as verification rather than observed behavior. They are not strictly prioritized, and step 1 depends on occurrence data the artifact lacks.\"},\"unsupported_claims\":[{\"quote\":\"The most frequent n-gram (0.075261).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"evidence.top_features[16]; evidence.feature_value_semantics; evidence.full_attributions=null\",\"reason\":\"Only the top 20 SHAP-ranked features are supplied, so this value cannot be the global most-frequent n-gram. The artifact also says feature values should not be treated as counts or frequencies.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"It points to very short functions or call-then-return thunks.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"evidence.occurrences=[]; evidence.function_context=[]\",\"reason\":\"Function boundaries, adjacency and control flow are not supplied. Graph-aware n-grams need not be adjacent, so the structural claim is not supported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It is atypical of plain compiler output, but the evidence does not show its context.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"evidence.top_features[1]; no baseline or corpus data (shap_baseline=null)\",\"reason\":\"There is no compiler or corpus comparison data to support this typicality claim.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Along with CDQ MOV and LEA IDIV, it shows a consistent signed-division theme.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"evidence.top_features (CDQ MOV, LEA IDIV, XOR CDQ); occurrences=[]\",\"reason\":\"Only LEA IDIV contains a division mnemonic. Without occurrence or adjacency context, the bigrams cannot be shown to form a division pattern, and 'shows' is stated with too much certainty.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Unusual short-sequence patterns (CALL RET, PUSH RET, POP XCHG) that carry the highest SHAP weights\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"evidence_reference\":\"evidence.top_features[11] (POP XCHG shap_value 0.010773)\",\"reason\":\"POP XCHG is the 12th of 20 features, below CDQ MOV, CALL PUSH, MOV RET and others. It does not carry the highest SHAP weights.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"Treat the sample as suspicious, given the model's unanimous malware signal\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"evidence.full_attributions=null; scope_notes (omitted features unknown)\",\"reason\":\"Unanimity is established only for the displayed top-20 features, not for the model's full attribution set.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, magnitudes and the 'all 20 positive' statement for the top-k subset are reported accurately. One ranking misrepresentation and one loose generalization of the top-k result remain.\",\"discrepancies\":[{\"quote\":\"Unusual short-sequence patterns (CALL RET, PUSH RET, POP XCHG) that carry the highest SHAP weights\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"reason\":\"POP XCHG ranks 12th of 20 (+0.010773), so it is not among the highest SHAP weights.\"},{\"quote\":\"given the model's unanimous malware signal\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"reason\":\"Unanimity applies only to the displayed top-20 subset, not to all features.\"}]},\"evidence_limitations\":[\"The artifact has no occurrences, function context, strings, API references or SHAP baseline, and full_attributions is null.\",\"The SHAP target class is a configured assumption that needs upstream verification. The 'malware' and 'cryptojacking' labels rest on that assumption.\",\"The feature value semantics are not established, so frequency or count interpretations are unsupported.\",\"The top-k subset cannot show that omitted features do not support the benign class.\",\"An RF probability of 1.0 is not behavioral proof.\"],\"summary\":\"The explanation reports the numbers and SHAP directions accurately and is appropriately cautious about confirming cryptojacking. It overreaches on structural and frequency claims, 'signed-division theme' and the POP XCHG ranking, and its follow-up actions are good.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_4dd14927df358c81",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability, top n-gram names, SHAP values and feature values are all reported correctly within rounding. However, several interpretations go beyond the evidence: 'The most frequent n-gram', 'very short functions or call-then-return thunks', 'a consistent signed-division theme', and POP XCHG listed among the 'highest SHAP weights'. It also treats feature values as frequencies, although the artifact says their semantics are not established.",
+      "coherence": "The explanation is organized from model signal to caveats to interpretation to tier to actions, and the low-confidence tier matches the hedged conclusion. Minor issues are some repetition and the tension between the 'low-confidence' tier and the 0.6 confidence_score. 'Unanimous malware signal' also loosely generalizes the top-20 result.",
+      "cybersecurity_relevance": "It ties sample-specific n-grams to cryptojacking questions, states that no APIs, strings or function context are available, and offers benign alternatives such as ordinary compiled call-heavy code. Hash and numeric-routine readings are labeled speculative. Some per-n-gram commentary is generic, and it assumes adjacent control-flow semantics.",
+      "actionable_utility": "The recommended steps are concrete, feasible and proportionate: locate where the n-grams occur, check strings, config and network indicators, run a sandbox with CPU and network monitoring, and compare against known miner families. Each step is tied to the evidence gaps and framed as verification rather than observed behavior. They are not strictly prioritized, and step 1 depends on occurrence data the artifact lacks."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "The most frequent n-gram (0.075261).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+        "evidence_reference": "evidence.top_features[16]; evidence.feature_value_semantics; evidence.full_attributions=null",
+        "reason": "Only the top 20 SHAP-ranked features are supplied, so this value cannot be the global most-frequent n-gram. The artifact also says feature values should not be treated as counts or frequencies.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "It points to very short functions or call-then-return thunks.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "evidence.occurrences=[]; evidence.function_context=[]",
+        "reason": "Function boundaries, adjacency and control flow are not supplied. Graph-aware n-grams need not be adjacent, so the structural claim is not supported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "It is atypical of plain compiler output, but the evidence does not show its context.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "evidence.top_features[1]; no baseline or corpus data (shap_baseline=null)",
+        "reason": "There is no compiler or corpus comparison data to support this typicality claim.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Along with CDQ MOV and LEA IDIV, it shows a consistent signed-division theme.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+        "evidence_reference": "evidence.top_features (CDQ MOV, LEA IDIV, XOR CDQ); occurrences=[]",
+        "reason": "Only LEA IDIV contains a division mnemonic. Without occurrence or adjacency context, the bigrams cannot be shown to form a division pattern, and 'shows' is stated with too much certainty.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Unusual short-sequence patterns (CALL RET, PUSH RET, POP XCHG) that carry the highest SHAP weights",
+        "candidate_path": "/candidate_analysis/key_indicators/3",
+        "evidence_reference": "evidence.top_features[11] (POP XCHG shap_value 0.010773)",
+        "reason": "POP XCHG is the 12th of 20 features, below CDQ MOV, CALL PUSH, MOV RET and others. It does not carry the highest SHAP weights.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "Treat the sample as suspicious, given the model's unanimous malware signal",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "evidence.full_attributions=null; scope_notes (omitted features unknown)",
+        "reason": "Unanimity is established only for the displayed top-20 features, not for the model's full attribution set.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "Signs, magnitudes and the 'all 20 positive' statement for the top-k subset are reported accurately. One ranking misrepresentation and one loose generalization of the top-k result remain.",
+      "discrepancies": [
+        {
+          "quote": "Unusual short-sequence patterns (CALL RET, PUSH RET, POP XCHG) that carry the highest SHAP weights",
+          "candidate_path": "/candidate_analysis/key_indicators/3",
+          "reason": "POP XCHG ranks 12th of 20 (+0.010773), so it is not among the highest SHAP weights."
+        },
+        {
+          "quote": "given the model's unanimous malware signal",
+          "candidate_path": "/candidate_analysis/recommended_action",
+          "reason": "Unanimity applies only to the displayed top-20 subset, not to all features."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "The artifact has no occurrences, function context, strings, API references or SHAP baseline, and full_attributions is null.",
+      "The SHAP target class is a configured assumption that needs upstream verification. The 'malware' and 'cryptojacking' labels rest on that assumption.",
+      "The feature value semantics are not established, so frequency or count interpretations are unsupported.",
+      "The top-k subset cannot show that omitted features do not support the benign class.",
+      "An RF probability of 1.0 is not behavioral proof."
+    ],
+    "summary": "The explanation reports the numbers and SHAP directions accurately and is appropriately cautious about confirming cryptojacking. It overreaches on structural and frequency claims, 'signed-division theme' and the POP XCHG ranking, and its follow-up actions are good."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "The most frequent n-gram (0.075261).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+      "evidence_reference": "evidence.top_features[16]; evidence.feature_value_semantics; evidence.full_attributions=null",
+      "reason": "Only the top 20 SHAP-ranked features are supplied, so this value cannot be the global most-frequent n-gram. The artifact also says feature values should not be treated as counts or frequencies.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "It points to very short functions or call-then-return thunks.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "evidence.occurrences=[]; evidence.function_context=[]",
+      "reason": "Function boundaries, adjacency and control flow are not supplied. Graph-aware n-grams need not be adjacent, so the structural claim is not supported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "It is atypical of plain compiler output, but the evidence does not show its context.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "evidence.top_features[1]; no baseline or corpus data (shap_baseline=null)",
+      "reason": "There is no compiler or corpus comparison data to support this typicality claim.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Along with CDQ MOV and LEA IDIV, it shows a consistent signed-division theme.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+      "evidence_reference": "evidence.top_features (CDQ MOV, LEA IDIV, XOR CDQ); occurrences=[]",
+      "reason": "Only LEA IDIV contains a division mnemonic. Without occurrence or adjacency context, the bigrams cannot be shown to form a division pattern, and 'shows' is stated with too much certainty.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Unusual short-sequence patterns (CALL RET, PUSH RET, POP XCHG) that carry the highest SHAP weights",
+      "candidate_path": "/candidate_analysis/key_indicators/3",
+      "evidence_reference": "evidence.top_features[11] (POP XCHG shap_value 0.010773)",
+      "reason": "POP XCHG is the 12th of 20 features, below CDQ MOV, CALL PUSH, MOV RET and others. It does not carry the highest SHAP weights.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "Treat the sample as suspicious, given the model's unanimous malware signal",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "evidence.full_attributions=null; scope_notes (omitted features unknown)",
+      "reason": "Unanimity is established only for the displayed top-20 features, not for the model's full attribution set.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "given the model's unanimous malware signal",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "reason": "Unanimity applies only to the displayed top-20 subset, not to all features.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "47b268c21591069bfe4099833ad66b8138a53ab2dcb866e040d466aee1f8624c.elf_analysis.json"
+}

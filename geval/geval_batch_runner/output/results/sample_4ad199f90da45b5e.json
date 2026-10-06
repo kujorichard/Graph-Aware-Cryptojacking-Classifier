@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_4ad199f90da45b5e",
+  "status": "success",
+  "source_sha256": "d7fdc0aaf9a03130f94209e0a70b28b2004ef183bf52696970e10378094881bb",
+  "input_sha256": "0ad250b0078b3162ce662bebd6be34ad5e2481528e7c9c786ab9e55fa3c6ad13",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "0ecf3547251601ff8fe19f49b499afcc2ad311c529475cfa69b9946a9411fb57.exe",
+      "source_name": "0ecf3547251601ff8fe19f49b499afcc2ad311c529475cfa69b9946a9411fb57.exe.json",
+      "source_path": "ml/dataset/cryptojacking/0ecf3547251601ff8fe19f49b499afcc2ad311c529475cfa69b9946a9411fb57.exe.json",
+      "split": "test",
+      "batch_number": 4,
+      "row_index_in_batch": 45,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "0ecf3547251601ff8fe19f49b499afcc2ad311c529475cfa69b9946a9411fb57.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:06:42.635798+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:06:42.635824+00:00",
+      "error": null,
+      "request_sha256": "8fbd857c2390c043373b0b470886e84e493c83baf18977473670c56aafb78e0c",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkxLsEveiT4FLMJQo8TQ",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF prediction with probability 0.66, where all top 20 SHAP features are positive, and noting that the candidate's claim about these values being \"frequencies\" misinterprets feature semantics that shouldn't be read as raw counts.\n\nLooking more closely, the \"decision threshold\" claim about 0.66 is unsupported since no actual threshold was specified. There's also an error about \"AND SUB\" being the most frequent feature — PSRLDQ PCMPEQB at 0.001156 is actually higher, which contradicts that claim and needs flagging.\n\nThe descriptions of PSRLDQ/XORPS as SIMD byte-shift and XOR operations check out, and SHRD as a double-precision shift is accurate too. But the interpretive leaps — calling this \"typical of vectorized string routines,\" \"likely benign runtime code,\" or \"unrolled SIMD scanning loops\" — go beyond what mnemonic frequency alone can establish, so these need to be marked as overreach even though they're hedged.\n\nThe claim that there's \"no dense rotate/XOR/AES-like instruction sequence\" is unsupported since we only have top-20 n-grams and PSRLDQ/XORPS actually do appear. The absence-of-function-names claim is accurate though, since the occurrences field is empty. Overall this points to a low-confidence tier assessment around 0.35.\n\nThe recommendation seems conditional and proportionate, but it doesn't flag the caveat that target-class assumptions and omitted feature semantics are unknown — claiming \"moderate probability not backed by strong cryptojacking-specific indicators\" overreaches given features we can't see. On the SHAP side, the signs, magnitudes, and rounding all check out across the listed values.\n\nSo I'd rate technical accuracy around 3 — the core SHAP evidence is right, but there are real errors around frequency semantics, the \"AND SUB most frequent\" claim, and some overreach in the interpretation. Coherence lands around 4, with a minor internal contradiction on the frequency point.\n\nThe relevant path is the AND SUB assessment at index 7 in the evidence list, since that's where the frequency inconsistency shows up. I'll give coherence, relevance, and actionable all a 4, treating the contradiction as a minor flaw rather than a major one.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_4ad199f90da45b5e\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, n-gram names, SHAP signs and SHAP magnitudes match the evidence, and the instruction semantics are generally correct. Several claims overreach or are wrong: AND SUB is called the most frequent feature, the values are read as frequencies, a decision threshold is assumed, and the absence of dense XOR/AES-like sequences is asserted from a top-20 subset.\",\"coherence\":\"The explanation is well organized and moves clearly from evidence to interpretation to tier to action. It is somewhat repetitive between the summary and the per-feature table. It also contradicts itself on which n-gram has the highest value (AND SUB vs PSRLDQ PCMPEQB).\",\"cybersecurity_relevance\":\"It ties the specific n-grams to benign alternatives (SIMD string/memory runtime routines, 64-bit emulation, bignum math) and to the cryptojacking question. It acknowledges the lack of function and API context. It does not note that the target class and value semantics are unverified, or that omitted features are unknown.\",\"actionable_utility\":\"The recommendations are concrete, conditional and proportionate: sandbox dynamic analysis, inspection of the functions containing the SHRD/MOV and SIMD n-grams, string/config/packer checks, and threat-intelligence lookup. They target the identified gaps (function context, runtime behavior) and present no fabricated indicators.\"},\"unsupported_claims\":[{\"quote\":\"This is the most frequent of the top features, but it is generic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/evidence/top_features: AND SUB value 0.000822; PSRLDQ PCMPEQB value 0.001156\",\"reason\":\"AND SUB is not the highest-valued feature; PSRLDQ PCMPEQB (0.001156) is higher. The candidate also contradicts itself at evidence_analysis/15.\",\"category\":\"other\"},{\"quote\":\"Their frequencies are also very low (0.000026 to 0.001156), meaning they are rare in the binary.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics: \\\"Not established by this artifact; do not treat as raw counts without upstream confirmation\\\"\",\"reason\":\"The artifact does not establish what the feature values mean, so interpreting them as frequencies and concluding the n-grams are rare in the binary is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Model probability of 0.66 is only moderately above the decision threshold\",\"candidate_path\":\"/candidate_analysis/key_indicators/0\",\"evidence_reference\":\"/evidence has rf_prediction and rf_probability_class_1 only; no threshold is supplied\",\"reason\":\"No decision threshold is given in the evidence, so the claim about distance above it is assumed.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"In particular, it shows no dense rotate/XOR/AES-like instruction sequences.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/scope_notes: \\\"a positive top-k subset is not all features\\\"; occurrences and function_context are empty\",\"reason\":\"The top-20 n-gram subset cannot establish the absence of such sequences, and it includes XORPS-related n-grams. Omitted features and instruction context are unavailable.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"This is the classic SIMD strlen/memchr idiom and is likely benign runtime code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"/evidence/occurrences and /evidence/function_context are empty\",\"reason\":\"Asserts likely benign runtime code from a mnemonic pair without function or context evidence. Mnemonics alone do not establish code purpose.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"consistent with unrolled SIMD scanning loops\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/occurrences is empty; no extraction or control-flow context\",\"reason\":\"Infers unrolled loops from a repeated-mnemonic n-gram without adjacency or control-flow evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"pointing to vectorized string or memory routines rather than a hashing kernel\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/15/assessment\",\"evidence_reference\":\"/evidence/top_features: PSRLDQ PCMPEQB value 0.001156; no function context\",\"reason\":\"Value magnitude and mnemonics cannot distinguish a string routine from a hashing kernel. The conclusion is stated more strongly than the evidence allows.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 listed SHAP values are positive toward configured class 1, as stated. The reported magnitudes match the supplied values within rounding, and the +0.005 to +0.011 range is correct. The candidate did not reconstruct the probability from the top-k subset.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are not established, so the values cannot be treated as counts or frequencies.\",\"There is no SHAP baseline, no full attributions, and omitted features are unknown.\",\"Occurrences and function context are empty, so adjacency, control flow and code purpose cannot be inferred.\",\"The RF decision threshold is not supplied.\"],\"summary\":\"SHAP direction and magnitudes are faithfully reported, and the cautious, inconclusive framing with proportionate sandbox and static follow-up is appropriate. The explanation has a factual slip (AND SUB as most frequent), treats unconfirmed feature values as frequencies, assumes a decision threshold, and overstates benign-runtime and absence-of-pattern inferences from mnemonics and a top-k subset.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7199,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4112,
+          "output_tokens_details": {
+            "thinking_tokens": 1994
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7199,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4112,
+        "output_tokens_details": {
+          "thinking_tokens": 1994
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_4ad199f90da45b5e\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, n-gram names, SHAP signs and SHAP magnitudes match the evidence, and the instruction semantics are generally correct. Several claims overreach or are wrong: AND SUB is called the most frequent feature, the values are read as frequencies, a decision threshold is assumed, and the absence of dense XOR/AES-like sequences is asserted from a top-20 subset.\",\"coherence\":\"The explanation is well organized and moves clearly from evidence to interpretation to tier to action. It is somewhat repetitive between the summary and the per-feature table. It also contradicts itself on which n-gram has the highest value (AND SUB vs PSRLDQ PCMPEQB).\",\"cybersecurity_relevance\":\"It ties the specific n-grams to benign alternatives (SIMD string/memory runtime routines, 64-bit emulation, bignum math) and to the cryptojacking question. It acknowledges the lack of function and API context. It does not note that the target class and value semantics are unverified, or that omitted features are unknown.\",\"actionable_utility\":\"The recommendations are concrete, conditional and proportionate: sandbox dynamic analysis, inspection of the functions containing the SHRD/MOV and SIMD n-grams, string/config/packer checks, and threat-intelligence lookup. They target the identified gaps (function context, runtime behavior) and present no fabricated indicators.\"},\"unsupported_claims\":[{\"quote\":\"This is the most frequent of the top features, but it is generic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/evidence/top_features: AND SUB value 0.000822; PSRLDQ PCMPEQB value 0.001156\",\"reason\":\"AND SUB is not the highest-valued feature; PSRLDQ PCMPEQB (0.001156) is higher. The candidate also contradicts itself at evidence_analysis/15.\",\"category\":\"other\"},{\"quote\":\"Their frequencies are also very low (0.000026 to 0.001156), meaning they are rare in the binary.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics: \\\"Not established by this artifact; do not treat as raw counts without upstream confirmation\\\"\",\"reason\":\"The artifact does not establish what the feature values mean, so interpreting them as frequencies and concluding the n-grams are rare in the binary is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Model probability of 0.66 is only moderately above the decision threshold\",\"candidate_path\":\"/candidate_analysis/key_indicators/0\",\"evidence_reference\":\"/evidence has rf_prediction and rf_probability_class_1 only; no threshold is supplied\",\"reason\":\"No decision threshold is given in the evidence, so the claim about distance above it is assumed.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"In particular, it shows no dense rotate/XOR/AES-like instruction sequences.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/scope_notes: \\\"a positive top-k subset is not all features\\\"; occurrences and function_context are empty\",\"reason\":\"The top-20 n-gram subset cannot establish the absence of such sequences, and it includes XORPS-related n-grams. Omitted features and instruction context are unavailable.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"This is the classic SIMD strlen/memchr idiom and is likely benign runtime code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"/evidence/occurrences and /evidence/function_context are empty\",\"reason\":\"Asserts likely benign runtime code from a mnemonic pair without function or context evidence. Mnemonics alone do not establish code purpose.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"consistent with unrolled SIMD scanning loops\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/occurrences is empty; no extraction or control-flow context\",\"reason\":\"Infers unrolled loops from a repeated-mnemonic n-gram without adjacency or control-flow evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"pointing to vectorized string or memory routines rather than a hashing kernel\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/15/assessment\",\"evidence_reference\":\"/evidence/top_features: PSRLDQ PCMPEQB value 0.001156; no function context\",\"reason\":\"Value magnitude and mnemonics cannot distinguish a string routine from a hashing kernel. The conclusion is stated more strongly than the evidence allows.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 listed SHAP values are positive toward configured class 1, as stated. The reported magnitudes match the supplied values within rounding, and the +0.005 to +0.011 range is correct. The candidate did not reconstruct the probability from the top-k subset.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are not established, so the values cannot be treated as counts or frequencies.\",\"There is no SHAP baseline, no full attributions, and omitted features are unknown.\",\"Occurrences and function context are empty, so adjacency, control flow and code purpose cannot be inferred.\",\"The RF decision threshold is not supplied.\"],\"summary\":\"SHAP direction and magnitudes are faithfully reported, and the cautious, inconclusive framing with proportionate sandbox and static follow-up is appropriate. The explanation has a factual slip (AND SUB as most frequent), treats unconfirmed feature values as frequencies, assumes a decision threshold, and overstates benign-runtime and absence-of-pattern inferences from mnemonics and a top-k subset.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_4ad199f90da45b5e",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability, n-gram names, SHAP signs and SHAP magnitudes match the evidence, and the instruction semantics are generally correct. Several claims overreach or are wrong: AND SUB is called the most frequent feature, the values are read as frequencies, a decision threshold is assumed, and the absence of dense XOR/AES-like sequences is asserted from a top-20 subset.",
+      "coherence": "The explanation is well organized and moves clearly from evidence to interpretation to tier to action. It is somewhat repetitive between the summary and the per-feature table. It also contradicts itself on which n-gram has the highest value (AND SUB vs PSRLDQ PCMPEQB).",
+      "cybersecurity_relevance": "It ties the specific n-grams to benign alternatives (SIMD string/memory runtime routines, 64-bit emulation, bignum math) and to the cryptojacking question. It acknowledges the lack of function and API context. It does not note that the target class and value semantics are unverified, or that omitted features are unknown.",
+      "actionable_utility": "The recommendations are concrete, conditional and proportionate: sandbox dynamic analysis, inspection of the functions containing the SHRD/MOV and SIMD n-grams, string/config/packer checks, and threat-intelligence lookup. They target the identified gaps (function context, runtime behavior) and present no fabricated indicators."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "This is the most frequent of the top features, but it is generic.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+        "evidence_reference": "/evidence/top_features: AND SUB value 0.000822; PSRLDQ PCMPEQB value 0.001156",
+        "reason": "AND SUB is not the highest-valued feature; PSRLDQ PCMPEQB (0.001156) is higher. The candidate also contradicts itself at evidence_analysis/15.",
+        "category": "other"
+      },
+      {
+        "quote": "Their frequencies are also very low (0.000026 to 0.001156), meaning they are rare in the binary.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics: \"Not established by this artifact; do not treat as raw counts without upstream confirmation\"",
+        "reason": "The artifact does not establish what the feature values mean, so interpreting them as frequencies and concluding the n-grams are rare in the binary is unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Model probability of 0.66 is only moderately above the decision threshold",
+        "candidate_path": "/candidate_analysis/key_indicators/0",
+        "evidence_reference": "/evidence has rf_prediction and rf_probability_class_1 only; no threshold is supplied",
+        "reason": "No decision threshold is given in the evidence, so the claim about distance above it is assumed.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "In particular, it shows no dense rotate/XOR/AES-like instruction sequences.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/scope_notes: \"a positive top-k subset is not all features\"; occurrences and function_context are empty",
+        "reason": "The top-20 n-gram subset cannot establish the absence of such sequences, and it includes XORPS-related n-grams. Omitted features and instruction context are unavailable.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "This is the classic SIMD strlen/memchr idiom and is likely benign runtime code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+        "evidence_reference": "/evidence/occurrences and /evidence/function_context are empty",
+        "reason": "Asserts likely benign runtime code from a mnemonic pair without function or context evidence. Mnemonics alone do not establish code purpose.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "consistent with unrolled SIMD scanning loops",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/occurrences is empty; no extraction or control-flow context",
+        "reason": "Infers unrolled loops from a repeated-mnemonic n-gram without adjacency or control-flow evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "pointing to vectorized string or memory routines rather than a hashing kernel",
+        "candidate_path": "/candidate_analysis/evidence_analysis/15/assessment",
+        "evidence_reference": "/evidence/top_features: PSRLDQ PCMPEQB value 0.001156; no function context",
+        "reason": "Value magnitude and mnemonics cannot distinguish a string routine from a hashing kernel. The conclusion is stated more strongly than the evidence allows.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 listed SHAP values are positive toward configured class 1, as stated. The reported magnitudes match the supplied values within rounding, and the +0.005 to +0.011 range is correct. The candidate did not reconstruct the probability from the top-k subset.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "Feature value semantics are not established, so the values cannot be treated as counts or frequencies.",
+      "There is no SHAP baseline, no full attributions, and omitted features are unknown.",
+      "Occurrences and function context are empty, so adjacency, control flow and code purpose cannot be inferred.",
+      "The RF decision threshold is not supplied."
+    ],
+    "summary": "SHAP direction and magnitudes are faithfully reported, and the cautious, inconclusive framing with proportionate sandbox and static follow-up is appropriate. The explanation has a factual slip (AND SUB as most frequent), treats unconfirmed feature values as frequencies, assumes a decision threshold, and overstates benign-runtime and absence-of-pattern inferences from mnemonics and a top-k subset."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "This is the most frequent of the top features, but it is generic.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+      "evidence_reference": "/evidence/top_features: AND SUB value 0.000822; PSRLDQ PCMPEQB value 0.001156",
+      "reason": "AND SUB is not the highest-valued feature; PSRLDQ PCMPEQB (0.001156) is higher. The candidate also contradicts itself at evidence_analysis/15.",
+      "category": "other"
+    },
+    {
+      "quote": "Their frequencies are also very low (0.000026 to 0.001156), meaning they are rare in the binary.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics: \"Not established by this artifact; do not treat as raw counts without upstream confirmation\"",
+      "reason": "The artifact does not establish what the feature values mean, so interpreting them as frequencies and concluding the n-grams are rare in the binary is unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Model probability of 0.66 is only moderately above the decision threshold",
+      "candidate_path": "/candidate_analysis/key_indicators/0",
+      "evidence_reference": "/evidence has rf_prediction and rf_probability_class_1 only; no threshold is supplied",
+      "reason": "No decision threshold is given in the evidence, so the claim about distance above it is assumed.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "In particular, it shows no dense rotate/XOR/AES-like instruction sequences.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/scope_notes: \"a positive top-k subset is not all features\"; occurrences and function_context are empty",
+      "reason": "The top-20 n-gram subset cannot establish the absence of such sequences, and it includes XORPS-related n-grams. Omitted features and instruction context are unavailable.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "This is the classic SIMD strlen/memchr idiom and is likely benign runtime code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+      "evidence_reference": "/evidence/occurrences and /evidence/function_context are empty",
+      "reason": "Asserts likely benign runtime code from a mnemonic pair without function or context evidence. Mnemonics alone do not establish code purpose.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "consistent with unrolled SIMD scanning loops",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/occurrences is empty; no extraction or control-flow context",
+      "reason": "Infers unrolled loops from a repeated-mnemonic n-gram without adjacency or control-flow evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "pointing to vectorized string or memory routines rather than a hashing kernel",
+      "candidate_path": "/candidate_analysis/evidence_analysis/15/assessment",
+      "evidence_reference": "/evidence/top_features: PSRLDQ PCMPEQB value 0.001156; no function context",
+      "reason": "Value magnitude and mnemonics cannot distinguish a string routine from a hashing kernel. The conclusion is stated more strongly than the evidence allows.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "0ecf3547251601ff8fe19f49b499afcc2ad311c529475cfa69b9946a9411fb57.exe_analysis.json"
+}

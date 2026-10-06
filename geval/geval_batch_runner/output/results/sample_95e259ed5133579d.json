@@ -1,0 +1,202 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_95e259ed5133579d",
+  "status": "success",
+  "source_sha256": "1edf0818491fc100881a49cdd57dbcc1f560d023e500a954a760fb74b68f503c",
+  "input_sha256": "4137cf7582ee89fd56766e23fba7862c8eb3c18dd151cf7ae59cc9f06f614af6",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "db4597572c03a863fdfb6bb3291ee732d6a3547014867f7497d3c6dd378df75c.exe",
+      "source_name": "db4597572c03a863fdfb6bb3291ee732d6a3547014867f7497d3c6dd378df75c.exe.json",
+      "source_path": "ml/dataset/cryptojacking/db4597572c03a863fdfb6bb3291ee732d6a3547014867f7497d3c6dd378df75c.exe.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 48,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "db4597572c03a863fdfb6bb3291ee732d6a3547014867f7497d3c6dd378df75c.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:39:12.611670+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:39:12.611697+00:00",
+      "error": null,
+      "request_sha256": "aac7272544e2bcb5afd739d50062c6964dc3035653bf0b9bf9532ceac6936d82",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm5Pyjk6JxzdMA5Djuyg",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the top 20 features and counting which ones have zero values versus nonzero presence - looks like 13 of the opcode-pair features are zero while a few like PUSH MOV, PUSH RET, and POP are actually present.\n\nThe candidate seems to be treating these zero values as \"frequency 0\" or \"absence,\" but that semantic interpretation isn't actually established - it's an unsupported assumption. Similarly, claims about SHAP pushing toward a specific malware class or a 0.99 probability figure rest on unverified assumptions about what class_1 represents, which the candidate doesn't flag as speculative.\n\nThe \"absence as informative\" framing is a plausible but not fully established mechanism for SHAP—zero-valued features can contribute in tree SHAP, but this relies on unstated semantics, so I'd flag it as a minor overreach rather than a faithfulness violation. Overall direction and magnitude seem faithful, though the explanation doesn't note the target-class assumption as a limitation, which weighs on the technical accuracy score, likely landing around 3-4.\n\nCoherence stays strong since the low confidence tier matches the \"suspicious but inconclusive\" language, and the evidence sections remain internally consistent even if repetitive. Actionability is solid at 4—recommending inspection of functions containing PUSH/RET sequences is concrete and feasible via disassembly even without specific occurrence data.\n\nNow I'm mapping out the relevant paths for each claim: explanation, evidence_analysis entries by index, matching indices like CMOVZ/MOV, PUSH/MOV, ADD/POP patterns to their assessment locations.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_95e259ed5133579d\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, the 19 positive and 1 negative SHAP split, the 13 zero-valued and 7 non-zero features, and the SHAP magnitudes all match the evidence. However, the evidence says feature-value semantics are not established, and the candidate treats values as 'relative frequency' and zero as 'absent'. It then builds its main argument on 'absence-based' SHAP, which overreaches.\",\"coherence\":\"The summary, per-feature analysis, low-confidence tier, 0.45 confidence and 'suspicious but inconclusive' conclusion are consistent. The per-feature assessments are repetitive, and the 'absence' framing is carried through without caveat.\",\"cybersecurity_relevance\":\"It ties the n-gram evidence to cryptojacking questions such as hashing loops, mining-pool connections and benign generic stack code. It also notes the missing function, API and crypto-specific evidence. The absence-based framing weakens an otherwise sample-specific analysis.\",\"actionable_utility\":\"The recommended steps are concrete and proportionate: inspect functions containing the present n-grams, check imports and strings, sandbox CPU and network behavior, and compare against miner signatures. They are conditional and not presented as observed. They are somewhat generic and do not address verifying the feature-value semantics or the SHAP target class.\"},\"unsupported_claims\":[{\"quote\":\"Most of the listed n-grams have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature values are not established as raw counts or frequencies without upstream confirmation. Calling them relative frequencies is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Their SHAP contributions therefore reflect the model treating their absence as informative, not observed code behavior.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/feature_value_semantics; /evidence/shap_baseline\",\"reason\":\"This assumes value 0 means the n-gram is absent and explains the SHAP mechanism. Neither the value semantics nor the SHAP baseline is supplied, so the mechanism is asserted without support.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Frequency 0. Stack-cleanup pattern that is absent; its contribution reflects the overall shape of the instruction distribution, not observed behavior.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2\",\"reason\":\"It asserts absence and a specific cause for the SHAP value (overall instruction-distribution shape) without extraction or baseline evidence.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"A call followed by stack adjustment is absent, so it adds no direct behavioral evidence.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/top_features/6; /evidence/occurrences\",\"reason\":\"It treats the graph-aware n-gram as an adjacent call-then-stack-adjustment sequence and as absent, but no occurrence or context evidence supports adjacency or absence.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs and magnitudes are reported correctly: 19 positive, with only MOV TEST at -0.010813 pushing toward benign. The candidate also correctly says the top-k subset is not behavioral proof. The 'absence is informative' mechanism is interpretive and not directly supported, but it does not misstate SHAP direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature value semantics are not established, so zero and 0.052632 cannot be confirmed as absence, presence or frequency.\",\"SHAP target class 1 is a configured assumption that needs upstream verification.\",\"No SHAP baseline, full attributions, occurrences or function context are provided, and omitted features are unknown.\",\"Mnemonic n-grams alone cannot establish mining behavior, and adjacency or control flow cannot be inferred.\"],\"summary\":\"The candidate reproduces the RF probability and SHAP evidence accurately and is appropriately cautious about cryptojacking. Its main weakness is treating zero-valued features as absent relative frequencies and explaining SHAP through absence, despite the artifact's explicit caveat about value semantics. Its follow-up actions are sensible and conditional.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6649,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3139,
+          "output_tokens_details": {
+            "thinking_tokens": 1517
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6649,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3139,
+        "output_tokens_details": {
+          "thinking_tokens": 1517
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_95e259ed5133579d\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, the 19 positive and 1 negative SHAP split, the 13 zero-valued and 7 non-zero features, and the SHAP magnitudes all match the evidence. However, the evidence says feature-value semantics are not established, and the candidate treats values as 'relative frequency' and zero as 'absent'. It then builds its main argument on 'absence-based' SHAP, which overreaches.\",\"coherence\":\"The summary, per-feature analysis, low-confidence tier, 0.45 confidence and 'suspicious but inconclusive' conclusion are consistent. The per-feature assessments are repetitive, and the 'absence' framing is carried through without caveat.\",\"cybersecurity_relevance\":\"It ties the n-gram evidence to cryptojacking questions such as hashing loops, mining-pool connections and benign generic stack code. It also notes the missing function, API and crypto-specific evidence. The absence-based framing weakens an otherwise sample-specific analysis.\",\"actionable_utility\":\"The recommended steps are concrete and proportionate: inspect functions containing the present n-grams, check imports and strings, sandbox CPU and network behavior, and compare against miner signatures. They are conditional and not presented as observed. They are somewhat generic and do not address verifying the feature-value semantics or the SHAP target class.\"},\"unsupported_claims\":[{\"quote\":\"Most of the listed n-grams have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature values are not established as raw counts or frequencies without upstream confirmation. Calling them relative frequencies is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Their SHAP contributions therefore reflect the model treating their absence as informative, not observed code behavior.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/feature_value_semantics; /evidence/shap_baseline\",\"reason\":\"This assumes value 0 means the n-gram is absent and explains the SHAP mechanism. Neither the value semantics nor the SHAP baseline is supplied, so the mechanism is asserted without support.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Frequency 0. Stack-cleanup pattern that is absent; its contribution reflects the overall shape of the instruction distribution, not observed behavior.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2\",\"reason\":\"It asserts absence and a specific cause for the SHAP value (overall instruction-distribution shape) without extraction or baseline evidence.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"A call followed by stack adjustment is absent, so it adds no direct behavioral evidence.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/top_features/6; /evidence/occurrences\",\"reason\":\"It treats the graph-aware n-gram as an adjacent call-then-stack-adjustment sequence and as absent, but no occurrence or context evidence supports adjacency or absence.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs and magnitudes are reported correctly: 19 positive, with only MOV TEST at -0.010813 pushing toward benign. The candidate also correctly says the top-k subset is not behavioral proof. The 'absence is informative' mechanism is interpretive and not directly supported, but it does not misstate SHAP direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature value semantics are not established, so zero and 0.052632 cannot be confirmed as absence, presence or frequency.\",\"SHAP target class 1 is a configured assumption that needs upstream verification.\",\"No SHAP baseline, full attributions, occurrences or function context are provided, and omitted features are unknown.\",\"Mnemonic n-grams alone cannot establish mining behavior, and adjacency or control flow cannot be inferred.\"],\"summary\":\"The candidate reproduces the RF probability and SHAP evidence accurately and is appropriately cautious about cryptojacking. Its main weakness is treating zero-valued features as absent relative frequencies and explaining SHAP through absence, despite the artifact's explicit caveat about value semantics. Its follow-up actions are sensible and conditional.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_95e259ed5133579d",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, the 19 positive and 1 negative SHAP split, the 13 zero-valued and 7 non-zero features, and the SHAP magnitudes all match the evidence. However, the evidence says feature-value semantics are not established, and the candidate treats values as 'relative frequency' and zero as 'absent'. It then builds its main argument on 'absence-based' SHAP, which overreaches.",
+      "coherence": "The summary, per-feature analysis, low-confidence tier, 0.45 confidence and 'suspicious but inconclusive' conclusion are consistent. The per-feature assessments are repetitive, and the 'absence' framing is carried through without caveat.",
+      "cybersecurity_relevance": "It ties the n-gram evidence to cryptojacking questions such as hashing loops, mining-pool connections and benign generic stack code. It also notes the missing function, API and crypto-specific evidence. The absence-based framing weakens an otherwise sample-specific analysis.",
+      "actionable_utility": "The recommended steps are concrete and proportionate: inspect functions containing the present n-grams, check imports and strings, sandbox CPU and network behavior, and compare against miner signatures. They are conditional and not presented as observed. They are somewhat generic and do not address verifying the feature-value semantics or the SHAP target class."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Most of the listed n-grams have a relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states feature values are not established as raw counts or frequencies without upstream confirmation. Calling them relative frequencies is unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Their SHAP contributions therefore reflect the model treating their absence as informative, not observed code behavior.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; /evidence/feature_value_semantics; /evidence/shap_baseline",
+        "reason": "This assumes value 0 means the n-gram is absent and explains the SHAP mechanism. Neither the value semantics nor the SHAP baseline is supplied, so the mechanism is asserted without support.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Frequency 0. Stack-cleanup pattern that is absent; its contribution reflects the overall shape of the instruction distribution, not observed behavior.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/top_features/2",
+        "reason": "It asserts absence and a specific cause for the SHAP value (overall instruction-distribution shape) without extraction or baseline evidence.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "A call followed by stack adjustment is absent, so it adds no direct behavioral evidence.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+        "evidence_reference": "/evidence/top_features/6; /evidence/occurrences",
+        "reason": "It treats the graph-aware n-gram as an adjacent call-then-stack-adjustment sequence and as absent, but no occurrence or context evidence supports adjacency or absence.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP signs and magnitudes are reported correctly: 19 positive, with only MOV TEST at -0.010813 pushing toward benign. The candidate also correctly says the top-k subset is not behavioral proof. The 'absence is informative' mechanism is interpretive and not directly supported, but it does not misstate SHAP direction or magnitude.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Feature value semantics are not established, so zero and 0.052632 cannot be confirmed as absence, presence or frequency.",
+      "SHAP target class 1 is a configured assumption that needs upstream verification.",
+      "No SHAP baseline, full attributions, occurrences or function context are provided, and omitted features are unknown.",
+      "Mnemonic n-grams alone cannot establish mining behavior, and adjacency or control flow cannot be inferred."
+    ],
+    "summary": "The candidate reproduces the RF probability and SHAP evidence accurately and is appropriately cautious about cryptojacking. Its main weakness is treating zero-valued features as absent relative frequencies and explaining SHAP through absence, despite the artifact's explicit caveat about value semantics. Its follow-up actions are sensible and conditional."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Most of the listed n-grams have a relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states feature values are not established as raw counts or frequencies without upstream confirmation. Calling them relative frequencies is unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Their SHAP contributions therefore reflect the model treating their absence as informative, not observed code behavior.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; /evidence/feature_value_semantics; /evidence/shap_baseline",
+      "reason": "This assumes value 0 means the n-gram is absent and explains the SHAP mechanism. Neither the value semantics nor the SHAP baseline is supplied, so the mechanism is asserted without support.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Frequency 0. Stack-cleanup pattern that is absent; its contribution reflects the overall shape of the instruction distribution, not observed behavior.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/top_features/2",
+      "reason": "It asserts absence and a specific cause for the SHAP value (overall instruction-distribution shape) without extraction or baseline evidence.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "A call followed by stack adjustment is absent, so it adds no direct behavioral evidence.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+      "evidence_reference": "/evidence/top_features/6; /evidence/occurrences",
+      "reason": "It treats the graph-aware n-gram as an adjacent call-then-stack-adjustment sequence and as absent, but no occurrence or context evidence supports adjacency or absence.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "db4597572c03a863fdfb6bb3291ee732d6a3547014867f7497d3c6dd378df75c.exe_analysis.json"
+}

@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_89a5d92cdb2a747b",
+  "status": "success",
+  "source_sha256": "5abd1a7f89ff3ddcc5e31806cb761a1113100a0a01d19ca49ed8c7aee09e20bd",
+  "input_sha256": "25db6898e31c3731b332afbe428a33ed36950f40542fe6b3ba87a0d2b244e31c",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "70ecc116b12f58e2d2816f968a253935214d489c059a598196013c7d14258c71.exe",
+      "source_name": "70ecc116b12f58e2d2816f968a253935214d489c059a598196013c7d14258c71.exe.json",
+      "source_path": "ml/dataset/cryptojacking/70ecc116b12f58e2d2816f968a253935214d489c059a598196013c7d14258c71.exe.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 15,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "70ecc116b12f58e2d2816f968a253935214d489c059a598196013c7d14258c71.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:52:24.815690+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:52:24.815717+00:00",
+      "error": null,
+      "request_sha256": "bbcfef0f2a24c283b3028e9f0d3bbae66c679860cc279b584c03a986a4147d96",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm1q1BJRYc7FLVuPvGFL",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm verifying the malware probability and cross-checking each SHAP value against its rounded instruction pair to make sure they line up correctly.\n\nI spot an inconsistency: the candidate's frequency values lack established semantics, so claims about \"n-gram frequencies\" or inferring miner-like concentration patterns aren't actually supported by the data. There's also a factual error — the candidate claims ADD ROL is the most frequent rotate-related n-gram at 0.001113, but XOR ROL is rotate-related too and has a higher frequency of 0.001183, contradicting its own listed data.\n\nThe claim that all 20 features push toward \"cryptojacking\" assumes SHAP target class 1 corresponds to malware, which is a reasonable but unverified mapping. The assertion that SHAP values are \"evenly distributed\" with \"no single feature decisive\" overreaches since it only considers the top-k features and ignores the unknown baseline. Also, describing opcode pairs like \"MOVDQA PAND\" or \"PXOR MOVUPS\" as sequential operations assumes adjacency that graph-aware n-grams don't necessarily require.\n\nI'm similarly skeptical about labeling MOVUPS as a store rather than a load, and the various rotate/move/XOR patterns being framed as hash or cipher mixing rounds — plausible but speculative generalizations. The confidence tier of \"low\" at 0.55 seems appropriately calibrated given these caveats, and the final recommendation to review network behavior is sound.\n\nScoring it out: technical accuracy around 3, coherence a 4 given the minor contradiction on the \"most frequent\" claim, relevance around 4, and actionability a 4 since the recommendation isn't well prioritized. On SHAP faithfulness, the directions and magnitudes seem accurate, though the claim about \"most frequent rotate-related n-gram\" conflates frequency with SHAP importance — a mild but worth-noting discrepancy rather than a serious one.\n\nI'm now checking the explanation and evidence assessment sections for unsupported claims, specifically looking at how the n-gram index list maps instruction pairs like ADD/ROL, MOV/ROR, and PXOR/MOVUPS to their corresponding indices.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_89a5d92cdb2a747b\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, the 20 SHAP values and the n-gram names match the evidence. Several interpretations overreach. Adjacency is asserted for graph-aware n-grams, the low values are treated as frequencies or code fractions, and ADD ROL is wrongly called the most frequent rotate-related n-gram.\",\"coherence\":\"The two clusters, the caveats, the tier and the recommendation are well organized and consistent. One internal inconsistency remains: ADD ROL is called the most frequent rotate-related n-gram, while XOR ROL is later called the most frequent n-gram.\",\"cybersecurity_relevance\":\"It ties the ARX-like and SIMD n-grams to hash and cipher code and to cryptojacking. It names benign alternatives (checksums, compression, crypto libraries, compiler vectorization) and states the missing function, API and network context. The reliance on frequency semantics the artifact disclaims weakens the sample-specific argument.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: locate the functions, identify the algorithm, review strings, imports and network behavior, run a sandbox CPU and pool check, compare with known libraries, and escalate only on confirmed mining behavior. The steps are conditional and not presented as observed, but they are not ranked by priority.\"},\"unsupported_claims\":[{\"quote\":\"the n-gram frequencies are very low, from 0.000001 to 0.001183, so these patterns are a tiny fraction of the code. A dedicated miner would normally show a heavy concentration of mixing-round instructions.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature-value semantics are not established and the values should not be treated as raw counts. The 'tiny fraction of the code' conclusion and the comparison with a miner's expected concentration are unsupported.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Very low n-gram frequencies (0.000001 to 0.001183) argue against a dedicated mining loop\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"This draws a behavioral inference about mining loops from values whose meaning is unconfirmed. Mnemonic n-grams do not establish or exclude loops.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The most frequent rotate-related n-gram (0.001113).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features/14\",\"reason\":\"XOR ROL, which also contains ROL, has a larger value (0.0011828) than ADD ROL (0.0011128). The candidate itself later calls XOR ROL the most frequent n-gram in the list.\",\"category\":\"other\"},{\"quote\":\"Aligned SSE load followed by a bitwise AND mask\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Adjacency and load/store roles are inferred, but graph-aware n-grams need not be adjacent. No occurrence or context evidence was supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"SIMD XOR followed by an unaligned store.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"The n-gram names do not show that MOVUPS is a store, or that the instructions are adjacent or ordered as stated.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Consecutive opposing rotates, typical of multi-rotation mixing in hash algorithms.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Consecutiveness is asserted without extraction or context evidence for adjacency or control flow.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Rotate followed by byte extraction, as in table-lookup or S-box style cipher steps.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"The mnemonics alone do not support a table-lookup or S-box interpretation, and no function context was provided.\",\"category\":\"unsupported_crypto\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 top-feature SHAP values are positive toward the configured target class 1 and match the evidence within rounding. The claim that all 20 top features push toward cryptojacking is correct for this top-k list under the configured class assumption. The 'no single feature is decisive' and 'evenly distributed' remarks apply only to the supplied top-k subset, and the omitted features and baseline are unknown.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Only the top 20 features are provided. The SHAP baseline and full attributions are null, so omitted features cannot be assessed.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature-value semantics are not established, so the values cannot be treated as frequencies or counts.\",\"There are no occurrences, function context, strings, API calls or network indicators, and adjacency and control flow cannot be inferred.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"Numbers and SHAP directions are faithfully reported, and the explanation is well hedged, with benign alternatives and a proportionate follow-up plan. Technical accuracy is held back by treating feature values as code-fraction frequencies, by asserting adjacency and speculative cipher semantics, and by the incorrect most-frequent-rotate claim.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7386,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3799,
+          "output_tokens_details": {
+            "thinking_tokens": 1765
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7386,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3799,
+        "output_tokens_details": {
+          "thinking_tokens": 1765
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_89a5d92cdb2a747b\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, the 20 SHAP values and the n-gram names match the evidence. Several interpretations overreach. Adjacency is asserted for graph-aware n-grams, the low values are treated as frequencies or code fractions, and ADD ROL is wrongly called the most frequent rotate-related n-gram.\",\"coherence\":\"The two clusters, the caveats, the tier and the recommendation are well organized and consistent. One internal inconsistency remains: ADD ROL is called the most frequent rotate-related n-gram, while XOR ROL is later called the most frequent n-gram.\",\"cybersecurity_relevance\":\"It ties the ARX-like and SIMD n-grams to hash and cipher code and to cryptojacking. It names benign alternatives (checksums, compression, crypto libraries, compiler vectorization) and states the missing function, API and network context. The reliance on frequency semantics the artifact disclaims weakens the sample-specific argument.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: locate the functions, identify the algorithm, review strings, imports and network behavior, run a sandbox CPU and pool check, compare with known libraries, and escalate only on confirmed mining behavior. The steps are conditional and not presented as observed, but they are not ranked by priority.\"},\"unsupported_claims\":[{\"quote\":\"the n-gram frequencies are very low, from 0.000001 to 0.001183, so these patterns are a tiny fraction of the code. A dedicated miner would normally show a heavy concentration of mixing-round instructions.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature-value semantics are not established and the values should not be treated as raw counts. The 'tiny fraction of the code' conclusion and the comparison with a miner's expected concentration are unsupported.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Very low n-gram frequencies (0.000001 to 0.001183) argue against a dedicated mining loop\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"This draws a behavioral inference about mining loops from values whose meaning is unconfirmed. Mnemonic n-grams do not establish or exclude loops.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The most frequent rotate-related n-gram (0.001113).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features/14\",\"reason\":\"XOR ROL, which also contains ROL, has a larger value (0.0011828) than ADD ROL (0.0011128). The candidate itself later calls XOR ROL the most frequent n-gram in the list.\",\"category\":\"other\"},{\"quote\":\"Aligned SSE load followed by a bitwise AND mask\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Adjacency and load/store roles are inferred, but graph-aware n-grams need not be adjacent. No occurrence or context evidence was supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"SIMD XOR followed by an unaligned store.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"The n-gram names do not show that MOVUPS is a store, or that the instructions are adjacent or ordered as stated.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Consecutive opposing rotates, typical of multi-rotation mixing in hash algorithms.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Consecutiveness is asserted without extraction or context evidence for adjacency or control flow.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Rotate followed by byte extraction, as in table-lookup or S-box style cipher steps.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/8/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"The mnemonics alone do not support a table-lookup or S-box interpretation, and no function context was provided.\",\"category\":\"unsupported_crypto\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 top-feature SHAP values are positive toward the configured target class 1 and match the evidence within rounding. The claim that all 20 top features push toward cryptojacking is correct for this top-k list under the configured class assumption. The 'no single feature is decisive' and 'evenly distributed' remarks apply only to the supplied top-k subset, and the omitted features and baseline are unknown.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Only the top 20 features are provided. The SHAP baseline and full attributions are null, so omitted features cannot be assessed.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature-value semantics are not established, so the values cannot be treated as frequencies or counts.\",\"There are no occurrences, function context, strings, API calls or network indicators, and adjacency and control flow cannot be inferred.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"Numbers and SHAP directions are faithfully reported, and the explanation is well hedged, with benign alternatives and a proportionate follow-up plan. Technical accuracy is held back by treating feature values as code-fraction frequencies, by asserting adjacency and speculative cipher semantics, and by the incorrect most-frequent-rotate claim.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_89a5d92cdb2a747b",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The probability, the 20 SHAP values and the n-gram names match the evidence. Several interpretations overreach. Adjacency is asserted for graph-aware n-grams, the low values are treated as frequencies or code fractions, and ADD ROL is wrongly called the most frequent rotate-related n-gram.",
+      "coherence": "The two clusters, the caveats, the tier and the recommendation are well organized and consistent. One internal inconsistency remains: ADD ROL is called the most frequent rotate-related n-gram, while XOR ROL is later called the most frequent n-gram.",
+      "cybersecurity_relevance": "It ties the ARX-like and SIMD n-grams to hash and cipher code and to cryptojacking. It names benign alternatives (checksums, compression, crypto libraries, compiler vectorization) and states the missing function, API and network context. The reliance on frequency semantics the artifact disclaims weakens the sample-specific argument.",
+      "actionable_utility": "The follow-up is concrete and proportionate: locate the functions, identify the algorithm, review strings, imports and network behavior, run a sandbox CPU and pool check, compare with known libraries, and escalate only on confirmed mining behavior. The steps are conditional and not presented as observed, but they are not ranked by priority."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "the n-gram frequencies are very low, from 0.000001 to 0.001183, so these patterns are a tiny fraction of the code. A dedicated miner would normally show a heavy concentration of mixing-round instructions.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature-value semantics are not established and the values should not be treated as raw counts. The 'tiny fraction of the code' conclusion and the comparison with a miner's expected concentration are unsupported.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Very low n-gram frequencies (0.000001 to 0.001183) argue against a dedicated mining loop",
+        "candidate_path": "/candidate_analysis/key_indicators/3",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "This draws a behavioral inference about mining loops from values whose meaning is unconfirmed. Mnemonic n-grams do not establish or exclude loops.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "The most frequent rotate-related n-gram (0.001113).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/top_features/14",
+        "reason": "XOR ROL, which also contains ROL, has a larger value (0.0011828) than ADD ROL (0.0011128). The candidate itself later calls XOR ROL the most frequent n-gram in the list.",
+        "category": "other"
+      },
+      {
+        "quote": "Aligned SSE load followed by a bitwise AND mask",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Adjacency and load/store roles are inferred, but graph-aware n-grams need not be adjacent. No occurrence or context evidence was supplied.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "SIMD XOR followed by an unaligned store.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "The n-gram names do not show that MOVUPS is a store, or that the instructions are adjacent or ordered as stated.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Consecutive opposing rotates, typical of multi-rotation mixing in hash algorithms.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Consecutiveness is asserted without extraction or context evidence for adjacency or control flow.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Rotate followed by byte extraction, as in table-lookup or S-box style cipher steps.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+        "evidence_reference": "/evidence/function_context",
+        "reason": "The mnemonics alone do not support a table-lookup or S-box interpretation, and no function context was provided.",
+        "category": "unsupported_crypto"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 top-feature SHAP values are positive toward the configured target class 1 and match the evidence within rounding. The claim that all 20 top features push toward cryptojacking is correct for this top-k list under the configured class assumption. The 'no single feature is decisive' and 'evenly distributed' remarks apply only to the supplied top-k subset, and the omitted features and baseline are unknown.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Only the top 20 features are provided. The SHAP baseline and full attributions are null, so omitted features cannot be assessed.",
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "Feature-value semantics are not established, so the values cannot be treated as frequencies or counts.",
+      "There are no occurrences, function context, strings, API calls or network indicators, and adjacency and control flow cannot be inferred.",
+      "The RF probability is not behavioral proof."
+    ],
+    "summary": "Numbers and SHAP directions are faithfully reported, and the explanation is well hedged, with benign alternatives and a proportionate follow-up plan. Technical accuracy is held back by treating feature values as code-fraction frequencies, by asserting adjacency and speculative cipher semantics, and by the incorrect most-frequent-rotate claim."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "the n-gram frequencies are very low, from 0.000001 to 0.001183, so these patterns are a tiny fraction of the code. A dedicated miner would normally show a heavy concentration of mixing-round instructions.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature-value semantics are not established and the values should not be treated as raw counts. The 'tiny fraction of the code' conclusion and the comparison with a miner's expected concentration are unsupported.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Very low n-gram frequencies (0.000001 to 0.001183) argue against a dedicated mining loop",
+      "candidate_path": "/candidate_analysis/key_indicators/3",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "This draws a behavioral inference about mining loops from values whose meaning is unconfirmed. Mnemonic n-grams do not establish or exclude loops.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The most frequent rotate-related n-gram (0.001113).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/top_features/14",
+      "reason": "XOR ROL, which also contains ROL, has a larger value (0.0011828) than ADD ROL (0.0011128). The candidate itself later calls XOR ROL the most frequent n-gram in the list.",
+      "category": "other"
+    },
+    {
+      "quote": "Aligned SSE load followed by a bitwise AND mask",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Adjacency and load/store roles are inferred, but graph-aware n-grams need not be adjacent. No occurrence or context evidence was supplied.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "SIMD XOR followed by an unaligned store.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "The n-gram names do not show that MOVUPS is a store, or that the instructions are adjacent or ordered as stated.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Consecutive opposing rotates, typical of multi-rotation mixing in hash algorithms.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Consecutiveness is asserted without extraction or context evidence for adjacency or control flow.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Rotate followed by byte extraction, as in table-lookup or S-box style cipher steps.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/8/assessment",
+      "evidence_reference": "/evidence/function_context",
+      "reason": "The mnemonics alone do not support a table-lookup or S-box interpretation, and no function context was provided.",
+      "category": "unsupported_crypto"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "70ecc116b12f58e2d2816f968a253935214d489c059a598196013c7d14258c71.exe_analysis.json"
+}

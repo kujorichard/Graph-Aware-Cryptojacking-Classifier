@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_d01e7753ad483e1e",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 1.0,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "eor sub",
+        "value": 1.3024394320382271e-05,
+        "shap_value": 0.010244802914709758
+      },
+      {
+        "ngram": "ADD POP",
+        "value": 0.0,
+        "shap_value": 0.010083121768221162
+      },
+      {
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.009151653263975778
+      },
+      {
+        "ngram": "mvn orr",
+        "value": 0.00013024394866079092,
+        "shap_value": 0.007888271715765628
+      },
+      {
+        "ngram": "sub strb",
+        "value": 0.0030216595623642206,
+        "shap_value": 0.00718827228103621
+      },
+      {
+        "ngram": "XOR CALL",
+        "value": 0.0,
+        "shap_value": 0.006834821409656375
+      },
+      {
+        "ngram": "AND MOV",
+        "value": 0.0,
+        "shap_value": 0.0067002999450664034
+      },
+      {
+        "ngram": "cmn mov",
+        "value": 0.0021750738378614187,
+        "shap_value": 0.006308025536973493
+      },
+      {
+        "ngram": "CALL ADD",
+        "value": 0.0,
+        "shap_value": 0.0061519377471047154
+      },
+      {
+        "ngram": "CALL XOR",
+        "value": 0.0,
+        "shap_value": 0.006040046582442791
+      },
+      {
+        "ngram": "MOV JZ",
+        "value": 0.0,
+        "shap_value": 0.005240056935232095
+      },
+      {
+        "ngram": "CMP JL",
+        "value": 0.0,
+        "shap_value": 0.004980980149942934
+      },
+      {
+        "ngram": "sub ldrh",
+        "value": 0.00041678061825223267,
+        "shap_value": 0.0047273744853809216
+      },
+      {
+        "ngram": "XOR SHL",
+        "value": 0.0,
+        "shap_value": 0.004698324586285142
+      },
+      {
+        "ngram": "XOR XOR",
+        "value": 0.0,
+        "shap_value": 0.004597128282419753
+      },
+      {
+        "ngram": "add b",
+        "value": 6.512197433039546e-05,
+        "shap_value": 0.004582748484626123
+      },
+      {
+        "ngram": "TEST JZ",
+        "value": 0.0,
+        "shap_value": 0.004499517159473498
+      },
+      {
+        "ngram": "add blx",
+        "value": 0.0,
+        "shap_value": 0.004447607869968561
+      },
+      {
+        "ngram": "sub umull",
+        "value": 1.3024394320382271e-05,
+        "shap_value": 0.00441175175557483
+      },
+      {
+        "ngram": "and ldrh",
+        "value": 9.11707611521706e-05,
+        "shap_value": 0.004404826681520745
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "high-confidence",
+    "explanation": "The Random Forest classifies this binary as malware with probability 1.0000, and all 20 top SHAP features push toward cryptojacking (+0.0044 to +0.0102 each, roughly +0.12 in total). No feature argues against that label. The strongest evidence is a cluster of bitwise and arithmetic mixing sequences. These are 'eor sub' (rank 1, +0.010245), 'XOR SHL' (+0.004698), 'XOR XOR' (+0.004597), 'XOR CALL' and 'CALL XOR' (+0.006835 and +0.006040), 'mvn orr' (+0.007888), 'AND MOV' (+0.006700) and 'sub umull' (+0.004412). Such instruction mixes are typical of hashing and proof-of-work style compute loops, but they also occur in other non-crypto code. A second cluster of ARM load/store, flag and branch patterns appears with measurable frequency: 'sub strb' (0.003022), 'cmn mov' (0.002175), 'sub ldrh' (0.000417), 'and ldrh' (0.000091), 'add b' and 'add blx'. These suggest tight loops over memory buffers with conditional flow. A third cluster of x86-style control-flow and conditional-move patterns ('CMOVZ MOV', 'MOV JZ', 'CMP JL', 'TEST JZ', 'ADD POP', 'CALL ADD') has reported frequencies of 0.000000, so these are very rare or absent n-grams. Their large SHAP values show that the model is weighing them heavily. The mix of uppercase (x86-style) and lowercase (ARM-style) mnemonics is unusual, and the evidence does not explain it. Several caveats apply. The evidence gives no function names, call targets or strings, so no specific mining behavior (such as a stratum protocol or a hash routine) is directly confirmed. The individual SHAP values are modest and the verdict rests on the aggregate pattern. The confidence is therefore high but not absolute.",
+    "evidence_analysis": [
+      {
+        "ngram": "eor sub",
+        "shap_contribution": 0.010245,
+        "assessment": "Top-ranked feature. An ARM XOR followed by a subtraction is consistent with mixing and round arithmetic in hash or cipher inner loops. It is rare in the binary (0.000013) but is the strongest single driver."
+      },
+      {
+        "ngram": "ADD POP",
+        "shap_contribution": 0.010083,
+        "assessment": "An x86-style add followed by a stack restore, likely a function epilogue. At 0.000000 frequency it is essentially absent, so its influence reflects a model-learned association rather than clear behavior. It does not identify a specific function."
+      },
+      {
+        "ngram": "CMOVZ MOV",
+        "shap_contribution": 0.009152,
+        "assessment": "A conditional move is a branchless selection pattern often seen in optimized compute code. The frequency is effectively zero, so this is a weak, indirect signal."
+      },
+      {
+        "ngram": "mvn orr",
+        "shap_contribution": 0.007888,
+        "assessment": "An ARM bitwise NOT followed by OR is a bit-manipulation idiom used in mask construction and rotate or mix operations. It is consistent with hash-style bit twiddling, at low frequency (0.000130)."
+      },
+      {
+        "ngram": "sub strb",
+        "shap_contribution": 0.007188,
+        "assessment": "One of the more frequent features (0.003022). A subtraction followed by a byte store suggests byte-wise buffer processing or loop-indexed writes. It is compatible with data transformation loops but not specific to mining."
+      },
+      {
+        "ngram": "XOR CALL",
+        "shap_contribution": 0.006835,
+        "assessment": "An XOR followed by a call. XOR is typical of register zeroing or data mixing before a call. With 'CALL XOR' it shows a recurring XOR/call interleave, but frequency is zero, so the signal is weak."
+      },
+      {
+        "ngram": "AND MOV",
+        "shap_contribution": 0.0067,
+        "assessment": "A masking operation followed by a move, a common bit-field and index-wrapping idiom in compute kernels. It is generic on its own."
+      },
+      {
+        "ngram": "cmn mov",
+        "shap_contribution": 0.006308,
+        "assessment": "An ARM compare-negative followed by a move. Its relatively high frequency (0.002175) indicates repeated flag-setting and conditional logic, such as overflow or carry checks in arithmetic-heavy code."
+      },
+      {
+        "ngram": "CALL ADD",
+        "shap_contribution": 0.006152,
+        "assessment": "A call followed by an add, typical of post-call stack or pointer adjustment. It has no specific mining semantics, and the evidence does not say which function it appears in."
+      },
+      {
+        "ngram": "CALL XOR",
+        "shap_contribution": 0.00604,
+        "assessment": "Together with 'XOR CALL', this indicates XOR operations tightly interleaved with calls. It is consistent with mixing or obfuscation routines but is not conclusive."
+      },
+      {
+        "ngram": "MOV JZ",
+        "shap_contribution": 0.00524,
+        "assessment": "A move followed by a conditional jump. It is a generic control-flow pattern and contributes only as part of the aggregate."
+      },
+      {
+        "ngram": "CMP JL",
+        "shap_contribution": 0.004981,
+        "assessment": "A compare followed by a jump-if-less, the classic bounded-loop pattern. It is consistent with iterative computation loops but not diagnostic."
+      },
+      {
+        "ngram": "sub ldrh",
+        "shap_contribution": 0.004727,
+        "assessment": "A subtraction followed by a halfword load, suggesting 16-bit data indexing. It may indicate table lookups or buffer processing. Frequency is 0.000417."
+      },
+      {
+        "ngram": "XOR SHL",
+        "shap_contribution": 0.004698,
+        "assessment": "An XOR followed by a shift-left is a core pattern in hash functions, PRNGs and cipher mixing. It is one of the more crypto-relevant sequences, though its recorded frequency is 0.000000."
+      },
+      {
+        "ngram": "XOR XOR",
+        "shap_contribution": 0.004597,
+        "assessment": "Consecutive XORs are consistent with multi-word mixing or state combination in hashing and cipher rounds. They can also appear in register zeroing, so the signal is suggestive rather than definitive."
+      },
+      {
+        "ngram": "add b",
+        "shap_contribution": 0.004583,
+        "assessment": "An ARM add followed by an unconditional branch, indicating loop or jump structure with arithmetic. At 0.000065 it is a low-frequency, generic signal."
+      },
+      {
+        "ngram": "TEST JZ",
+        "shap_contribution": 0.0045,
+        "assessment": "A zero-test followed by a conditional jump, a ubiquitous null/zero-check idiom. It contributes only through its learned correlation with the malware class."
+      },
+      {
+        "ngram": "add blx",
+        "shap_contribution": 0.004448,
+        "assessment": "An ARM add followed by an indirect branch-with-link, which may indicate computed or indirect calls. Indirect calls can occur in dispatch or obfuscated control flow, but the evidence does not show targets."
+      },
+      {
+        "ngram": "sub umull",
+        "shap_contribution": 0.004412,
+        "assessment": "An ARM unsigned long multiply preceded by a subtraction. Wide multiplication is common in big-integer and modular arithmetic and in some hashing, which fits compute-heavy workloads. Frequency is low (0.000013)."
+      },
+      {
+        "ngram": "and ldrh",
+        "shap_contribution": 0.004405,
+        "assessment": "A mask followed by a halfword load, suggesting masked indexing into 16-bit data or tables. It is a generic data-access pattern, observed at 0.000091."
+      }
+    ],
+    "confidence_score": 0.78,
+    "key_indicators": [
+      "Random Forest malware probability of 1.0000, with all top-20 SHAP contributions positive (about +0.12 combined)",
+      "Cluster of XOR/shift/rotate-style mixing n-grams (eor sub, XOR SHL, XOR XOR, mvn orr) consistent with hash or cipher round arithmetic",
+      "Wide-multiply pattern 'sub umull', consistent with big-integer or hash arithmetic",
+      "Frequent ARM byte and halfword load/store with arithmetic (sub strb, cmn mov, sub ldrh, and ldrh), indicating tight buffer-processing loops",
+      "Mixed x86-style (uppercase) and ARM-style (lowercase) mnemonics in the top features, which is unusual and unexplained by the evidence",
+      "Many top features have a recorded frequency of 0.000000, so the verdict relies on aggregate statistical association rather than a dominant, identifiable code path"
+    ],
+    "recommended_action": "Treat as likely cryptojacking, but verify, since the evidence is n-gram statistics only. Disassemble the binary and locate the code containing the XOR/shift/multiply sequences ('eor sub', 'XOR SHL', 'sub umull') to see whether they form a hashing or proof-of-work loop. Check why both x86-style and ARM-style mnemonics appear. Then do dynamic analysis in a sandbox, watching for sustained CPU load, outbound pool-style network connections and persistence behavior. Extract strings, configuration and embedded network indicators to confirm or rule out mining. Until then, isolate the sample and block its hash."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

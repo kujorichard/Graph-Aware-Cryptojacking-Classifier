@@ -1,0 +1,189 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_9fd7f3c1ba040f11",
+  "status": "success",
+  "source_sha256": "fc1a9cd2a4eb862cc5c661f770e96ee83f1ededb7fad4683617819bce7343a0d",
+  "input_sha256": "c30d7e8baedf044cf304620e049571180356f993971b29b2f0f475c7b5303081",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "ab4f3bb1a973fb8ed6eacfad3e0065b3bf541054cd680031948d43fcf8c84667.elf",
+      "source_name": "ab4f3bb1a973fb8ed6eacfad3e0065b3bf541054cd680031948d43fcf8c84667.elf.json",
+      "source_path": "ml/dataset/cryptojacking/ab4f3bb1a973fb8ed6eacfad3e0065b3bf541054cd680031948d43fcf8c84667.elf.json",
+      "split": "test",
+      "batch_number": 0,
+      "row_index_in_batch": 12,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "ab4f3bb1a973fb8ed6eacfad3e0065b3bf541054cd680031948d43fcf8c84667.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:15:46.093748+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:15:46.093776+00:00",
+      "error": null,
+      "request_sha256": "23c5f807dea8ea97c155e0f80916201a017fd03f595b7e9991fb51e9a38e67b2",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm3cHzCsgK2AfrkwQr5U",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "Looking at the RF model's prediction of 1 with 0.94 probability, I'm checking the SHAP values — five features have small positive contributions (POP SUB, POP PUSH, INC PUSH, POP OR, DEC PUSH), while the rest sit at zero, including CMOVZ MOV, ADD POP, and CALL ADD.\n\nI'm also questioning some claims about the semantics here: calling the feature values \"relative frequency\" assumes something not actually confirmed, and interpreting zeros as \"absence\" driving the malware classification is an overreach without upstream validation. The assertion that this reflects training distribution correlation rather than observed behavior is reasonable but is being stated with more certainty than the evidence supports.\n\nI'm also noting that labeling n-gram patterns like \"conditional move followed by a move\" assumes adjacency between instructions, which isn't established, and calling \"POP SUB\" a typical epilogue pattern seems like a stretch since that sequence doesn't really match standard epilogue conventions.\n\nThe remaining instruction-level descriptions (XOR for zeroing, MOVSXD sign extension, TEST/JS branches, CALL/ADD stack adjustment, INC/PUSH) all seem technically sound and generic enough to be uncontroversial. The low confidence tier (0.45) versus RF's 0.94 isn't actually contradictory given the explanation provided, and the suggested follow-up — checking strings for wallet/pool references and reviewing network behavior — is a reasonable, concrete next step.\n\nI'm now settling on scores: technical accuracy 4, coherence around 4-5 given some repeated content across sections, cyber relevance roughly 4 since it touches on benign compiler idioms and a training artifact framing, and actionability also around 4. On SHAP faithfulness, the explanation mostly tracks the sign and magnitude correctly — the \"absence drives the score\" phrasing is really an interpretation of value semantics rather than an outright discrepancy, so I'd mark it faithful but flag the value-semantics assumption as an unsupported claim worth noting.\n\nI'm also flagging a couple of specific unsupported claims: the statement about fifteen n-grams having zero relative frequency lacks established semantic grounding, and the claim that their SHAP contributions reflect the model treating absence as characteristic of the malware class is an unsupported certainty. I'm also considering whether the \"conditional move followed by move is a branchless-select idiom\" claim counts as unsupported adjacency inference, and whether to include a similar claim about a call followed by XOR being return-value zeroing.\n\nFor the opposite case, the \"POP SUB\" sequence described as a stack-restore followed by arithmetic adjustment typical of function epilogue/prologue code seems well-supported since it asserts both adjacency and function role clearly — I'll use that one as a solid example. Now I'm pulling in the relevant evidence references and preparing to write everything out as a single-line JSON object.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_9fd7f3c1ba040f11\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.94, the SHAP range (+0.006 to +0.016), the 15 zero-valued and 5 nonzero n-grams, and the values 0.010309 and 0.005155 all match the evidence. The explanation also correctly says the evidence is inconclusive. It overreaches by treating values as 'relative frequency' and zero as 'absent', and by treating the n-grams as adjacent and as prologue/epilogue code.\",\"coherence\":\"The explanation, per-feature analysis, indicators, tier and action all agree: low-confidence, suspicious but unconfirmed. Repeated points (absence, generic idioms) across sections add some redundancy.\",\"cybersecurity_relevance\":\"It links the evidence to cryptojacking questions: no hash-loop or vector patterns, no function context, and a check for pool or wallet indicators. It treats the n-grams as generic compiler idioms and raises a possible training-artifact explanation. Its benign alternatives are somewhat generic.\",\"actionable_utility\":\"It recommends checking strings and configuration for pool or wallet indicators, inspecting network behavior, and reviewing functions for arithmetic or bitwise loops. It escalates only if mining is confirmed, which is proportionate and conditional. The steps are not prioritized and are fairly standard.\"},\"unsupported_claims\":[{\"quote\":\"Fifteen of the 20 n-grams have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature value semantics are not established and must not be treated as raw counts. Calling them relative frequencies, and zero 'absent', is an unsupported semantic assumption.\",\"category\":\"other\"},{\"quote\":\"so their SHAP contributions come from the model treating their absence as characteristic of the malware class\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/0/value\",\"reason\":\"This is stated as established fact, but it depends on the unconfirmed meaning of a value of 0.0. No baseline or full attributions are available to confirm the mechanism.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"This is a stack-restore followed by an arithmetic adjustment, typical of function epilogue/prologue code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/scope_notes/0\",\"reason\":\"Adjacency and function-role (epilogue/prologue) are inferred for a graph-aware n-gram with no occurrences, function context or extraction evidence.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP direction (all positive toward the configured class 1) and magnitudes (+0.006 to +0.016, max about 0.0157) are reported accurately and described as small. The candidate does not claim omitted features are benign. The 'absence drives the score' reading depends on unconfirmed value semantics, but it does not misstate SHAP signs or sizes.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature value semantics are not established, so zero cannot be confirmed as absence.\",\"SHAP baseline, full attributions and omitted features are unavailable.\",\"Target class 1 is a configured assumption pending upstream verification.\",\"No occurrences or function context are supplied, so adjacency, control flow and function roles cannot be verified.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"Accurate on numbers and SHAP signs/magnitudes, appropriately cautious, and offers reasonable follow-up. It loses some accuracy by assuming 'relative frequency' and 'absent' semantics, and by assuming adjacency and prologue/epilogue roles for the n-grams.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6862,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3245,
+          "output_tokens_details": {
+            "thinking_tokens": 1868
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6862,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3245,
+        "output_tokens_details": {
+          "thinking_tokens": 1868
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_9fd7f3c1ba040f11\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.94, the SHAP range (+0.006 to +0.016), the 15 zero-valued and 5 nonzero n-grams, and the values 0.010309 and 0.005155 all match the evidence. The explanation also correctly says the evidence is inconclusive. It overreaches by treating values as 'relative frequency' and zero as 'absent', and by treating the n-grams as adjacent and as prologue/epilogue code.\",\"coherence\":\"The explanation, per-feature analysis, indicators, tier and action all agree: low-confidence, suspicious but unconfirmed. Repeated points (absence, generic idioms) across sections add some redundancy.\",\"cybersecurity_relevance\":\"It links the evidence to cryptojacking questions: no hash-loop or vector patterns, no function context, and a check for pool or wallet indicators. It treats the n-grams as generic compiler idioms and raises a possible training-artifact explanation. Its benign alternatives are somewhat generic.\",\"actionable_utility\":\"It recommends checking strings and configuration for pool or wallet indicators, inspecting network behavior, and reviewing functions for arithmetic or bitwise loops. It escalates only if mining is confirmed, which is proportionate and conditional. The steps are not prioritized and are fairly standard.\"},\"unsupported_claims\":[{\"quote\":\"Fifteen of the 20 n-grams have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature value semantics are not established and must not be treated as raw counts. Calling them relative frequencies, and zero 'absent', is an unsupported semantic assumption.\",\"category\":\"other\"},{\"quote\":\"so their SHAP contributions come from the model treating their absence as characteristic of the malware class\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/0/value\",\"reason\":\"This is stated as established fact, but it depends on the unconfirmed meaning of a value of 0.0. No baseline or full attributions are available to confirm the mechanism.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"This is a stack-restore followed by an arithmetic adjustment, typical of function epilogue/prologue code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/scope_notes/0\",\"reason\":\"Adjacency and function-role (epilogue/prologue) are inferred for a graph-aware n-gram with no occurrences, function context or extraction evidence.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP direction (all positive toward the configured class 1) and magnitudes (+0.006 to +0.016, max about 0.0157) are reported accurately and described as small. The candidate does not claim omitted features are benign. The 'absence drives the score' reading depends on unconfirmed value semantics, but it does not misstate SHAP signs or sizes.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature value semantics are not established, so zero cannot be confirmed as absence.\",\"SHAP baseline, full attributions and omitted features are unavailable.\",\"Target class 1 is a configured assumption pending upstream verification.\",\"No occurrences or function context are supplied, so adjacency, control flow and function roles cannot be verified.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"Accurate on numbers and SHAP signs/magnitudes, appropriately cautious, and offers reasonable follow-up. It loses some accuracy by assuming 'relative frequency' and 'absent' semantics, and by assuming adjacency and prologue/epilogue roles for the n-grams.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_9fd7f3c1ba040f11",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability 0.94, the SHAP range (+0.006 to +0.016), the 15 zero-valued and 5 nonzero n-grams, and the values 0.010309 and 0.005155 all match the evidence. The explanation also correctly says the evidence is inconclusive. It overreaches by treating values as 'relative frequency' and zero as 'absent', and by treating the n-grams as adjacent and as prologue/epilogue code.",
+      "coherence": "The explanation, per-feature analysis, indicators, tier and action all agree: low-confidence, suspicious but unconfirmed. Repeated points (absence, generic idioms) across sections add some redundancy.",
+      "cybersecurity_relevance": "It links the evidence to cryptojacking questions: no hash-loop or vector patterns, no function context, and a check for pool or wallet indicators. It treats the n-grams as generic compiler idioms and raises a possible training-artifact explanation. Its benign alternatives are somewhat generic.",
+      "actionable_utility": "It recommends checking strings and configuration for pool or wallet indicators, inspecting network behavior, and reviewing functions for arithmetic or bitwise loops. It escalates only if mining is confirmed, which is proportionate and conditional. The steps are not prioritized and are fairly standard."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Fifteen of the 20 n-grams have a relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature value semantics are not established and must not be treated as raw counts. Calling them relative frequencies, and zero 'absent', is an unsupported semantic assumption.",
+        "category": "other"
+      },
+      {
+        "quote": "so their SHAP contributions come from the model treating their absence as characteristic of the malware class",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/0/value",
+        "reason": "This is stated as established fact, but it depends on the unconfirmed meaning of a value of 0.0. No baseline or full attributions are available to confirm the mechanism.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "This is a stack-restore followed by an arithmetic adjustment, typical of function epilogue/prologue code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/scope_notes/0",
+        "reason": "Adjacency and function-role (epilogue/prologue) are inferred for a graph-aware n-gram with no occurrences, function context or extraction evidence.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP direction (all positive toward the configured class 1) and magnitudes (+0.006 to +0.016, max about 0.0157) are reported accurately and described as small. The candidate does not claim omitted features are benign. The 'absence drives the score' reading depends on unconfirmed value semantics, but it does not misstate SHAP signs or sizes.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Feature value semantics are not established, so zero cannot be confirmed as absence.",
+      "SHAP baseline, full attributions and omitted features are unavailable.",
+      "Target class 1 is a configured assumption pending upstream verification.",
+      "No occurrences or function context are supplied, so adjacency, control flow and function roles cannot be verified.",
+      "The RF probability is not behavioral proof of cryptojacking."
+    ],
+    "summary": "Accurate on numbers and SHAP signs/magnitudes, appropriately cautious, and offers reasonable follow-up. It loses some accuracy by assuming 'relative frequency' and 'absent' semantics, and by assuming adjacency and prologue/epilogue roles for the n-grams."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Fifteen of the 20 n-grams have a relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature value semantics are not established and must not be treated as raw counts. Calling them relative frequencies, and zero 'absent', is an unsupported semantic assumption.",
+      "category": "other"
+    },
+    {
+      "quote": "so their SHAP contributions come from the model treating their absence as characteristic of the malware class",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/0/value",
+      "reason": "This is stated as established fact, but it depends on the unconfirmed meaning of a value of 0.0. No baseline or full attributions are available to confirm the mechanism.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "This is a stack-restore followed by an arithmetic adjustment, typical of function epilogue/prologue code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/scope_notes/0",
+      "reason": "Adjacency and function-role (epilogue/prologue) are inferred for a graph-aware n-gram with no occurrences, function context or extraction evidence.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "ab4f3bb1a973fb8ed6eacfad3e0065b3bf541054cd680031948d43fcf8c84667.elf_analysis.json"
+}

@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import Any
 
 # ======================== EDIT THESE SETTINGS ========================
-API_KEY = "PASTE_YOUR_ANTHROPIC_API_KEY_HERE"
+API_KEY = "ANTHROPIC-API-KEY-GOES-HERE"  # Set your Anthropic API key here or via the environment variable ANTHROPIC_API_KEY.
 MODEL = "claude-sonnet-5-5"
 BASE_DIR = Path(__file__).resolve().parent
 INPUT_DIR = BASE_DIR / "input_files"

@@ -1,0 +1,188 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_8278d43bd6bc3ca2",
+  "status": "success",
+  "source_sha256": "b6a1585cf0695f13792cb2ce30ac3935bb1bba6b6c5232d57c38e771c741cdcf",
+  "input_sha256": "de5984ae52298dbcd3fd908b566d7fa0e4363ac696f164545c15b38b321b284d",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "e87ad7517a5416114f4681b493983264d93aef6b6d48303976453878314ece97.exe",
+      "source_name": "e87ad7517a5416114f4681b493983264d93aef6b6d48303976453878314ece97.exe.json",
+      "source_path": "ml/dataset/cryptojacking/e87ad7517a5416114f4681b493983264d93aef6b6d48303976453878314ece97.exe.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 3,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "e87ad7517a5416114f4681b493983264d93aef6b6d48303976453878314ece97.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:56:07.583411+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:56:07.583447+00:00",
+      "error": null,
+      "request_sha256": "2eac95cb453018b527397902d4034ae47beb01625f8b4c87414f666a6f4a8bdd",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm6goDKo6uY9RQ4dFRyz",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I should double-check the facts here: the RF probability is 1.0 for class 1, and the \"MALWARE\" label comes from mapping that class—worth noting that's a mild assumption. The claim that all 20 top n-grams push toward cryptojacking also needs scrutiny, since it depends on which target class the SHAP values were actually computed against, and that mapping hasn't been verified upstream.\n\nSumming the SHAP contributions gives roughly 0.123, which checks out. But the claim that \"14 of the 20 n-grams have zero relative frequency\" doesn't hold up—recounting the actual zero-valued entries gives 12, not 14, so that's an error. There's also an unverified assumption baked in about what the feature values actually represent (relative frequency vs. some other encoding), which the candidate treats as settled when it isn't.\n\nLooking at the mnemonic casing, the mix of uppercase (x86-style) and lowercase (ARM-style) instructions suggests someone is inferring architecture from case alone, which isn't a reliable signal and shouldn't be treated as conclusive.\n\nI should flag that the candidate also assumes adjacency for \"XOR followed by subtract\" without justification, and its claim that these patterns are \"generic compiler output\" is an unsupported assertion rather than something derived from the data. Checking the specific frequency values cited—sub strb, cmn mov, sub ldrh, mvn orr, eor sub, add b, and the rest—they all match correctly against the measured numbers.\n\nThe confidence score of 0.6 with low-confidence tier and RF probability of 1.0 seem reasonable, and the point about SHAP weight reflecting a learned association rather than visible behavior holds up. The recommendations, including sandboxing and monitoring, are sound. The main issues are the \"14 of the 20\" numeric error, vague \"relative frequency\" semantics, and unsupported claims about patterns being \"generic compiler output\" or \"rare or absent in this binary\" — though these are value discrepancies rather than SHAP faithfulness problems, so I'd still call the SHAP explanation faithful overall since direction and magnitude both check out.\n\nI'm scoring technical accuracy at 3 due to the count error and frequency overreach, coherence at 4, relevance at 4, and actionability at 4. I'll reference the explanation path and the top features evidence location for these notes.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_8278d43bd6bc3ca2\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, the +0.123 SHAP sum, the per-feature SHAP values and the instruction semantics are accurate. But \\\"14 of the 20\\\" is wrong, since only 12 listed values are 0.0. The explanation also treats values as relative frequencies although the artifact says their semantics are not established. It also asserts \\\"generic compiler output\\\" and adjacency (\\\"followed by\\\") without extraction or context evidence.\",\"coherence\":\"The argument is well organized: it gives the classifier result, four reasons for caution, then per-feature notes and recommendations, which are consistent with the low-confidence tier. The 14-vs-12 miscount and the repeated generic-pattern points slightly weaken it.\",\"cybersecurity_relevance\":\"It ties the n-grams to hash/cipher, big-number and mining hypotheses and to benign alternatives (generic code, a multi-architecture or packed binary, a disassembly artifact). It correctly notes the lack of API, function and constant context. Some per-feature discussion is generic.\",\"actionable_utility\":\"Its actions are concrete and proportionate: locate the functions holding the high-SHAP n-grams, check for mining constants and stratum/pool connections, sandbox the sample, and monitor CPU use and network traffic. They are stated conditionally and linked to the evidence gaps, though they are not strongly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"14 of the 20 n-grams have a reported relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Only 12 of the 20 listed values are 0.0 (ADD POP, CMOVZ MOV, XOR CALL, AND MOV, CALL ADD, CALL XOR, MOV JZ, CMP JL, XOR XOR, XOR SHL, add blx, clz sub.w). The count is wrong.\",\"category\":\"other\"},{\"quote\":\"so they are rare or absent in this binary and the SHAP push comes from the model's learned associations, not from visible code density\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the feature value semantics are not established and the values should not be treated as counts. The inference that the n-grams are absent from the binary is therefore unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Fourth, the patterns are generic compiler output\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"No function context or extraction evidence supports the claim that the patterns come from compiler output.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive for the configured target class 1, and the candidate reports the direction correctly. The \\\"about +0.123\\\" total of the listed values matches the sum, and the individual rounded values match. The candidate does not claim that omitted features are benign. The only discrepancies are the zero-frequency count and the value semantics, which concern feature values rather than SHAP.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The shap_target_class is a configured assumption that is not verified upstream.\",\"The feature value semantics are unknown, and the baseline and full attributions are missing.\",\"There are no occurrences, function context, API references or constants, and adjacency or control flow cannot be established.\",\"Only the top-20 subset is shown, so omitted features are unknown.\"],\"summary\":\"The explanation is well grounded and appropriately cautious about confirming cryptojacking, with feasible follow-up. It miscounts the zero-valued n-grams (12, not 14), assumes the values are relative frequencies, and calls the patterns \\\"generic compiler output\\\" without support. SHAP direction and magnitude are faithfully reported.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7149,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3244,
+          "output_tokens_details": {
+            "thinking_tokens": 1859
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7149,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3244,
+        "output_tokens_details": {
+          "thinking_tokens": 1859
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_8278d43bd6bc3ca2\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, the +0.123 SHAP sum, the per-feature SHAP values and the instruction semantics are accurate. But \\\"14 of the 20\\\" is wrong, since only 12 listed values are 0.0. The explanation also treats values as relative frequencies although the artifact says their semantics are not established. It also asserts \\\"generic compiler output\\\" and adjacency (\\\"followed by\\\") without extraction or context evidence.\",\"coherence\":\"The argument is well organized: it gives the classifier result, four reasons for caution, then per-feature notes and recommendations, which are consistent with the low-confidence tier. The 14-vs-12 miscount and the repeated generic-pattern points slightly weaken it.\",\"cybersecurity_relevance\":\"It ties the n-grams to hash/cipher, big-number and mining hypotheses and to benign alternatives (generic code, a multi-architecture or packed binary, a disassembly artifact). It correctly notes the lack of API, function and constant context. Some per-feature discussion is generic.\",\"actionable_utility\":\"Its actions are concrete and proportionate: locate the functions holding the high-SHAP n-grams, check for mining constants and stratum/pool connections, sandbox the sample, and monitor CPU use and network traffic. They are stated conditionally and linked to the evidence gaps, though they are not strongly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"14 of the 20 n-grams have a reported relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Only 12 of the 20 listed values are 0.0 (ADD POP, CMOVZ MOV, XOR CALL, AND MOV, CALL ADD, CALL XOR, MOV JZ, CMP JL, XOR XOR, XOR SHL, add blx, clz sub.w). The count is wrong.\",\"category\":\"other\"},{\"quote\":\"so they are rare or absent in this binary and the SHAP push comes from the model's learned associations, not from visible code density\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the feature value semantics are not established and the values should not be treated as counts. The inference that the n-grams are absent from the binary is therefore unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Fourth, the patterns are generic compiler output\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"No function context or extraction evidence supports the claim that the patterns come from compiler output.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive for the configured target class 1, and the candidate reports the direction correctly. The \\\"about +0.123\\\" total of the listed values matches the sum, and the individual rounded values match. The candidate does not claim that omitted features are benign. The only discrepancies are the zero-frequency count and the value semantics, which concern feature values rather than SHAP.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The shap_target_class is a configured assumption that is not verified upstream.\",\"The feature value semantics are unknown, and the baseline and full attributions are missing.\",\"There are no occurrences, function context, API references or constants, and adjacency or control flow cannot be established.\",\"Only the top-20 subset is shown, so omitted features are unknown.\"],\"summary\":\"The explanation is well grounded and appropriately cautious about confirming cryptojacking, with feasible follow-up. It miscounts the zero-valued n-grams (12, not 14), assumes the values are relative frequencies, and calls the patterns \\\"generic compiler output\\\" without support. SHAP direction and magnitude are faithfully reported.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_8278d43bd6bc3ca2",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The probability, the +0.123 SHAP sum, the per-feature SHAP values and the instruction semantics are accurate. But \"14 of the 20\" is wrong, since only 12 listed values are 0.0. The explanation also treats values as relative frequencies although the artifact says their semantics are not established. It also asserts \"generic compiler output\" and adjacency (\"followed by\") without extraction or context evidence.",
+      "coherence": "The argument is well organized: it gives the classifier result, four reasons for caution, then per-feature notes and recommendations, which are consistent with the low-confidence tier. The 14-vs-12 miscount and the repeated generic-pattern points slightly weaken it.",
+      "cybersecurity_relevance": "It ties the n-grams to hash/cipher, big-number and mining hypotheses and to benign alternatives (generic code, a multi-architecture or packed binary, a disassembly artifact). It correctly notes the lack of API, function and constant context. Some per-feature discussion is generic.",
+      "actionable_utility": "Its actions are concrete and proportionate: locate the functions holding the high-SHAP n-grams, check for mining constants and stratum/pool connections, sandbox the sample, and monitor CPU use and network traffic. They are stated conditionally and linked to the evidence gaps, though they are not strongly prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "14 of the 20 n-grams have a reported relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "Only 12 of the 20 listed values are 0.0 (ADD POP, CMOVZ MOV, XOR CALL, AND MOV, CALL ADD, CALL XOR, MOV JZ, CMP JL, XOR XOR, XOR SHL, add blx, clz sub.w). The count is wrong.",
+        "category": "other"
+      },
+      {
+        "quote": "so they are rare or absent in this binary and the SHAP push comes from the model's learned associations, not from visible code density",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says the feature value semantics are not established and the values should not be treated as counts. The inference that the n-grams are absent from the binary is therefore unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Fourth, the patterns are generic compiler output",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/function_context",
+        "reason": "No function context or extraction evidence supports the claim that the patterns come from compiler output.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are positive for the configured target class 1, and the candidate reports the direction correctly. The \"about +0.123\" total of the listed values matches the sum, and the individual rounded values match. The candidate does not claim that omitted features are benign. The only discrepancies are the zero-frequency count and the value semantics, which concern feature values rather than SHAP.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The shap_target_class is a configured assumption that is not verified upstream.",
+      "The feature value semantics are unknown, and the baseline and full attributions are missing.",
+      "There are no occurrences, function context, API references or constants, and adjacency or control flow cannot be established.",
+      "Only the top-20 subset is shown, so omitted features are unknown."
+    ],
+    "summary": "The explanation is well grounded and appropriately cautious about confirming cryptojacking, with feasible follow-up. It miscounts the zero-valued n-grams (12, not 14), assumes the values are relative frequencies, and calls the patterns \"generic compiler output\" without support. SHAP direction and magnitude are faithfully reported."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "14 of the 20 n-grams have a reported relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "Only 12 of the 20 listed values are 0.0 (ADD POP, CMOVZ MOV, XOR CALL, AND MOV, CALL ADD, CALL XOR, MOV JZ, CMP JL, XOR XOR, XOR SHL, add blx, clz sub.w). The count is wrong.",
+      "category": "other"
+    },
+    {
+      "quote": "so they are rare or absent in this binary and the SHAP push comes from the model's learned associations, not from visible code density",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says the feature value semantics are not established and the values should not be treated as counts. The inference that the n-grams are absent from the binary is therefore unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Fourth, the patterns are generic compiler output",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/function_context",
+      "reason": "No function context or extraction evidence supports the claim that the patterns come from compiler output.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "e87ad7517a5416114f4681b493983264d93aef6b6d48303976453878314ece97.exe_analysis.json"
+}

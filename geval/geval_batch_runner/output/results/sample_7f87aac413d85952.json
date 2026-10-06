@@ -1,0 +1,221 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_7f87aac413d85952",
+  "status": "success",
+  "source_sha256": "cd991189e4dcfb8d5090d2aebd53637c5f6e7313dcb5939ebb43db4672a7cfec",
+  "input_sha256": "43d50ba79ef48a20d908605e4e17fa1e57cd2db815e25f646d016c845f040546",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "254a713d3ec2852b6657ecb8840efd2662e048ace42c2b4e0b30c589cdb9f8cb.exe",
+      "source_name": "254a713d3ec2852b6657ecb8840efd2662e048ace42c2b4e0b30c589cdb9f8cb.exe.json",
+      "source_path": "ml/dataset/cryptojacking/254a713d3ec2852b6657ecb8840efd2662e048ace42c2b4e0b30c589cdb9f8cb.exe.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 22,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "254a713d3ec2852b6657ecb8840efd2662e048ace42c2b4e0b30c589cdb9f8cb.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:19:43.915301+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:19:43.915331+00:00",
+      "error": null,
+      "request_sha256": "1119412bf89edeb9a16cb251c781edbcd23aa3b461163e485ee84bf87ae35116",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkyLTDfdYAFuHBGb4dSg",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm noticing the candidate interprets the feature values as \"frequencies\" and treats zero as \"absence of patterns,\" but the actual semantics of these values were never established in the evidence, so that's an unsupported assumption worth flagging.\n\nCounting manually, I find only 8 features exactly at 0.000000, not the eleven the candidate claims — the near-zero values like POP SUB, POP CALL, and ADC SUB round to 0.001905, not to zero, so that count is factually wrong. I'm also checking the \"most frequent\" claims: INC PUSH at 0.04 is indeed the max, but the candidate's assertion that this frequency explains its \"strong model influence\" doesn't hold since its SHAP value ranks only 10th. Similarly, the claim that ADD ADD and INC PUSH are \"the most frequent present patterns\" overlooks that MOV ADC and POP PUSH have higher frequencies, so that statement is inaccurate too.\n\nThe absence of rotate/shift patterns typical of mining kernels is a fair but limited observation given it's only based on top-k features. Several of the hedged interpretations—accumulation loops, counter increments, compiler/packer stylistic artifacts—seem reasonable, but labeling stack/call-frame patterns as generic prologue/epilogue is stated too confidently since some of those mnemonic pairs don't actually match that description.\n\nI'm also noticing several places where adjacency between opcodes is assumed when the n-gram methodology doesn't guarantee consecutive instructions—this affects the arithmetic and stack-restore interpretations. The claim that all 20 top n-grams point to cryptojacking depends on an unstated assumption about what class 1 represents, and the candidate's definitive \"MALWARE\" labeling isn't actually supported by the evidence, which only shows a numeric prediction without class name mapping. There's also a minor numerical slip (\"eleven of the 20\"), though the SHAP value directions themselves appear accurate.\n\nI'm now checking whether INC PUSH's claimed influence matches its actual SHAP ranking—it's only 10th of 20, so describing it as having \"strong model influence\" overstates its importance, and tying that to opcode frequency isn't something the evidence supports. I'm also verifying the claim about zero-valued features contributing \"much\" of the SHAP signal: summing the eight zero-feature SHAP values gives roughly 0.0665 out of a total of about 0.1772, which is around 37.5%—a meaningful share, so \"much\" is defensible even if softened language, but the overall faithfulness is undercut by the INC PUSH misrepresentation.\n\nFor scoring, I'm landing on technical accuracy around 3 given the numerical overreach, coherence around 4 due to the \"eleven vs eight\" inconsistency, relevance around 4-5 since it ties back to evidence and alternative explanations well, and actionability around 4 since the suggestions are concrete though lack precise function locations.\n\nGoing through the unsupported claims list: the \"eleven of 20 features have zero frequency\" claim contradicts the eight actually cited, the \"ADD ADD and INC PUSH are most frequent patterns\" claim at key_indicators/2 misstates the data, and the INC PUSH frequency claim at evidence_analysis/9 shows shap misrepresentation by implying frequency explains model influence when it doesn't.\n\nI'm also flagging softer issues for the limitations section — the assumption that zero frequency means \"absence of patterns benign code typically contains\" isn't established by the evidence, and labeling the classification \"MALWARE\" introduces class-naming that isn't grounded in the provided data either.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_7f87aac413d85952\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP signs and range, and most per-feature values match the evidence, and the cryptominer inference is appropriately hedged. But it says eleven features have frequency 0.000000 when only eight do. It also calls ADD ADD and INC PUSH the most frequent present patterns although MOV ADC and POP PUSH are higher. It attributes INC PUSH's 'strong model influence' to frequency, though its SHAP rank is only 10th of 20.\",\"coherence\":\"The structure is clear: verdict, weakness of evidence, per-feature assessments, indicators, then action. The conclusion of an inconclusive result with further analysis needed is consistent with the tier. The miscount of zero-valued features and the 'most frequent' statement are minor internal inconsistencies with the explanation's own listed values.\",\"cybersecurity_relevance\":\"It ties the specific n-grams (carry arithmetic, XOR, stack patterns) to hash/multi-precision computation, and names benign alternatives such as compiler-generated 64-bit arithmetic and prologue/epilogue code. It states the limits of the evidence: no function context and no distinctive mining-kernel pattern. Missing evidence is not treated as benign.\",\"actionable_utility\":\"The recommended steps are concrete and proportionate: inspect arithmetic-heavy functions, look for hash-like loops, check for packing, and observe CPU and network use in a sandbox. They are phrased as verification, not as observed behavior. They are somewhat generic because no function locations or occurrences were supplied to guide where to start.\"},\"unsupported_claims\":[{\"quote\":\"Eleven of the 20 features have a frequency of 0.000000 (ADD POP, CMOVZ MOV, CALL ADD, XOR MOV, LEA CALL, XOR XOR, AND MOV, TEST JS, plus rounded near-zero cases)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (value fields)\",\"reason\":\"Only eight features have value 0.0. The 'near-zero' cases (0.001905) are not 0.000000, so eleven is a miscount.\",\"category\":\"other\"},{\"quote\":\"ADD ADD (0.022857) and INC PUSH (0.040000) are the most frequent present patterns, but both are generic\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features (MOV ADC value 0.0305, POP PUSH value 0.02857)\",\"reason\":\"MOV ADC (0.030476) and POP PUSH (0.028571) have higher values than ADD ADD (0.022857), so ADD ADD is not among the two most frequent.\",\"category\":\"other\"},{\"quote\":\"though the frequency explains its strong model influence\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"/evidence/top_features/9 (shap_value 0.008656)\",\"reason\":\"INC PUSH ranks 10th of 20 with a mid-range SHAP value. Value semantics are not established, and no evidence links its value to its SHAP magnitude.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"much of the SHAP signal comes from the absence of patterns that benign code typically contains\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Feature value semantics are not established, so treating 0.0 as absence and claiming benign code typically contains these patterns is unsupported. Only 8 of 20 features are zero-valued.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP directions (all positive for class 1) and the range +0.0065 to +0.0134 are reported accurately. The explanation misstates the SHAP rank of INC PUSH and overstates the share of SHAP signal from zero-valued features.\",\"discrepancies\":[{\"quote\":\"though the frequency explains its strong model influence\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"reason\":\"INC PUSH's SHAP value (0.008656) is mid-ranked among the top 20, not strong, and no evidence ties its frequency to that magnitude.\"},{\"quote\":\"Eleven of the 20 features have a frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only eight features are zero-valued, so the claim that 'much of the SHAP signal' comes from absence is overstated. Those eight account for about 37% of the top-20 SHAP sum.\"}]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification, and the class-1 label name (MALWARE/cryptojacking) is not stated in the evidence.\",\"Feature value semantics are not established, so 'frequency' and 'absence' readings of 0.0 are interpretive.\",\"The SHAP baseline and full attributions are null, and only a top-20 subset is available, so omitted features cannot be assessed.\",\"There are no occurrences, function context or adjacency information, so the 'followed by' readings of the n-grams are not verifiable.\",\"RF probability of 1.0 is not behavioral proof.\"],\"summary\":\"The explanation is well organized, appropriately cautious about cryptojacking, and relevant, with sensible verification steps. It has a numerical miscount (eleven zero-valued features versus eight), an incorrect 'most frequent' statement, and an unsupported link between INC PUSH's frequency and its SHAP influence. These errors make the SHAP representation not fully faithful and cap technical accuracy at 3.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6965,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 5027,
+          "output_tokens_details": {
+            "thinking_tokens": 3037
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6965,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 5027,
+        "output_tokens_details": {
+          "thinking_tokens": 3037
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_7f87aac413d85952\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP signs and range, and most per-feature values match the evidence, and the cryptominer inference is appropriately hedged. But it says eleven features have frequency 0.000000 when only eight do. It also calls ADD ADD and INC PUSH the most frequent present patterns although MOV ADC and POP PUSH are higher. It attributes INC PUSH's 'strong model influence' to frequency, though its SHAP rank is only 10th of 20.\",\"coherence\":\"The structure is clear: verdict, weakness of evidence, per-feature assessments, indicators, then action. The conclusion of an inconclusive result with further analysis needed is consistent with the tier. The miscount of zero-valued features and the 'most frequent' statement are minor internal inconsistencies with the explanation's own listed values.\",\"cybersecurity_relevance\":\"It ties the specific n-grams (carry arithmetic, XOR, stack patterns) to hash/multi-precision computation, and names benign alternatives such as compiler-generated 64-bit arithmetic and prologue/epilogue code. It states the limits of the evidence: no function context and no distinctive mining-kernel pattern. Missing evidence is not treated as benign.\",\"actionable_utility\":\"The recommended steps are concrete and proportionate: inspect arithmetic-heavy functions, look for hash-like loops, check for packing, and observe CPU and network use in a sandbox. They are phrased as verification, not as observed behavior. They are somewhat generic because no function locations or occurrences were supplied to guide where to start.\"},\"unsupported_claims\":[{\"quote\":\"Eleven of the 20 features have a frequency of 0.000000 (ADD POP, CMOVZ MOV, CALL ADD, XOR MOV, LEA CALL, XOR XOR, AND MOV, TEST JS, plus rounded near-zero cases)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (value fields)\",\"reason\":\"Only eight features have value 0.0. The 'near-zero' cases (0.001905) are not 0.000000, so eleven is a miscount.\",\"category\":\"other\"},{\"quote\":\"ADD ADD (0.022857) and INC PUSH (0.040000) are the most frequent present patterns, but both are generic\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features (MOV ADC value 0.0305, POP PUSH value 0.02857)\",\"reason\":\"MOV ADC (0.030476) and POP PUSH (0.028571) have higher values than ADD ADD (0.022857), so ADD ADD is not among the two most frequent.\",\"category\":\"other\"},{\"quote\":\"though the frequency explains its strong model influence\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"/evidence/top_features/9 (shap_value 0.008656)\",\"reason\":\"INC PUSH ranks 10th of 20 with a mid-range SHAP value. Value semantics are not established, and no evidence links its value to its SHAP magnitude.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"much of the SHAP signal comes from the absence of patterns that benign code typically contains\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Feature value semantics are not established, so treating 0.0 as absence and claiming benign code typically contains these patterns is unsupported. Only 8 of 20 features are zero-valued.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP directions (all positive for class 1) and the range +0.0065 to +0.0134 are reported accurately. The explanation misstates the SHAP rank of INC PUSH and overstates the share of SHAP signal from zero-valued features.\",\"discrepancies\":[{\"quote\":\"though the frequency explains its strong model influence\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"reason\":\"INC PUSH's SHAP value (0.008656) is mid-ranked among the top 20, not strong, and no evidence ties its frequency to that magnitude.\"},{\"quote\":\"Eleven of the 20 features have a frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only eight features are zero-valued, so the claim that 'much of the SHAP signal' comes from absence is overstated. Those eight account for about 37% of the top-20 SHAP sum.\"}]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification, and the class-1 label name (MALWARE/cryptojacking) is not stated in the evidence.\",\"Feature value semantics are not established, so 'frequency' and 'absence' readings of 0.0 are interpretive.\",\"The SHAP baseline and full attributions are null, and only a top-20 subset is available, so omitted features cannot be assessed.\",\"There are no occurrences, function context or adjacency information, so the 'followed by' readings of the n-grams are not verifiable.\",\"RF probability of 1.0 is not behavioral proof.\"],\"summary\":\"The explanation is well organized, appropriately cautious about cryptojacking, and relevant, with sensible verification steps. It has a numerical miscount (eleven zero-valued features versus eight), an incorrect 'most frequent' statement, and an unsupported link between INC PUSH's frequency and its SHAP influence. These errors make the SHAP representation not fully faithful and cap technical accuracy at 3.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_7f87aac413d85952",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability, SHAP signs and range, and most per-feature values match the evidence, and the cryptominer inference is appropriately hedged. But it says eleven features have frequency 0.000000 when only eight do. It also calls ADD ADD and INC PUSH the most frequent present patterns although MOV ADC and POP PUSH are higher. It attributes INC PUSH's 'strong model influence' to frequency, though its SHAP rank is only 10th of 20.",
+      "coherence": "The structure is clear: verdict, weakness of evidence, per-feature assessments, indicators, then action. The conclusion of an inconclusive result with further analysis needed is consistent with the tier. The miscount of zero-valued features and the 'most frequent' statement are minor internal inconsistencies with the explanation's own listed values.",
+      "cybersecurity_relevance": "It ties the specific n-grams (carry arithmetic, XOR, stack patterns) to hash/multi-precision computation, and names benign alternatives such as compiler-generated 64-bit arithmetic and prologue/epilogue code. It states the limits of the evidence: no function context and no distinctive mining-kernel pattern. Missing evidence is not treated as benign.",
+      "actionable_utility": "The recommended steps are concrete and proportionate: inspect arithmetic-heavy functions, look for hash-like loops, check for packing, and observe CPU and network use in a sandbox. They are phrased as verification, not as observed behavior. They are somewhat generic because no function locations or occurrences were supplied to guide where to start."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Eleven of the 20 features have a frequency of 0.000000 (ADD POP, CMOVZ MOV, CALL ADD, XOR MOV, LEA CALL, XOR XOR, AND MOV, TEST JS, plus rounded near-zero cases)",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features (value fields)",
+        "reason": "Only eight features have value 0.0. The 'near-zero' cases (0.001905) are not 0.000000, so eleven is a miscount.",
+        "category": "other"
+      },
+      {
+        "quote": "ADD ADD (0.022857) and INC PUSH (0.040000) are the most frequent present patterns, but both are generic",
+        "candidate_path": "/candidate_analysis/key_indicators/2",
+        "evidence_reference": "/evidence/top_features (MOV ADC value 0.0305, POP PUSH value 0.02857)",
+        "reason": "MOV ADC (0.030476) and POP PUSH (0.028571) have higher values than ADD ADD (0.022857), so ADD ADD is not among the two most frequent.",
+        "category": "other"
+      },
+      {
+        "quote": "though the frequency explains its strong model influence",
+        "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+        "evidence_reference": "/evidence/top_features/9 (shap_value 0.008656)",
+        "reason": "INC PUSH ranks 10th of 20 with a mid-range SHAP value. Value semantics are not established, and no evidence links its value to its SHAP magnitude.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "much of the SHAP signal comes from the absence of patterns that benign code typically contains",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "Feature value semantics are not established, so treating 0.0 as absence and claiming benign code typically contains these patterns is unsupported. Only 8 of 20 features are zero-valued.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "SHAP directions (all positive for class 1) and the range +0.0065 to +0.0134 are reported accurately. The explanation misstates the SHAP rank of INC PUSH and overstates the share of SHAP signal from zero-valued features.",
+      "discrepancies": [
+        {
+          "quote": "though the frequency explains its strong model influence",
+          "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+          "reason": "INC PUSH's SHAP value (0.008656) is mid-ranked among the top 20, not strong, and no evidence ties its frequency to that magnitude."
+        },
+        {
+          "quote": "Eleven of the 20 features have a frequency of 0.000000",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "Only eight features are zero-valued, so the claim that 'much of the SHAP signal' comes from absence is overstated. Those eight account for about 37% of the top-20 SHAP sum."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that needs upstream verification, and the class-1 label name (MALWARE/cryptojacking) is not stated in the evidence.",
+      "Feature value semantics are not established, so 'frequency' and 'absence' readings of 0.0 are interpretive.",
+      "The SHAP baseline and full attributions are null, and only a top-20 subset is available, so omitted features cannot be assessed.",
+      "There are no occurrences, function context or adjacency information, so the 'followed by' readings of the n-grams are not verifiable.",
+      "RF probability of 1.0 is not behavioral proof."
+    ],
+    "summary": "The explanation is well organized, appropriately cautious about cryptojacking, and relevant, with sensible verification steps. It has a numerical miscount (eleven zero-valued features versus eight), an incorrect 'most frequent' statement, and an unsupported link between INC PUSH's frequency and its SHAP influence. These errors make the SHAP representation not fully faithful and cap technical accuracy at 3."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Eleven of the 20 features have a frequency of 0.000000 (ADD POP, CMOVZ MOV, CALL ADD, XOR MOV, LEA CALL, XOR XOR, AND MOV, TEST JS, plus rounded near-zero cases)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features (value fields)",
+      "reason": "Only eight features have value 0.0. The 'near-zero' cases (0.001905) are not 0.000000, so eleven is a miscount.",
+      "category": "other"
+    },
+    {
+      "quote": "ADD ADD (0.022857) and INC PUSH (0.040000) are the most frequent present patterns, but both are generic",
+      "candidate_path": "/candidate_analysis/key_indicators/2",
+      "evidence_reference": "/evidence/top_features (MOV ADC value 0.0305, POP PUSH value 0.02857)",
+      "reason": "MOV ADC (0.030476) and POP PUSH (0.028571) have higher values than ADD ADD (0.022857), so ADD ADD is not among the two most frequent.",
+      "category": "other"
+    },
+    {
+      "quote": "though the frequency explains its strong model influence",
+      "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+      "evidence_reference": "/evidence/top_features/9 (shap_value 0.008656)",
+      "reason": "INC PUSH ranks 10th of 20 with a mid-range SHAP value. Value semantics are not established, and no evidence links its value to its SHAP magnitude.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "much of the SHAP signal comes from the absence of patterns that benign code typically contains",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "Feature value semantics are not established, so treating 0.0 as absence and claiming benign code typically contains these patterns is unsupported. Only 8 of 20 features are zero-valued.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Eleven of the 20 features have a frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "Only eight features are zero-valued, so the claim that 'much of the SHAP signal' comes from absence is overstated. Those eight account for about 37% of the top-20 SHAP sum.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "254a713d3ec2852b6657ecb8840efd2662e048ace42c2b4e0b30c589cdb9f8cb.exe_analysis.json"
+}

@@ -1,0 +1,189 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_368065401faacfc3",
+  "status": "success",
+  "source_sha256": "4b6d973dcea7f7ac8ec56244e21a4a431fee2e197039ea5419c349f7237da931",
+  "input_sha256": "26603bbff7aaadc80915ddba50c42238374e29920f382e1e613cbdca805aed57",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "4a33851bcbc114c5bb20ebf2b4afbb40a93767d4b89cb8503bac34f03c278ca6.exe",
+      "source_name": "4a33851bcbc114c5bb20ebf2b4afbb40a93767d4b89cb8503bac34f03c278ca6.exe.json",
+      "source_path": "ml/dataset/cryptojacking/4a33851bcbc114c5bb20ebf2b4afbb40a93767d4b89cb8503bac34f03c278ca6.exe.json",
+      "split": "test",
+      "batch_number": 2,
+      "row_index_in_batch": 74,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "4a33851bcbc114c5bb20ebf2b4afbb40a93767d4b89cb8503bac34f03c278ca6.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:34:19.472807+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:34:19.472835+00:00",
+      "error": null,
+      "request_sha256": "7ce079f4a50151f6f19cd08173af1df473f27111e6e0d2efbd92c916bfb1f6c5",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkzSzZ7FCYnqQAhf7Wg8",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF prediction with 0.875 probability and the top SHAP features, all positive, but noting the values' semantics aren't established—so I shouldn't assume the candidate's \"frequency\" label for 0.040573 is accurate since the evidence only rules out treating them as raw counts, not confirms they're frequencies.\n\nThe candidate's claim about \"XOR XOR\" having zero frequency with positive SHAP reflecting absence of a pattern is a plausible interpretation for a tree-based model, though still resting on unestablished semantics. I'm verifying the numeric values against the listed SHAP contributions (ADD PUSH, CALL RET, PUSH MOV, MOV PUSH, POP MOV, etc.)—they all check out within range, and the frequency figures like PUSH MOV at 0.040573 and MOV PUSH at 0.035800 match too. The prediction of 1 aligns with the malware class label as asserted.\n\nI'm also flagging that several claims in the response are hedged but speculative—like suggesting \"fragmented or obfuscated code layout\" from CALL RET patterns, or labeling mnemonic pairs as \"generic compiler-generated\"—these go beyond what the mnemonics alone can establish, since prologue/epilogue patterns appear in nearly any compiled binary. The assertion that the model's score reflects overall opcode distribution rather than a recognizable mining routine is another interpretive leap, since the top-k subset shown doesn't account for the full feature set.\n\nI'm also noting assumptions about adjacency that aren't supported by the evidence—phrases like \"add-with-carry after a move suggests multi-word arithmetic\" or \"stack cleanup followed by arithmetic\" imply sequential ordering, but graph-aware n-grams don't require adjacency, so these inferences are minor overreaches. The SHAP-related claims, though, seem faithful in direction and magnitude, correctly noting that a positive SHAP value for an absent pattern reflects its absence rather than evidence of an actual mining kernel.\n\nNow I'm working through the scoring: technical accuracy around 4 given these minor adjacency assumptions and the \"frequency\" interpretation issue, coherence around 4-5 since the low-confidence tier and \"suspicious but inconclusive\" framing stay consistent throughout, and relevance around 5 since it connects evidence limitations with plausible alternative explanations like benign runtime behavior or checksum routines.\n\nFor actionability I'm giving 4, since it suggests concrete next steps like examining ADC/XOR functions, strings, pool configuration, persistence, and sandbox CPU usage, though \"persistence\" is a bit broad and nothing is prioritized.\n\nNow I'm flagging unsupported claims with their pointers — the CALL/RET fragmentation comment (hedged, so weak), the claim that the score reflects overall opcode distribution rather than a recognizable mining routine (unsupported certainty), and the MOV/ADC adjacency inference about multi-word arithmetic — keeping it to two or three total. I'm confirming no SHAP discrepancies, so faithfulness stays true.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_368065401faacfc3\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability (0.875), the SHAP values, the 0.0074 to 0.0181 range and the quoted feature values all match the evidence. The XOR XOR zero-value reading is reasonable. Minor overreach: some assessments assume adjacency (\\\"Add-with-carry after a move\\\") and one leans toward obfuscation.\",\"coherence\":\"Explanation, tier (low-confidence), confidence 0.45 and recommended action all agree on 'suspicious but inconclusive'. Content is repeated across the explanation, evidence_analysis and key_indicators.\",\"cybersecurity_relevance\":\"It ties sample n-grams (ADC/XOR, XOR XOR zero value) to mining-kernel hypotheses. It also names benign alternatives (checksum, runtime and math code) and states that no function names, API calls or loop evidence is present.\",\"actionable_utility\":\"The follow-ups are concrete, conditional and proportionate: inspect functions with the ADC/XOR sequences, look for mining strings and pool config, and watch CPU in a sandbox. It explicitly avoids classifying as cryptojacking without corroboration. The steps are not prioritized, and persistence checks are only loosely tied to the evidence.\"},\"unsupported_claims\":[{\"quote\":\"They indicate that the model's score comes from the overall opcode distribution, not from a recognizable mining routine.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/scope_notes/1; /evidence/full_attributions\",\"reason\":\"Only the top-20 positive features are supplied and omitted features are unknown, so the evidence cannot rule out a mining-related contribution outside the subset.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Non-specific, though it may suggest a fragmented or obfuscated code layout.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/occurrences; /evidence/function_context\",\"reason\":\"No extraction or context evidence supports obfuscation or fragmented layout, and a mnemonic pair alone does not establish it. The claim is hedged but speculative.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Add-with-carry after a move suggests multi-word arithmetic\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/occurrences; /evidence/function_context\",\"reason\":\"It assumes MOV and ADC are adjacent and part of multi-word arithmetic. The n-grams may be graph-aware and no occurrence or context data is supplied. It is hedged as 'weakly consistent'.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All listed SHAP signs and magnitudes are reported correctly as positive toward target class 1, with no dominant feature. The XOR XOR positive SHAP at value 0.0 is described reasonably as absence of the pattern. The class-1 target is a configured assumption that the candidate does not flag.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption, so the 'MALWARE'/'cryptojacking' labeling of class 1 is unverified.\",\"feature_value_semantics are not established, so 'freq' and 'frequency' wording is not confirmed as normalized frequencies.\",\"There is no baseline, full attribution set, occurrence data or function context.\",\"Only the top-20 positive features are shown, so omitted features cannot be assessed.\",\"Adjacency and control flow of n-grams cannot be inferred.\"],\"summary\":\"The explanation is accurate on numbers and SHAP direction and appropriately cautious (low-confidence tier, unconfirmed). Its minor weaknesses are a few adjacency and obfuscation inferences and an overconfident claim about what the omitted features imply. The follow-up actions are sensible and feasible.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6848,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3412,
+          "output_tokens_details": {
+            "thinking_tokens": 2003
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6848,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3412,
+        "output_tokens_details": {
+          "thinking_tokens": 2003
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_368065401faacfc3\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability (0.875), the SHAP values, the 0.0074 to 0.0181 range and the quoted feature values all match the evidence. The XOR XOR zero-value reading is reasonable. Minor overreach: some assessments assume adjacency (\\\"Add-with-carry after a move\\\") and one leans toward obfuscation.\",\"coherence\":\"Explanation, tier (low-confidence), confidence 0.45 and recommended action all agree on 'suspicious but inconclusive'. Content is repeated across the explanation, evidence_analysis and key_indicators.\",\"cybersecurity_relevance\":\"It ties sample n-grams (ADC/XOR, XOR XOR zero value) to mining-kernel hypotheses. It also names benign alternatives (checksum, runtime and math code) and states that no function names, API calls or loop evidence is present.\",\"actionable_utility\":\"The follow-ups are concrete, conditional and proportionate: inspect functions with the ADC/XOR sequences, look for mining strings and pool config, and watch CPU in a sandbox. It explicitly avoids classifying as cryptojacking without corroboration. The steps are not prioritized, and persistence checks are only loosely tied to the evidence.\"},\"unsupported_claims\":[{\"quote\":\"They indicate that the model's score comes from the overall opcode distribution, not from a recognizable mining routine.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/scope_notes/1; /evidence/full_attributions\",\"reason\":\"Only the top-20 positive features are supplied and omitted features are unknown, so the evidence cannot rule out a mining-related contribution outside the subset.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Non-specific, though it may suggest a fragmented or obfuscated code layout.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/occurrences; /evidence/function_context\",\"reason\":\"No extraction or context evidence supports obfuscation or fragmented layout, and a mnemonic pair alone does not establish it. The claim is hedged but speculative.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Add-with-carry after a move suggests multi-word arithmetic\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/occurrences; /evidence/function_context\",\"reason\":\"It assumes MOV and ADC are adjacent and part of multi-word arithmetic. The n-grams may be graph-aware and no occurrence or context data is supplied. It is hedged as 'weakly consistent'.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All listed SHAP signs and magnitudes are reported correctly as positive toward target class 1, with no dominant feature. The XOR XOR positive SHAP at value 0.0 is described reasonably as absence of the pattern. The class-1 target is a configured assumption that the candidate does not flag.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption, so the 'MALWARE'/'cryptojacking' labeling of class 1 is unverified.\",\"feature_value_semantics are not established, so 'freq' and 'frequency' wording is not confirmed as normalized frequencies.\",\"There is no baseline, full attribution set, occurrence data or function context.\",\"Only the top-20 positive features are shown, so omitted features cannot be assessed.\",\"Adjacency and control flow of n-grams cannot be inferred.\"],\"summary\":\"The explanation is accurate on numbers and SHAP direction and appropriately cautious (low-confidence tier, unconfirmed). Its minor weaknesses are a few adjacency and obfuscation inferences and an overconfident claim about what the omitted features imply. The follow-up actions are sensible and feasible.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_368065401faacfc3",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The probability (0.875), the SHAP values, the 0.0074 to 0.0181 range and the quoted feature values all match the evidence. The XOR XOR zero-value reading is reasonable. Minor overreach: some assessments assume adjacency (\"Add-with-carry after a move\") and one leans toward obfuscation.",
+      "coherence": "Explanation, tier (low-confidence), confidence 0.45 and recommended action all agree on 'suspicious but inconclusive'. Content is repeated across the explanation, evidence_analysis and key_indicators.",
+      "cybersecurity_relevance": "It ties sample n-grams (ADC/XOR, XOR XOR zero value) to mining-kernel hypotheses. It also names benign alternatives (checksum, runtime and math code) and states that no function names, API calls or loop evidence is present.",
+      "actionable_utility": "The follow-ups are concrete, conditional and proportionate: inspect functions with the ADC/XOR sequences, look for mining strings and pool config, and watch CPU in a sandbox. It explicitly avoids classifying as cryptojacking without corroboration. The steps are not prioritized, and persistence checks are only loosely tied to the evidence."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "They indicate that the model's score comes from the overall opcode distribution, not from a recognizable mining routine.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/scope_notes/1; /evidence/full_attributions",
+        "reason": "Only the top-20 positive features are supplied and omitted features are unknown, so the evidence cannot rule out a mining-related contribution outside the subset.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Non-specific, though it may suggest a fragmented or obfuscated code layout.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/occurrences; /evidence/function_context",
+        "reason": "No extraction or context evidence supports obfuscation or fragmented layout, and a mnemonic pair alone does not establish it. The claim is hedged but speculative.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Add-with-carry after a move suggests multi-word arithmetic",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/occurrences; /evidence/function_context",
+        "reason": "It assumes MOV and ADC are adjacent and part of multi-word arithmetic. The n-grams may be graph-aware and no occurrence or context data is supplied. It is hedged as 'weakly consistent'.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All listed SHAP signs and magnitudes are reported correctly as positive toward target class 1, with no dominant feature. The XOR XOR positive SHAP at value 0.0 is described reasonably as absence of the pattern. The class-1 target is a configured assumption that the candidate does not flag.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption, so the 'MALWARE'/'cryptojacking' labeling of class 1 is unverified.",
+      "feature_value_semantics are not established, so 'freq' and 'frequency' wording is not confirmed as normalized frequencies.",
+      "There is no baseline, full attribution set, occurrence data or function context.",
+      "Only the top-20 positive features are shown, so omitted features cannot be assessed.",
+      "Adjacency and control flow of n-grams cannot be inferred."
+    ],
+    "summary": "The explanation is accurate on numbers and SHAP direction and appropriately cautious (low-confidence tier, unconfirmed). Its minor weaknesses are a few adjacency and obfuscation inferences and an overconfident claim about what the omitted features imply. The follow-up actions are sensible and feasible."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "They indicate that the model's score comes from the overall opcode distribution, not from a recognizable mining routine.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/scope_notes/1; /evidence/full_attributions",
+      "reason": "Only the top-20 positive features are supplied and omitted features are unknown, so the evidence cannot rule out a mining-related contribution outside the subset.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Non-specific, though it may suggest a fragmented or obfuscated code layout.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/occurrences; /evidence/function_context",
+      "reason": "No extraction or context evidence supports obfuscation or fragmented layout, and a mnemonic pair alone does not establish it. The claim is hedged but speculative.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Add-with-carry after a move suggests multi-word arithmetic",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/occurrences; /evidence/function_context",
+      "reason": "It assumes MOV and ADC are adjacent and part of multi-word arithmetic. The n-grams may be graph-aware and no occurrence or context data is supplied. It is hedged as 'weakly consistent'.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "4a33851bcbc114c5bb20ebf2b4afbb40a93767d4b89cb8503bac34f03c278ca6.exe_analysis.json"
+}

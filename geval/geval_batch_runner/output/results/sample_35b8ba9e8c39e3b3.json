@@ -1,0 +1,508 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_35b8ba9e8c39e3b3",
+  "status": "success",
+  "source_sha256": "41821ab53ae28f40c94f7aa49c297d4c9e6579183a12a97b40e12fd2c6554d32",
+  "input_sha256": "d4b4b8b0ecdf7c91ae8dc37c4a8e9bb6526e84d93ff5e6347461a96b04a4cd04",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "30abfcdfbc5473627980c208cbbab439a005099dc04af974879034ece28f4ec3.exe",
+      "source_name": "30abfcdfbc5473627980c208cbbab439a005099dc04af974879034ece28f4ec3.exe.json",
+      "source_path": "ml/dataset/cryptojacking/30abfcdfbc5473627980c208cbbab439a005099dc04af974879034ece28f4ec3.exe.json",
+      "split": "test",
+      "batch_number": 0,
+      "row_index_in_batch": 53,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "30abfcdfbc5473627980c208cbbab439a005099dc04af974879034ece28f4ec3.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:23:11.811465+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:23:11.811563+00:00",
+      "error": null,
+      "request_sha256": "761115fe218b908f7559ae2d5221b5537ddea558bd82ff6189b8c2f78210cd90",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfkybn6QFkskXYTt7Jinp",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF prediction and its top SHAP features — all positive, with the candidate labeling values as \"frequency,\" though the semantics of these feature values were never established, so I can't confirm they're raw counts or valid relative frequencies.\n\nI'm also spot-checking the ranking order: the candidate calls out MOV RET and POP CALL as top-weighted idioms, but by actual SHAP magnitude, CALL PUSH outranks MOV RET and POP CALL sits around 11th rather than among the highest — minor misordering. The claim that rarity itself implies statistical association with the malware class is also a stretch not supported by the evidence.\n\nBeyond that, the candidate makes several unsupported adjacency and architecture assumptions: treating n-grams like CALL RET, PUSH RET, and CDQ MOV as literally adjacent instructions (when the rules specify these aren't necessarily sequential), inferring a 32-bit cdecl/stdcall calling convention from PUSH-heavy patterns, and speculating that pushed values are computed buffer or string pointers — none of which the evidence actually establishes.\n\nThen I'm flagging the claim that \"there are no tight arithmetic/bitwise loops, rotate/shift hashing, or SIMD instructions\" as problematic, since the evidence only lists the top-20 features and absence from that list doesn't prove absence in the binary overall — missing evidence shouldn't be treated as benign.\n\nOn the conclusion side, \"likely malicious or anomalous\" is reasonable given the RF probability, but it's not behavioral proof, so I'm noting it should be framed as suspicious based on the model score rather than a confirmed finding. The low-confidence tier paired with a 0.55 confidence score is roughly consistent, and overall the explanation is coherent apart from this slight overreach in certainty about absent patterns.\n\nChecking SHAP faithfulness, the directions and magnitudes are mostly accurate, but there's a discrepancy where the listed \"highest-SHAP n-grams\" omits CALL and PUSH while including POP and CALL in another spot where they aren't actually top-ranked — a minor ranking error rather than a fundamental misrepresentation.\n\nI'll mark faithfulness false given the ranking errors, while noting the core direction and magnitudes are mostly accurate. For scoring, I'll rate technical accuracy around 3 given the adjacency inference and frequency semantics issues, coherence and relevance at 4, and actionability at 4 since the steps (unpack, locate functions, sandbox) are still useful despite lacking function context. I'm now compiling the list of unsupported claims with their corresponding paths and indices across the evidence analysis entries.\n\nMore claims to weigh: no tight arithmetic loops or SIMD is an unsupported certainty claim; PUSH-RET as an indirect-jump obfuscation idiom seems moderate and worth including; the multi-word subtraction-with-borrow claim ties to index 19. I'll skip the computed-address-as-argument claim and narrow the set down to five or six total, then output it as a single-line JSON.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_35b8ba9e8c39e3b3\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF class/probability, the SHAP range and signs, and the n-gram values are reported correctly, and the no-mining-specific-evidence conclusion is appropriately cautious. However, several assessments assume adjacency, treat values as frequencies, infer a 32-bit binary, or assert absence of loops/SIMD from only 20 n-grams.\",\"coherence\":\"The explanation, per-n-gram assessments, tier, and recommendation are consistent: suspicious per the model but not confirmed cryptojacking. There is some repetition, and a few ranking statements are muddled.\",\"cybersecurity_relevance\":\"It ties the n-grams to cryptojacking questions and benign alternatives (compiler idioms, ordinary software, packing, obfuscation) and states what the evidence lacks (function context, mining primitives). Some discussion of generic packer/obfuscation idioms is speculative.\",\"actionable_utility\":\"Next steps are concrete and proportionate: check for packing, locate functions, then look for hashing loops, pool traffic, CPU use, and persistence via sandbox and config extraction. Escalation is conditioned on corroboration. Locating the functions depends on context that was not supplied.\"},\"unsupported_claims\":[{\"quote\":\"A CALL immediately followed by RET is a tail-call or thunk/wrapper pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0; /evidence/function_context is empty\",\"reason\":\"Assumes strict adjacency and control flow for a graph-aware n-gram with no extraction or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"PUSH followed by RET is an indirect-jump idiom often used in obfuscation or packers.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/occurrences is empty\",\"reason\":\"Applies a specific idiom without evidence of adjacency or a sample-specific indirect-jump pattern. It is hedged only partially.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Common at 0.051 frequency, reflecting call-dense code with argument setup.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states the feature-value semantics are not established, so treating values as frequencies and inferring call-dense code is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It is consistent with a 32-bit cdecl/stdcall binary and is not discriminative by itself.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/top_features/16\",\"reason\":\"No architecture or calling-convention evidence is supplied. The 32-bit inference comes from mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Multi-word (64-bit on 32-bit) subtraction with borrow.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/top_features/19\",\"reason\":\"The 64-bit-on-32-bit multiword arithmetic interpretation is asserted without context. SUB SBB could occur in other contexts.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"There are no tight arithmetic or bitwise loops, no rotate or shift-heavy hashing patterns, and no SIMD instructions.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/full_attributions is null; /scope_notes\",\"reason\":\"Asserts absence in the sample from only a top-20 subset with no loop or occurrence context. Missing evidence is not evidence of absence.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, the +0.0087 to +0.0176 range, and per-feature magnitudes are faithfully reported. The only problems are minor misstatements of SHAP rank.\",\"discrepancies\":[{\"quote\":\"The highest-SHAP n-grams (CALL RET, PUSH RET, CDQ MOV, MOV RET)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The fourth-highest SHAP n-gram is CALL PUSH (0.014587); MOV RET is fifth (0.014537).\"},{\"quote\":\"Rare control-flow idioms with the highest SHAP weights: CALL RET (+0.0176), PUSH RET (+0.0158), MOV RET (+0.0145), POP CALL (+0.0108)\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"reason\":\"POP CALL is eleventh among the listed features, not among the highest. The list also skips higher-ranked CDQ MOV and CALL PUSH.\"}]},\"evidence_limitations\":[\"Only the top 20 n-grams are supplied; omitted features, the SHAP baseline, and full attributions are unavailable.\",\"Feature-value semantics, function context, and occurrences are absent, so adjacency, frequency, and routine-level claims cannot be verified.\",\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"RF probability 1.0 is not behavioral proof of cryptojacking.\"],\"summary\":\"This is a cautious, coherent explanation that correctly reports the RF output and SHAP signs and magnitudes. It declines to confirm cryptojacking and gives sensible verification steps. It is weakened by adjacency assumptions, frequency/architecture interpretations, an absence assertion drawn from top-k, and minor SHAP rank misstatements.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7278,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4626,
+          "output_tokens_details": {
+            "thinking_tokens": 2574
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7278,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4626,
+        "output_tokens_details": {
+          "thinking_tokens": 2574
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_35b8ba9e8c39e3b3\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF class/probability, the SHAP range and signs, and the n-gram values are reported correctly, and the no-mining-specific-evidence conclusion is appropriately cautious. However, several assessments assume adjacency, treat values as frequencies, infer a 32-bit binary, or assert absence of loops/SIMD from only 20 n-grams.\",\"coherence\":\"The explanation, per-n-gram assessments, tier, and recommendation are consistent: suspicious per the model but not confirmed cryptojacking. There is some repetition, and a few ranking statements are muddled.\",\"cybersecurity_relevance\":\"It ties the n-grams to cryptojacking questions and benign alternatives (compiler idioms, ordinary software, packing, obfuscation) and states what the evidence lacks (function context, mining primitives). Some discussion of generic packer/obfuscation idioms is speculative.\",\"actionable_utility\":\"Next steps are concrete and proportionate: check for packing, locate functions, then look for hashing loops, pool traffic, CPU use, and persistence via sandbox and config extraction. Escalation is conditioned on corroboration. Locating the functions depends on context that was not supplied.\"},\"unsupported_claims\":[{\"quote\":\"A CALL immediately followed by RET is a tail-call or thunk/wrapper pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0; /evidence/function_context is empty\",\"reason\":\"Assumes strict adjacency and control flow for a graph-aware n-gram with no extraction or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"PUSH followed by RET is an indirect-jump idiom often used in obfuscation or packers.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/occurrences is empty\",\"reason\":\"Applies a specific idiom without evidence of adjacency or a sample-specific indirect-jump pattern. It is hedged only partially.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Common at 0.051 frequency, reflecting call-dense code with argument setup.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states the feature-value semantics are not established, so treating values as frequencies and inferring call-dense code is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It is consistent with a 32-bit cdecl/stdcall binary and is not discriminative by itself.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/top_features/16\",\"reason\":\"No architecture or calling-convention evidence is supplied. The 32-bit inference comes from mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Multi-word (64-bit on 32-bit) subtraction with borrow.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/top_features/19\",\"reason\":\"The 64-bit-on-32-bit multiword arithmetic interpretation is asserted without context. SUB SBB could occur in other contexts.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"There are no tight arithmetic or bitwise loops, no rotate or shift-heavy hashing patterns, and no SIMD instructions.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/full_attributions is null; /scope_notes\",\"reason\":\"Asserts absence in the sample from only a top-20 subset with no loop or occurrence context. Missing evidence is not evidence of absence.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, the +0.0087 to +0.0176 range, and per-feature magnitudes are faithfully reported. The only problems are minor misstatements of SHAP rank.\",\"discrepancies\":[{\"quote\":\"The highest-SHAP n-grams (CALL RET, PUSH RET, CDQ MOV, MOV RET)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The fourth-highest SHAP n-gram is CALL PUSH (0.014587); MOV RET is fifth (0.014537).\"},{\"quote\":\"Rare control-flow idioms with the highest SHAP weights: CALL RET (+0.0176), PUSH RET (+0.0158), MOV RET (+0.0145), POP CALL (+0.0108)\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"reason\":\"POP CALL is eleventh among the listed features, not among the highest. The list also skips higher-ranked CDQ MOV and CALL PUSH.\"}]},\"evidence_limitations\":[\"Only the top 20 n-grams are supplied; omitted features, the SHAP baseline, and full attributions are unavailable.\",\"Feature-value semantics, function context, and occurrences are absent, so adjacency, frequency, and routine-level claims cannot be verified.\",\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"RF probability 1.0 is not behavioral proof of cryptojacking.\"],\"summary\":\"This is a cautious, coherent explanation that correctly reports the RF output and SHAP signs and magnitudes. It declines to confirm cryptojacking and gives sensible verification steps. It is weakened by adjacency assumptions, frequency/architecture interpretations, an absence assertion drawn from top-k, and minor SHAP rank misstatements.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_35b8ba9e8c39e3b3",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF class/probability, the SHAP range and signs, and the n-gram values are reported correctly, and the no-mining-specific-evidence conclusion is appropriately cautious. However, several assessments assume adjacency, treat values as frequencies, infer a 32-bit binary, or assert absence of loops/SIMD from only 20 n-grams.",
+      "coherence": "The explanation, per-n-gram assessments, tier, and recommendation are consistent: suspicious per the model but not confirmed cryptojacking. There is some repetition, and a few ranking statements are muddled.",
+      "cybersecurity_relevance": "It ties the n-grams to cryptojacking questions and benign alternatives (compiler idioms, ordinary software, packing, obfuscation) and states what the evidence lacks (function context, mining primitives). Some discussion of generic packer/obfuscation idioms is speculative.",
+      "actionable_utility": "Next steps are concrete and proportionate: check for packing, locate functions, then look for hashing loops, pool traffic, CPU use, and persistence via sandbox and config extraction. Escalation is conditioned on corroboration. Locating the functions depends on context that was not supplied."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "A CALL immediately followed by RET is a tail-call or thunk/wrapper pattern.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/top_features/0; /evidence/function_context is empty",
+        "reason": "Assumes strict adjacency and control flow for a graph-aware n-gram with no extraction or context evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "PUSH followed by RET is an indirect-jump idiom often used in obfuscation or packers.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/top_features/1; /evidence/occurrences is empty",
+        "reason": "Applies a specific idiom without evidence of adjacency or a sample-specific indirect-jump pattern. It is hedged only partially.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Common at 0.051 frequency, reflecting call-dense code with argument setup.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states the feature-value semantics are not established, so treating values as frequencies and inferring call-dense code is unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "It is consistent with a 32-bit cdecl/stdcall binary and is not discriminative by itself.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+        "evidence_reference": "/evidence/top_features/16",
+        "reason": "No architecture or calling-convention evidence is supplied. The 32-bit inference comes from mnemonics alone.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Multi-word (64-bit on 32-bit) subtraction with borrow.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+        "evidence_reference": "/evidence/top_features/19",
+        "reason": "The 64-bit-on-32-bit multiword arithmetic interpretation is asserted without context. SUB SBB could occur in other contexts.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "There are no tight arithmetic or bitwise loops, no rotate or shift-heavy hashing patterns, and no SIMD instructions.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; /evidence/full_attributions is null; /scope_notes",
+        "reason": "Asserts absence in the sample from only a top-20 subset with no loop or occurrence context. Missing evidence is not evidence of absence.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "Signs, the +0.0087 to +0.0176 range, and per-feature magnitudes are faithfully reported. The only problems are minor misstatements of SHAP rank.",
+      "discrepancies": [
+        {
+          "quote": "The highest-SHAP n-grams (CALL RET, PUSH RET, CDQ MOV, MOV RET)",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The fourth-highest SHAP n-gram is CALL PUSH (0.014587); MOV RET is fifth (0.014537)."
+        },
+        {
+          "quote": "Rare control-flow idioms with the highest SHAP weights: CALL RET (+0.0176), PUSH RET (+0.0158), MOV RET (+0.0145), POP CALL (+0.0108)",
+          "candidate_path": "/candidate_analysis/key_indicators/2",
+          "reason": "POP CALL is eleventh among the listed features, not among the highest. The list also skips higher-ranked CDQ MOV and CALL PUSH."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "Only the top 20 n-grams are supplied; omitted features, the SHAP baseline, and full attributions are unavailable.",
+      "Feature-value semantics, function context, and occurrences are absent, so adjacency, frequency, and routine-level claims cannot be verified.",
+      "SHAP target class 1 is a configured assumption pending upstream verification.",
+      "RF probability 1.0 is not behavioral proof of cryptojacking."
+    ],
+    "summary": "This is a cautious, coherent explanation that correctly reports the RF output and SHAP signs and magnitudes. It declines to confirm cryptojacking and gives sensible verification steps. It is weakened by adjacency assumptions, frequency/architecture interpretations, an absence assertion drawn from top-k, and minor SHAP rank misstatements."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [
+      {
+        "quote": "0.0158",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'PUSH RET': reported SHAP=0.0158; input=0.015801329744830006; tolerance=5e-07"
+      },
+      {
+        "quote": "0.015",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'CDQ MOV': reported SHAP=0.015; input=0.014993981573062514; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0146",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'CALL PUSH': reported SHAP=0.0146; input=0.014587404533636692; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0145",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'MOV RET': reported SHAP=0.0145; input=0.014536654939470551; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0138",
+        "candidate_path": "/candidate_analysis/evidence_analysis/5/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'SUB PUSH': reported SHAP=0.0138; input=0.013788871558140983; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0137",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'ADD PUSH': reported SHAP=0.0137; input=0.013677769943438823; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0122",
+        "candidate_path": "/candidate_analysis/evidence_analysis/7/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'MOVZX PUSH': reported SHAP=0.0122; input=0.012228677015489579; tolerance=5e-07"
+      },
+      {
+        "quote": "0.012",
+        "candidate_path": "/candidate_analysis/evidence_analysis/8/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'XOR PUSH': reported SHAP=0.012; input=0.012012567563961298; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0117",
+        "candidate_path": "/candidate_analysis/evidence_analysis/9/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'MOV PUSH': reported SHAP=0.0117; input=0.011725454849280595; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0108",
+        "candidate_path": "/candidate_analysis/evidence_analysis/10/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'POP CALL': reported SHAP=0.0108; input=0.010819678582764211; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0107",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'POP XCHG': reported SHAP=0.0107; input=0.010705450174004642; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0102",
+        "candidate_path": "/candidate_analysis/evidence_analysis/13/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'LEA PUSH': reported SHAP=0.0102; input=0.010193055383695838; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0098",
+        "candidate_path": "/candidate_analysis/evidence_analysis/14/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'INC PUSH': reported SHAP=0.0098; input=0.009811606715907159; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0097",
+        "candidate_path": "/candidate_analysis/evidence_analysis/15/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'MOV LEAVE': reported SHAP=0.0097; input=0.009747299657118536; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0094",
+        "candidate_path": "/candidate_analysis/evidence_analysis/16/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'PUSH CALL': reported SHAP=0.0094; input=0.009366891890483401; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0088",
+        "candidate_path": "/candidate_analysis/evidence_analysis/17/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'LEA IDIV': reported SHAP=0.0088; input=0.008780123147023061; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0088",
+        "candidate_path": "/candidate_analysis/evidence_analysis/18/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'NEG POP': reported SHAP=0.0088; input=0.008762172183701736; tolerance=5e-07"
+      },
+      {
+        "quote": "0.0087",
+        "candidate_path": "/candidate_analysis/evidence_analysis/19/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'SUB SBB': reported SHAP=0.0087; input=0.008740430747330531; tolerance=5e-07"
+      }
+    ],
+    "numeric_match": false,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "A CALL immediately followed by RET is a tail-call or thunk/wrapper pattern.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/top_features/0; /evidence/function_context is empty",
+      "reason": "Assumes strict adjacency and control flow for a graph-aware n-gram with no extraction or context evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "PUSH followed by RET is an indirect-jump idiom often used in obfuscation or packers.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/top_features/1; /evidence/occurrences is empty",
+      "reason": "Applies a specific idiom without evidence of adjacency or a sample-specific indirect-jump pattern. It is hedged only partially.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Common at 0.051 frequency, reflecting call-dense code with argument setup.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states the feature-value semantics are not established, so treating values as frequencies and inferring call-dense code is unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "It is consistent with a 32-bit cdecl/stdcall binary and is not discriminative by itself.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+      "evidence_reference": "/evidence/top_features/16",
+      "reason": "No architecture or calling-convention evidence is supplied. The 32-bit inference comes from mnemonics alone.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Multi-word (64-bit on 32-bit) subtraction with borrow.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+      "evidence_reference": "/evidence/top_features/19",
+      "reason": "The 64-bit-on-32-bit multiword arithmetic interpretation is asserted without context. SUB SBB could occur in other contexts.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "There are no tight arithmetic or bitwise loops, no rotate or shift-heavy hashing patterns, and no SIMD instructions.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; /evidence/full_attributions is null; /scope_notes",
+      "reason": "Asserts absence in the sample from only a top-20 subset with no loop or occurrence context. Missing evidence is not evidence of absence.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "0.0158",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'PUSH RET': reported SHAP=0.0158; input=0.015801329744830006; tolerance=5e-07"
+    },
+    {
+      "quote": "0.015",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'CDQ MOV': reported SHAP=0.015; input=0.014993981573062514; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0146",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'CALL PUSH': reported SHAP=0.0146; input=0.014587404533636692; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0145",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'MOV RET': reported SHAP=0.0145; input=0.014536654939470551; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0138",
+      "candidate_path": "/candidate_analysis/evidence_analysis/5/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'SUB PUSH': reported SHAP=0.0138; input=0.013788871558140983; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0137",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'ADD PUSH': reported SHAP=0.0137; input=0.013677769943438823; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0122",
+      "candidate_path": "/candidate_analysis/evidence_analysis/7/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'MOVZX PUSH': reported SHAP=0.0122; input=0.012228677015489579; tolerance=5e-07"
+    },
+    {
+      "quote": "0.012",
+      "candidate_path": "/candidate_analysis/evidence_analysis/8/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'XOR PUSH': reported SHAP=0.012; input=0.012012567563961298; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0117",
+      "candidate_path": "/candidate_analysis/evidence_analysis/9/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'MOV PUSH': reported SHAP=0.0117; input=0.011725454849280595; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0108",
+      "candidate_path": "/candidate_analysis/evidence_analysis/10/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'POP CALL': reported SHAP=0.0108; input=0.010819678582764211; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0107",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'POP XCHG': reported SHAP=0.0107; input=0.010705450174004642; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0102",
+      "candidate_path": "/candidate_analysis/evidence_analysis/13/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'LEA PUSH': reported SHAP=0.0102; input=0.010193055383695838; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0098",
+      "candidate_path": "/candidate_analysis/evidence_analysis/14/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'INC PUSH': reported SHAP=0.0098; input=0.009811606715907159; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0097",
+      "candidate_path": "/candidate_analysis/evidence_analysis/15/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'MOV LEAVE': reported SHAP=0.0097; input=0.009747299657118536; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0094",
+      "candidate_path": "/candidate_analysis/evidence_analysis/16/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'PUSH CALL': reported SHAP=0.0094; input=0.009366891890483401; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0088",
+      "candidate_path": "/candidate_analysis/evidence_analysis/17/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'LEA IDIV': reported SHAP=0.0088; input=0.008780123147023061; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0088",
+      "candidate_path": "/candidate_analysis/evidence_analysis/18/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'NEG POP': reported SHAP=0.0088; input=0.008762172183701736; tolerance=5e-07"
+    },
+    {
+      "quote": "0.0087",
+      "candidate_path": "/candidate_analysis/evidence_analysis/19/shap_contribution",
+      "evidence_reference": "/evidence/top_features",
+      "category": "shap_misrepresentation",
+      "reason": "N-gram 'SUB SBB': reported SHAP=0.0087; input=0.008740430747330531; tolerance=5e-07"
+    },
+    {
+      "quote": "The highest-SHAP n-grams (CALL RET, PUSH RET, CDQ MOV, MOV RET)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "The fourth-highest SHAP n-gram is CALL PUSH (0.014587); MOV RET is fifth (0.014537).",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "Rare control-flow idioms with the highest SHAP weights: CALL RET (+0.0176), PUSH RET (+0.0158), MOV RET (+0.0145), POP CALL (+0.0108)",
+      "candidate_path": "/candidate_analysis/key_indicators/2",
+      "reason": "POP CALL is eleventh among the listed features, not among the highest. The list also skips higher-ranked CDQ MOV and CALL PUSH.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "30abfcdfbc5473627980c208cbbab439a005099dc04af974879034ece28f4ec3.exe_analysis.json"
+}

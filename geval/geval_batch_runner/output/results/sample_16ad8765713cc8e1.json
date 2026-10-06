@@ -1,0 +1,266 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_16ad8765713cc8e1",
+  "status": "success",
+  "source_sha256": "175a3420716f7fdd29cc1e1c8382622e614cbc5cb08596a0a0adfd7c7e8ce170",
+  "input_sha256": "3353a972d5c8f2a6692010fa5b38547005bbefd5d156f557e895616f9fef205a",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "8462485220bfcba052d89e06bb3eaf38343b92bc246e391050f6019e70dba6a6.exe",
+      "source_name": "8462485220bfcba052d89e06bb3eaf38343b92bc246e391050f6019e70dba6a6.exe.json",
+      "source_path": "ml/dataset/cryptojacking/8462485220bfcba052d89e06bb3eaf38343b92bc246e391050f6019e70dba6a6.exe.json",
+      "split": "test",
+      "batch_number": 6,
+      "row_index_in_batch": 20,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "8462485220bfcba052d89e06bb3eaf38343b92bc246e391050f6019e70dba6a6.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:59:17.899690+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:59:17.899721+00:00",
+      "error": {
+        "type": "ValueError",
+        "message": "SHAP faithful flag contradicts discrepancy list"
+      },
+      "request_sha256": "21e12963f214c44189e9d8e1a1fee4ca043062a11d354349e478506d1739a488",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm2MTj3pTEw8wMqLd5AH",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "The RF model predicts class 1 with 94.5% confidence, and I'm scanning through the 20 features with positive SHAP contributions, noting that several of these opcode-pair features have zero values yet still push toward the positive prediction.\n\nRecounting carefully, I get 12 zero-valued features rather than 13 as the candidate claims, with 8 nonzero features making up the remaining 20 — so the \"thirteen of 20\" framing appears to be an error. I'm also flagging that the explanation hedges appropriately around feature semantics but shouldn't assume these are raw counts versus frequencies, since that interpretation isn't firmly established.\n\nThe claim about MOV SYSCALL and SYSCALL RET together pointing to \"a small syscall wrapper\" infers adjacency between n-grams that isn't actually established by the data, so that's an unsupported leap — same with the \"direct system call stubs\" framing. The LEAVE RET being the highest-valued n-gram at 0.013538 checks out, and the SHAP range of +0.0070 to +0.0173 is accurate, but several of these causal/structural interpretations (syscall wrapper, zeroing a register before a call) go beyond what the n-gram co-occurrence data can actually support.\n\nFor scoring, I'd put technical accuracy around 3 given the repeated count error and shaky syscall wrapper inference, coherence around 4 despite the internal mismatch where \"thirteen\" actually lists twelve, relevance at 4, and actionable guidance at 4 since the recommendations to inspect strings and sandbox the binary feel reasonable and proportionate.\n\nKey indicator 4 points to syscall stubs, with 13 of 20 evidence indices supporting it. I'm weighing whether to label this malware versus cryptojacking given the high probability class, but deciding to move forward and assemble the final JSON output as a single line.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_16ad8765713cc8e1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.945), SHAP range (+0.0070 to +0.0173), signs and nonzero values are reported correctly. But the text twice says 13 of 20 n-grams are zero when the evidence shows 12. It also reads MOV SYSCALL and SYSCALL RET as a 'small syscall wrapper', which assumes adjacency and structure that were not supplied.\",\"coherence\":\"The explanation, per-feature assessments, indicators and action are clearly organized and consistent about uncertainty and the low-confidence tier. The 'Thirteen' count contradicts its own parenthetical list of 12 names, which is a visible internal inconsistency.\",\"cybersecurity_relevance\":\"It ties this sample's evidence to a cryptojacking triage question. It states that the n-grams are generic, that no function context exists, and that the syscall pair is not mining-specific. It also names benign compiler explanations. It does not discuss other benign explanations for syscall-using binaries in any depth.\",\"actionable_utility\":\"The recommended steps are concrete and proportionate: inspect the syscall region, extract strings, imports and config (pool and wallet), sandbox for CPU and network behavior, and hold off on a high-confidence verdict. They are conditional verification steps tied to the evidence gaps. They are slightly generic and lack explicit prioritization.\"},\"unsupported_claims\":[{\"quote\":\"Thirteen of the 20 n-grams have a frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Exactly 12 of the 20 listed n-grams have value 0.0. SYSCALL RET has 0.000903 and is not zero.\",\"category\":\"other\"},{\"quote\":\"13 of 20 n-grams have a frequency of 0.000000, so their contributions likely reflect absence rather than observed code\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"The count is wrong (12 zero-valued features). The 'frequency' semantics are also not established by the artifact.\",\"category\":\"other\"},{\"quote\":\"Together with MOV SYSCALL, it points to a small syscall wrapper.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/occurrences, /evidence/function_context\",\"reason\":\"No occurrence or function context was supplied. Graph-aware n-grams need not be adjacent, so a wrapper structure cannot be inferred.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"which suggests direct system call stubs\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences, /evidence/function_context\",\"reason\":\"Direct syscall stubs are an inference from mnemonics alone, without extraction or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"so the score comes from many weak signals rather than one decisive pattern\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/scope_notes/1; /evidence/full_attributions\",\"reason\":\"Only a top-20 subset is shown and the omitted features and baseline are unknown. The full attribution structure therefore cannot be established.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs, ordering and magnitudes (e.g., CMOVZ MOV +0.017271, MOV SYSCALL +0.009164, SYSCALL RET +0.007385) match the evidence. The shown contributions are not misrepresented as behavioral proof. The only issue is a mild overgeneralization from the top-k subset.\",\"discrepancies\":[{\"quote\":\"so the score comes from many weak signals rather than one decisive pattern\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Overgeneralizes from a top-20 subset. Omitted features and the baseline are unknown, so this cannot be established. The statement does not misreport the displayed SHAP values.\"}]},\"evidence_limitations\":[\"No occurrences, function context or addresses were supplied, so adjacency and control flow are unknown.\",\"Feature value semantics are not established, so 'frequency' versus raw counts is uncertain.\",\"The SHAP baseline and full attributions are null, and omitted features are unknown.\",\"The target class 1 mapping is a configured assumption that needs upstream verification.\",\"The RF probability is not behavioral proof of mining.\"],\"summary\":\"The explanation is cautious and well structured, and it represents SHAP direction and magnitude accurately with sensible verification steps. Its technical accuracy is reduced by repeating a wrong zero-valued count (13 instead of 12) and by inferring syscall stubs and a wrapper from non-contextual n-grams.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6919,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3480,
+          "output_tokens_details": {
+            "thinking_tokens": 1758
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6919,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3480,
+        "output_tokens_details": {
+          "thinking_tokens": 1758
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_16ad8765713cc8e1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.945), SHAP range (+0.0070 to +0.0173), signs and nonzero values are reported correctly. But the text twice says 13 of 20 n-grams are zero when the evidence shows 12. It also reads MOV SYSCALL and SYSCALL RET as a 'small syscall wrapper', which assumes adjacency and structure that were not supplied.\",\"coherence\":\"The explanation, per-feature assessments, indicators and action are clearly organized and consistent about uncertainty and the low-confidence tier. The 'Thirteen' count contradicts its own parenthetical list of 12 names, which is a visible internal inconsistency.\",\"cybersecurity_relevance\":\"It ties this sample's evidence to a cryptojacking triage question. It states that the n-grams are generic, that no function context exists, and that the syscall pair is not mining-specific. It also names benign compiler explanations. It does not discuss other benign explanations for syscall-using binaries in any depth.\",\"actionable_utility\":\"The recommended steps are concrete and proportionate: inspect the syscall region, extract strings, imports and config (pool and wallet), sandbox for CPU and network behavior, and hold off on a high-confidence verdict. They are conditional verification steps tied to the evidence gaps. They are slightly generic and lack explicit prioritization.\"},\"unsupported_claims\":[{\"quote\":\"Thirteen of the 20 n-grams have a frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Exactly 12 of the 20 listed n-grams have value 0.0. SYSCALL RET has 0.000903 and is not zero.\",\"category\":\"other\"},{\"quote\":\"13 of 20 n-grams have a frequency of 0.000000, so their contributions likely reflect absence rather than observed code\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"The count is wrong (12 zero-valued features). The 'frequency' semantics are also not established by the artifact.\",\"category\":\"other\"},{\"quote\":\"Together with MOV SYSCALL, it points to a small syscall wrapper.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/occurrences, /evidence/function_context\",\"reason\":\"No occurrence or function context was supplied. Graph-aware n-grams need not be adjacent, so a wrapper structure cannot be inferred.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"which suggests direct system call stubs\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences, /evidence/function_context\",\"reason\":\"Direct syscall stubs are an inference from mnemonics alone, without extraction or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"so the score comes from many weak signals rather than one decisive pattern\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/scope_notes/1; /evidence/full_attributions\",\"reason\":\"Only a top-20 subset is shown and the omitted features and baseline are unknown. The full attribution structure therefore cannot be established.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs, ordering and magnitudes (e.g., CMOVZ MOV +0.017271, MOV SYSCALL +0.009164, SYSCALL RET +0.007385) match the evidence. The shown contributions are not misrepresented as behavioral proof. The only issue is a mild overgeneralization from the top-k subset.\",\"discrepancies\":[{\"quote\":\"so the score comes from many weak signals rather than one decisive pattern\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Overgeneralizes from a top-20 subset. Omitted features and the baseline are unknown, so this cannot be established. The statement does not misreport the displayed SHAP values.\"}]},\"evidence_limitations\":[\"No occurrences, function context or addresses were supplied, so adjacency and control flow are unknown.\",\"Feature value semantics are not established, so 'frequency' versus raw counts is uncertain.\",\"The SHAP baseline and full attributions are null, and omitted features are unknown.\",\"The target class 1 mapping is a configured assumption that needs upstream verification.\",\"The RF probability is not behavioral proof of mining.\"],\"summary\":\"The explanation is cautious and well structured, and it represents SHAP direction and magnitude accurately with sensible verification steps. Its technical accuracy is reduced by repeating a wrong zero-valued count (13 instead of 12) and by inferring syscall stubs and a wrapper from non-contextual n-grams.\"}"
+    },
+    {
+      "number": 2,
+      "timestamp": "2026-10-06T12:59:48.605183+00:00",
+      "error": null,
+      "request_sha256": "f0a2584bb5bba619d242d1d5a7a7a278264f7d771433f6fd26b51a951e289604",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm2PiMvewv9ZmaXnKBnA",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm verifying the SHAP values match the claimed probability and range, checking that the 0.945 malware probability and the n-gram contribution range of 0.007 to 0.0173 are consistent with class 1 labeling.\n\nCounting the zero-frequency n-grams, I find only 12 have a value of exactly zero, not the 13 claimed—so that count is actually an error. I also note the candidate's treatment of feature values as raw \"frequency\" is a slight overreach since the semantics of these normalized values aren't clearly established.\n\nThe LEAVE RET value of 0.013538 is indeed the highest, so that part checks out. The interpretive claims about positive SHAP values reflecting \"absence\" are appropriately hedged, but some phrasing like \"suggests a direct system call stub\" or \"points to a small syscall wrapper\" reads as moderate overreach since mnemonic adjacency alone doesn't support that level of specificity—these are generic patterns appearing in most compiled code. The SHAP sign directions all check out as positive and correct, so I'm now looking at whether the magnitudes are faithfully represented too.\n\nThe feature count discrepancy (13 of 20 having frequency 0) is really about raw feature values rather than SHAP attribution itself, so it shouldn't count against SHAP faithfulness. Given the prior inconsistency where a faithful flag contradicted a listed discrepancy, I want to stay consistent here—marking faithful as true with an empty discrepancy list, while noting the claim that \"the score comes from many weak signals rather than one decisive pattern\" is somewhat unsupported since we only have the top-20 features and the baseline/omitted features are unknown. I'll lean toward marking this faithful overall but flag that limitation as a caveat rather than a hard discrepancy.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_16ad8765713cc8e1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, SHAP signs, SHAP range and n-gram names match the evidence. However, 'Thirteen of the 20' is wrong, because only 12 listed features have value 0.0. The syscall-stub reading and the 'many weak signals' conclusion go beyond mnemonics and a top-k subset.\",\"coherence\":\"The argument is well organized and the tier matches the stated uncertainty. The count of 13 contradicts the 12 names listed in the same sentence, which is a minor internal inconsistency.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to cryptojacking questions, notes that the features are generic, and flags the syscall n-grams as a lead. It also states that the evidence alone cannot confirm mining and that no function context was given.\",\"actionable_utility\":\"The steps are concrete and proportionate: manual review of the syscall and SUB SHL regions, strings, imports and config extraction, and a sandbox check for CPU and network activity. They are conditional and tied to the evidence gaps, though they are not strongly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Thirteen of the 20 n-grams have a frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Only 12 of the 20 listed features have value 0.0, and the candidate itself lists 12 names. SYSCALL RET is nonzero (0.000903). The 'frequency' label is also not established by the artifact.\",\"category\":\"other\"},{\"quote\":\"13 of 20 n-grams have a frequency of 0.000000, so their contributions likely reflect absence rather than observed code\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"The count is wrong (12, not 13). The absence-based interpretation is hedged, but feature_value_semantics are not established.\",\"category\":\"other\"},{\"quote\":\"Together with MOV SYSCALL, it points to a small syscall wrapper.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"The artifact has no occurrences or function context, so adjacency of the two n-grams and a wrapper structure cannot be inferred from mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"so the score comes from many weak signals rather than one decisive pattern\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions\",\"reason\":\"Only a positive top-20 subset is available. full_attributions and shap_baseline are null, so omitted features cannot be ruled out.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive for the configured target class 1, and the candidate reports this correctly. The range of about +0.0070 to +0.0173 and the individual values match the evidence within rounding. The errors found concern feature-value counts and interpretation, not SHAP direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are not established, so they should not be read as raw counts or frequencies.\",\"There are no occurrences, function context, SHAP baseline or full attributions.\",\"Omitted features are unknown, so a positive top-k subset cannot show that nothing else supports benign.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"This is a mostly grounded and appropriately cautious explanation with correct SHAP signs and magnitudes and proportionate follow-up. It is marred by a miscount (13 instead of 12 zero-value features) and some overreach on syscall wrappers and 'many weak signals'.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6970,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2893,
+          "output_tokens_details": {
+            "thinking_tokens": 1517
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6970,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2893,
+        "output_tokens_details": {
+          "thinking_tokens": 1517
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_16ad8765713cc8e1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, SHAP signs, SHAP range and n-gram names match the evidence. However, 'Thirteen of the 20' is wrong, because only 12 listed features have value 0.0. The syscall-stub reading and the 'many weak signals' conclusion go beyond mnemonics and a top-k subset.\",\"coherence\":\"The argument is well organized and the tier matches the stated uncertainty. The count of 13 contradicts the 12 names listed in the same sentence, which is a minor internal inconsistency.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to cryptojacking questions, notes that the features are generic, and flags the syscall n-grams as a lead. It also states that the evidence alone cannot confirm mining and that no function context was given.\",\"actionable_utility\":\"The steps are concrete and proportionate: manual review of the syscall and SUB SHL regions, strings, imports and config extraction, and a sandbox check for CPU and network activity. They are conditional and tied to the evidence gaps, though they are not strongly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Thirteen of the 20 n-grams have a frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Only 12 of the 20 listed features have value 0.0, and the candidate itself lists 12 names. SYSCALL RET is nonzero (0.000903). The 'frequency' label is also not established by the artifact.\",\"category\":\"other\"},{\"quote\":\"13 of 20 n-grams have a frequency of 0.000000, so their contributions likely reflect absence rather than observed code\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"The count is wrong (12, not 13). The absence-based interpretation is hedged, but feature_value_semantics are not established.\",\"category\":\"other\"},{\"quote\":\"Together with MOV SYSCALL, it points to a small syscall wrapper.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"The artifact has no occurrences or function context, so adjacency of the two n-grams and a wrapper structure cannot be inferred from mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"so the score comes from many weak signals rather than one decisive pattern\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions\",\"reason\":\"Only a positive top-20 subset is available. full_attributions and shap_baseline are null, so omitted features cannot be ruled out.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are positive for the configured target class 1, and the candidate reports this correctly. The range of about +0.0070 to +0.0173 and the individual values match the evidence within rounding. The errors found concern feature-value counts and interpretation, not SHAP direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are not established, so they should not be read as raw counts or frequencies.\",\"There are no occurrences, function context, SHAP baseline or full attributions.\",\"Omitted features are unknown, so a positive top-k subset cannot show that nothing else supports benign.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"This is a mostly grounded and appropriately cautious explanation with correct SHAP signs and magnitudes and proportionate follow-up. It is marred by a miscount (13 instead of 12 zero-value features) and some overreach on syscall wrappers and 'many weak signals'.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_16ad8765713cc8e1",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability, SHAP signs, SHAP range and n-gram names match the evidence. However, 'Thirteen of the 20' is wrong, because only 12 listed features have value 0.0. The syscall-stub reading and the 'many weak signals' conclusion go beyond mnemonics and a top-k subset.",
+      "coherence": "The argument is well organized and the tier matches the stated uncertainty. The count of 13 contradicts the 12 names listed in the same sentence, which is a minor internal inconsistency.",
+      "cybersecurity_relevance": "It ties the sample's n-grams to cryptojacking questions, notes that the features are generic, and flags the syscall n-grams as a lead. It also states that the evidence alone cannot confirm mining and that no function context was given.",
+      "actionable_utility": "The steps are concrete and proportionate: manual review of the syscall and SUB SHL regions, strings, imports and config extraction, and a sandbox check for CPU and network activity. They are conditional and tied to the evidence gaps, though they are not strongly prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Thirteen of the 20 n-grams have a frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "Only 12 of the 20 listed features have value 0.0, and the candidate itself lists 12 names. SYSCALL RET is nonzero (0.000903). The 'frequency' label is also not established by the artifact.",
+        "category": "other"
+      },
+      {
+        "quote": "13 of 20 n-grams have a frequency of 0.000000, so their contributions likely reflect absence rather than observed code",
+        "candidate_path": "/candidate_analysis/key_indicators/2",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "The count is wrong (12, not 13). The absence-based interpretation is hedged, but feature_value_semantics are not established.",
+        "category": "other"
+      },
+      {
+        "quote": "Together with MOV SYSCALL, it points to a small syscall wrapper.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "The artifact has no occurrences or function context, so adjacency of the two n-grams and a wrapper structure cannot be inferred from mnemonics alone.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "so the score comes from many weak signals rather than one decisive pattern",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/full_attributions",
+        "reason": "Only a positive top-20 subset is available. full_attributions and shap_baseline are null, so omitted features cannot be ruled out.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are positive for the configured target class 1, and the candidate reports this correctly. The range of about +0.0070 to +0.0173 and the individual values match the evidence within rounding. The errors found concern feature-value counts and interpretation, not SHAP direction or magnitude.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The target class is a configured assumption that needs upstream verification.",
+      "Feature value semantics are not established, so they should not be read as raw counts or frequencies.",
+      "There are no occurrences, function context, SHAP baseline or full attributions.",
+      "Omitted features are unknown, so a positive top-k subset cannot show that nothing else supports benign.",
+      "The RF probability is not behavioral proof."
+    ],
+    "summary": "This is a mostly grounded and appropriately cautious explanation with correct SHAP signs and magnitudes and proportionate follow-up. It is marred by a miscount (13 instead of 12 zero-value features) and some overreach on syscall wrappers and 'many weak signals'."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Thirteen of the 20 n-grams have a frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "Only 12 of the 20 listed features have value 0.0, and the candidate itself lists 12 names. SYSCALL RET is nonzero (0.000903). The 'frequency' label is also not established by the artifact.",
+      "category": "other"
+    },
+    {
+      "quote": "13 of 20 n-grams have a frequency of 0.000000, so their contributions likely reflect absence rather than observed code",
+      "candidate_path": "/candidate_analysis/key_indicators/2",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "The count is wrong (12, not 13). The absence-based interpretation is hedged, but feature_value_semantics are not established.",
+      "category": "other"
+    },
+    {
+      "quote": "Together with MOV SYSCALL, it points to a small syscall wrapper.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "The artifact has no occurrences or function context, so adjacency of the two n-grams and a wrapper structure cannot be inferred from mnemonics alone.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "so the score comes from many weak signals rather than one decisive pattern",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/full_attributions",
+      "reason": "Only a positive top-20 subset is available. full_attributions and shap_baseline are null, so omitted features cannot be ruled out.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "8462485220bfcba052d89e06bb3eaf38343b92bc246e391050f6019e70dba6a6.exe_analysis.json"
+}

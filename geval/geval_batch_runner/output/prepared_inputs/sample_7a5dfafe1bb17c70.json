@@ -1,0 +1,237 @@
+{
+  "sample_id": "sample_7a5dfafe1bb17c70",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 1.0,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "PXOR MOVAPS",
+        "value": 3.3760719816200435e-05,
+        "shap_value": 0.017040358552769305
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "value": 0.0009152906131930649,
+        "shap_value": 0.013789450287668334
+      },
+      {
+        "ngram": "PXOR MOVDQA",
+        "value": 0.0018906003097072244,
+        "shap_value": 0.01331760302315054
+      },
+      {
+        "ngram": "MOVHLPS MOVQ",
+        "value": 0.00033760719816200435,
+        "shap_value": 0.011416449611682146
+      },
+      {
+        "ngram": "XOR ROL",
+        "value": 0.0007127262651920319,
+        "shap_value": 0.010903808233513959
+      },
+      {
+        "ngram": "SUB ADC",
+        "value": 0.0005926881567575037,
+        "shap_value": 0.010144418043058347
+      },
+      {
+        "ngram": "MOVQ PUNPCKLQDQ",
+        "value": 0.0069584595039486885,
+        "shap_value": 0.010131484832285058
+      },
+      {
+        "ngram": "ADD MOVQ",
+        "value": 0.0006001905421726406,
+        "shap_value": 0.00946162801879653
+      },
+      {
+        "ngram": "LEA MOVDQA",
+        "value": 0.0016280169365927577,
+        "shap_value": 0.009439008981196366
+      },
+      {
+        "ngram": "MOV ROL",
+        "value": 0.00014254526467993855,
+        "shap_value": 0.008995692617225146
+      },
+      {
+        "ngram": "ROL ROR",
+        "value": 0.00012003811571048573,
+        "shap_value": 0.008872885241731859
+      },
+      {
+        "ngram": "MOVDQA PXOR",
+        "value": 0.0022694705985486507,
+        "shap_value": 0.008729717668376344
+      },
+      {
+        "ngram": "CALL MOVQ",
+        "value": 0.00032635362003929913,
+        "shap_value": 0.008646459196127755
+      },
+      {
+        "ngram": "SHL OR",
+        "value": 0.0023294896818697453,
+        "shap_value": 0.008642521992815821
+      },
+      {
+        "ngram": "ADD ROR",
+        "value": 0.0007764965412206948,
+        "shap_value": 0.008462307220204123
+      },
+      {
+        "ngram": "DIV MUL",
+        "value": 3.751191115952679e-06,
+        "shap_value": 0.007727271405512075
+      },
+      {
+        "ngram": "ROL ADD",
+        "value": 2.250714533147402e-05,
+        "shap_value": 0.0072533335182737285
+      },
+      {
+        "ngram": "PADDQ MOVDQA",
+        "value": 0.00032635362003929913,
+        "shap_value": 0.007152035509427753
+      },
+      {
+        "ngram": "LEA PXOR",
+        "value": 0.0001050333448802121,
+        "shap_value": 0.0071098755631853975
+      },
+      {
+        "ngram": "ROL MOV",
+        "value": 6.752143963240087e-05,
+        "shap_value": 0.0069420286850413885
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "high-confidence",
+    "explanation": "The Random Forest classified this binary as malware with probability 1.0000, and all 20 top SHAP features push toward cryptojacking (+0.0069 to +0.0170). The n-grams fall into three clusters typical of hash-based proof-of-work mining code. (1) SSE2 vector register manipulation: PXOR MOVAPS (+0.01704), PXOR PXOR (+0.01379), PXOR MOVDQA (+0.01332), MOVDQA PXOR (+0.00873), LEA MOVDQA (+0.00944), PADDQ MOVDQA (+0.00715), LEA PXOR (+0.00711), MOVQ PUNPCKLQDQ (+0.01013), MOVHLPS MOVQ (+0.01142), ADD MOVQ (+0.00946) and CALL MOVQ (+0.00865). These suggest 128-bit XOR, 64-bit add and lane packing/unpacking of the kind used in memory-hard hashing state mixing (for example CryptoNight-style AES/Keccak/Blake-like state handling). (2) Rotate and shift bit-mixing: XOR ROL (+0.01090), MOV ROL (+0.00900), ROL ROR (+0.00887), ADD ROR (+0.00846), ROL ADD (+0.00725), ROL MOV (+0.00694) and SHL OR (+0.00864). These are ARX-style primitives common in hash functions and ciphers. (3) Multi-precision arithmetic: SUB ADC (+0.01014) and DIV MUL (+0.00773), consistent with 128-bit or big-number math in hashing or difficulty and nonce calculations. The consistent direction of SHAP values, the high frequency of the vector n-grams (MOVQ PUNPCKLQDQ at 0.0070, PXOR MOVDQA at 0.0019) and the absence of any benign-leaning features support a high-confidence call. The evidence is limited to mnemonic n-grams with no function names or API calls, so it indicates mining-style compute kernels rather than proving a specific miner family. Vector and rotate-heavy code can also appear in legitimate crypto libraries, which tempers the score slightly.",
+    "evidence_analysis": [
+      {
+        "ngram": "PXOR MOVAPS",
+        "shap_contribution": 0.01704,
+        "assessment": "Strongest feature. SSE XOR followed by an aligned vector move is characteristic of vectorized state mixing in hash and cipher rounds used by miners."
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "shap_contribution": 0.013789,
+        "assessment": "Consecutive 128-bit XORs indicate dense bitwise mixing, typical of hashing inner loops."
+      },
+      {
+        "ngram": "PXOR MOVDQA",
+        "shap_contribution": 0.013318,
+        "assessment": "XOR combined with aligned 128-bit loads and stores suggests block-wise processing of scratchpad or state data."
+      },
+      {
+        "ngram": "MOVHLPS MOVQ",
+        "shap_contribution": 0.011416,
+        "assessment": "High-to-low lane moves and 64-bit extraction are used when handling 128-bit state halves in hash and multiplication steps."
+      },
+      {
+        "ngram": "XOR ROL",
+        "shap_contribution": 0.010904,
+        "assessment": "XOR plus rotate is a core ARX primitive in hash and cipher functions such as those used in PoW algorithms."
+      },
+      {
+        "ngram": "SUB ADC",
+        "shap_contribution": 0.010144,
+        "assessment": "Subtract and add-with-carry indicates multi-word arithmetic, consistent with big-number or 128-bit math."
+      },
+      {
+        "ngram": "MOVQ PUNPCKLQDQ",
+        "shap_contribution": 0.010131,
+        "assessment": "Frequent (0.0070) packing of two 64-bit values into a vector register, a hallmark of vectorized 64-bit hash state handling."
+      },
+      {
+        "ngram": "ADD MOVQ",
+        "shap_contribution": 0.009462,
+        "assessment": "Scalar addition feeding 64-bit vector moves points to mixing between scalar and SIMD computation paths."
+      },
+      {
+        "ngram": "LEA MOVDQA",
+        "shap_contribution": 0.009439,
+        "assessment": "Address computation followed by aligned vector load or store suggests indexed access to large buffers such as scratchpads."
+      },
+      {
+        "ngram": "MOV ROL",
+        "shap_contribution": 0.008996,
+        "assessment": "Rotation of freshly loaded values is consistent with hash round functions."
+      },
+      {
+        "ngram": "ROL ROR",
+        "shap_contribution": 0.008873,
+        "assessment": "Opposing rotations are common in SHA/Blake/Keccak-style bit diffusion."
+      },
+      {
+        "ngram": "MOVDQA PXOR",
+        "shap_contribution": 0.00873,
+        "assessment": "Load then XOR of vector data, the mirror of PXOR MOVDQA, reinforcing a vectorized XOR-mixing loop."
+      },
+      {
+        "ngram": "CALL MOVQ",
+        "shap_contribution": 0.008646,
+        "assessment": "A call followed by a 64-bit vector move suggests helper routines returning or handling 64-bit hash values. Weaker in isolation."
+      },
+      {
+        "ngram": "SHL OR",
+        "shap_contribution": 0.008643,
+        "assessment": "Shift-and-combine is used for bit packing and manual rotation; moderately common in hashing but not specific."
+      },
+      {
+        "ngram": "ADD ROR",
+        "shap_contribution": 0.008462,
+        "assessment": "Add then rotate is a classic ARX round step."
+      },
+      {
+        "ngram": "DIV MUL",
+        "shap_contribution": 0.007727,
+        "assessment": "Very rare (0.000004) but strongly weighted; suggests wide-integer arithmetic such as modular or difficulty calculations."
+      },
+      {
+        "ngram": "ROL ADD",
+        "shap_contribution": 0.007253,
+        "assessment": "Rotate then add is another ARX pattern consistent with hash compression functions."
+      },
+      {
+        "ngram": "PADDQ MOVDQA",
+        "shap_contribution": 0.007152,
+        "assessment": "Packed 64-bit addition on vector state indicates SIMD arithmetic in a compute kernel."
+      },
+      {
+        "ngram": "LEA PXOR",
+        "shap_contribution": 0.00711,
+        "assessment": "Address generation followed by vector XOR suggests XOR against indexed memory, such as scratchpad lookups."
+      },
+      {
+        "ngram": "ROL MOV",
+        "shap_contribution": 0.006942,
+        "assessment": "Rotate followed by a move fits an unrolled round function storing intermediate results."
+      }
+    ],
+    "confidence_score": 0.9,
+    "key_indicators": [
+      "Dense SSE2 XOR/MOVDQA/MOVAPS patterns consistent with vectorized hash state mixing",
+      "Multiple rotate-based ARX n-grams (XOR ROL, ROL ROR, ADD ROR, ROL ADD)",
+      "MOVQ/PUNPCKLQDQ/MOVHLPS 64-bit lane manipulation typical of PoW hashing kernels",
+      "Multi-precision arithmetic patterns (SUB ADC, DIV MUL)",
+      "All 20 top SHAP features push toward cryptojacking, with RF probability 1.0000"
+    ],
+    "recommended_action": "Treat as a probable cryptominer. Run it in a sandbox and check for mining pool connections, Stratum protocol traffic, sustained high CPU usage and persistence mechanisms. Statically locate the functions containing the PXOR/MOVDQA and ROL/ROR loops to identify the hash algorithm and any embedded wallet or pool configuration. Isolate affected hosts and block related network indicators."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

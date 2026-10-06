@@ -1,0 +1,174 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_a230c33587fce8e4",
+  "status": "success",
+  "source_sha256": "a181d5e26d3e4058d719bf316235c286b0e9eb2207d50d3e0ea721c652d9b889",
+  "input_sha256": "e95c9509e370f4c8ce2afa4cd05230fe61c28fb5465c061403d9ed79b09f65c1",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "5faa8bac97d186a546c140a89de778f529f94a66052ffbe022aee810d3edb3f1.exe",
+      "source_name": "5faa8bac97d186a546c140a89de778f529f94a66052ffbe022aee810d3edb3f1.exe.json",
+      "source_path": "ml/dataset/cryptojacking/5faa8bac97d186a546c140a89de778f529f94a66052ffbe022aee810d3edb3f1.exe.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 83,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "5faa8bac97d186a546c140a89de778f529f94a66052ffbe022aee810d3edb3f1.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:44:29.416306+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:44:29.416334+00:00",
+      "error": null,
+      "request_sha256": "4f4348a37947c0c76eb895cec6afcb98eb77562849d0066ceae90a33feb8b828",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm1DxfmCiLLPQUrma6TP",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF prediction and its top SHAP features, confirming the candidate's claimed range of +0.0044 to +0.0102 matches the data, but noting that calling these values \"frequency\" and inferring rarity isn't well-supported since the semantics of the feature values aren't established.\n\nI'm also catching a labeling error: the candidate classifies \"clz sub.w\" as x86-style when it's actually ARM/Thumb, and similarly \"add blx\" is mislabeled. Still, the claim that most top n-grams show a displayed value of 0.000000 checks out—12 of the 20 are zero—and the ranks cited for eor sub, mvn orr, XOR XOR, XOR SHL, and sub umull all line up correctly with the data.\n\nThe remaining mnemonic descriptions check out fine too. The model's strong cryptojacking/malware classification with a probability of 1.0000 seems reasonably labeled, though I'm still weighing whether the SHAP values' direction and magnitude truly match that confidence level.\n\nThe faithfulness assessment holds up mostly, with one caveat: treating feature values as \"frequency\" isn't really what SHAP represents, so I'll flag that as a minor discrepancy while still calling the overall interpretation faithful. For technical accuracy, I'm leaning toward a 3 or 4, given errors like mischaracterizing clz sub.w in x86 terms and that frequency misinterpretation.\n\nCoherence seems strong, around a 4, despite some repetition across sections. For relevance, the response engages well with alternatives like checksums, obfuscation, and compiler artifacts, so I'm settling on a 4 given the frequency misread offsetting otherwise solid grounding. Actionability-wise, it offers concrete next steps like sandboxing, CPU monitoring, pool traffic analysis, and YARA rules.\n\nI'm now cataloguing the unsupported claims: the \"rare or absent\" inference from the explanation section, mislabeling x86-style n-grams, and the overstated claim that near-zero frequencies make the evidence purely statistical rather than behaviorally interpretable.\n\nI'll trim to two solid quotes rather than three — the n-gram list plus the \"rare or absent in the binary\" line give enough support without overreaching into the statistical-but-not-behavioral point, which I'll set aside.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_a230c33587fce8e4\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, the SHAP range (+0.0044 to +0.0102), the ranks and the instruction semantics are correct. But it treats feature values as 'frequency' and concludes the n-grams are 'rare or absent in the binary', although value semantics are unconfirmed. It also lists the Thumb mnemonic 'clz sub.w' among the 'x86-style' n-grams.\",\"coherence\":\"The argument is well organized, moving from model score to generic n-grams, then to the architecture mix, then to a low-confidence tier and actions. These are consistent. The explanation, per-feature assessments and key indicators repeat each other somewhat.\",\"cybersecurity_relevance\":\"It links the specific n-grams to hashing, checksum, obfuscation and compiler-output alternatives. It also flags the mixed-architecture oddity and the lack of context. The 'frequency' reading is a flaw, and some per-feature commentary is generic.\",\"actionable_utility\":\"It gives concrete, proportionate steps: sandbox CPU and network/stratum checks, hash-loop review, verification of the architecture mix, YARA and threat-intel lookups. They are conditional and tied to the evidence gaps. They are not prioritized, and 'review the functions' assumes function context that was not supplied.\"},\"unsupported_claims\":[{\"quote\":\"have a displayed frequency of 0.000000, so they are rare or absent in the binary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values are not established as raw counts or frequencies. Inferring rarity or absence in the binary from value 0.0 is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Most x86-style n-grams (ADD POP, CMOVZ MOV, XOR CALL, AND MOV, CALL ADD, CALL XOR, MOV JZ, CMP JL, XOR XOR, XOR SHL, clz sub.w)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/19\",\"reason\":\"'clz sub.w' is a Thumb-2-style mnemonic, and the candidate itself lists 'sub.w' and 'clz' as ARM/Thumb elsewhere. Labeling it x86-style is internally inconsistent and inaccurate.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 top features are correctly reported as positive toward target class 1, with the correct range and ranks and no claim about omitted features. The only concern is the non-SHAP reading of feature values as frequencies.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function names, API references, constants or occurrences were supplied, so no n-gram can be tied to mining behavior.\",\"Feature value semantics are unconfirmed, and the target class is a configured assumption.\",\"SHAP baseline and full attributions are missing, so the top-20 subset cannot show that omitted features lack opposing contributions.\",\"The RF probability is a model score, not behavioral proof or calibrated confidence.\"],\"summary\":\"The explanation represents SHAP direction and magnitude accurately and appropriately hedges against concluding cryptojacking from generic n-grams. It is clear and gives sensible verification steps. Its main flaws are treating unconfirmed feature values as 'frequency', concluding the n-grams are rare or absent in the binary, and mislabeling 'clz sub.w' as x86-style.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7149,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3674,
+          "output_tokens_details": {
+            "thinking_tokens": 2408
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7149,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3674,
+        "output_tokens_details": {
+          "thinking_tokens": 2408
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_a230c33587fce8e4\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, the SHAP range (+0.0044 to +0.0102), the ranks and the instruction semantics are correct. But it treats feature values as 'frequency' and concludes the n-grams are 'rare or absent in the binary', although value semantics are unconfirmed. It also lists the Thumb mnemonic 'clz sub.w' among the 'x86-style' n-grams.\",\"coherence\":\"The argument is well organized, moving from model score to generic n-grams, then to the architecture mix, then to a low-confidence tier and actions. These are consistent. The explanation, per-feature assessments and key indicators repeat each other somewhat.\",\"cybersecurity_relevance\":\"It links the specific n-grams to hashing, checksum, obfuscation and compiler-output alternatives. It also flags the mixed-architecture oddity and the lack of context. The 'frequency' reading is a flaw, and some per-feature commentary is generic.\",\"actionable_utility\":\"It gives concrete, proportionate steps: sandbox CPU and network/stratum checks, hash-loop review, verification of the architecture mix, YARA and threat-intel lookups. They are conditional and tied to the evidence gaps. They are not prioritized, and 'review the functions' assumes function context that was not supplied.\"},\"unsupported_claims\":[{\"quote\":\"have a displayed frequency of 0.000000, so they are rare or absent in the binary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values are not established as raw counts or frequencies. Inferring rarity or absence in the binary from value 0.0 is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Most x86-style n-grams (ADD POP, CMOVZ MOV, XOR CALL, AND MOV, CALL ADD, CALL XOR, MOV JZ, CMP JL, XOR XOR, XOR SHL, clz sub.w)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/19\",\"reason\":\"'clz sub.w' is a Thumb-2-style mnemonic, and the candidate itself lists 'sub.w' and 'clz' as ARM/Thumb elsewhere. Labeling it x86-style is internally inconsistent and inaccurate.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 top features are correctly reported as positive toward target class 1, with the correct range and ranks and no claim about omitted features. The only concern is the non-SHAP reading of feature values as frequencies.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function names, API references, constants or occurrences were supplied, so no n-gram can be tied to mining behavior.\",\"Feature value semantics are unconfirmed, and the target class is a configured assumption.\",\"SHAP baseline and full attributions are missing, so the top-20 subset cannot show that omitted features lack opposing contributions.\",\"The RF probability is a model score, not behavioral proof or calibrated confidence.\"],\"summary\":\"The explanation represents SHAP direction and magnitude accurately and appropriately hedges against concluding cryptojacking from generic n-grams. It is clear and gives sensible verification steps. Its main flaws are treating unconfirmed feature values as 'frequency', concluding the n-grams are rare or absent in the binary, and mislabeling 'clz sub.w' as x86-style.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_a230c33587fce8e4",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability, the SHAP range (+0.0044 to +0.0102), the ranks and the instruction semantics are correct. But it treats feature values as 'frequency' and concludes the n-grams are 'rare or absent in the binary', although value semantics are unconfirmed. It also lists the Thumb mnemonic 'clz sub.w' among the 'x86-style' n-grams.",
+      "coherence": "The argument is well organized, moving from model score to generic n-grams, then to the architecture mix, then to a low-confidence tier and actions. These are consistent. The explanation, per-feature assessments and key indicators repeat each other somewhat.",
+      "cybersecurity_relevance": "It links the specific n-grams to hashing, checksum, obfuscation and compiler-output alternatives. It also flags the mixed-architecture oddity and the lack of context. The 'frequency' reading is a flaw, and some per-feature commentary is generic.",
+      "actionable_utility": "It gives concrete, proportionate steps: sandbox CPU and network/stratum checks, hash-loop review, verification of the architecture mix, YARA and threat-intel lookups. They are conditional and tied to the evidence gaps. They are not prioritized, and 'review the functions' assumes function context that was not supplied."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "have a displayed frequency of 0.000000, so they are rare or absent in the binary",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature values are not established as raw counts or frequencies. Inferring rarity or absence in the binary from value 0.0 is unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Most x86-style n-grams (ADD POP, CMOVZ MOV, XOR CALL, AND MOV, CALL ADD, CALL XOR, MOV JZ, CMP JL, XOR XOR, XOR SHL, clz sub.w)",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/19",
+        "reason": "'clz sub.w' is a Thumb-2-style mnemonic, and the candidate itself lists 'sub.w' and 'clz' as ARM/Thumb elsewhere. Labeling it x86-style is internally inconsistent and inaccurate.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 top features are correctly reported as positive toward target class 1, with the correct range and ranks and no claim about omitted features. The only concern is the non-SHAP reading of feature values as frequencies.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No function names, API references, constants or occurrences were supplied, so no n-gram can be tied to mining behavior.",
+      "Feature value semantics are unconfirmed, and the target class is a configured assumption.",
+      "SHAP baseline and full attributions are missing, so the top-20 subset cannot show that omitted features lack opposing contributions.",
+      "The RF probability is a model score, not behavioral proof or calibrated confidence."
+    ],
+    "summary": "The explanation represents SHAP direction and magnitude accurately and appropriately hedges against concluding cryptojacking from generic n-grams. It is clear and gives sensible verification steps. Its main flaws are treating unconfirmed feature values as 'frequency', concluding the n-grams are rare or absent in the binary, and mislabeling 'clz sub.w' as x86-style."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "have a displayed frequency of 0.000000, so they are rare or absent in the binary",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature values are not established as raw counts or frequencies. Inferring rarity or absence in the binary from value 0.0 is unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Most x86-style n-grams (ADD POP, CMOVZ MOV, XOR CALL, AND MOV, CALL ADD, CALL XOR, MOV JZ, CMP JL, XOR XOR, XOR SHL, clz sub.w)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/19",
+      "reason": "'clz sub.w' is a Thumb-2-style mnemonic, and the candidate itself lists 'sub.w' and 'clz' as ARM/Thumb elsewhere. Labeling it x86-style is internally inconsistent and inaccurate.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "5faa8bac97d186a546c140a89de778f529f94a66052ffbe022aee810d3edb3f1.exe_analysis.json"
+}

@@ -1,0 +1,237 @@
+{
+  "sample_id": "sample_300a685c22780d2b",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 1.0,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.017501878913636363
+      },
+      {
+        "ngram": "ADD POP",
+        "value": 0.0,
+        "shap_value": 0.01654103216323742
+      },
+      {
+        "ngram": "MOV LEAVE",
+        "value": 0.0015649452107027173,
+        "shap_value": 0.015963838309050588
+      },
+      {
+        "ngram": "LEAVE RET",
+        "value": 0.010954616591334343,
+        "shap_value": 0.012511520499060888
+      },
+      {
+        "ngram": "SUB SHL",
+        "value": 0.009389671497046947,
+        "shap_value": 0.012498156632828727
+      },
+      {
+        "ngram": "PUSH SUB",
+        "value": 0.0,
+        "shap_value": 0.011426576341699822
+      },
+      {
+        "ngram": "TEST JZ",
+        "value": 0.0,
+        "shap_value": 0.010640048164309478
+      },
+      {
+        "ngram": "MOV SYSCALL",
+        "value": 0.003912363201379776,
+        "shap_value": 0.010599260579515423
+      },
+      {
+        "ngram": "XOR CALL",
+        "value": 0.0,
+        "shap_value": 0.010099867729269622
+      },
+      {
+        "ngram": "TEST JS",
+        "value": 0.0,
+        "shap_value": 0.009906893212717413
+      },
+      {
+        "ngram": "XOR XOR",
+        "value": 0.0,
+        "shap_value": 0.008773373501620375
+      },
+      {
+        "ngram": "XOR MOV",
+        "value": 0.0015649452107027173,
+        "shap_value": 0.00819888709341068
+      },
+      {
+        "ngram": "SYSCALL RET",
+        "value": 0.003912363201379776,
+        "shap_value": 0.007852329617470736
+      },
+      {
+        "ngram": "MOV JZ",
+        "value": 0.0,
+        "shap_value": 0.007802635459570569
+      },
+      {
+        "ngram": "SHL ADD",
+        "value": 0.015649452805519104,
+        "shap_value": 0.00778656630941837
+      },
+      {
+        "ngram": "AND MOV",
+        "value": 0.0,
+        "shap_value": 0.0077862117419858715
+      },
+      {
+        "ngram": "CMP CMOVZ",
+        "value": 0.0,
+        "shap_value": 0.007461512995909379
+      },
+      {
+        "ngram": "LEA CALL",
+        "value": 0.0,
+        "shap_value": 0.007410166873576276
+      },
+      {
+        "ngram": "CALL ADD",
+        "value": 0.007824726402759552,
+        "shap_value": 0.006909920892491245
+      },
+      {
+        "ngram": "XOR SHL",
+        "value": 0.0,
+        "shap_value": 0.006850725648617836
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest labels the binary MALWARE with probability 1.0000, and all 20 listed n-grams push toward cryptojacking. However, the evidence is almost entirely generic compiler and x86-64 idiom patterns, and it contains no function names, call targets, or strings. Eleven of the 20 n-grams have a reported frequency of 0.000000 (CMOVZ MOV, ADD POP, PUSH SUB, TEST JZ, XOR CALL, TEST JS, XOR XOR, MOV JZ, AND MOV, CMP CMOVZ, LEA CALL, XOR SHL). Their positive SHAP values are therefore most plausibly driven by the absence of patterns typical of benign binaries, not by any observed mining logic. Among the present n-grams, MOV SYSCALL (0.003912, +0.010599) and SYSCALL RET (0.003912, +0.007852) indicate direct Linux system call stubs. This is consistent with a statically linked or minimal binary, a style common in malware, but it is not specific to mining. SUB SHL (0.009390, +0.012498) and SHL ADD (0.015649, +0.007787) show shift and arithmetic sequences, and XOR MOV (0.001565, +0.008199) is also present. These are compatible with hashing or bit-mixing, but they are also common in ordinary address and index arithmetic. The function-epilogue patterns MOV LEAVE (+0.015964) and LEAVE RET (0.010955, +0.012512) are ordinary stack-frame teardown and carry no behavioral meaning on their own. No single SHAP contribution exceeds +0.0175, so the prediction rests on the accumulated weight of many weak signals. The model's confidence is high, but the specific assembly evidence does not independently confirm cryptojacking (for example, no sustained rotate/XOR/shift hash-loop signature is evident), so the classification is inconclusive on its own.",
+    "evidence_analysis": [
+      {
+        "ngram": "CMOVZ MOV",
+        "shap_contribution": 0.017502,
+        "assessment": "Frequency is 0.0, so this is a contribution from absence. Conditional-move patterns can appear in branchless compiled code, but nothing here ties this to mining."
+      },
+      {
+        "ngram": "ADD POP",
+        "shap_contribution": 0.016541,
+        "assessment": "Absent from the binary. This is a stack-adjust and register-restore idiom and is non-specific. The contribution likely reflects the missing pattern's effect on the model's decision."
+      },
+      {
+        "ngram": "MOV LEAVE",
+        "shap_contribution": 0.015964,
+        "assessment": "Present at low frequency (0.001565). This is a function epilogue pattern and is generic. It indicates compiled function structure, not malicious behavior."
+      },
+      {
+        "ngram": "LEAVE RET",
+        "shap_contribution": 0.012512,
+        "assessment": "Present at 0.010955. This is a standard function return sequence. Its presence shows normal compiled-function structure and is weak evidence by itself."
+      },
+      {
+        "ngram": "SUB SHL",
+        "shap_contribution": 0.012498,
+        "assessment": "Present at 0.009390. Shift and subtract arithmetic is compatible with bit-manipulation or hash-like computation, but also with ordinary index and size arithmetic. It is mildly suggestive only."
+      },
+      {
+        "ngram": "PUSH SUB",
+        "shap_contribution": 0.011427,
+        "assessment": "Absent. This is a prologue and stack-allocation idiom. The contribution comes from the absence of this typical function setup, which may hint at an unusual code layout, but it is not conclusive."
+      },
+      {
+        "ngram": "TEST JZ",
+        "shap_contribution": 0.01064,
+        "assessment": "Absent. This is a generic conditional branch on a test result with no mining-specific meaning."
+      },
+      {
+        "ngram": "MOV SYSCALL",
+        "shap_contribution": 0.010599,
+        "assessment": "Present at 0.003912. This is a direct system call invocation, indicating inline syscall stubs typical of statically linked or minimal binaries. It is one of the more behaviorally relevant signals but is not mining-specific."
+      },
+      {
+        "ngram": "XOR CALL",
+        "shap_contribution": 0.0101,
+        "assessment": "Absent. XOR is often used to zero registers before calls. The positive SHAP reflects the model's learned association, not observed behavior."
+      },
+      {
+        "ngram": "TEST JS",
+        "shap_contribution": 0.009907,
+        "assessment": "Absent. This is a sign-check branch pattern and is generic."
+      },
+      {
+        "ngram": "XOR XOR",
+        "shap_contribution": 0.008773,
+        "assessment": "Absent from the binary. Consecutive XORs could indicate hash or cipher mixing if present, but with zero frequency there is no direct evidence of such routines."
+      },
+      {
+        "ngram": "XOR MOV",
+        "shap_contribution": 0.008199,
+        "assessment": "Present at low frequency (0.001565). It is likely register zeroing or simple data mixing, and is weak evidence."
+      },
+      {
+        "ngram": "SYSCALL RET",
+        "shap_contribution": 0.007852,
+        "assessment": "Present at 0.003912, matching MOV SYSCALL. Together they suggest small syscall wrapper routines, consistent with a minimal runtime. This is not mining-specific, but it supports a non-standard binary profile."
+      },
+      {
+        "ngram": "MOV JZ",
+        "shap_contribution": 0.007803,
+        "assessment": "Absent. This is a generic conditional branch pattern and the contribution is likely an absence effect."
+      },
+      {
+        "ngram": "SHL ADD",
+        "shap_contribution": 0.007787,
+        "assessment": "Present at 0.015649, the highest frequency among the listed n-grams. This shift-then-add pattern is typical of scaled addressing or multiplication-by-constant arithmetic. It could also appear in hashing, but it is ambiguous."
+      },
+      {
+        "ngram": "AND MOV",
+        "shap_contribution": 0.007786,
+        "assessment": "Absent. Masking followed by a move is a common idiom. No mining significance can be derived from it."
+      },
+      {
+        "ngram": "CMP CMOVZ",
+        "shap_contribution": 0.007462,
+        "assessment": "Absent. This is a compare-and-conditional-move pattern, generic and with no direct evidential value."
+      },
+      {
+        "ngram": "LEA CALL",
+        "shap_contribution": 0.00741,
+        "assessment": "Absent. This is typical argument setup before a call. The contribution is likely an absence effect."
+      },
+      {
+        "ngram": "CALL ADD",
+        "shap_contribution": 0.00691,
+        "assessment": "Present at 0.007825. This is a call followed by a stack cleanup or accumulation, a generic calling-convention pattern."
+      },
+      {
+        "ngram": "XOR SHL",
+        "shap_contribution": 0.006851,
+        "assessment": "Absent. XOR with shift is characteristic of hash and PRNG mixing if present, but its zero frequency means it provides no direct evidence of such routines."
+      }
+    ],
+    "confidence_score": 0.55,
+    "key_indicators": [
+      "Random Forest predicts MALWARE with probability 1.0000, and all top-20 SHAP contributions are positive toward cryptojacking",
+      "Direct syscall stubs (MOV SYSCALL and SYSCALL RET, each at 0.003912), suggesting a minimal or statically linked binary",
+      "Shift and arithmetic patterns (SUB SHL at 0.009390, SHL ADD at 0.015649) that are compatible with hash-style computation but not specific to it",
+      "11 of 20 top n-grams have zero frequency, so the SHAP signal is largely absence-driven and non-specific",
+      "No function names, call targets, or mining-specific patterns are present in the evidence"
+    ],
+    "recommended_action": "Treat the sample as suspicious and prioritize it for deeper analysis. The model verdict is strong, but the n-gram evidence is too generic to confirm mining. Run it in a sandbox and monitor for sustained high CPU usage, outbound connections to mining pools, and Stratum-style protocol traffic. Statically inspect the syscall wrapper routines, look for hot loops of shift/XOR/add operations, and check strings or configuration data for wallet addresses and pool URLs. Reclassify as high-confidence if the dynamic or static findings confirm mining behavior."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

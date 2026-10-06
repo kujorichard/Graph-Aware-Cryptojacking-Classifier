@@ -1,0 +1,257 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_f5bf726df3737e16",
+  "status": "success",
+  "source_sha256": "f397ff51438bf89629cce0afaf58410b1b71cfa6495be0c0a829f94650b66966",
+  "input_sha256": "02bb57db3dd770fe540f465b7d57e57ed24a36eb9378279aa91d977cd30c67ca",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "b6acc029cffa40fc50827ad59fab8285575ad84f23229be0dbac8fd5dc99f81f.exe",
+      "source_name": "b6acc029cffa40fc50827ad59fab8285575ad84f23229be0dbac8fd5dc99f81f.exe.json",
+      "source_path": "ml/dataset/cryptojacking/b6acc029cffa40fc50827ad59fab8285575ad84f23229be0dbac8fd5dc99f81f.exe.json",
+      "split": "test",
+      "batch_number": 0,
+      "row_index_in_batch": 31,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "b6acc029cffa40fc50827ad59fab8285575ad84f23229be0dbac8fd5dc99f81f.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:21:53.493474+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:21:53.493503+00:00",
+      "error": null,
+      "request_sha256": "3b0ca8141aeecbb2d3dbec6e9dd49f4812a42f0cf3098c97c33e28aa640a38d0",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm45NnBkmKabRJeeMgh7",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_f5bf726df3737e16\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 1.0, SHAP values, signs, and the top-20 listing match the evidence, and the \\\"most frequent n-gram (0.001812)\\\" claim is correct. But there are overreaches: the explanation reads mnemonic pairs as \\\"ARX-style hashing\\\", \\\"hash or cipher inner loops\\\", and \\\"state-mixing\\\". It also says \\\"all 20 of the top n-grams push toward cryptojacking\\\", which treats target-class SHAP as direct cryptojacking proof. It also asserts a \\\"high-confidence cryptojacking assessment\\\" from the aggregate pattern, while the artifact does not establish feature semantics, adjacency, or loops.\",\"coherence\":\"Well organized: a summary, clustered themes, per-feature assessments, and recommended actions that are consistent with each other. Minor tension between \\\"high-confidence\\\"/\\\"Treat as likely cryptojacking\\\" and the later admission that the patterns fit legitimate crypto libraries. There is also some repetition between the explanation and evidence_analysis.\",\"cybersecurity_relevance\":\"Ties the specific n-gram clusters (SIMD XOR, rotate/carry, BSWAP) to cryptographic/hashing compute relevant to mining. It explicitly notes that no APIs or functions are named, that mining cannot be confirmed directly, and that legitimate crypto libraries are a benign alternative. It does not discuss other benign explanations such as compression, media, or numeric code, and it ignores the unestablished feature-value semantics.\",\"actionable_utility\":\"Concrete, feasible steps: sandbox for sustained CPU use, pool connections, and persistence; disassemble the PXOR/VPXOR and ROL/ADC functions; extract wallet/pool config; quarantine and block the hash. These are phrased as verification, not observed behavior. Slightly disproportionate in that it treats the sample as \\\"likely cryptojacking\\\" before verification, and it lacks prioritization or a note on distinguishing legitimate crypto libraries.\"},\"unsupported_claims\":[{\"quote\":\"These suggest vectorized XOR and state-mixing over wide registers, typical of hash or cipher inner loops.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/occurrences (empty); /evidence/function_context (empty)\",\"reason\":\"No occurrences, function context, or loop evidence supports inner loops or state mixing; the evidence consists only of n-gram names and SHAP values.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"This is consistent with ARX-style hashing and multi-precision arithmetic.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Mnemonic pairs alone do not establish a hash algorithm family or multi-precision arithmetic, and the graph-aware n-grams may not be adjacent instructions.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Still, the number of independent crypto-style compute patterns, together with the model's maximal confidence, supports a high-confidence cryptojacking assessment.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /evidence/feature_value_semantics\",\"reason\":\"RF probability is not behavioral proof, and the patterns are not shown to be independent; the extraction semantics are unestablished. A high-confidence cryptojacking label overstates the evidence, even though it is partly hedged.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Dense SIMD XOR patterns (PXOR MOVAPS, PXOR MOVUPS, PXOR PXOR, VPXOR VMOVDQU)\",\"candidate_path\":\"/candidate_analysis/key_indicators/0\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"\\\"Dense\\\" implies high counts or density, but the feature values are tiny (about 5e-06 to 5e-04) and not established as raw counts or frequencies.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Consecutive SIMD XORs indicate dense vectorized mixing, characteristic of compute-heavy hashing kernels.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/scope_notes/0; /evidence/occurrences\",\"reason\":\"Consecutiveness and adjacency are not established, and hashing kernels cannot be inferred from the n-gram name alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Treat as likely cryptojacking.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"Presents a cryptojacking conclusion before the verification steps it recommends, based only on classifier output and n-gram associations.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs, magnitudes, and rankings are reported accurately and the top-k limits are partly acknowledged. However, the explanation says there is \\\"no counter-evidence among them\\\" for \\\"all 20\\\" and treats the positive top-k as support for a high-confidence cryptojacking judgment, although the omitted features and baseline are unknown. It also states \\\"Dense\\\" patterns even though the feature value semantics are unconfirmed.\",\"discrepancies\":[{\"quote\":\"all 20 of the top n-grams push toward cryptojacking, with no counter-evidence among them\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"SHAP target class 1 is a configured assumption that needs verification, and a positive top-k subset cannot rule out omitted benign-supporting features; the full attributions are unavailable.\"},{\"quote\":\"All 20 top features push toward the malware class\",\"candidate_path\":\"/candidate_analysis/key_indicators/5\",\"reason\":\"This is accurate for the supplied top-k only, but the omission of full attributions and baseline is not noted here, and the sign refers to an assumed target class.\"},{\"quote\":\"Dense SIMD XOR patterns (PXOR MOVAPS, PXOR MOVUPS, PXOR PXOR, VPXOR VMOVDQU)\",\"candidate_path\":\"/candidate_analysis/key_indicators/0\",\"reason\":\"\\\"Dense\\\" misrepresents the very small feature values, whose semantics are not established as counts; the SHAP magnitudes are small and do not by themselves indicate density.\"}]},\"evidence_limitations\":[\"Only n-gram names, tiny feature values, and top-20 SHAP values are provided; there are no occurrences, function context, APIs, strings, or dynamic behavior.\",\"shap_target_class is a configured assumption requiring verification upstream.\",\"Feature value semantics are not established, so they cannot be treated as raw counts or frequencies.\",\"SHAP baseline and full attributions are null, so omitted features may support the benign class.\",\"RF probability 1.0 is a model output, not behavioral proof of cryptojacking.\",\"Graph-aware n-grams need not be adjacent, so instruction ordering, loops, and control flow are not verifiable.\"],\"summary\":\"The explanation reports RF output and SHAP numbers accurately and gives a clear, relevant structure with feasible verification steps. It overreaches by inferring ARX hashing, inner loops, and \\\"dense\\\" patterns from mnemonic pairs, and by presenting a high-confidence cryptojacking verdict when the evidence is only n-gram associations with unknown feature semantics and omitted features. The explanation does acknowledge that APIs are absent and that legitimate crypto libraries could match.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6965,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2692,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6965,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2692,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_f5bf726df3737e16\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 1.0, SHAP values, signs, and the top-20 listing match the evidence, and the \\\"most frequent n-gram (0.001812)\\\" claim is correct. But there are overreaches: the explanation reads mnemonic pairs as \\\"ARX-style hashing\\\", \\\"hash or cipher inner loops\\\", and \\\"state-mixing\\\". It also says \\\"all 20 of the top n-grams push toward cryptojacking\\\", which treats target-class SHAP as direct cryptojacking proof. It also asserts a \\\"high-confidence cryptojacking assessment\\\" from the aggregate pattern, while the artifact does not establish feature semantics, adjacency, or loops.\",\"coherence\":\"Well organized: a summary, clustered themes, per-feature assessments, and recommended actions that are consistent with each other. Minor tension between \\\"high-confidence\\\"/\\\"Treat as likely cryptojacking\\\" and the later admission that the patterns fit legitimate crypto libraries. There is also some repetition between the explanation and evidence_analysis.\",\"cybersecurity_relevance\":\"Ties the specific n-gram clusters (SIMD XOR, rotate/carry, BSWAP) to cryptographic/hashing compute relevant to mining. It explicitly notes that no APIs or functions are named, that mining cannot be confirmed directly, and that legitimate crypto libraries are a benign alternative. It does not discuss other benign explanations such as compression, media, or numeric code, and it ignores the unestablished feature-value semantics.\",\"actionable_utility\":\"Concrete, feasible steps: sandbox for sustained CPU use, pool connections, and persistence; disassemble the PXOR/VPXOR and ROL/ADC functions; extract wallet/pool config; quarantine and block the hash. These are phrased as verification, not observed behavior. Slightly disproportionate in that it treats the sample as \\\"likely cryptojacking\\\" before verification, and it lacks prioritization or a note on distinguishing legitimate crypto libraries.\"},\"unsupported_claims\":[{\"quote\":\"These suggest vectorized XOR and state-mixing over wide registers, typical of hash or cipher inner loops.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/occurrences (empty); /evidence/function_context (empty)\",\"reason\":\"No occurrences, function context, or loop evidence supports inner loops or state mixing; the evidence consists only of n-gram names and SHAP values.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"This is consistent with ARX-style hashing and multi-precision arithmetic.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Mnemonic pairs alone do not establish a hash algorithm family or multi-precision arithmetic, and the graph-aware n-grams may not be adjacent instructions.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Still, the number of independent crypto-style compute patterns, together with the model's maximal confidence, supports a high-confidence cryptojacking assessment.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /evidence/feature_value_semantics\",\"reason\":\"RF probability is not behavioral proof, and the patterns are not shown to be independent; the extraction semantics are unestablished. A high-confidence cryptojacking label overstates the evidence, even though it is partly hedged.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Dense SIMD XOR patterns (PXOR MOVAPS, PXOR MOVUPS, PXOR PXOR, VPXOR VMOVDQU)\",\"candidate_path\":\"/candidate_analysis/key_indicators/0\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"\\\"Dense\\\" implies high counts or density, but the feature values are tiny (about 5e-06 to 5e-04) and not established as raw counts or frequencies.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Consecutive SIMD XORs indicate dense vectorized mixing, characteristic of compute-heavy hashing kernels.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/scope_notes/0; /evidence/occurrences\",\"reason\":\"Consecutiveness and adjacency are not established, and hashing kernels cannot be inferred from the n-gram name alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Treat as likely cryptojacking.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"Presents a cryptojacking conclusion before the verification steps it recommends, based only on classifier output and n-gram associations.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs, magnitudes, and rankings are reported accurately and the top-k limits are partly acknowledged. However, the explanation says there is \\\"no counter-evidence among them\\\" for \\\"all 20\\\" and treats the positive top-k as support for a high-confidence cryptojacking judgment, although the omitted features and baseline are unknown. It also states \\\"Dense\\\" patterns even though the feature value semantics are unconfirmed.\",\"discrepancies\":[{\"quote\":\"all 20 of the top n-grams push toward cryptojacking, with no counter-evidence among them\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"SHAP target class 1 is a configured assumption that needs verification, and a positive top-k subset cannot rule out omitted benign-supporting features; the full attributions are unavailable.\"},{\"quote\":\"All 20 top features push toward the malware class\",\"candidate_path\":\"/candidate_analysis/key_indicators/5\",\"reason\":\"This is accurate for the supplied top-k only, but the omission of full attributions and baseline is not noted here, and the sign refers to an assumed target class.\"},{\"quote\":\"Dense SIMD XOR patterns (PXOR MOVAPS, PXOR MOVUPS, PXOR PXOR, VPXOR VMOVDQU)\",\"candidate_path\":\"/candidate_analysis/key_indicators/0\",\"reason\":\"\\\"Dense\\\" misrepresents the very small feature values, whose semantics are not established as counts; the SHAP magnitudes are small and do not by themselves indicate density.\"}]},\"evidence_limitations\":[\"Only n-gram names, tiny feature values, and top-20 SHAP values are provided; there are no occurrences, function context, APIs, strings, or dynamic behavior.\",\"shap_target_class is a configured assumption requiring verification upstream.\",\"Feature value semantics are not established, so they cannot be treated as raw counts or frequencies.\",\"SHAP baseline and full attributions are null, so omitted features may support the benign class.\",\"RF probability 1.0 is a model output, not behavioral proof of cryptojacking.\",\"Graph-aware n-grams need not be adjacent, so instruction ordering, loops, and control flow are not verifiable.\"],\"summary\":\"The explanation reports RF output and SHAP numbers accurately and gives a clear, relevant structure with feasible verification steps. It overreaches by inferring ARX hashing, inner loops, and \\\"dense\\\" patterns from mnemonic pairs, and by presenting a high-confidence cryptojacking verdict when the evidence is only n-gram associations with unknown feature semantics and omitted features. The explanation does acknowledge that APIs are absent and that legitimate crypto libraries could match.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_f5bf726df3737e16",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability 1.0, SHAP values, signs, and the top-20 listing match the evidence, and the \"most frequent n-gram (0.001812)\" claim is correct. But there are overreaches: the explanation reads mnemonic pairs as \"ARX-style hashing\", \"hash or cipher inner loops\", and \"state-mixing\". It also says \"all 20 of the top n-grams push toward cryptojacking\", which treats target-class SHAP as direct cryptojacking proof. It also asserts a \"high-confidence cryptojacking assessment\" from the aggregate pattern, while the artifact does not establish feature semantics, adjacency, or loops.",
+      "coherence": "Well organized: a summary, clustered themes, per-feature assessments, and recommended actions that are consistent with each other. Minor tension between \"high-confidence\"/\"Treat as likely cryptojacking\" and the later admission that the patterns fit legitimate crypto libraries. There is also some repetition between the explanation and evidence_analysis.",
+      "cybersecurity_relevance": "Ties the specific n-gram clusters (SIMD XOR, rotate/carry, BSWAP) to cryptographic/hashing compute relevant to mining. It explicitly notes that no APIs or functions are named, that mining cannot be confirmed directly, and that legitimate crypto libraries are a benign alternative. It does not discuss other benign explanations such as compression, media, or numeric code, and it ignores the unestablished feature-value semantics.",
+      "actionable_utility": "Concrete, feasible steps: sandbox for sustained CPU use, pool connections, and persistence; disassemble the PXOR/VPXOR and ROL/ADC functions; extract wallet/pool config; quarantine and block the hash. These are phrased as verification, not observed behavior. Slightly disproportionate in that it treats the sample as \"likely cryptojacking\" before verification, and it lacks prioritization or a note on distinguishing legitimate crypto libraries."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "These suggest vectorized XOR and state-mixing over wide registers, typical of hash or cipher inner loops.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; /evidence/occurrences (empty); /evidence/function_context (empty)",
+        "reason": "No occurrences, function context, or loop evidence supports inner loops or state mixing; the evidence consists only of n-gram names and SHAP values.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "This is consistent with ARX-style hashing and multi-precision arithmetic.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "Mnemonic pairs alone do not establish a hash algorithm family or multi-precision arithmetic, and the graph-aware n-grams may not be adjacent instructions.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "Still, the number of independent crypto-style compute patterns, together with the model's maximal confidence, supports a high-confidence cryptojacking assessment.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/rf_probability_class_1; /evidence/feature_value_semantics",
+        "reason": "RF probability is not behavioral proof, and the patterns are not shown to be independent; the extraction semantics are unestablished. A high-confidence cryptojacking label overstates the evidence, even though it is partly hedged.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Dense SIMD XOR patterns (PXOR MOVAPS, PXOR MOVUPS, PXOR PXOR, VPXOR VMOVDQU)",
+        "candidate_path": "/candidate_analysis/key_indicators/0",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "\"Dense\" implies high counts or density, but the feature values are tiny (about 5e-06 to 5e-04) and not established as raw counts or frequencies.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Consecutive SIMD XORs indicate dense vectorized mixing, characteristic of compute-heavy hashing kernels.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+        "evidence_reference": "/scope_notes/0; /evidence/occurrences",
+        "reason": "Consecutiveness and adjacency are not established, and hashing kernels cannot be inferred from the n-gram name alone.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Treat as likely cryptojacking.",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "/evidence/rf_probability_class_1",
+        "reason": "Presents a cryptojacking conclusion before the verification steps it recommends, based only on classifier output and n-gram associations.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "SHAP signs, magnitudes, and rankings are reported accurately and the top-k limits are partly acknowledged. However, the explanation says there is \"no counter-evidence among them\" for \"all 20\" and treats the positive top-k as support for a high-confidence cryptojacking judgment, although the omitted features and baseline are unknown. It also states \"Dense\" patterns even though the feature value semantics are unconfirmed.",
+      "discrepancies": [
+        {
+          "quote": "all 20 of the top n-grams push toward cryptojacking, with no counter-evidence among them",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "SHAP target class 1 is a configured assumption that needs verification, and a positive top-k subset cannot rule out omitted benign-supporting features; the full attributions are unavailable."
+        },
+        {
+          "quote": "All 20 top features push toward the malware class",
+          "candidate_path": "/candidate_analysis/key_indicators/5",
+          "reason": "This is accurate for the supplied top-k only, but the omission of full attributions and baseline is not noted here, and the sign refers to an assumed target class."
+        },
+        {
+          "quote": "Dense SIMD XOR patterns (PXOR MOVAPS, PXOR MOVUPS, PXOR PXOR, VPXOR VMOVDQU)",
+          "candidate_path": "/candidate_analysis/key_indicators/0",
+          "reason": "\"Dense\" misrepresents the very small feature values, whose semantics are not established as counts; the SHAP magnitudes are small and do not by themselves indicate density."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "Only n-gram names, tiny feature values, and top-20 SHAP values are provided; there are no occurrences, function context, APIs, strings, or dynamic behavior.",
+      "shap_target_class is a configured assumption requiring verification upstream.",
+      "Feature value semantics are not established, so they cannot be treated as raw counts or frequencies.",
+      "SHAP baseline and full attributions are null, so omitted features may support the benign class.",
+      "RF probability 1.0 is a model output, not behavioral proof of cryptojacking.",
+      "Graph-aware n-grams need not be adjacent, so instruction ordering, loops, and control flow are not verifiable."
+    ],
+    "summary": "The explanation reports RF output and SHAP numbers accurately and gives a clear, relevant structure with feasible verification steps. It overreaches by inferring ARX hashing, inner loops, and \"dense\" patterns from mnemonic pairs, and by presenting a high-confidence cryptojacking verdict when the evidence is only n-gram associations with unknown feature semantics and omitted features. The explanation does acknowledge that APIs are absent and that legitimate crypto libraries could match."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "These suggest vectorized XOR and state-mixing over wide registers, typical of hash or cipher inner loops.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; /evidence/occurrences (empty); /evidence/function_context (empty)",
+      "reason": "No occurrences, function context, or loop evidence supports inner loops or state mixing; the evidence consists only of n-gram names and SHAP values.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "This is consistent with ARX-style hashing and multi-precision arithmetic.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "Mnemonic pairs alone do not establish a hash algorithm family or multi-precision arithmetic, and the graph-aware n-grams may not be adjacent instructions.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "Still, the number of independent crypto-style compute patterns, together with the model's maximal confidence, supports a high-confidence cryptojacking assessment.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/rf_probability_class_1; /evidence/feature_value_semantics",
+      "reason": "RF probability is not behavioral proof, and the patterns are not shown to be independent; the extraction semantics are unestablished. A high-confidence cryptojacking label overstates the evidence, even though it is partly hedged.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Dense SIMD XOR patterns (PXOR MOVAPS, PXOR MOVUPS, PXOR PXOR, VPXOR VMOVDQU)",
+      "candidate_path": "/candidate_analysis/key_indicators/0",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "\"Dense\" implies high counts or density, but the feature values are tiny (about 5e-06 to 5e-04) and not established as raw counts or frequencies.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Consecutive SIMD XORs indicate dense vectorized mixing, characteristic of compute-heavy hashing kernels.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "evidence_reference": "/scope_notes/0; /evidence/occurrences",
+      "reason": "Consecutiveness and adjacency are not established, and hashing kernels cannot be inferred from the n-gram name alone.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Treat as likely cryptojacking.",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "/evidence/rf_probability_class_1",
+      "reason": "Presents a cryptojacking conclusion before the verification steps it recommends, based only on classifier output and n-gram associations.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "all 20 of the top n-grams push toward cryptojacking, with no counter-evidence among them",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "SHAP target class 1 is a configured assumption that needs verification, and a positive top-k subset cannot rule out omitted benign-supporting features; the full attributions are unavailable.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "All 20 top features push toward the malware class",
+      "candidate_path": "/candidate_analysis/key_indicators/5",
+      "reason": "This is accurate for the supplied top-k only, but the omission of full attributions and baseline is not noted here, and the sign refers to an assumed target class.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "b6acc029cffa40fc50827ad59fab8285575ad84f23229be0dbac8fd5dc99f81f.exe_analysis.json"
+}

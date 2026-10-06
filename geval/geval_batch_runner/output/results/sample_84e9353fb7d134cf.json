@@ -1,0 +1,174 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_84e9353fb7d134cf",
+  "status": "success",
+  "source_sha256": "f42eb8469fa5cf6503a297c26137bc9fefbc6e207015f69a92972f202d3bc31b",
+  "input_sha256": "0964bad404ead5a4a04a5369810a49a88366447e2098629a9763a0192fb9d233",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "b807e8394d93f9744aed9b520328ed531744590614ca74b40c40e4ecb53a1720.exe",
+      "source_name": "b807e8394d93f9744aed9b520328ed531744590614ca74b40c40e4ecb53a1720.exe.json",
+      "source_path": "ml/dataset/cryptojacking/b807e8394d93f9744aed9b520328ed531744590614ca74b40c40e4ecb53a1720.exe.json",
+      "split": "test",
+      "batch_number": 1,
+      "row_index_in_batch": 26,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "b807e8394d93f9744aed9b520328ed531744590614ca74b40c40e4ecb53a1720.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:22:26.135401+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:22:26.135429+00:00",
+      "error": null,
+      "request_sha256": "4137aabb86b7c9d3bf5df51eaa9c8d31de25b9222991a955f9f5d3f690f02604",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm47nGNaNqPVo2tUuRnK",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm weighing the evidence here: the random forest predicts class 1 with full confidence, and all top 20 features show positive SHAP values supporting that class. I'm being cautious about calling these \"frequency\" values since the semantics of the feature values aren't clearly established—it could be an overreach to assume they represent raw counts or frequencies rather than something else entirely.\n\nI spot-check all the numbers and they verify correctly, but I notice a small internal inconsistency: the analysis labels MOV→PUSH as the \"highest-frequency stack-setup pattern\" at 0.042090, yet PUSH→CALL actually has a higher value at 0.050545, so that characterization doesn't quite hold up.\n\nThe claim that \"all 20 top n-grams push toward cryptojacking\" assumes class 1 is specifically labeled as cryptojacking malware, but the evidence only confirms rf_prediction=1 without stating what that label actually maps to — so calling it \"MALWARE\" or \"cryptojacking\" by name is a plausible but unsupported leap. Similarly, treating the 0.55 confidence score as support for \"suspicious or malicious\" is reasonable but should be read as a hedge rather than solid behavioral proof.\n\nGoing through the remaining n-gram interpretations — loop counters, XOR zeroing, MOV/LEAVE epilogues, CALL/RET as thunks, PUSH/RET as obfuscation — these are all generic, properly hedged pattern-matching claims without specific evidence of function names or locations, which checks out since none were supplied. The point about rare n-grams carrying disproportionately high SHAP weight despite near-zero frequency seems to conflate frequency with importance, which is worth flagging.\n\nI'm leaning toward marking the \"MOV PUSH as highest-frequency stack-setup pattern\" claim as inconsistent and adding a low-severity flag for unsupported certainty, likely filed under candidate_analysis/explanation. On SHAP faithfulness, direction and magnitude both check out, so I'll call it faithful overall with no major discrepancies, aside from that one frequency-semantics issue.\n\nScoring technical accuracy around 4 given the value-semantics confusion and mislabeling, coherence at 4, relevance closer to 5, and actionability around 4 since the recommendations are concrete but not clearly prioritized—locating PUSH/RET patterns is feasible with disassembly but lacks function-level context. I'm noting the exact JSON pointers and quoting the specific evidence text about the \"Highest-frequency stack-setup pattern (0.042090)\" line for the assessment.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_84e9353fb7d134cf\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"All quoted n-gram values, SHAP values, the +0.0066 to +0.0115 range and the RF probability match the evidence. The instruction semantics are correct and the speculative readings (thunks, packing, hash routines) are hedged. Minor flaws: the feature values are called 'frequency' although their semantics are not established, and MOV PUSH is called the 'highest-frequency' pattern when PUSH CALL is higher.\",\"coherence\":\"The explanation is well organized and consistent. Observations, the generic-versus-rare split, the limits and the low-confidence tier agree with the recommendation. The MOV PUSH 'highest-frequency' remark slightly conflicts with the PUSH CALL entry, and the per-feature list repeats the summary.\",\"cybersecurity_relevance\":\"It ties the sample's specific n-grams to cryptojacking questions such as hash, crypto and bignum routines and to benign alternatives such as ordinary compiled code, thunks and wrappers. It states that no mining-specific constants, APIs or function context were supplied and does not conclude cryptojacking from them.\",\"actionable_utility\":\"The follow-up actions are concrete and proportionate: check for packing, locate the functions containing the rare n-grams, look for arithmetic loops, inspect strings and network indicators, and run a sandbox to check CPU use. They are framed as checks to confirm or rule out mining. They are not explicitly prioritized, and locating the functions depends on disassembly that the supplied evidence does not include.\"},\"unsupported_claims\":[{\"quote\":\"Rarer n-grams carry high SHAP despite near-zero frequency\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the feature values should not be treated as raw counts and that their semantics are unconfirmed. Calling them 'frequency' or 'freq' is an unverified interpretation, though a mild one.\",\"category\":\"other\"},{\"quote\":\"Highest-frequency stack-setup pattern (0.042090).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/16\",\"reason\":\"PUSH CALL has a larger value (0.050545) than MOV PUSH (0.042090), so the superlative is inaccurate even if only call-related patterns are excluded.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The candidate correctly reports that all 20 top SHAP values are positive for the configured target class 1, with the correct range and rounding. It describes the contributions as flat with no dominant feature, which matches the supplied values. It does not claim that omitted features are benign and notes the lack of mining-specific evidence.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that is not verified upstream.\",\"Feature value semantics are unconfirmed, and the occurrences, function_context, shap_baseline and full_attributions fields are empty or null.\",\"Only the top 20 features are given, so omitted features and their effect on the prediction are unknown.\",\"The artifact gives no label mapping, no n-gram adjacency or control flow, no API calls, no strings and no runtime behavior.\"],\"summary\":\"The explanation is accurate, well hedged and faithful to the SHAP evidence, and its follow-up checks are concrete. Minor issues are calling the feature values 'frequency' and describing MOV PUSH as the highest-frequency pattern.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7179,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3010,
+          "output_tokens_details": {
+            "thinking_tokens": 1746
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7179,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3010,
+        "output_tokens_details": {
+          "thinking_tokens": 1746
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_84e9353fb7d134cf\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"All quoted n-gram values, SHAP values, the +0.0066 to +0.0115 range and the RF probability match the evidence. The instruction semantics are correct and the speculative readings (thunks, packing, hash routines) are hedged. Minor flaws: the feature values are called 'frequency' although their semantics are not established, and MOV PUSH is called the 'highest-frequency' pattern when PUSH CALL is higher.\",\"coherence\":\"The explanation is well organized and consistent. Observations, the generic-versus-rare split, the limits and the low-confidence tier agree with the recommendation. The MOV PUSH 'highest-frequency' remark slightly conflicts with the PUSH CALL entry, and the per-feature list repeats the summary.\",\"cybersecurity_relevance\":\"It ties the sample's specific n-grams to cryptojacking questions such as hash, crypto and bignum routines and to benign alternatives such as ordinary compiled code, thunks and wrappers. It states that no mining-specific constants, APIs or function context were supplied and does not conclude cryptojacking from them.\",\"actionable_utility\":\"The follow-up actions are concrete and proportionate: check for packing, locate the functions containing the rare n-grams, look for arithmetic loops, inspect strings and network indicators, and run a sandbox to check CPU use. They are framed as checks to confirm or rule out mining. They are not explicitly prioritized, and locating the functions depends on disassembly that the supplied evidence does not include.\"},\"unsupported_claims\":[{\"quote\":\"Rarer n-grams carry high SHAP despite near-zero frequency\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the feature values should not be treated as raw counts and that their semantics are unconfirmed. Calling them 'frequency' or 'freq' is an unverified interpretation, though a mild one.\",\"category\":\"other\"},{\"quote\":\"Highest-frequency stack-setup pattern (0.042090).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/16\",\"reason\":\"PUSH CALL has a larger value (0.050545) than MOV PUSH (0.042090), so the superlative is inaccurate even if only call-related patterns are excluded.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The candidate correctly reports that all 20 top SHAP values are positive for the configured target class 1, with the correct range and rounding. It describes the contributions as flat with no dominant feature, which matches the supplied values. It does not claim that omitted features are benign and notes the lack of mining-specific evidence.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that is not verified upstream.\",\"Feature value semantics are unconfirmed, and the occurrences, function_context, shap_baseline and full_attributions fields are empty or null.\",\"Only the top 20 features are given, so omitted features and their effect on the prediction are unknown.\",\"The artifact gives no label mapping, no n-gram adjacency or control flow, no API calls, no strings and no runtime behavior.\"],\"summary\":\"The explanation is accurate, well hedged and faithful to the SHAP evidence, and its follow-up checks are concrete. Minor issues are calling the feature values 'frequency' and describing MOV PUSH as the highest-frequency pattern.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_84e9353fb7d134cf",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "All quoted n-gram values, SHAP values, the +0.0066 to +0.0115 range and the RF probability match the evidence. The instruction semantics are correct and the speculative readings (thunks, packing, hash routines) are hedged. Minor flaws: the feature values are called 'frequency' although their semantics are not established, and MOV PUSH is called the 'highest-frequency' pattern when PUSH CALL is higher.",
+      "coherence": "The explanation is well organized and consistent. Observations, the generic-versus-rare split, the limits and the low-confidence tier agree with the recommendation. The MOV PUSH 'highest-frequency' remark slightly conflicts with the PUSH CALL entry, and the per-feature list repeats the summary.",
+      "cybersecurity_relevance": "It ties the sample's specific n-grams to cryptojacking questions such as hash, crypto and bignum routines and to benign alternatives such as ordinary compiled code, thunks and wrappers. It states that no mining-specific constants, APIs or function context were supplied and does not conclude cryptojacking from them.",
+      "actionable_utility": "The follow-up actions are concrete and proportionate: check for packing, locate the functions containing the rare n-grams, look for arithmetic loops, inspect strings and network indicators, and run a sandbox to check CPU use. They are framed as checks to confirm or rule out mining. They are not explicitly prioritized, and locating the functions depends on disassembly that the supplied evidence does not include."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Rarer n-grams carry high SHAP despite near-zero frequency",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says the feature values should not be treated as raw counts and that their semantics are unconfirmed. Calling them 'frequency' or 'freq' is an unverified interpretation, though a mild one.",
+        "category": "other"
+      },
+      {
+        "quote": "Highest-frequency stack-setup pattern (0.042090).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/top_features/16",
+        "reason": "PUSH CALL has a larger value (0.050545) than MOV PUSH (0.042090), so the superlative is inaccurate even if only call-related patterns are excluded.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "The candidate correctly reports that all 20 top SHAP values are positive for the configured target class 1, with the correct range and rounding. It describes the contributions as flat with no dominant feature, which matches the supplied values. It does not claim that omitted features are benign and notes the lack of mining-specific evidence.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that is not verified upstream.",
+      "Feature value semantics are unconfirmed, and the occurrences, function_context, shap_baseline and full_attributions fields are empty or null.",
+      "Only the top 20 features are given, so omitted features and their effect on the prediction are unknown.",
+      "The artifact gives no label mapping, no n-gram adjacency or control flow, no API calls, no strings and no runtime behavior."
+    ],
+    "summary": "The explanation is accurate, well hedged and faithful to the SHAP evidence, and its follow-up checks are concrete. Minor issues are calling the feature values 'frequency' and describing MOV PUSH as the highest-frequency pattern."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Rarer n-grams carry high SHAP despite near-zero frequency",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says the feature values should not be treated as raw counts and that their semantics are unconfirmed. Calling them 'frequency' or 'freq' is an unverified interpretation, though a mild one.",
+      "category": "other"
+    },
+    {
+      "quote": "Highest-frequency stack-setup pattern (0.042090).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/top_features/16",
+      "reason": "PUSH CALL has a larger value (0.050545) than MOV PUSH (0.042090), so the superlative is inaccurate even if only call-related patterns are excluded.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "b807e8394d93f9744aed9b520328ed531744590614ca74b40c40e4ecb53a1720.exe_analysis.json"
+}

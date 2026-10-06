@@ -1,0 +1,246 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_e91e2bdebfe458ac",
+  "status": "success",
+  "source_sha256": "ddcb9f834d338c455b33e72adc9b24792818be94bec309d2784446c8b8121ccd",
+  "input_sha256": "23e7ea3b403666ff257ff813c791ccd58c5fe48d4aabc5a3ec988d598fb52382",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "71ecfb7bbc015b2b192c05f726468b6f08fcc804c093c718b950e688cc414af5.elf",
+      "source_name": "71ecfb7bbc015b2b192c05f726468b6f08fcc804c093c718b950e688cc414af5.elf.json",
+      "source_path": "ml/dataset/cryptojacking/71ecfb7bbc015b2b192c05f726468b6f08fcc804c093c718b950e688cc414af5.elf.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 49,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "71ecfb7bbc015b2b192c05f726468b6f08fcc804c093c718b950e688cc414af5.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:52:58.219996+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:52:58.220025+00:00",
+      "error": null,
+      "request_sha256": "f32c95036dd05f70e22b4d56a500801de5d5696dc9c9b60bce3c0c6f2f4e5fc1",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm1sTjmtCjbstTFZbgCT",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm fact-checking the claims: the RF probability of 0.635 being \"modestly above threshold\" assumes a 0.5 cutoff since none was stated, which is a minor unsupported assumption. The claim about 19 of 20 top n-grams pushing toward cryptojacking checks out, and the stated effect range of +0.006 to +0.016 is roughly accurate.\n\nFlagging that calling the values \"relative frequency\" assumes feature semantics not actually established, and the interpretation that certain n-grams \"appear only once\" based on a 0.0 value is unsupported. The claim that these SHAP contributions \"reflect model artifacts, not clear behavior\" overreaches into certainty where the evidence was only hedged. The claim that CALL CMP is the highest-value n-gram checks out numerically, though it still rests on the unverified frequency assumption.\n\nSeveral labels like \"POP RET standard function return sequence,\" \"MOV LEAVE standard epilogue indicating compiler-generated code,\" and \"ADD POP common epilogue\" are interpretive assertions without adjacency evidence, since graph-aware n-grams need not be contiguous. I'm also flagging \"CALL XOR and XOR CALL fit the same mixing and obfuscation pattern\" as an unsupported obfuscation claim, and noting that the evidence correctly provides no function names or concrete behavioral proof.\n\nChecking through the remaining SHAP values confirms they're all rounded correctly and consistent with low-frequency generic stack/arithmetic sequences. I'm flagging the \"0.635 only modestly above malware threshold\" statement as assuming an unstated threshold, and noting the recommendation to \"downgrade to benign if no mining indicators are found\" overreaches, since absence of evidence in static/sandbox analysis doesn't confirm benignity — though \"treat as suspicious but unconfirmed\" remains a reasonable fallback.\n\nOn SHAP faithfulness, the direction and magnitude look accurate and \"no single feature dominates\" holds, but the candidate doesn't flag its implicit target-class assumption, which is a minor gap rather than a misrepresentation. I'm leaning toward scoring technical accuracy a 3 or 4, given the numbers check out but there are several interpretive overreaches around frequency semantics and claims like features \"appearing only once.\"\n\nNow I'm cataloguing the specific unsupported claims with their paths and exact quotes: the \"essentially absent or appear only once\" line, the \"reflect model artifacts, not clear behavior\" assertion, the prologue/epilogue/call-sequence generalization, and the \"relatively higher frequency reflects normal compiled code\" claim, each needing a category tag like unsupported_certainty or unsupported_behavior and an index reference into the evidence list (CMOVZ, POP/SUB, ADD/PUSH).\n\nI'm also flagging the \"standard function epilogue\" claim at index 4, the \"same mixing and obfuscation pattern\" line as unsupported_behavior, and the \"only modestly above the decision threshold\" statement since no threshold was actually provided. The \"downgrade to benign\" recommendation I'll treat separately as a suggested action rather than a factual claim, noting it in the justification instead of the claims list. Now I'm assembling all of this into the final single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_e91e2bdebfe458ac\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, class, SHAP signs, magnitudes, 19-of-20 count and ROL/CALL CMP values match the evidence. However, several interpretations overreach: it calls feature values 'relative frequency' and says 'appear only once', treats the zero-valued features as 'model artifacts' with certainty, and asserts prologue/epilogue roles for non-adjacent-capable n-grams. It also assumes a decision threshold that was not supplied.\",\"coherence\":\"The tier, low confidence, weak SHAP and unconfirmed-mining conclusion agree with the recommendation. The explanation, per-feature analysis and key indicators repeat much of the same content, and the 'frequency' wording is applied inconsistently with the stated uncertainty about feature semantics.\",\"cybersecurity_relevance\":\"It links the rotate and XOR n-grams to hash and cipher routines and names benign alternatives (checksum, PRNG, benign crypto). It also states that no API, function or behavioral evidence is present. Its generic idiom discussion adds little and is partly speculative.\",\"actionable_utility\":\"The follow-up is concrete and feasible: inspect ROL functions for round structure, check for algorithm constants and stratum/pool strings, observe CPU use, persistence and network behavior, and use a sandbox. These are conditional checks, not observed behavior. The advice to 'downgrade to benign' if no indicators are found overreaches, since missing evidence is not benign evidence, and the actions are not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"meaning they are essentially absent or appear only once\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values must not be treated as raw counts, so it cannot support 'relative frequency' or 'appear only once'.\",\"category\":\"other\"},{\"quote\":\"Their SHAP contributions therefore reflect model artifacts, not clear behavior.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/0, /evidence/top_features/6, /evidence/top_features/18\",\"reason\":\"This asserts the cause of the SHAP attributions as fact. The evidence only shows zero-valued features with positive SHAP, and neither a cause nor SHAP baseline/context is supplied.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"They reflect ordinary function prologues and epilogues and call sequences found in nearly all compiled code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context, /evidence/occurrences\",\"reason\":\"No function context or occurrences are supplied, and graph-aware n-grams need not be adjacent, so the prologue/epilogue role is not shown for this sample.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Its relatively higher frequency reflects normal compiled code, so its contribution is weak, non-specific evidence.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/top_features/3\",\"reason\":\"A value of 0.000308 and the semantics of that value do not establish that the n-gram reflects normal compiled code.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Standard function epilogue. It indicates compiler-generated code, not malicious intent.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4\",\"reason\":\"A mnemonic pair does not establish compiler origin or absence of malicious intent, and this feature has a positive SHAP toward class 1.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"CALL XOR (+0.006557) and XOR CALL fit the same mixing and obfuscation pattern\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/17, /evidence/top_features/6\",\"reason\":\"Mnemonics alone do not establish mixing or obfuscation, and no context is supplied. The candidate later gives an ordinary register-zeroing reading.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"which is only modestly above the decision threshold\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"No decision threshold is supplied. Only rf_prediction=1 and probability 0.635 are given.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The stated signs, magnitudes (to the displayed precision) and the 19 positive plus 1 negative (CALL CMP) split match the supplied SHAP values. The candidate describes the contributions as small and non-dominant without implying that omitted features are benign. The interpretations of why the features are important go beyond the SHAP data but do not misstate SHAP direction or size.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The decision threshold is not supplied.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics (counts vs. relative frequency) are not established.\",\"There are no occurrences, function context, API calls or strings, and adjacency of the n-grams is unknown.\",\"The SHAP baseline and full attributions are null, and a top-k subset cannot rule out omitted features that point toward benign.\",\"RF probability is not behavioral proof.\"],\"summary\":\"The explanation reports the RF probability and the SHAP direction and magnitude accurately and appropriately concludes that mining is unconfirmed. It overreaches on feature-value semantics, certain 'model artifact' and compiler-idiom claims, and an assumed threshold. Its verification actions are concrete and conditional, though the 'downgrade to benign' advice is too strong.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6989,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4325,
+          "output_tokens_details": {
+            "thinking_tokens": 2260
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6989,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4325,
+        "output_tokens_details": {
+          "thinking_tokens": 2260
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_e91e2bdebfe458ac\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, class, SHAP signs, magnitudes, 19-of-20 count and ROL/CALL CMP values match the evidence. However, several interpretations overreach: it calls feature values 'relative frequency' and says 'appear only once', treats the zero-valued features as 'model artifacts' with certainty, and asserts prologue/epilogue roles for non-adjacent-capable n-grams. It also assumes a decision threshold that was not supplied.\",\"coherence\":\"The tier, low confidence, weak SHAP and unconfirmed-mining conclusion agree with the recommendation. The explanation, per-feature analysis and key indicators repeat much of the same content, and the 'frequency' wording is applied inconsistently with the stated uncertainty about feature semantics.\",\"cybersecurity_relevance\":\"It links the rotate and XOR n-grams to hash and cipher routines and names benign alternatives (checksum, PRNG, benign crypto). It also states that no API, function or behavioral evidence is present. Its generic idiom discussion adds little and is partly speculative.\",\"actionable_utility\":\"The follow-up is concrete and feasible: inspect ROL functions for round structure, check for algorithm constants and stratum/pool strings, observe CPU use, persistence and network behavior, and use a sandbox. These are conditional checks, not observed behavior. The advice to 'downgrade to benign' if no indicators are found overreaches, since missing evidence is not benign evidence, and the actions are not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"meaning they are essentially absent or appear only once\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values must not be treated as raw counts, so it cannot support 'relative frequency' or 'appear only once'.\",\"category\":\"other\"},{\"quote\":\"Their SHAP contributions therefore reflect model artifacts, not clear behavior.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/0, /evidence/top_features/6, /evidence/top_features/18\",\"reason\":\"This asserts the cause of the SHAP attributions as fact. The evidence only shows zero-valued features with positive SHAP, and neither a cause nor SHAP baseline/context is supplied.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"They reflect ordinary function prologues and epilogues and call sequences found in nearly all compiled code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context, /evidence/occurrences\",\"reason\":\"No function context or occurrences are supplied, and graph-aware n-grams need not be adjacent, so the prologue/epilogue role is not shown for this sample.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Its relatively higher frequency reflects normal compiled code, so its contribution is weak, non-specific evidence.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/top_features/3\",\"reason\":\"A value of 0.000308 and the semantics of that value do not establish that the n-gram reflects normal compiled code.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Standard function epilogue. It indicates compiler-generated code, not malicious intent.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4\",\"reason\":\"A mnemonic pair does not establish compiler origin or absence of malicious intent, and this feature has a positive SHAP toward class 1.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"CALL XOR (+0.006557) and XOR CALL fit the same mixing and obfuscation pattern\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/17, /evidence/top_features/6\",\"reason\":\"Mnemonics alone do not establish mixing or obfuscation, and no context is supplied. The candidate later gives an ordinary register-zeroing reading.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"which is only modestly above the decision threshold\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"No decision threshold is supplied. Only rf_prediction=1 and probability 0.635 are given.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The stated signs, magnitudes (to the displayed precision) and the 19 positive plus 1 negative (CALL CMP) split match the supplied SHAP values. The candidate describes the contributions as small and non-dominant without implying that omitted features are benign. The interpretations of why the features are important go beyond the SHAP data but do not misstate SHAP direction or size.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The decision threshold is not supplied.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics (counts vs. relative frequency) are not established.\",\"There are no occurrences, function context, API calls or strings, and adjacency of the n-grams is unknown.\",\"The SHAP baseline and full attributions are null, and a top-k subset cannot rule out omitted features that point toward benign.\",\"RF probability is not behavioral proof.\"],\"summary\":\"The explanation reports the RF probability and the SHAP direction and magnitude accurately and appropriately concludes that mining is unconfirmed. It overreaches on feature-value semantics, certain 'model artifact' and compiler-idiom claims, and an assumed threshold. Its verification actions are concrete and conditional, though the 'downgrade to benign' advice is too strong.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_e91e2bdebfe458ac",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The probability, class, SHAP signs, magnitudes, 19-of-20 count and ROL/CALL CMP values match the evidence. However, several interpretations overreach: it calls feature values 'relative frequency' and says 'appear only once', treats the zero-valued features as 'model artifacts' with certainty, and asserts prologue/epilogue roles for non-adjacent-capable n-grams. It also assumes a decision threshold that was not supplied.",
+      "coherence": "The tier, low confidence, weak SHAP and unconfirmed-mining conclusion agree with the recommendation. The explanation, per-feature analysis and key indicators repeat much of the same content, and the 'frequency' wording is applied inconsistently with the stated uncertainty about feature semantics.",
+      "cybersecurity_relevance": "It links the rotate and XOR n-grams to hash and cipher routines and names benign alternatives (checksum, PRNG, benign crypto). It also states that no API, function or behavioral evidence is present. Its generic idiom discussion adds little and is partly speculative.",
+      "actionable_utility": "The follow-up is concrete and feasible: inspect ROL functions for round structure, check for algorithm constants and stratum/pool strings, observe CPU use, persistence and network behavior, and use a sandbox. These are conditional checks, not observed behavior. The advice to 'downgrade to benign' if no indicators are found overreaches, since missing evidence is not benign evidence, and the actions are not explicitly prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "meaning they are essentially absent or appear only once",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature values must not be treated as raw counts, so it cannot support 'relative frequency' or 'appear only once'.",
+        "category": "other"
+      },
+      {
+        "quote": "Their SHAP contributions therefore reflect model artifacts, not clear behavior.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/0, /evidence/top_features/6, /evidence/top_features/18",
+        "reason": "This asserts the cause of the SHAP attributions as fact. The evidence only shows zero-valued features with positive SHAP, and neither a cause nor SHAP baseline/context is supplied.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "They reflect ordinary function prologues and epilogues and call sequences found in nearly all compiled code.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/function_context, /evidence/occurrences",
+        "reason": "No function context or occurrences are supplied, and graph-aware n-grams need not be adjacent, so the prologue/epilogue role is not shown for this sample.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Its relatively higher frequency reflects normal compiled code, so its contribution is weak, non-specific evidence.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+        "evidence_reference": "/evidence/top_features/3",
+        "reason": "A value of 0.000308 and the semantics of that value do not establish that the n-gram reflects normal compiled code.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Standard function epilogue. It indicates compiler-generated code, not malicious intent.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/top_features/4",
+        "reason": "A mnemonic pair does not establish compiler origin or absence of malicious intent, and this feature has a positive SHAP toward class 1.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "CALL XOR (+0.006557) and XOR CALL fit the same mixing and obfuscation pattern",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/17, /evidence/top_features/6",
+        "reason": "Mnemonics alone do not establish mixing or obfuscation, and no context is supplied. The candidate later gives an ordinary register-zeroing reading.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "which is only modestly above the decision threshold",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/rf_probability_class_1",
+        "reason": "No decision threshold is supplied. Only rf_prediction=1 and probability 0.635 are given.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "The stated signs, magnitudes (to the displayed precision) and the 19 positive plus 1 negative (CALL CMP) split match the supplied SHAP values. The candidate describes the contributions as small and non-dominant without implying that omitted features are benign. The interpretations of why the features are important go beyond the SHAP data but do not misstate SHAP direction or size.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The decision threshold is not supplied.",
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "Feature value semantics (counts vs. relative frequency) are not established.",
+      "There are no occurrences, function context, API calls or strings, and adjacency of the n-grams is unknown.",
+      "The SHAP baseline and full attributions are null, and a top-k subset cannot rule out omitted features that point toward benign.",
+      "RF probability is not behavioral proof."
+    ],
+    "summary": "The explanation reports the RF probability and the SHAP direction and magnitude accurately and appropriately concludes that mining is unconfirmed. It overreaches on feature-value semantics, certain 'model artifact' and compiler-idiom claims, and an assumed threshold. Its verification actions are concrete and conditional, though the 'downgrade to benign' advice is too strong."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "meaning they are essentially absent or appear only once",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature values must not be treated as raw counts, so it cannot support 'relative frequency' or 'appear only once'.",
+      "category": "other"
+    },
+    {
+      "quote": "Their SHAP contributions therefore reflect model artifacts, not clear behavior.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/0, /evidence/top_features/6, /evidence/top_features/18",
+      "reason": "This asserts the cause of the SHAP attributions as fact. The evidence only shows zero-valued features with positive SHAP, and neither a cause nor SHAP baseline/context is supplied.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "They reflect ordinary function prologues and epilogues and call sequences found in nearly all compiled code.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/function_context, /evidence/occurrences",
+      "reason": "No function context or occurrences are supplied, and graph-aware n-grams need not be adjacent, so the prologue/epilogue role is not shown for this sample.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Its relatively higher frequency reflects normal compiled code, so its contribution is weak, non-specific evidence.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "evidence_reference": "/evidence/top_features/3",
+      "reason": "A value of 0.000308 and the semantics of that value do not establish that the n-gram reflects normal compiled code.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Standard function epilogue. It indicates compiler-generated code, not malicious intent.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/top_features/4",
+      "reason": "A mnemonic pair does not establish compiler origin or absence of malicious intent, and this feature has a positive SHAP toward class 1.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "CALL XOR (+0.006557) and XOR CALL fit the same mixing and obfuscation pattern",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/17, /evidence/top_features/6",
+      "reason": "Mnemonics alone do not establish mixing or obfuscation, and no context is supplied. The candidate later gives an ordinary register-zeroing reading.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "which is only modestly above the decision threshold",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/rf_probability_class_1",
+      "reason": "No decision threshold is supplied. Only rf_prediction=1 and probability 0.635 are given.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "71ecfb7bbc015b2b192c05f726468b6f08fcc804c093c718b950e688cc414af5.elf_analysis.json"
+}

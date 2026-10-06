@@ -1,0 +1,202 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_04626a1c28eafd11",
+  "status": "success",
+  "source_sha256": "e13f80cb77811e68d5a38eb5931a340106b0f4a8788a5671f0834d0b5ffa3854",
+  "input_sha256": "626af8a25bcd913246307b53952eede8c1e2d08eebaae9a68e7c9aadde6166c6",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "7f28b2791ad94a202eea5e4c91d47cdeadca4723723427af574519f8aedbf15e.elf",
+      "source_name": "7f28b2791ad94a202eea5e4c91d47cdeadca4723723427af574519f8aedbf15e.elf.json",
+      "source_path": "ml/dataset/cryptojacking/7f28b2791ad94a202eea5e4c91d47cdeadca4723723427af574519f8aedbf15e.elf.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 67,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "7f28b2791ad94a202eea5e4c91d47cdeadca4723723427af574519f8aedbf15e.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:57:48.660774+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:57:48.660802+00:00",
+      "error": null,
+      "request_sha256": "10513e89fc87ef589c58a98042575c1840f7f189c6825ac72047f94b72e162f8",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm2EsUN5s66xQjzaT1fp",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm verifying the SHAP values and frequency counts against the reported n-grams, confirming the probability score and checking that the most common n-gram and its SHAP contribution line up correctly, while noting all top 20 n-grams show positive SHAP values.\n\nLooking at the wording choices, \"unanimous\" might be overreaching if it implies every tree agreed rather than just the top features aligning. The SHRD and rotate-heavy instructions (MOV ROL) are reasonably described as hints toward multi-word arithmetic or cryptographic algorithms like Keccak/BLAKE, though these are hedged examples rather than firm conclusions. The recommendation to treat this as likely cryptojacking malware, paired with an escalation caveat, seems like a reasonable tiered response given the confidence score, though it leans slightly assertive given the available evidence.\n\nI'm also checking individual instruction explanations: the MOV RET and PUSH RET interpretations are appropriately hedged, floating-point instructions like MOVDQA and CVTTSD2SI are described accurately, and the LEA/JC carry-conditional jump explanation correctly notes the flag dependency is indirect through prior instructions rather than LEA itself.\n\nMore importantly, I'm flagging that the candidate repeatedly assumes adjacency between instructions (\"followed by,\" \"aligned loads followed by bitwise AND,\" \"rotate followed by addition\") without justification, since graph-aware n-grams don't require adjacency. The candidate also treats n-gram values as \"frequency\" despite feature_value_semantics being unestablished, and the ARX classification for ROL/ADD is incomplete since true ARX requires XOR too — though this is appropriately hedged as \"moderately supports.\"\n\nFor SHAP faithfulness, the signs, magnitudes, and rounding all check out correctly, but the explanation fails to flag the target-class assumption, which I should note as a limitation. Scoring-wise: technical accuracy around 4 given the adjacency and frequency issues, coherence around 4 due to some repetition between explanation and evidence sections, cyber relevance around 4 since benign alternatives (crypto libraries, codecs, SIMD/multimedia code) aren't explicitly named even though general alternatives are considered, and actionable utility looks solid with concrete next steps like disassembly, PoW checks, string analysis, network monitoring, sandboxing, and quarantine recommendations.\n\nI'm compiling the list of unsupported claims to flag, including the vague \"many small functions\" rationale, the adjacency claim about aligned loads and bitwise AND, the floating-point-to-index interpretation, the overclaimed \"unanimous\" certainty, and the raw frequency figure — mapping each to its evidence_analysis index and category. I've also matched all twenty evidence_analysis entries to their instruction pairs for indexing purposes, and now I'm formatting the final JSON output on a single line with proper evidence references.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_04626a1c28eafd11\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 1.0, all-positive SHAP, the +0.0062 to +0.0143 range, n-gram names and frequencies match the evidence, and most crypto interpretations are hedged. Minor overreach: it assumes adjacency ('followed by'), calls feature values 'frequency' although their semantics are unconfirmed, and refers to 'this malware family'.\",\"coherence\":\"Summary, per-feature assessments, tier, indicators and action agree, and generic features are separated from the SIMD and rotate/shift cluster. Some repetition between the explanation and evidence_analysis, and a 'high-confidence' tier alongside an explicit lack of proof, are minor issues.\",\"cybersecurity_relevance\":\"Ties the specific n-grams to hashing and proof-of-work hypotheses. It states that the patterns are not unique to cryptojacking, that API calls, strings and function names are absent, and that many features are generic. Benign alternatives (codecs, general crypto libraries) are only implied through 'common in general code'.\",\"actionable_utility\":\"Concrete, proportionate steps: disassemble the SIMD and rotate/shift functions, check for a known PoW hash, inspect strings, network and persistence, sandbox for sustained CPU use, and quarantine. It correctly notes that these indicators are not in the evidence. 'Treat as likely cryptojacking malware' is somewhat stronger than the evidence supports, and the steps are not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"likely reflecting many small functions or the code structure the model associates with this malware family\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0; /evidence/function_context\",\"reason\":\"No function context or family information is supplied; a malware family association and 'many small functions' are not supported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"aligned 128-bit loads followed by bitwise AND indicate SIMD-based data masking\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/occurrences\",\"reason\":\"Adjacency or sequence is assumed without extraction evidence (graph-aware n-grams need not be adjacent), and 'data masking' is inferred from mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Indicates floating-point-to-index handling\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/top_features/19\",\"reason\":\"The use of the converted value as an index is inferred from mnemonics and assumed adjacency with no context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"the model's unanimous, high-confidence signal\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"Only a probability of 1.0 is given; per-tree agreement is not shown, and RF probability is not calibrated confidence or behavioral proof.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Reported SHAP signs, ordering and magnitudes (e.g., +0.014282, +0.012515, +0.0062 to +0.0143) match the top_features. The explanation says only that top-k features do not argue for benign and does not claim that omitted features are benign. It does not mention the configured-assumption caveat on the SHAP target class.\",\"discrepancies\":[]},\"evidence_limitations\":[\"SHAP target class is a configured assumption pending upstream verification.\",\"Feature value semantics are unconfirmed, so 'frequency' and 'heavy byte-level handling' are uncertain.\",\"No occurrences, function context, API calls or strings are available, so adjacency, control flow and behavior cannot be verified.\",\"Only the top 20 features are shown, with no baseline or full attributions, so omitted features cannot be assessed.\"],\"summary\":\"Faithful and mostly accurate: SHAP signs and magnitudes are correct and crypto interpretations are mostly hedged. It loses points for assumed adjacency, 'malware family' and 'unanimous' wording, and mild semantic overreach. The recommended follow-up is concrete and proportionate.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7269,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3726,
+          "output_tokens_details": {
+            "thinking_tokens": 2180
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7269,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3726,
+        "output_tokens_details": {
+          "thinking_tokens": 2180
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_04626a1c28eafd11\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 1.0, all-positive SHAP, the +0.0062 to +0.0143 range, n-gram names and frequencies match the evidence, and most crypto interpretations are hedged. Minor overreach: it assumes adjacency ('followed by'), calls feature values 'frequency' although their semantics are unconfirmed, and refers to 'this malware family'.\",\"coherence\":\"Summary, per-feature assessments, tier, indicators and action agree, and generic features are separated from the SIMD and rotate/shift cluster. Some repetition between the explanation and evidence_analysis, and a 'high-confidence' tier alongside an explicit lack of proof, are minor issues.\",\"cybersecurity_relevance\":\"Ties the specific n-grams to hashing and proof-of-work hypotheses. It states that the patterns are not unique to cryptojacking, that API calls, strings and function names are absent, and that many features are generic. Benign alternatives (codecs, general crypto libraries) are only implied through 'common in general code'.\",\"actionable_utility\":\"Concrete, proportionate steps: disassemble the SIMD and rotate/shift functions, check for a known PoW hash, inspect strings, network and persistence, sandbox for sustained CPU use, and quarantine. It correctly notes that these indicators are not in the evidence. 'Treat as likely cryptojacking malware' is somewhat stronger than the evidence supports, and the steps are not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"likely reflecting many small functions or the code structure the model associates with this malware family\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0; /evidence/function_context\",\"reason\":\"No function context or family information is supplied; a malware family association and 'many small functions' are not supported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"aligned 128-bit loads followed by bitwise AND indicate SIMD-based data masking\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/occurrences\",\"reason\":\"Adjacency or sequence is assumed without extraction evidence (graph-aware n-grams need not be adjacent), and 'data masking' is inferred from mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Indicates floating-point-to-index handling\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/top_features/19\",\"reason\":\"The use of the converted value as an index is inferred from mnemonics and assumed adjacency with no context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"the model's unanimous, high-confidence signal\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"Only a probability of 1.0 is given; per-tree agreement is not shown, and RF probability is not calibrated confidence or behavioral proof.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Reported SHAP signs, ordering and magnitudes (e.g., +0.014282, +0.012515, +0.0062 to +0.0143) match the top_features. The explanation says only that top-k features do not argue for benign and does not claim that omitted features are benign. It does not mention the configured-assumption caveat on the SHAP target class.\",\"discrepancies\":[]},\"evidence_limitations\":[\"SHAP target class is a configured assumption pending upstream verification.\",\"Feature value semantics are unconfirmed, so 'frequency' and 'heavy byte-level handling' are uncertain.\",\"No occurrences, function context, API calls or strings are available, so adjacency, control flow and behavior cannot be verified.\",\"Only the top 20 features are shown, with no baseline or full attributions, so omitted features cannot be assessed.\"],\"summary\":\"Faithful and mostly accurate: SHAP signs and magnitudes are correct and crypto interpretations are mostly hedged. It loses points for assumed adjacency, 'malware family' and 'unanimous' wording, and mild semantic overreach. The recommended follow-up is concrete and proportionate.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_04626a1c28eafd11",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability 1.0, all-positive SHAP, the +0.0062 to +0.0143 range, n-gram names and frequencies match the evidence, and most crypto interpretations are hedged. Minor overreach: it assumes adjacency ('followed by'), calls feature values 'frequency' although their semantics are unconfirmed, and refers to 'this malware family'.",
+      "coherence": "Summary, per-feature assessments, tier, indicators and action agree, and generic features are separated from the SIMD and rotate/shift cluster. Some repetition between the explanation and evidence_analysis, and a 'high-confidence' tier alongside an explicit lack of proof, are minor issues.",
+      "cybersecurity_relevance": "Ties the specific n-grams to hashing and proof-of-work hypotheses. It states that the patterns are not unique to cryptojacking, that API calls, strings and function names are absent, and that many features are generic. Benign alternatives (codecs, general crypto libraries) are only implied through 'common in general code'.",
+      "actionable_utility": "Concrete, proportionate steps: disassemble the SIMD and rotate/shift functions, check for a known PoW hash, inspect strings, network and persistence, sandbox for sustained CPU use, and quarantine. It correctly notes that these indicators are not in the evidence. 'Treat as likely cryptojacking malware' is somewhat stronger than the evidence supports, and the steps are not explicitly prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "likely reflecting many small functions or the code structure the model associates with this malware family",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/top_features/0; /evidence/function_context",
+        "reason": "No function context or family information is supplied; a malware family association and 'many small functions' are not supported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "aligned 128-bit loads followed by bitwise AND indicate SIMD-based data masking",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/top_features/1; /evidence/occurrences",
+        "reason": "Adjacency or sequence is assumed without extraction evidence (graph-aware n-grams need not be adjacent), and 'data masking' is inferred from mnemonics alone.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Indicates floating-point-to-index handling",
+        "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+        "evidence_reference": "/evidence/top_features/19",
+        "reason": "The use of the converted value as an index is inferred from mnemonics and assumed adjacency with no context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "the model's unanimous, high-confidence signal",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/rf_probability_class_1",
+        "reason": "Only a probability of 1.0 is given; per-tree agreement is not shown, and RF probability is not calibrated confidence or behavioral proof.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "Reported SHAP signs, ordering and magnitudes (e.g., +0.014282, +0.012515, +0.0062 to +0.0143) match the top_features. The explanation says only that top-k features do not argue for benign and does not claim that omitted features are benign. It does not mention the configured-assumption caveat on the SHAP target class.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "SHAP target class is a configured assumption pending upstream verification.",
+      "Feature value semantics are unconfirmed, so 'frequency' and 'heavy byte-level handling' are uncertain.",
+      "No occurrences, function context, API calls or strings are available, so adjacency, control flow and behavior cannot be verified.",
+      "Only the top 20 features are shown, with no baseline or full attributions, so omitted features cannot be assessed."
+    ],
+    "summary": "Faithful and mostly accurate: SHAP signs and magnitudes are correct and crypto interpretations are mostly hedged. It loses points for assumed adjacency, 'malware family' and 'unanimous' wording, and mild semantic overreach. The recommended follow-up is concrete and proportionate."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "likely reflecting many small functions or the code structure the model associates with this malware family",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/top_features/0; /evidence/function_context",
+      "reason": "No function context or family information is supplied; a malware family association and 'many small functions' are not supported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "aligned 128-bit loads followed by bitwise AND indicate SIMD-based data masking",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/top_features/1; /evidence/occurrences",
+      "reason": "Adjacency or sequence is assumed without extraction evidence (graph-aware n-grams need not be adjacent), and 'data masking' is inferred from mnemonics alone.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Indicates floating-point-to-index handling",
+      "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+      "evidence_reference": "/evidence/top_features/19",
+      "reason": "The use of the converted value as an index is inferred from mnemonics and assumed adjacency with no context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "the model's unanimous, high-confidence signal",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/rf_probability_class_1",
+      "reason": "Only a probability of 1.0 is given; per-tree agreement is not shown, and RF probability is not calibrated confidence or behavioral proof.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "7f28b2791ad94a202eea5e4c91d47cdeadca4723723427af574519f8aedbf15e.elf_analysis.json"
+}

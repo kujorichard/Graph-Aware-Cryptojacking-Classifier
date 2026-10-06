@@ -1,0 +1,202 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_e4b756000724ce87",
+  "status": "success",
+  "source_sha256": "b0b475a74ece7f52b28f7ae7310067e2e7875a4bcec51cd01704bb64394ffdf1",
+  "input_sha256": "7fce5d01663dc3141b7a6fc822ab61b0ffe709fdc99061de46397f48551d38c9",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "1533a6bcd1ebe0455d6e00ced421dd5dc0caa01c21c30acbffbb932929cc4ac7.elf",
+      "source_name": "1533a6bcd1ebe0455d6e00ced421dd5dc0caa01c21c30acbffbb932929cc4ac7.elf.json",
+      "source_path": "ml/dataset/cryptojacking/1533a6bcd1ebe0455d6e00ced421dd5dc0caa01c21c30acbffbb932929cc4ac7.elf.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 69,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "1533a6bcd1ebe0455d6e00ced421dd5dc0caa01c21c30acbffbb932929cc4ac7.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:09:25.781093+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:09:25.781153+00:00",
+      "error": null,
+      "request_sha256": "12cb2f81257d47fce32db41a059a0afc9f031b147c5660c6c643ba2880adf963",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkxYtTRuUKtBT8ZxVR2n",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the prediction confidence of 0.615 for malware classification and verifying that all 20 top n-gram features have positive SHAP values pushing toward cryptojacking, ranging roughly from 0.005 to 0.0093.\n\nLooking closer, I notice several interpretive leaps in the candidate response: it assumes class 1 corresponds to cryptojacking without that being established, and it claims these stack/call-convention patterns (CALL PUSH, LEA PUSH, MOV PUSH, etc.) are typical of 32-bit cdecl code common in benign binaries—but the architecture isn't actually confirmed by the evidence, so this is speculative. I'm also flagging that the claim about positive SHAP values reflecting training artifacts is unsupported, and that the semantic meaning of the feature values (whether they're raw counts or normalized frequencies) isn't established, so treating them as \"frequencies\" throughout is an assumption that should be called out.\n\nThe low-frequency n-gram values check out numerically against the evidence, but several interpretive claims still overreach: calling MOV PUSH \"the most frequent n-gram\" is only true within the top-20 subset shown, not globally; assertions about \"64-bit arithmetic on a 32-bit target\" infer unconfirmed architecture details; and specific semantic framings like POP CALL being \"a thunk or PIC-style call\" or SUB PUSH being \"a generic function prologue\" are hypothetical readings presented with more confidence than warranted, especially since adjacency in these n-grams isn't guaranteed to mean direct instruction sequencing.\n\nI'm also flagging that the claim about positive SHAP values reflecting \"how the model was trained\" rather than mining-specific logic is a shaky interpretation—SHAP values show how the model uses a feature, not training dynamics directly, so this framing conflates two different explanatory layers.\n\nI notice the candidate downplays some n-grams as \"weak indicators\" based on low frequency, but a few of these (like CDQ MOV and SUB SBB) actually rank among the 2nd and 3rd highest SHAP contributions in the top 20, so that characterization undersells their relative magnitude even though overall values remain small and the directional claim about cryptojacking/malware isn't contradicted.\n\nI'm also flagging several unsupported claims to log: assertions about \"32-bit cdecl compiled code\" and \"64-bit integer handling on a 32-bit target\" are architecture/calling-convention speculation with no backing evidence, and the frequency statistics cited (0.000013 to 0.000353) imply a semantic interpretation of feature values that isn't established either — these should go under unsupported_behavior or other at the relevant explanation/evidence_analysis paths.\n\nFor technical accuracy, I'm weighing between a 3 and 4 — numbers are correct and conclusions are mostly hedged, but the repeated 32-bit assumption and the pervasive frequency interpretation push toward \"some substantive overreach\" rather than purely minor imprecision. I'll lean toward 4 since the core claims stay appropriately qualified.\n\nOn coherence, the write-up is clear with only slight redundancy across the explanation, evidence analysis, and key indicators sections, and the \"low-confidence\" tier matches the stated 0.4 confidence — I'll give that a 4.\n\nRelevance scores well too, tying things back to cryptojacking, hashing behavior, and benign alternatives, so another 4. For actionability, the recommendations (sandboxing, checking stratum traffic, static inspection, searching strings for wallet/pool references) are sound but appropriately conditional given the lack of function-level context, so that also lands around a 4.\n\nNow I just need to note the evidence limitations and put together the final JSON on a single line.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_e4b756000724ce87\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP range, the quoted n-gram values and the 'lowest of the top 20' claim all match the evidence. But the 32-bit/cdecl/target-architecture inferences and the repeated 'frequency' reading of the values go beyond an artifact that disclaims value semantics.\",\"coherence\":\"Tier, 0.4 confidence, the inconclusive summary and the recommended action agree with each other. The explanation, per-feature table and key indicators repeat each other somewhat, and several assessments assume adjacency ('followed by').\",\"cybersecurity_relevance\":\"Ties the n-grams to hashing and bignum hypotheses and to benign alternatives such as runtime and library math. States the lack of function, API and location evidence and avoids concluding that mining is present.\",\"actionable_utility\":\"Sandbox CPU and Stratum/pool traffic checks, inspection of the functions holding the arithmetic n-grams, and a search for wallet and pool strings are concrete, conditional and proportionate. They are not prioritized, and the function-level step depends on context not supplied.\"},\"unsupported_claims\":[{\"quote\":\"These are typical of 32-bit cdecl compiled code and are common in benign binaries\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence (no architecture, calling convention or binary metadata supplied)\",\"reason\":\"The evidence gives no basis for 32-bit, cdecl or the benign prevalence of these n-grams in this sample.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"typical of 64-bit integer handling on a 32-bit target\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/function_context\",\"reason\":\"The target architecture and the actual use of CDQ MOV are not established by the artifact; a 32-bit target is asserted rather than hedged.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"These n-grams have very low frequencies (0.000013 to 0.000353), so they are weak indicators.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says value semantics are not established and the values should not be treated as raw counts. 'Frequency' is presented as fact and used to downweight the n-grams. Several of these n-grams (CDQ MOV, SUB SBB) have among the largest SHAP values in the top 20.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Most frequent n-gram (0.0559), basic argument setup.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/scope_notes; /evidence/full_attributions\",\"reason\":\"Only the top-20 SHAP subset is available, so 'most frequent' overall cannot be verified. The 'basic argument setup' reading is also asserted without context.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Direction (all positive for the configured class 1), the +0.0050 to +0.0093 range, the 'no dominant feature' remark within the top-k, and the cited SHAP values match the evidence. The speculation that positive SHAP values reflect 'how the model was trained', and the frequency-based downweighting of rare n-grams, are interpretive rather than misstatements of SHAP sign or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Occurrences, function context, the SHAP baseline and full attributions are absent, so omitted features are unknown.\",\"Feature value semantics are not established, so the values may not be frequencies or counts.\",\"The RF probability of 0.615 is not behavioral proof, and the n-gram adjacency and control flow are unknown.\"],\"summary\":\"Accurate on the reported numbers and appropriately cautious about the evidence gaps, with a sensible, feasible follow-up plan. Technical accuracy is reduced by unsupported architecture assumptions and by treating the feature values as frequencies despite the artifact's explicit caveat. SHAP representation is faithful.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7065,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4326,
+          "output_tokens_details": {
+            "thinking_tokens": 2818
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7065,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4326,
+        "output_tokens_details": {
+          "thinking_tokens": 2818
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_e4b756000724ce87\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP range, the quoted n-gram values and the 'lowest of the top 20' claim all match the evidence. But the 32-bit/cdecl/target-architecture inferences and the repeated 'frequency' reading of the values go beyond an artifact that disclaims value semantics.\",\"coherence\":\"Tier, 0.4 confidence, the inconclusive summary and the recommended action agree with each other. The explanation, per-feature table and key indicators repeat each other somewhat, and several assessments assume adjacency ('followed by').\",\"cybersecurity_relevance\":\"Ties the n-grams to hashing and bignum hypotheses and to benign alternatives such as runtime and library math. States the lack of function, API and location evidence and avoids concluding that mining is present.\",\"actionable_utility\":\"Sandbox CPU and Stratum/pool traffic checks, inspection of the functions holding the arithmetic n-grams, and a search for wallet and pool strings are concrete, conditional and proportionate. They are not prioritized, and the function-level step depends on context not supplied.\"},\"unsupported_claims\":[{\"quote\":\"These are typical of 32-bit cdecl compiled code and are common in benign binaries\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence (no architecture, calling convention or binary metadata supplied)\",\"reason\":\"The evidence gives no basis for 32-bit, cdecl or the benign prevalence of these n-grams in this sample.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"typical of 64-bit integer handling on a 32-bit target\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/function_context\",\"reason\":\"The target architecture and the actual use of CDQ MOV are not established by the artifact; a 32-bit target is asserted rather than hedged.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"These n-grams have very low frequencies (0.000013 to 0.000353), so they are weak indicators.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says value semantics are not established and the values should not be treated as raw counts. 'Frequency' is presented as fact and used to downweight the n-grams. Several of these n-grams (CDQ MOV, SUB SBB) have among the largest SHAP values in the top 20.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Most frequent n-gram (0.0559), basic argument setup.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/scope_notes; /evidence/full_attributions\",\"reason\":\"Only the top-20 SHAP subset is available, so 'most frequent' overall cannot be verified. The 'basic argument setup' reading is also asserted without context.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Direction (all positive for the configured class 1), the +0.0050 to +0.0093 range, the 'no dominant feature' remark within the top-k, and the cited SHAP values match the evidence. The speculation that positive SHAP values reflect 'how the model was trained', and the frequency-based downweighting of rare n-grams, are interpretive rather than misstatements of SHAP sign or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Occurrences, function context, the SHAP baseline and full attributions are absent, so omitted features are unknown.\",\"Feature value semantics are not established, so the values may not be frequencies or counts.\",\"The RF probability of 0.615 is not behavioral proof, and the n-gram adjacency and control flow are unknown.\"],\"summary\":\"Accurate on the reported numbers and appropriately cautious about the evidence gaps, with a sensible, feasible follow-up plan. Technical accuracy is reduced by unsupported architecture assumptions and by treating the feature values as frequencies despite the artifact's explicit caveat. SHAP representation is faithful.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_e4b756000724ce87",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability, SHAP range, the quoted n-gram values and the 'lowest of the top 20' claim all match the evidence. But the 32-bit/cdecl/target-architecture inferences and the repeated 'frequency' reading of the values go beyond an artifact that disclaims value semantics.",
+      "coherence": "Tier, 0.4 confidence, the inconclusive summary and the recommended action agree with each other. The explanation, per-feature table and key indicators repeat each other somewhat, and several assessments assume adjacency ('followed by').",
+      "cybersecurity_relevance": "Ties the n-grams to hashing and bignum hypotheses and to benign alternatives such as runtime and library math. States the lack of function, API and location evidence and avoids concluding that mining is present.",
+      "actionable_utility": "Sandbox CPU and Stratum/pool traffic checks, inspection of the functions holding the arithmetic n-grams, and a search for wallet and pool strings are concrete, conditional and proportionate. They are not prioritized, and the function-level step depends on context not supplied."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "These are typical of 32-bit cdecl compiled code and are common in benign binaries",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence (no architecture, calling convention or binary metadata supplied)",
+        "reason": "The evidence gives no basis for 32-bit, cdecl or the benign prevalence of these n-grams in this sample.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "typical of 64-bit integer handling on a 32-bit target",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/top_features/1; /evidence/function_context",
+        "reason": "The target architecture and the actual use of CDQ MOV are not established by the artifact; a 32-bit target is asserted rather than hedged.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "These n-grams have very low frequencies (0.000013 to 0.000353), so they are weak indicators.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says value semantics are not established and the values should not be treated as raw counts. 'Frequency' is presented as fact and used to downweight the n-grams. Several of these n-grams (CDQ MOV, SUB SBB) have among the largest SHAP values in the top 20.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Most frequent n-gram (0.0559), basic argument setup.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+        "evidence_reference": "/evidence/scope_notes; /evidence/full_attributions",
+        "reason": "Only the top-20 SHAP subset is available, so 'most frequent' overall cannot be verified. The 'basic argument setup' reading is also asserted without context.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "Direction (all positive for the configured class 1), the +0.0050 to +0.0093 range, the 'no dominant feature' remark within the top-k, and the cited SHAP values match the evidence. The speculation that positive SHAP values reflect 'how the model was trained', and the frequency-based downweighting of rare n-grams, are interpretive rather than misstatements of SHAP sign or magnitude.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "Occurrences, function context, the SHAP baseline and full attributions are absent, so omitted features are unknown.",
+      "Feature value semantics are not established, so the values may not be frequencies or counts.",
+      "The RF probability of 0.615 is not behavioral proof, and the n-gram adjacency and control flow are unknown."
+    ],
+    "summary": "Accurate on the reported numbers and appropriately cautious about the evidence gaps, with a sensible, feasible follow-up plan. Technical accuracy is reduced by unsupported architecture assumptions and by treating the feature values as frequencies despite the artifact's explicit caveat. SHAP representation is faithful."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "These are typical of 32-bit cdecl compiled code and are common in benign binaries",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence (no architecture, calling convention or binary metadata supplied)",
+      "reason": "The evidence gives no basis for 32-bit, cdecl or the benign prevalence of these n-grams in this sample.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "typical of 64-bit integer handling on a 32-bit target",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/top_features/1; /evidence/function_context",
+      "reason": "The target architecture and the actual use of CDQ MOV are not established by the artifact; a 32-bit target is asserted rather than hedged.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "These n-grams have very low frequencies (0.000013 to 0.000353), so they are weak indicators.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says value semantics are not established and the values should not be treated as raw counts. 'Frequency' is presented as fact and used to downweight the n-grams. Several of these n-grams (CDQ MOV, SUB SBB) have among the largest SHAP values in the top 20.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Most frequent n-gram (0.0559), basic argument setup.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+      "evidence_reference": "/evidence/scope_notes; /evidence/full_attributions",
+      "reason": "Only the top-20 SHAP subset is available, so 'most frequent' overall cannot be verified. The 'basic argument setup' reading is also asserted without context.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "1533a6bcd1ebe0455d6e00ced421dd5dc0caa01c21c30acbffbb932929cc4ac7.elf_analysis.json"
+}

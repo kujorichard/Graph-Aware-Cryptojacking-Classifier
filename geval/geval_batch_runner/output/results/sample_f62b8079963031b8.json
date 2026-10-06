@@ -1,0 +1,202 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_f62b8079963031b8",
+  "status": "success",
+  "source_sha256": "1d4918814c73262149d2917f5ad838eea9f5dcaccfe31599734020793a2930f9",
+  "input_sha256": "efd8f3eed72fed17dafdf510307527067b87358b1494453c3c3d4773bfa1832f",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "e0a28938bba298c91330a85dd51ed121c1d830f0a8f06304669e0af9ae6cd1c2.elf",
+      "source_name": "e0a28938bba298c91330a85dd51ed121c1d830f0a8f06304669e0af9ae6cd1c2.elf.json",
+      "source_path": "ml/dataset/cryptojacking/e0a28938bba298c91330a85dd51ed121c1d830f0a8f06304669e0af9ae6cd1c2.elf.json",
+      "split": "test",
+      "batch_number": 2,
+      "row_index_in_batch": 31,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "e0a28938bba298c91330a85dd51ed121c1d830f0a8f06304669e0af9ae6cd1c2.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:41:35.618507+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:41:35.618534+00:00",
+      "error": null,
+      "request_sha256": "cc70dab42ff3b89bf92064d4a6794737d385b3021d394266803bff43adb15f53",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm5aWnpEHBA8x3nrzTQM",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm verifying the n-gram count claim, confirming 19 of 20 push toward cryptojacking with only one exception, though I should double-check the assumption that class 1 corresponds to malware/cryptojacking in the SHAP analysis before trusting that framing.\n\nActually counting the zero-frequency n-grams, I only find six (ADD POP, MOV CMP, CMOVZ MOV, MOV LEA, XOR CALL, MOV JZ), not seven as claimed—this looks like a numerical error. I'm also flagging that calling these \"frequency\" values and interpreting zero as \"absence of a benign pattern\" is an interpretive leap, since the feature semantics weren't established as raw counts. The remaining SHAP values for MOV ADC, ADD ADC, and SUB ADC check out against the reported numbers though.\n\nThe other feature descriptions mostly hold up numerically—POP PUSH at 0.0712, SUB PUSH at 0.0068—but several interpretive claims overreach: saying CALL RET implies the call is \"immediately followed\" by return assumes adjacency that graph-aware n-grams don't guarantee, and framing 0.0712 as \"heavy register save/restore activity\" or typical \"prologue/epilogue\" code goes beyond what the frequency alone supports, even with hedging.\n\nThe 0.84 malware probability aligns with RF class 1 output, and the SHAP explanation seems largely faithful in direction and magnitude—small negative offsets against a larger positive sum—except for the \"seven positive SHAP values\" count, which appears to be a factual misstatement rather than a direction error, so I'm leaning toward marking faithfulness as true overall despite that discrepancy.\n\nSince the direction and magnitude of SHAP values are faithfully represented, I'll lean toward marking it faithful true overall, treating the count mismatch as a minor technical inaccuracy rather than a major discrepancy—so I'll keep the discrepancies list empty but dock the technical accuracy score to around 3 for the count error and frequency semantics issue.\n\nCoherence I'd put around 4 given the seven-vs-six inconsistency amid otherwise clear writing. Relevance also around 4, since it offers good alternatives like big-integer handling but misses flagging the target-class assumption. Actionability sits around 4-5, with concrete sandboxing and string-search suggestions, though locating the ADC sequences requires extraction since occurrences are empty. For unsupported claims, I'm flagging the \"frequency of 0.000000\" statement as a numerical/categorical error, and separately noting the claim that a call immediately followed by a return suggests a wrapper or thunk function.\n\nI'm also marking the claim that positive SHAP values reflect \"absence of a pattern associated with benign code\" as unsupported since feature semantics aren't established, and similarly flagging the \"heavy register save/restore activity\" statement in the evidence analysis as lacking support. I've now indexed the opcode pairs cleanly: SUB-PUSH, POP-SUB, CALL-RET, ADD-PUSH, TEST-JS, CALL-PUSH, and POP-PUSH.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_f62b8079963031b8\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability 0.84, the 19 of 20 positive count, the SHAP range and the n-gram values are correct. The explanation says 'Seven' zero-value n-grams but lists six. It also treats values as 'frequency' and infers adjacency and absence semantics although the evidence says value semantics are not established.\",\"coherence\":\"The argument is well organized: weak and diffuse evidence, then generic features, then the ADC cluster, then the inconclusive tier and action. The count mismatch (seven versus six listed) and some repetition between the explanation and the per-feature notes are minor flaws.\",\"cybersecurity_relevance\":\"It ties the ADC cluster to hashing or big-integer arithmetic while naming benign alternatives. It also notes the lack of API, function and constant evidence. It does not flag that the class-1 target is only a configured assumption.\",\"actionable_utility\":\"It gives concrete, proportionate, conditional steps: sandbox CPU and pool traffic, inspecting the ADC-containing functions, and checking strings for wallets or pool URLs. It does not note that occurrences and function context are empty, so locating those functions needs further extraction.\"},\"unsupported_claims\":[{\"quote\":\"Seven of the top 20 n-grams (ADD POP, MOV CMP, CMOVZ MOV, MOV LEA, XOR CALL, MOV JZ) have a frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features: value 0.0 for ADD POP, MOV CMP, CMOVZ MOV, MOV LEA, XOR CALL, MOV JZ; /evidence/feature_value_semantics\",\"reason\":\"Only six zero-value features exist, and the evidence says not to treat values as raw counts or frequencies.\",\"category\":\"other\"},{\"quote\":\"so their positive SHAP values reflect absence of a pattern that the model associates with benign code, not observed malicious behavior\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics; /evidence/full_attributions null\",\"reason\":\"Value semantics are unestablished, and no evidence shows what the model associates with benign code for these features.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"A call immediately followed by a return suggests small wrapper or thunk functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/occurrences empty; /evidence/function_context empty\",\"reason\":\"Adjacency and function structure cannot be inferred from a graph-aware n-gram without extraction context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It shows heavy register save/restore activity\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/top_features POP PUSH value 0.0712; /evidence/feature_value_semantics\",\"reason\":\"The activity level is inferred from a feature value whose meaning is not established as a count.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs and magnitudes are reported correctly: 19 positive, TEST JS negative at -0.0127, positive range about +0.0074 to +0.0153, and diffuse contributions. The uncertainty is acknowledged. Only the zero-value count is wrong, which is not a SHAP direction or magnitude error.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP baseline and full attributions are null, so omitted features cannot be ruled out as supporting benign.\",\"The feature value semantics are unestablished, so they cannot be treated as raw counts.\",\"The target class is a configured assumption pending upstream verification.\",\"Occurrences and function context are empty, so adjacency, control flow and function roles cannot be established.\"],\"summary\":\"The explanation is cautious and mostly well grounded, and it reports SHAP signs and magnitudes accurately. It has a six-versus-seven count error and some unsupported adjacency and frequency inferences, and its follow-up actions are sensible.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6567,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3581,
+          "output_tokens_details": {
+            "thinking_tokens": 2104
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6567,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3581,
+        "output_tokens_details": {
+          "thinking_tokens": 2104
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_f62b8079963031b8\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability 0.84, the 19 of 20 positive count, the SHAP range and the n-gram values are correct. The explanation says 'Seven' zero-value n-grams but lists six. It also treats values as 'frequency' and infers adjacency and absence semantics although the evidence says value semantics are not established.\",\"coherence\":\"The argument is well organized: weak and diffuse evidence, then generic features, then the ADC cluster, then the inconclusive tier and action. The count mismatch (seven versus six listed) and some repetition between the explanation and the per-feature notes are minor flaws.\",\"cybersecurity_relevance\":\"It ties the ADC cluster to hashing or big-integer arithmetic while naming benign alternatives. It also notes the lack of API, function and constant evidence. It does not flag that the class-1 target is only a configured assumption.\",\"actionable_utility\":\"It gives concrete, proportionate, conditional steps: sandbox CPU and pool traffic, inspecting the ADC-containing functions, and checking strings for wallets or pool URLs. It does not note that occurrences and function context are empty, so locating those functions needs further extraction.\"},\"unsupported_claims\":[{\"quote\":\"Seven of the top 20 n-grams (ADD POP, MOV CMP, CMOVZ MOV, MOV LEA, XOR CALL, MOV JZ) have a frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features: value 0.0 for ADD POP, MOV CMP, CMOVZ MOV, MOV LEA, XOR CALL, MOV JZ; /evidence/feature_value_semantics\",\"reason\":\"Only six zero-value features exist, and the evidence says not to treat values as raw counts or frequencies.\",\"category\":\"other\"},{\"quote\":\"so their positive SHAP values reflect absence of a pattern that the model associates with benign code, not observed malicious behavior\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics; /evidence/full_attributions null\",\"reason\":\"Value semantics are unestablished, and no evidence shows what the model associates with benign code for these features.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"A call immediately followed by a return suggests small wrapper or thunk functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/occurrences empty; /evidence/function_context empty\",\"reason\":\"Adjacency and function structure cannot be inferred from a graph-aware n-gram without extraction context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It shows heavy register save/restore activity\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/top_features POP PUSH value 0.0712; /evidence/feature_value_semantics\",\"reason\":\"The activity level is inferred from a feature value whose meaning is not established as a count.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs and magnitudes are reported correctly: 19 positive, TEST JS negative at -0.0127, positive range about +0.0074 to +0.0153, and diffuse contributions. The uncertainty is acknowledged. Only the zero-value count is wrong, which is not a SHAP direction or magnitude error.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP baseline and full attributions are null, so omitted features cannot be ruled out as supporting benign.\",\"The feature value semantics are unestablished, so they cannot be treated as raw counts.\",\"The target class is a configured assumption pending upstream verification.\",\"Occurrences and function context are empty, so adjacency, control flow and function roles cannot be established.\"],\"summary\":\"The explanation is cautious and mostly well grounded, and it reports SHAP signs and magnitudes accurately. It has a six-versus-seven count error and some unsupported adjacency and frequency inferences, and its follow-up actions are sensible.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_f62b8079963031b8",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability 0.84, the 19 of 20 positive count, the SHAP range and the n-gram values are correct. The explanation says 'Seven' zero-value n-grams but lists six. It also treats values as 'frequency' and infers adjacency and absence semantics although the evidence says value semantics are not established.",
+      "coherence": "The argument is well organized: weak and diffuse evidence, then generic features, then the ADC cluster, then the inconclusive tier and action. The count mismatch (seven versus six listed) and some repetition between the explanation and the per-feature notes are minor flaws.",
+      "cybersecurity_relevance": "It ties the ADC cluster to hashing or big-integer arithmetic while naming benign alternatives. It also notes the lack of API, function and constant evidence. It does not flag that the class-1 target is only a configured assumption.",
+      "actionable_utility": "It gives concrete, proportionate, conditional steps: sandbox CPU and pool traffic, inspecting the ADC-containing functions, and checking strings for wallets or pool URLs. It does not note that occurrences and function context are empty, so locating those functions needs further extraction."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Seven of the top 20 n-grams (ADD POP, MOV CMP, CMOVZ MOV, MOV LEA, XOR CALL, MOV JZ) have a frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features: value 0.0 for ADD POP, MOV CMP, CMOVZ MOV, MOV LEA, XOR CALL, MOV JZ; /evidence/feature_value_semantics",
+        "reason": "Only six zero-value features exist, and the evidence says not to treat values as raw counts or frequencies.",
+        "category": "other"
+      },
+      {
+        "quote": "so their positive SHAP values reflect absence of a pattern that the model associates with benign code, not observed malicious behavior",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics; /evidence/full_attributions null",
+        "reason": "Value semantics are unestablished, and no evidence shows what the model associates with benign code for these features.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "A call immediately followed by a return suggests small wrapper or thunk functions.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/occurrences empty; /evidence/function_context empty",
+        "reason": "Adjacency and function structure cannot be inferred from a graph-aware n-gram without extraction context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "It shows heavy register save/restore activity",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+        "evidence_reference": "/evidence/top_features POP PUSH value 0.0712; /evidence/feature_value_semantics",
+        "reason": "The activity level is inferred from a feature value whose meaning is not established as a count.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP signs and magnitudes are reported correctly: 19 positive, TEST JS negative at -0.0127, positive range about +0.0074 to +0.0153, and diffuse contributions. The uncertainty is acknowledged. Only the zero-value count is wrong, which is not a SHAP direction or magnitude error.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP baseline and full attributions are null, so omitted features cannot be ruled out as supporting benign.",
+      "The feature value semantics are unestablished, so they cannot be treated as raw counts.",
+      "The target class is a configured assumption pending upstream verification.",
+      "Occurrences and function context are empty, so adjacency, control flow and function roles cannot be established."
+    ],
+    "summary": "The explanation is cautious and mostly well grounded, and it reports SHAP signs and magnitudes accurately. It has a six-versus-seven count error and some unsupported adjacency and frequency inferences, and its follow-up actions are sensible."
+  },
+  "numeric_audit": {
+    "checked_assessments": 16,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Seven of the top 20 n-grams (ADD POP, MOV CMP, CMOVZ MOV, MOV LEA, XOR CALL, MOV JZ) have a frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features: value 0.0 for ADD POP, MOV CMP, CMOVZ MOV, MOV LEA, XOR CALL, MOV JZ; /evidence/feature_value_semantics",
+      "reason": "Only six zero-value features exist, and the evidence says not to treat values as raw counts or frequencies.",
+      "category": "other"
+    },
+    {
+      "quote": "so their positive SHAP values reflect absence of a pattern that the model associates with benign code, not observed malicious behavior",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics; /evidence/full_attributions null",
+      "reason": "Value semantics are unestablished, and no evidence shows what the model associates with benign code for these features.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "A call immediately followed by a return suggests small wrapper or thunk functions.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/occurrences empty; /evidence/function_context empty",
+      "reason": "Adjacency and function structure cannot be inferred from a graph-aware n-gram without extraction context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "It shows heavy register save/restore activity",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+      "evidence_reference": "/evidence/top_features POP PUSH value 0.0712; /evidence/feature_value_semantics",
+      "reason": "The activity level is inferred from a feature value whose meaning is not established as a count.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "e0a28938bba298c91330a85dd51ed121c1d830f0a8f06304669e0af9ae6cd1c2.elf_analysis.json"
+}

@@ -1,0 +1,222 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_e9f18681e9754814",
+  "status": "success",
+  "source_sha256": "48c89445a0b865fb66bbe66fd0f9313ca4154f87b85e1dd757f17b12b7ea6cca",
+  "input_sha256": "99fd4ccbbb5e7d26a9e13c24e34652937d8ac4a3624a07cd7d8e87ab36e34f34",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "483c41f2a77142319b4e93d393e0434486ff84b6e0f979e4aef3256a351d94e6.exe",
+      "source_name": "483c41f2a77142319b4e93d393e0434486ff84b6e0f979e4aef3256a351d94e6.exe.json",
+      "source_path": "ml/dataset/cryptojacking/483c41f2a77142319b4e93d393e0434486ff84b6e0f979e4aef3256a351d94e6.exe.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 68,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "483c41f2a77142319b4e93d393e0434486ff84b6e0f979e4aef3256a351d94e6.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:33:11.549682+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:33:11.549709+00:00",
+      "error": null,
+      "request_sha256": "bdc70cd15547d34e76324f10efe0a186db7991576b228f18e4a1aa790d50868c",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkzMzM56rXR4QmCqaBqa",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "The RF model predicts class 1 with full confidence, and all 20 top features show positive SHAP values ranging from about 0.0087 to 0.0176, consistently pushing the prediction toward the cryptojacking/malware class.\n\nChecking the low-frequency features like CDQ MOV, XOR CDQ, LEA IDIV, and SUB SBB, the numbers match up, but the candidate's claim that \"low frequency means limited weight\" overreaches since SHAP magnitudes are comparable and the raw values shouldn't be treated as frequencies without established semantics. I'm also flagging the interpretive leaps about XOR PUSH being \"register zeroing\" and the assumption that n-gram pairs like CALL RET or POP CALL represent immediately adjacent instructions—these adjacency inferences aren't actually supported by how the graph-aware n-grams are constructed.\n\nThere's also an inconsistency where the candidate calls dominant call/stack idioms both \"common in ordinary compiled code\" and \"atypical, possibly obfuscation,\" which contradicts itself, though the overall maliciousness signal and low-confidence tier assignment seem reasonable. Checking the SHAP faithfulness claims, the signs, magnitudes, and top contributors (CALL RET, PUSH CALL at 0.0777) all check out correctly against the actual values.\n\nHowever, I'm catching a clear misrepresentation: the claim that low-frequency features like CDQ MOV have \"limited weight\" contradicts the SHAP data, since CDQ MOV actually ranks third highest at 0.01500 — this should be flagged as a shap_misrepresentation issue despite the directional accuracy elsewhere.\n\nFor scoring, I'm landing on technical accuracy of 3 given the numeric correctness but the overreach, coherence and relevance at 4, and actionability at 4 since the conditional steps like sandbox detonation and hash/big-number-loop checks are proportionate and concrete. I'm also compiling the list of unsupported claims across several assessment paths, including the indirect-jump idiom and call-immediately-followed-by-return observations.\n\nFinishing up the index list, confirming the ordering matches the feature set, then formatting everything into a single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_e9f18681e9754814\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, SHAP range (+0.0087 to +0.0176), signs and quoted n-gram values all match the evidence. The main limit is that it infers adjacency and specific idioms from graph-aware n-grams (\\\"A call immediately followed by a return\\\", \\\"Subtract-with-borrow indicates multi-word (64-bit-on-32-bit) arithmetic\\\"). It also treats values as frequencies although their semantics are unconfirmed, and claims \\\"so their weight is limited\\\" for features with large SHAP values.\",\"coherence\":\"The explanation is well organized and consistently low-confidence. Minor tension: it calls the call/stack patterns \\\"common in ordinary compiled code\\\" but the key indicators say they \\\"suggest atypical control-flow structure, possibly obfuscation or packing\\\". The repeated per-n-gram assessments are also somewhat redundant.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to mining primitives, packing/obfuscation and benign compiler explanations. It also states that function names, APIs and context are missing, so cryptojacking cannot be confirmed. The relevance is somewhat weakened by generic idiom commentary.\",\"actionable_utility\":\"The follow-ups are concrete and proportionate: static analysis for packing, inspecting arithmetic functions, imports/strings for pool or wallet indicators, and sandbox CPU/network monitoring. They are conditional and not asserted as observed. Prioritization is implicit, and the n-gram sites it points to cannot be located because no occurrence or function context was supplied.\"},\"unsupported_claims\":[{\"quote\":\"A call immediately followed by a return suggests thunk or wrapper functions or tail-call stubs.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0; /evidence/occurrences\",\"reason\":\"Graph-aware n-grams need not be adjacent, and no occurrence or context evidence supports adjacency or wrapper/stub structure.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"PUSH followed by RET is an indirect-jump idiom sometimes used for control-flow obfuscation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/occurrences\",\"reason\":\"It infers adjacency and a control-flow idiom from a mnemonic pair with no extraction context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"At 0.034532 it is more consistent with register zeroing than with a cryptographic round.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"/evidence/top_features/9; /evidence/feature_value_semantics\",\"reason\":\"Operands are not given, and the feature value is not established as a frequency, so this conclusion about the XOR use is not supported.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Subtract-with-borrow indicates multi-word (64-bit-on-32-bit) arithmetic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features/18; /evidence/function_context\",\"reason\":\"The pair is asserted to mean a specific arithmetic pattern without context or adjacency evidence; this is stated more strongly than hedged.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"They occur at very low frequency (0.000719 to 0.002158), so their weight is limited.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/2; /evidence/feature_value_semantics\",\"reason\":\"The values are not established as frequencies, and CDQ MOV has the third-largest SHAP value (+0.014996), so the claim of limited weight contradicts the SHAP evidence.\",\"category\":\"shap_misrepresentation\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, magnitudes, ranking and the claim that all 20 top contributions are positive match the evidence. However, one statement downplays the arithmetic features' contribution on the basis of low n-gram values, contradicting their SHAP values.\",\"discrepancies\":[{\"quote\":\"They occur at very low frequency (0.000719 to 0.002158), so their weight is limited.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"CDQ MOV (+0.014996) is ranked third by SHAP, and the group is comparable in contribution to other top features. A low feature value does not imply limited SHAP weight, and the value semantics are unconfirmed.\"}]},\"evidence_limitations\":[\"No function context, occurrences, API names or strings were supplied, so behavior and n-gram adjacency cannot be verified.\",\"Feature value semantics are unconfirmed, so the values cannot be treated as frequencies or counts.\",\"The SHAP target class is a configured assumption, and the baseline and omitted features are unknown.\",\"RF probability 1.0 is a model output, not behavioral proof.\"],\"summary\":\"The explanation is accurate on numbers, cautious about confirming cryptojacking and gives sensible follow-ups. It overreaches by inferring adjacency and specific arithmetic idioms from n-grams, and it misstates the weight of low-value arithmetic features relative to their SHAP values.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7142,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3677,
+          "output_tokens_details": {
+            "thinking_tokens": 1773
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7142,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3677,
+        "output_tokens_details": {
+          "thinking_tokens": 1773
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_e9f18681e9754814\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, SHAP range (+0.0087 to +0.0176), signs and quoted n-gram values all match the evidence. The main limit is that it infers adjacency and specific idioms from graph-aware n-grams (\\\"A call immediately followed by a return\\\", \\\"Subtract-with-borrow indicates multi-word (64-bit-on-32-bit) arithmetic\\\"). It also treats values as frequencies although their semantics are unconfirmed, and claims \\\"so their weight is limited\\\" for features with large SHAP values.\",\"coherence\":\"The explanation is well organized and consistently low-confidence. Minor tension: it calls the call/stack patterns \\\"common in ordinary compiled code\\\" but the key indicators say they \\\"suggest atypical control-flow structure, possibly obfuscation or packing\\\". The repeated per-n-gram assessments are also somewhat redundant.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to mining primitives, packing/obfuscation and benign compiler explanations. It also states that function names, APIs and context are missing, so cryptojacking cannot be confirmed. The relevance is somewhat weakened by generic idiom commentary.\",\"actionable_utility\":\"The follow-ups are concrete and proportionate: static analysis for packing, inspecting arithmetic functions, imports/strings for pool or wallet indicators, and sandbox CPU/network monitoring. They are conditional and not asserted as observed. Prioritization is implicit, and the n-gram sites it points to cannot be located because no occurrence or function context was supplied.\"},\"unsupported_claims\":[{\"quote\":\"A call immediately followed by a return suggests thunk or wrapper functions or tail-call stubs.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0; /evidence/occurrences\",\"reason\":\"Graph-aware n-grams need not be adjacent, and no occurrence or context evidence supports adjacency or wrapper/stub structure.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"PUSH followed by RET is an indirect-jump idiom sometimes used for control-flow obfuscation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/occurrences\",\"reason\":\"It infers adjacency and a control-flow idiom from a mnemonic pair with no extraction context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"At 0.034532 it is more consistent with register zeroing than with a cryptographic round.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"/evidence/top_features/9; /evidence/feature_value_semantics\",\"reason\":\"Operands are not given, and the feature value is not established as a frequency, so this conclusion about the XOR use is not supported.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Subtract-with-borrow indicates multi-word (64-bit-on-32-bit) arithmetic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/assessment\",\"evidence_reference\":\"/evidence/top_features/18; /evidence/function_context\",\"reason\":\"The pair is asserted to mean a specific arithmetic pattern without context or adjacency evidence; this is stated more strongly than hedged.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"They occur at very low frequency (0.000719 to 0.002158), so their weight is limited.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/2; /evidence/feature_value_semantics\",\"reason\":\"The values are not established as frequencies, and CDQ MOV has the third-largest SHAP value (+0.014996), so the claim of limited weight contradicts the SHAP evidence.\",\"category\":\"shap_misrepresentation\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, magnitudes, ranking and the claim that all 20 top contributions are positive match the evidence. However, one statement downplays the arithmetic features' contribution on the basis of low n-gram values, contradicting their SHAP values.\",\"discrepancies\":[{\"quote\":\"They occur at very low frequency (0.000719 to 0.002158), so their weight is limited.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"CDQ MOV (+0.014996) is ranked third by SHAP, and the group is comparable in contribution to other top features. A low feature value does not imply limited SHAP weight, and the value semantics are unconfirmed.\"}]},\"evidence_limitations\":[\"No function context, occurrences, API names or strings were supplied, so behavior and n-gram adjacency cannot be verified.\",\"Feature value semantics are unconfirmed, so the values cannot be treated as frequencies or counts.\",\"The SHAP target class is a configured assumption, and the baseline and omitted features are unknown.\",\"RF probability 1.0 is a model output, not behavioral proof.\"],\"summary\":\"The explanation is accurate on numbers, cautious about confirming cryptojacking and gives sensible follow-ups. It overreaches by inferring adjacency and specific arithmetic idioms from n-grams, and it misstates the weight of low-value arithmetic features relative to their SHAP values.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_e9f18681e9754814",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability, SHAP range (+0.0087 to +0.0176), signs and quoted n-gram values all match the evidence. The main limit is that it infers adjacency and specific idioms from graph-aware n-grams (\"A call immediately followed by a return\", \"Subtract-with-borrow indicates multi-word (64-bit-on-32-bit) arithmetic\"). It also treats values as frequencies although their semantics are unconfirmed, and claims \"so their weight is limited\" for features with large SHAP values.",
+      "coherence": "The explanation is well organized and consistently low-confidence. Minor tension: it calls the call/stack patterns \"common in ordinary compiled code\" but the key indicators say they \"suggest atypical control-flow structure, possibly obfuscation or packing\". The repeated per-n-gram assessments are also somewhat redundant.",
+      "cybersecurity_relevance": "It ties the sample's n-grams to mining primitives, packing/obfuscation and benign compiler explanations. It also states that function names, APIs and context are missing, so cryptojacking cannot be confirmed. The relevance is somewhat weakened by generic idiom commentary.",
+      "actionable_utility": "The follow-ups are concrete and proportionate: static analysis for packing, inspecting arithmetic functions, imports/strings for pool or wallet indicators, and sandbox CPU/network monitoring. They are conditional and not asserted as observed. Prioritization is implicit, and the n-gram sites it points to cannot be located because no occurrence or function context was supplied."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "A call immediately followed by a return suggests thunk or wrapper functions or tail-call stubs.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/top_features/0; /evidence/occurrences",
+        "reason": "Graph-aware n-grams need not be adjacent, and no occurrence or context evidence supports adjacency or wrapper/stub structure.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "PUSH followed by RET is an indirect-jump idiom sometimes used for control-flow obfuscation.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/top_features/1; /evidence/occurrences",
+        "reason": "It infers adjacency and a control-flow idiom from a mnemonic pair with no extraction context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "At 0.034532 it is more consistent with register zeroing than with a cryptographic round.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+        "evidence_reference": "/evidence/top_features/9; /evidence/feature_value_semantics",
+        "reason": "Operands are not given, and the feature value is not established as a frequency, so this conclusion about the XOR use is not supported.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Subtract-with-borrow indicates multi-word (64-bit-on-32-bit) arithmetic.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+        "evidence_reference": "/evidence/top_features/18; /evidence/function_context",
+        "reason": "The pair is asserted to mean a specific arithmetic pattern without context or adjacency evidence; this is stated more strongly than hedged.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "They occur at very low frequency (0.000719 to 0.002158), so their weight is limited.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/2; /evidence/feature_value_semantics",
+        "reason": "The values are not established as frequencies, and CDQ MOV has the third-largest SHAP value (+0.014996), so the claim of limited weight contradicts the SHAP evidence.",
+        "category": "shap_misrepresentation"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "Signs, magnitudes, ranking and the claim that all 20 top contributions are positive match the evidence. However, one statement downplays the arithmetic features' contribution on the basis of low n-gram values, contradicting their SHAP values.",
+      "discrepancies": [
+        {
+          "quote": "They occur at very low frequency (0.000719 to 0.002158), so their weight is limited.",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "CDQ MOV (+0.014996) is ranked third by SHAP, and the group is comparable in contribution to other top features. A low feature value does not imply limited SHAP weight, and the value semantics are unconfirmed."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "No function context, occurrences, API names or strings were supplied, so behavior and n-gram adjacency cannot be verified.",
+      "Feature value semantics are unconfirmed, so the values cannot be treated as frequencies or counts.",
+      "The SHAP target class is a configured assumption, and the baseline and omitted features are unknown.",
+      "RF probability 1.0 is a model output, not behavioral proof."
+    ],
+    "summary": "The explanation is accurate on numbers, cautious about confirming cryptojacking and gives sensible follow-ups. It overreaches by inferring adjacency and specific arithmetic idioms from n-grams, and it misstates the weight of low-value arithmetic features relative to their SHAP values."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "A call immediately followed by a return suggests thunk or wrapper functions or tail-call stubs.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/top_features/0; /evidence/occurrences",
+      "reason": "Graph-aware n-grams need not be adjacent, and no occurrence or context evidence supports adjacency or wrapper/stub structure.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "PUSH followed by RET is an indirect-jump idiom sometimes used for control-flow obfuscation.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/top_features/1; /evidence/occurrences",
+      "reason": "It infers adjacency and a control-flow idiom from a mnemonic pair with no extraction context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "At 0.034532 it is more consistent with register zeroing than with a cryptographic round.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+      "evidence_reference": "/evidence/top_features/9; /evidence/feature_value_semantics",
+      "reason": "Operands are not given, and the feature value is not established as a frequency, so this conclusion about the XOR use is not supported.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Subtract-with-borrow indicates multi-word (64-bit-on-32-bit) arithmetic.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/18/assessment",
+      "evidence_reference": "/evidence/top_features/18; /evidence/function_context",
+      "reason": "The pair is asserted to mean a specific arithmetic pattern without context or adjacency evidence; this is stated more strongly than hedged.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "They occur at very low frequency (0.000719 to 0.002158), so their weight is limited.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/2; /evidence/feature_value_semantics",
+      "reason": "The values are not established as frequencies, and CDQ MOV has the third-largest SHAP value (+0.014996), so the claim of limited weight contradicts the SHAP evidence.",
+      "category": "shap_misrepresentation"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "483c41f2a77142319b4e93d393e0434486ff84b6e0f979e4aef3256a351d94e6.exe_analysis.json"
+}

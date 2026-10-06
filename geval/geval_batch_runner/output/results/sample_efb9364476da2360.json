@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_efb9364476da2360",
+  "status": "success",
+  "source_sha256": "dac6c30c23ae4952e42a22221a2e5a0dd87656d96ee47c88fe0b2ab9f55d2ab7",
+  "input_sha256": "ab85fc8421d2b799a9c8c2726bc05e854bcf97f74214020d3a5acae28af928d2",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "08be3260b1569540aa2ea8c55d4b1f099e735fced9917e5e058b06a16c674fe1.elf",
+      "source_name": "08be3260b1569540aa2ea8c55d4b1f099e735fced9917e5e058b06a16c674fe1.elf.json",
+      "source_path": "ml/dataset/cryptojacking/08be3260b1569540aa2ea8c55d4b1f099e735fced9917e5e058b06a16c674fe1.elf.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 68,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "08be3260b1569540aa2ea8c55d4b1f099e735fced9917e5e058b06a16c674fe1.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:04:49.602695+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:04:49.602735+00:00",
+      "error": null,
+      "request_sha256": "b1740e5f4dc0b514cddda13248b67eb2c1f734e50d5f04544597879dcd339e72",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkxCXiSncPa5q2FUNN9M",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm verifying the claim about twelve of the 20 n-grams having zero counts, checking each one listed like ADD POP, CMOVZ MOV, XOR XOR, and others against the data.\n\nCounting carefully, I get only eleven actual zeros, not twelve, and the nine remaining features are nonzero—so \"Twelve\" is a numerical error, and the claim about \"others by rounding\" is fabricated since no additional feature rounds to zero at six decimals. The rest of the SHAP range (+0.006038 to +0.012902) and the 0.91 malware probability check out, and the \"no dominant feature\" observation seems reasonable given the even spread, though the interpretation about pushing scores through decision boundaries rather than code behavior deserves scrutiny since feature semantics aren't fully established.\n\nSeveral individual n-gram interpretations overreach: calling features \"relative frequency\" or \"effectively absent\" assumes semantics that weren't defined, and framing POP PUSH, INC PUSH, POP XCHG, or POP SUB as indicating stack manipulation, loop counters, obfuscation, or function prologues/epilogues goes beyond what the data supports, even when hedged. The frequency figures themselves (0.068627, 0.021569, 0.013725) check out correctly, and the low-confidence tier with a 0.5 score is reasonable, though somewhat arbitrary.\n\nScoring this: technical accuracy around 3 given the count discrepancy and unsupported frequency-semantics assumptions despite reasonable hedging; coherence around 4, slightly dinged by a confusing count inconsistency; relevance 4-5 for tying evidence to mining versus generic compiled code; actionability 4, since recommendations like checking for tight hashing loops with carry arithmetic, stratum info, and constants are concrete and proportionate even if not prioritized. On SHAP faithfulness, the directions and magnitudes line up correctly overall.\n\nNow I'm cataloging unsupported claims: the \"twelve of 20\" count versus the actual 11 zero-value n-grams, the invented \"by rounding, others\" phrasing, and the overreaching claim that zero values are \"effectively absent\" and push the score through learned decision boundaries rather than observable code — this last one isn't backed by the evidence about value semantics, so I'm flagging it as an unsupported certainty claim tied to the evidence_analysis paths.\n\nI'm also checking the INC PUSH mnemonic at index 11 — the claim that it suggests \"loop counter or index handling followed by argument pushes\" doesn't actually follow from the mnemonics alone, so that's another overreach. Similarly, the POP PUSH pair at index 9 being described as \"heavy stack manipulation\" is based on a 0.0686 value without real justification.\n\nI'll keep it to 4-5 flagged items total and write the final answer as a single-line JSON.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_efb9364476da2360\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP signs, the 0.006038 to 0.012902 range and most per-feature values match the evidence. However, it miscounts zero-valued n-grams ('Twelve' vs 11) and invents 'by rounding, others'. It also treats values as observed frequencies although semantics are explicitly unestablished, and over-reads some mnemonics (INC PUSH as loop/index handling).\",\"coherence\":\"The structure is clear and the conclusion (low-confidence, inconclusive, leans suspicious) is consistent with the recommendations. The 'Twelve ... (11 listed ... and, by rounding, others)' sentence is internally confusing, and the 'absent' framing is repeated across many per-feature entries.\",\"cybersecurity_relevance\":\"It links the sample's n-grams to possible hashing/carry arithmetic, notes the absence of API, string and network evidence, and offers the benign alternative of generic compiled code. It leans a bit on generic instruction lore for absent features.\",\"actionable_utility\":\"Follow-ups are concrete, conditional and proportionate: hashing loops, pool or stratum strings, sandbox CPU behavior, family comparison, and not escalating without mining-specific evidence. They are not strictly prioritized, but they are tied to the stated evidence gaps and none are presented as observed.\"},\"unsupported_claims\":[{\"quote\":\"Twelve of the 20 n-grams (ADD POP, CMOVZ MOV, XOR XOR, TEST JS, XOR CALL, CALL ADD, PUSH SUB, TEST JZ, LEA CALL, AND MOV, SUB MOV and, by rounding, others) have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (value fields)\",\"reason\":\"Only 11 of the 20 listed n-grams have value 0.0, not twelve. The lowest nonzero value is 0.00196, which does not round to zero, so the 'by rounding, others' addition is unsupported.\",\"category\":\"other\"},{\"quote\":\"so they are effectively absent and push the score through the model's learned decision boundaries rather than through observable code\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature value semantics are not established and should not be treated as raw counts. 'Effectively absent' and 'relative frequency' are asserted with more certainty than supported.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Frequency is 0.000000, so it is effectively absent. Its contribution reflects the model's learned association, not observable code behavior.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Absence in the binary is inferred from a value whose meaning is unconfirmed. The same overreach recurs in other zero-valued entries, such as 'not observed in the binary'.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"suggesting loop counter or index handling followed by argument pushes\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/occurrences and /evidence/function_context (both empty)\",\"reason\":\"Loop or index behavior and adjacency are inferred from mnemonics alone, with no extraction or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"indicating heavy stack manipulation\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"/evidence/top_features/9/value\",\"reason\":\"A value of 0.0686 with unconfirmed semantics does not establish heavy stack manipulation in the sample.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Direction (all positive toward target class 1) and magnitudes (max +0.012902, min +0.006038, per-feature values) match the evidence. The candidate correctly frames the top-k as non-dominant and does not claim omitted features are benign. The target-class assumption is configured and unverified, which the candidate does not mention.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature value semantics are not established, so 'frequency' and 'absent' readings are uncertain.\",\"No occurrences, function context, strings, API or network indicators are supplied.\",\"SHAP baseline and full attributions are null, so omitted features' effects are unknown.\",\"SHAP target class is a configured assumption pending upstream verification.\",\"Graph-aware n-grams may not be adjacent, so instruction-sequence semantics are uncertain.\"],\"summary\":\"The explanation is well-hedged and SHAP-faithful, with relevant and proportionate follow-ups. It is weakened by a miscount (12 vs 11 zero-valued n-grams), an invented 'by rounding, others', and by treating unconfirmed feature values as observed frequencies and absence.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6807,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3661,
+          "output_tokens_details": {
+            "thinking_tokens": 1884
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6807,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3661,
+        "output_tokens_details": {
+          "thinking_tokens": 1884
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_efb9364476da2360\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP signs, the 0.006038 to 0.012902 range and most per-feature values match the evidence. However, it miscounts zero-valued n-grams ('Twelve' vs 11) and invents 'by rounding, others'. It also treats values as observed frequencies although semantics are explicitly unestablished, and over-reads some mnemonics (INC PUSH as loop/index handling).\",\"coherence\":\"The structure is clear and the conclusion (low-confidence, inconclusive, leans suspicious) is consistent with the recommendations. The 'Twelve ... (11 listed ... and, by rounding, others)' sentence is internally confusing, and the 'absent' framing is repeated across many per-feature entries.\",\"cybersecurity_relevance\":\"It links the sample's n-grams to possible hashing/carry arithmetic, notes the absence of API, string and network evidence, and offers the benign alternative of generic compiled code. It leans a bit on generic instruction lore for absent features.\",\"actionable_utility\":\"Follow-ups are concrete, conditional and proportionate: hashing loops, pool or stratum strings, sandbox CPU behavior, family comparison, and not escalating without mining-specific evidence. They are not strictly prioritized, but they are tied to the stated evidence gaps and none are presented as observed.\"},\"unsupported_claims\":[{\"quote\":\"Twelve of the 20 n-grams (ADD POP, CMOVZ MOV, XOR XOR, TEST JS, XOR CALL, CALL ADD, PUSH SUB, TEST JZ, LEA CALL, AND MOV, SUB MOV and, by rounding, others) have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (value fields)\",\"reason\":\"Only 11 of the 20 listed n-grams have value 0.0, not twelve. The lowest nonzero value is 0.00196, which does not round to zero, so the 'by rounding, others' addition is unsupported.\",\"category\":\"other\"},{\"quote\":\"so they are effectively absent and push the score through the model's learned decision boundaries rather than through observable code\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature value semantics are not established and should not be treated as raw counts. 'Effectively absent' and 'relative frequency' are asserted with more certainty than supported.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Frequency is 0.000000, so it is effectively absent. Its contribution reflects the model's learned association, not observable code behavior.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Absence in the binary is inferred from a value whose meaning is unconfirmed. The same overreach recurs in other zero-valued entries, such as 'not observed in the binary'.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"suggesting loop counter or index handling followed by argument pushes\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/occurrences and /evidence/function_context (both empty)\",\"reason\":\"Loop or index behavior and adjacency are inferred from mnemonics alone, with no extraction or context evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"indicating heavy stack manipulation\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"/evidence/top_features/9/value\",\"reason\":\"A value of 0.0686 with unconfirmed semantics does not establish heavy stack manipulation in the sample.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Direction (all positive toward target class 1) and magnitudes (max +0.012902, min +0.006038, per-feature values) match the evidence. The candidate correctly frames the top-k as non-dominant and does not claim omitted features are benign. The target-class assumption is configured and unverified, which the candidate does not mention.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Feature value semantics are not established, so 'frequency' and 'absent' readings are uncertain.\",\"No occurrences, function context, strings, API or network indicators are supplied.\",\"SHAP baseline and full attributions are null, so omitted features' effects are unknown.\",\"SHAP target class is a configured assumption pending upstream verification.\",\"Graph-aware n-grams may not be adjacent, so instruction-sequence semantics are uncertain.\"],\"summary\":\"The explanation is well-hedged and SHAP-faithful, with relevant and proportionate follow-ups. It is weakened by a miscount (12 vs 11 zero-valued n-grams), an invented 'by rounding, others', and by treating unconfirmed feature values as observed frequencies and absence.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_efb9364476da2360",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, SHAP signs, the 0.006038 to 0.012902 range and most per-feature values match the evidence. However, it miscounts zero-valued n-grams ('Twelve' vs 11) and invents 'by rounding, others'. It also treats values as observed frequencies although semantics are explicitly unestablished, and over-reads some mnemonics (INC PUSH as loop/index handling).",
+      "coherence": "The structure is clear and the conclusion (low-confidence, inconclusive, leans suspicious) is consistent with the recommendations. The 'Twelve ... (11 listed ... and, by rounding, others)' sentence is internally confusing, and the 'absent' framing is repeated across many per-feature entries.",
+      "cybersecurity_relevance": "It links the sample's n-grams to possible hashing/carry arithmetic, notes the absence of API, string and network evidence, and offers the benign alternative of generic compiled code. It leans a bit on generic instruction lore for absent features.",
+      "actionable_utility": "Follow-ups are concrete, conditional and proportionate: hashing loops, pool or stratum strings, sandbox CPU behavior, family comparison, and not escalating without mining-specific evidence. They are not strictly prioritized, but they are tied to the stated evidence gaps and none are presented as observed."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Twelve of the 20 n-grams (ADD POP, CMOVZ MOV, XOR XOR, TEST JS, XOR CALL, CALL ADD, PUSH SUB, TEST JZ, LEA CALL, AND MOV, SUB MOV and, by rounding, others) have a relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features (value fields)",
+        "reason": "Only 11 of the 20 listed n-grams have value 0.0, not twelve. The lowest nonzero value is 0.00196, which does not round to zero, so the 'by rounding, others' addition is unsupported.",
+        "category": "other"
+      },
+      {
+        "quote": "so they are effectively absent and push the score through the model's learned decision boundaries rather than through observable code",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states feature value semantics are not established and should not be treated as raw counts. 'Effectively absent' and 'relative frequency' are asserted with more certainty than supported.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Frequency is 0.000000, so it is effectively absent. Its contribution reflects the model's learned association, not observable code behavior.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "Absence in the binary is inferred from a value whose meaning is unconfirmed. The same overreach recurs in other zero-valued entries, such as 'not observed in the binary'.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "suggesting loop counter or index handling followed by argument pushes",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/occurrences and /evidence/function_context (both empty)",
+        "reason": "Loop or index behavior and adjacency are inferred from mnemonics alone, with no extraction or context evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "indicating heavy stack manipulation",
+        "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+        "evidence_reference": "/evidence/top_features/9/value",
+        "reason": "A value of 0.0686 with unconfirmed semantics does not establish heavy stack manipulation in the sample.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "Direction (all positive toward target class 1) and magnitudes (max +0.012902, min +0.006038, per-feature values) match the evidence. The candidate correctly frames the top-k as non-dominant and does not claim omitted features are benign. The target-class assumption is configured and unverified, which the candidate does not mention.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Feature value semantics are not established, so 'frequency' and 'absent' readings are uncertain.",
+      "No occurrences, function context, strings, API or network indicators are supplied.",
+      "SHAP baseline and full attributions are null, so omitted features' effects are unknown.",
+      "SHAP target class is a configured assumption pending upstream verification.",
+      "Graph-aware n-grams may not be adjacent, so instruction-sequence semantics are uncertain."
+    ],
+    "summary": "The explanation is well-hedged and SHAP-faithful, with relevant and proportionate follow-ups. It is weakened by a miscount (12 vs 11 zero-valued n-grams), an invented 'by rounding, others', and by treating unconfirmed feature values as observed frequencies and absence."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Twelve of the 20 n-grams (ADD POP, CMOVZ MOV, XOR XOR, TEST JS, XOR CALL, CALL ADD, PUSH SUB, TEST JZ, LEA CALL, AND MOV, SUB MOV and, by rounding, others) have a relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features (value fields)",
+      "reason": "Only 11 of the 20 listed n-grams have value 0.0, not twelve. The lowest nonzero value is 0.00196, which does not round to zero, so the 'by rounding, others' addition is unsupported.",
+      "category": "other"
+    },
+    {
+      "quote": "so they are effectively absent and push the score through the model's learned decision boundaries rather than through observable code",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states feature value semantics are not established and should not be treated as raw counts. 'Effectively absent' and 'relative frequency' are asserted with more certainty than supported.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Frequency is 0.000000, so it is effectively absent. Its contribution reflects the model's learned association, not observable code behavior.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "Absence in the binary is inferred from a value whose meaning is unconfirmed. The same overreach recurs in other zero-valued entries, such as 'not observed in the binary'.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "suggesting loop counter or index handling followed by argument pushes",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/occurrences and /evidence/function_context (both empty)",
+      "reason": "Loop or index behavior and adjacency are inferred from mnemonics alone, with no extraction or context evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "indicating heavy stack manipulation",
+      "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+      "evidence_reference": "/evidence/top_features/9/value",
+      "reason": "A value of 0.0686 with unconfirmed semantics does not establish heavy stack manipulation in the sample.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "08be3260b1569540aa2ea8c55d4b1f099e735fced9917e5e058b06a16c674fe1.elf_analysis.json"
+}

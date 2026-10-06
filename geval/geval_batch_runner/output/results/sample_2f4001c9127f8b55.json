@@ -1,0 +1,231 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_2f4001c9127f8b55",
+  "status": "success",
+  "source_sha256": "a7cec648bdd2e4c7795766abed1df1f70b6b6b631eec22c0231b9df149f87b72",
+  "input_sha256": "4f4a4fba7ea6fe27e5e70ef1f8e7a10cc47e795c1c441d95441c4c64670d4770",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "a7796186e4c40f5a257b952e16d1964b3c9f20a1f2d9d09d3047293d6f71c921.exe",
+      "source_name": "a7796186e4c40f5a257b952e16d1964b3c9f20a1f2d9d09d3047293d6f71c921.exe.json",
+      "source_path": "ml/dataset/cryptojacking/a7796186e4c40f5a257b952e16d1964b3c9f20a1f2d9d09d3047293d6f71c921.exe.json",
+      "split": "test",
+      "batch_number": 4,
+      "row_index_in_batch": 98,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "a7796186e4c40f5a257b952e16d1964b3c9f20a1f2d9d09d3047293d6f71c921.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:14:04.237378+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:14:04.237412+00:00",
+      "error": null,
+      "request_sha256": "d4040476687303371c426accfd30b713b061a39a7683d69ffd9ac4f2859f2f3b",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm3UnXy1HVXM3M6jJNcd",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm double-checking the probability figure and SHAP value ranges against the claims, confirming they fall within the reported bounds, though I note some ambiguity around whether the target class is labeled \"malware\" or specifically \"cryptojacking.\"\n\nNow I'm verifying the bigram frequencies cited against the actual values — CALL RET, PUSH RET, MOV RET, POP XCHG all check out within the stated range. I'm flagging that the analysis asserts \"32-bit code\" and specific calling-convention assumptions that aren't actually supported by the data provided, since architecture wasn't established, and similarly the claim about pushing a computed address as a call argument assumes adjacency that the n-gram features may not actually guarantee.\n\nis only among the top-k shown, not globally verified — another unsupported generalization. The MOV/LEAVE and hashing-loop descriptions are generic filler without real support. The recommended action section is reasonably conditional and proportional, mentioning sandboxing and benign alternatives, so that part holds up well. Weighing the pervasive adjacency overreach and unverified assumptions against the hedged language throughout, I'd land on a technical accuracy score around 3.\n\nFor coherence, relevance, and utility, I'd give each a 4 — the explanation flows logically and stays useful despite its flaws. On SHAP faithfulness, the signs and magnitudes line up correctly with the evidence, so I'd mark it faithful with no real discrepancies, just a minor note about bigram scope and an assumption about which class the push toward cryptojacking is measured against — that belongs in limitations rather than as a discrepancy.\n\nNow I'm cataloguing the unsupported claims with their specific paths: the 32-bit architecture assumption in the explanation, the CALL-RET adjacency claim at index 0 about thunk functions, the XOR-PUSH zero-initialization claim at index 9, and I still need to check a few more indices like CDQ at 19, PUSH-CALL at 16, INC-PUSH at 15, and MOV-RET at 4 for similar overreach.\n\nI'm finishing the bigram-frequency claim at index 16 (only reflecting top-k selection, not true frequency), then flagging the sign-extension-before-division claim at index 19 since the XOR's actual operands aren't confirmed — just an adjacency inference. I'll also include the counter-increment-then-push claim at index 15, and map each back to its evidence path in /evidence/top_features/ before writing this up concisely.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_2f4001c9127f8b55\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, SHAP range, signs, listed values and frequencies match the evidence. Several interpretations assume adjacency, operand identity or a 32-bit calling convention, none of which is supplied (e.g. \\\"A call immediately followed by a return\\\", \\\"32-bit code\\\", \\\"appears to be zero-initialization\\\"). Most other interpretations are hedged.\",\"coherence\":\"The explanation is well organized and consistent: it moves from evidence to generic-versus-unusual patterns to a low-confidence tier and then to actions. It is somewhat repetitive across the summary, per-feature entries and indicators, and the 0.55 confidence is not tied to the evidence.\",\"cybersecurity_relevance\":\"It ties the specific bigrams to cryptojacking questions, names benign alternatives (compiler output, generic arithmetic) and states the absence of crypto-specific evidence. Some discussion of thunks and packing is speculative but flagged as unconfirmed.\",\"actionable_utility\":\"Conditional, feasible steps: disassemble the functions containing the rare bigrams, check the arithmetic regions, look for strings and endpoints, run a sandbox, compare imports. They map to the evidence gaps and are proportionate. They could be prioritized more explicitly, and the bigram-to-function mapping is not available in the artifact.\"},\"unsupported_claims\":[{\"quote\":\"These patterns are common in ordinary compiled 32-bit code\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"No architecture or bitness information is supplied; 32-bit is assumed from mnemonic bigrams alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A call immediately followed by a return suggests tiny wrapper or thunk functions, or unusual control flow.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0; /evidence/occurrences\",\"reason\":\"Graph-aware n-grams need not be adjacent and no occurrence or context evidence is supplied, so immediate adjacency is inferred.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"here it appears to be zero-initialization with no supporting rotate or shift context\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"/evidence/top_features/9\",\"reason\":\"Operands and adjacency are not provided, so zeroing a register is asserted without evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The most frequent bigram (0.077).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/top_features/16; /evidence/scope_notes\",\"reason\":\"Only a top-20 subset is available and omitted features are unknown. The frequency semantics are also unconfirmed (\\\"do not treat as raw counts\\\"), so 'most frequent overall' is unsupported.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Zeroing a register and then sign-extending, typically before division. Generic arithmetic setup.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/top_features/19\",\"reason\":\"The mnemonic bigram does not show that the XOR zeroes a register or that the CDQ immediately follows it. The division purpose is inferred.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Counter increment followed by a push.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/15/assessment\",\"evidence_reference\":\"/evidence/top_features/15\",\"reason\":\"The INC operand role as a counter and the adjacency are not established by the evidence.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 features are correctly described as positive toward target class 1, the quoted SHAP values match the evidence within rounding, and the range +0.0087 to +0.0177 is correct. The explanation acknowledges that the evidence is limited to mnemonic bigrams. The only caveat is an unconfirmed class-1 label mapping.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption, so the mapping of class 1 to malware/cryptojacking is unverified.\",\"The artifact has no baseline, no full attributions, and no occurrences or function context.\",\"Feature value semantics are not established, so the 'freq' interpretation is unconfirmed.\",\"The top-k subset cannot rule out omitted features supporting the benign class.\",\"The RF probability of 1.0 is not behavioral proof.\"],\"summary\":\"Numeric reporting and SHAP direction are faithful, and the low-confidence framing and conditional follow-up are appropriate. Technical accuracy is held back by repeated unsupported assumptions of adjacency, operand roles, 32-bit code, and 'most frequent' status.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7125,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3593,
+          "output_tokens_details": {
+            "thinking_tokens": 1826
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7125,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3593,
+        "output_tokens_details": {
+          "thinking_tokens": 1826
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_2f4001c9127f8b55\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, SHAP range, signs, listed values and frequencies match the evidence. Several interpretations assume adjacency, operand identity or a 32-bit calling convention, none of which is supplied (e.g. \\\"A call immediately followed by a return\\\", \\\"32-bit code\\\", \\\"appears to be zero-initialization\\\"). Most other interpretations are hedged.\",\"coherence\":\"The explanation is well organized and consistent: it moves from evidence to generic-versus-unusual patterns to a low-confidence tier and then to actions. It is somewhat repetitive across the summary, per-feature entries and indicators, and the 0.55 confidence is not tied to the evidence.\",\"cybersecurity_relevance\":\"It ties the specific bigrams to cryptojacking questions, names benign alternatives (compiler output, generic arithmetic) and states the absence of crypto-specific evidence. Some discussion of thunks and packing is speculative but flagged as unconfirmed.\",\"actionable_utility\":\"Conditional, feasible steps: disassemble the functions containing the rare bigrams, check the arithmetic regions, look for strings and endpoints, run a sandbox, compare imports. They map to the evidence gaps and are proportionate. They could be prioritized more explicitly, and the bigram-to-function mapping is not available in the artifact.\"},\"unsupported_claims\":[{\"quote\":\"These patterns are common in ordinary compiled 32-bit code\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"No architecture or bitness information is supplied; 32-bit is assumed from mnemonic bigrams alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A call immediately followed by a return suggests tiny wrapper or thunk functions, or unusual control flow.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features/0; /evidence/occurrences\",\"reason\":\"Graph-aware n-grams need not be adjacent and no occurrence or context evidence is supplied, so immediate adjacency is inferred.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"here it appears to be zero-initialization with no supporting rotate or shift context\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"/evidence/top_features/9\",\"reason\":\"Operands and adjacency are not provided, so zeroing a register is asserted without evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The most frequent bigram (0.077).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/top_features/16; /evidence/scope_notes\",\"reason\":\"Only a top-20 subset is available and omitted features are unknown. The frequency semantics are also unconfirmed (\\\"do not treat as raw counts\\\"), so 'most frequent overall' is unsupported.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Zeroing a register and then sign-extending, typically before division. Generic arithmetic setup.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/top_features/19\",\"reason\":\"The mnemonic bigram does not show that the XOR zeroes a register or that the CDQ immediately follows it. The division purpose is inferred.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Counter increment followed by a push.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/15/assessment\",\"evidence_reference\":\"/evidence/top_features/15\",\"reason\":\"The INC operand role as a counter and the adjacency are not established by the evidence.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 features are correctly described as positive toward target class 1, the quoted SHAP values match the evidence within rounding, and the range +0.0087 to +0.0177 is correct. The explanation acknowledges that the evidence is limited to mnemonic bigrams. The only caveat is an unconfirmed class-1 label mapping.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption, so the mapping of class 1 to malware/cryptojacking is unverified.\",\"The artifact has no baseline, no full attributions, and no occurrences or function context.\",\"Feature value semantics are not established, so the 'freq' interpretation is unconfirmed.\",\"The top-k subset cannot rule out omitted features supporting the benign class.\",\"The RF probability of 1.0 is not behavioral proof.\"],\"summary\":\"Numeric reporting and SHAP direction are faithful, and the low-confidence framing and conditional follow-up are appropriate. Technical accuracy is held back by repeated unsupported assumptions of adjacency, operand roles, 32-bit code, and 'most frequent' status.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_2f4001c9127f8b55",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The probability, SHAP range, signs, listed values and frequencies match the evidence. Several interpretations assume adjacency, operand identity or a 32-bit calling convention, none of which is supplied (e.g. \"A call immediately followed by a return\", \"32-bit code\", \"appears to be zero-initialization\"). Most other interpretations are hedged.",
+      "coherence": "The explanation is well organized and consistent: it moves from evidence to generic-versus-unusual patterns to a low-confidence tier and then to actions. It is somewhat repetitive across the summary, per-feature entries and indicators, and the 0.55 confidence is not tied to the evidence.",
+      "cybersecurity_relevance": "It ties the specific bigrams to cryptojacking questions, names benign alternatives (compiler output, generic arithmetic) and states the absence of crypto-specific evidence. Some discussion of thunks and packing is speculative but flagged as unconfirmed.",
+      "actionable_utility": "Conditional, feasible steps: disassemble the functions containing the rare bigrams, check the arithmetic regions, look for strings and endpoints, run a sandbox, compare imports. They map to the evidence gaps and are proportionate. They could be prioritized more explicitly, and the bigram-to-function mapping is not available in the artifact."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "These patterns are common in ordinary compiled 32-bit code",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "No architecture or bitness information is supplied; 32-bit is assumed from mnemonic bigrams alone.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "A call immediately followed by a return suggests tiny wrapper or thunk functions, or unusual control flow.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/top_features/0; /evidence/occurrences",
+        "reason": "Graph-aware n-grams need not be adjacent and no occurrence or context evidence is supplied, so immediate adjacency is inferred.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "here it appears to be zero-initialization with no supporting rotate or shift context",
+        "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+        "evidence_reference": "/evidence/top_features/9",
+        "reason": "Operands and adjacency are not provided, so zeroing a register is asserted without evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "The most frequent bigram (0.077).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+        "evidence_reference": "/evidence/top_features/16; /evidence/scope_notes",
+        "reason": "Only a top-20 subset is available and omitted features are unknown. The frequency semantics are also unconfirmed (\"do not treat as raw counts\"), so 'most frequent overall' is unsupported.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Zeroing a register and then sign-extending, typically before division. Generic arithmetic setup.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+        "evidence_reference": "/evidence/top_features/19",
+        "reason": "The mnemonic bigram does not show that the XOR zeroes a register or that the CDQ immediately follows it. The division purpose is inferred.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Counter increment followed by a push.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/15/assessment",
+        "evidence_reference": "/evidence/top_features/15",
+        "reason": "The INC operand role as a counter and the adjacency are not established by the evidence.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 features are correctly described as positive toward target class 1, the quoted SHAP values match the evidence within rounding, and the range +0.0087 to +0.0177 is correct. The explanation acknowledges that the evidence is limited to mnemonic bigrams. The only caveat is an unconfirmed class-1 label mapping.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption, so the mapping of class 1 to malware/cryptojacking is unverified.",
+      "The artifact has no baseline, no full attributions, and no occurrences or function context.",
+      "Feature value semantics are not established, so the 'freq' interpretation is unconfirmed.",
+      "The top-k subset cannot rule out omitted features supporting the benign class.",
+      "The RF probability of 1.0 is not behavioral proof."
+    ],
+    "summary": "Numeric reporting and SHAP direction are faithful, and the low-confidence framing and conditional follow-up are appropriate. Technical accuracy is held back by repeated unsupported assumptions of adjacency, operand roles, 32-bit code, and 'most frequent' status."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "These patterns are common in ordinary compiled 32-bit code",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "No architecture or bitness information is supplied; 32-bit is assumed from mnemonic bigrams alone.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "A call immediately followed by a return suggests tiny wrapper or thunk functions, or unusual control flow.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/top_features/0; /evidence/occurrences",
+      "reason": "Graph-aware n-grams need not be adjacent and no occurrence or context evidence is supplied, so immediate adjacency is inferred.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "here it appears to be zero-initialization with no supporting rotate or shift context",
+      "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+      "evidence_reference": "/evidence/top_features/9",
+      "reason": "Operands and adjacency are not provided, so zeroing a register is asserted without evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The most frequent bigram (0.077).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+      "evidence_reference": "/evidence/top_features/16; /evidence/scope_notes",
+      "reason": "Only a top-20 subset is available and omitted features are unknown. The frequency semantics are also unconfirmed (\"do not treat as raw counts\"), so 'most frequent overall' is unsupported.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Zeroing a register and then sign-extending, typically before division. Generic arithmetic setup.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+      "evidence_reference": "/evidence/top_features/19",
+      "reason": "The mnemonic bigram does not show that the XOR zeroes a register or that the CDQ immediately follows it. The division purpose is inferred.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Counter increment followed by a push.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/15/assessment",
+      "evidence_reference": "/evidence/top_features/15",
+      "reason": "The INC operand role as a counter and the adjacency are not established by the evidence.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "a7796186e4c40f5a257b952e16d1964b3c9f20a1f2d9d09d3047293d6f71c921.exe_analysis.json"
+}

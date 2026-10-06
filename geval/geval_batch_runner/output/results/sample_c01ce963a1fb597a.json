@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_c01ce963a1fb597a",
+  "status": "success",
+  "source_sha256": "c7a7988d2ae6599b4375f49901e30443d6bad61da1e4ef456ab2618c7bf5462d",
+  "input_sha256": "df004a1ed80cc73d856c4f80537e00b9f2d020ea9cec57caf0eb825fd5321c01",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "c78ba64e698b6db6a9a1c05b3c82c5d12ba12d668a440f844f287828c031d825.exe",
+      "source_name": "c78ba64e698b6db6a9a1c05b3c82c5d12ba12d668a440f844f287828c031d825.exe.json",
+      "source_path": "ml/dataset/cryptojacking/c78ba64e698b6db6a9a1c05b3c82c5d12ba12d668a440f844f287828c031d825.exe.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 36,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "c78ba64e698b6db6a9a1c05b3c82c5d12ba12d668a440f844f287828c031d825.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:29:54.540799+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:29:54.540827+00:00",
+      "error": null,
+      "request_sha256": "6c71c43b82d6b0fae74272b011b5cb784d647dab7dc4701eca9d9bde537706a0",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm4gqV1g9DBaMC1GfHNT",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the evidence carefully: the RF model predicts class 1 with 0.97 probability, and all top 20 features show positive SHAP values toward that class, though I need to verify the assumption that class 1 actually corresponds to malware/cryptojacking rather than just assuming it from context.\n\nReviewing the specific claim about \"only AND SUB and PXOR MOVUPS\" being above 0.0003 — I find this is actually inaccurate, since MOVQ PUNPCKLQDQ at 0.00033 also exceeds that threshold, making three features above it rather than two. I'm also flagging that describing these as \"relative frequencies\" or drawing conclusions like \"more typical of incidental code\" or \"repeated vector initialization\" goes beyond what's established, since the semantic meaning of these feature values hasn't actually been confirmed — these are unsupported interpretive leaps rather than grounded observations.\n\nSeveral other candidate claims assume adjacency between instructions without justification — things like \"consecutive register-clearing operations\" for PXOR PXOR, \"typical of function epilogues\" for SUB POP, and \"typical memcpy idiom\" for LEA MOVSD — these all read more into the n-grams than the data supports, though some are at least hedged. The SAR JNZ loop description and FSTP MOV floating-point hypothesis seem reasonably hedged as plausible guesses rather than firm claims, and the overall confidence framing around 0.5 and \"low-confidence, leaning suspicious\" checks out fine.\n\nChecking the individual SHAP values against what's reported — ROL ADD at 0.007597, SAR JNZ at 0.0067298, AND SUB at 0.00665 — these all line up correctly, and the claim that \"all 20 top features\" were considered without omission appears faithful. The grouping of SIMD instructions as the \"strongest group\" also tracks with the actual top-ranked features, so the ordering and magnitude claims hold up.\n\nBut I'm flagging a few unsupported leaps: the claim that MOVQ PUNPCKLQDQ is excluded from values above 0.0003 is wrong since it's actually 0.00033073, which exceeds that threshold. There's also an unsupported interpretive claim that \"extremely low frequencies\" indicate \"incidental code rather than a dominant hot loop\" — that's a semantic inference not backed by the data. And calling the SIMD group \"register-clearing and moving sequences\" assumes a specific behavioral interpretation that isn't established.\n\nI'm also noting the claim that 0.000687 being \"among the more frequent n-grams\" suggests \"repeated vector initialization,\" and that a sequence is \"typical of function epilogues\" — both rely on adjacency assumptions not directly supported.\n\nFor scoring: technical accuracy around 3, since the core evidence is right but interpretations overreach on frequency significance and semantic meaning. Coherence around 4 — well-organized but there's some repetition between sections and mild tension between \"consistent with mining kernels\" and later acknowledging low frequency. Relevance sits around 4-5.\n\nActionability lands around 4 — recommendations are concrete and proportionate, including YARA rules and sandboxing, without fabricating indicators, though not fully prioritized. Now I'm finalizing the evidence limitations and preparing to output the assessment as a single-line JSON object.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_c01ce963a1fb597a\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF 0.97, the 20 positive SHAP values and the +0.006117 to +0.016064 range match the evidence, and the uncertainty is stated. However, it treats the feature values as frequencies, although the artifact says value semantics are not established. It also assumes PXOR is register zeroing and that the n-grams are adjacent. Its claim that only two n-grams exceed 0.0003 is wrong, since 'MOVQ PUNPCKLQDQ' is 0.000331.\",\"coherence\":\"The explanation, per-feature assessments, tier, confidence 0.5 and recommendation are consistent and clearly organized. Some repetition between the summary and evidence_analysis, and a slight tension between 'consistent with ... mining kernels' and the later low-frequency argument, keep it from a 5.\",\"cybersecurity_relevance\":\"It ties the sample's SIMD, ARX-like and x87 n-grams to hash and mining hypotheses and to benign alternatives such as memset, memcpy, legacy FPU and compiler runtime code. It also states that function, API, string and network evidence is missing. The frequency-based inferences weaken the evidential links somewhat.\",\"actionable_utility\":\"The recommended actions are concrete and proportionate: locate the functions, check for hash loops, mining-pool or stratum strings and algorithm constants, observe CPU use and connections in a sandbox, and run YARA and threat-intel checks. They are conditional and tied to the evidence gaps, but not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"with only 'AND SUB' at 0.001289 and 'PXOR MOVUPS' at 0.000687 higher\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/16/value and /evidence/top_features/12/value\",\"reason\":\"'MOVQ PUNPCKLQDQ' has value 0.000331, which is also above 0.0003, so 'only' two is incorrect.\",\"category\":\"other\"},{\"quote\":\"they occur at extremely low frequencies, which is more typical of incidental code than a dominant hot loop\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature values are not established as counts or frequencies, and no occurrences or function context is supplied, so the hot-loop versus incidental-code inference is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"At 0.000687 it is among the more frequent n-grams, suggesting repeated vector initialization, which is non-specific.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1/value; /evidence/feature_value_semantics\",\"reason\":\"Inferring repeated initialization from an unconfirmed feature value is not supported, and the zero-and-store idiom assumes adjacency and same-register zeroing.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Consecutive register-clearing operations.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/top_features/3\",\"reason\":\"The evidence gives only the mnemonic pair 'PXOR PXOR'. It does not show that the operands are identical (zeroing) or that the instructions are consecutive.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Stack adjustment and register restore, typical of function epilogues.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/top_features/5; /evidence/function_context\",\"reason\":\"The evidence provides no function context, operands or adjacency, so the epilogue interpretation is asserted without support.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs, ranking and rounded magnitudes match the evidence. All 20 values are positive for the configured class 1, and the candidate calls the individual values low (max +0.016). It does not claim that omitted features cannot support benign, and it does not reconstruct the probability from the top-k subset. It does not mention the target-class assumption caveat, but this is not a misrepresentation.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Only mnemonic 2-grams are available; there are no occurrences, function context, operands, strings, APIs or network indicators.\",\"Feature value semantics are not established, so raw counts or relative frequencies cannot be assumed.\",\"The SHAP target class is a configured assumption, and the baseline and full attributions are null.\",\"The top-20 subset does not exclude omitted features that support benign.\",\"Graph-aware n-grams need not be adjacent, so control flow and operand relationships cannot be inferred.\"],\"summary\":\"The explanation is well organized, appropriately hedged and faithful to SHAP direction and magnitude, and its follow-up is useful. Its technical accuracy is reduced by one numeric slip and by several interpretations of unestablished feature values, zeroing and adjacency.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7454,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3678,
+          "output_tokens_details": {
+            "thinking_tokens": 1874
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7454,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3678,
+        "output_tokens_details": {
+          "thinking_tokens": 1874
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_c01ce963a1fb597a\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF 0.97, the 20 positive SHAP values and the +0.006117 to +0.016064 range match the evidence, and the uncertainty is stated. However, it treats the feature values as frequencies, although the artifact says value semantics are not established. It also assumes PXOR is register zeroing and that the n-grams are adjacent. Its claim that only two n-grams exceed 0.0003 is wrong, since 'MOVQ PUNPCKLQDQ' is 0.000331.\",\"coherence\":\"The explanation, per-feature assessments, tier, confidence 0.5 and recommendation are consistent and clearly organized. Some repetition between the summary and evidence_analysis, and a slight tension between 'consistent with ... mining kernels' and the later low-frequency argument, keep it from a 5.\",\"cybersecurity_relevance\":\"It ties the sample's SIMD, ARX-like and x87 n-grams to hash and mining hypotheses and to benign alternatives such as memset, memcpy, legacy FPU and compiler runtime code. It also states that function, API, string and network evidence is missing. The frequency-based inferences weaken the evidential links somewhat.\",\"actionable_utility\":\"The recommended actions are concrete and proportionate: locate the functions, check for hash loops, mining-pool or stratum strings and algorithm constants, observe CPU use and connections in a sandbox, and run YARA and threat-intel checks. They are conditional and tied to the evidence gaps, but not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"with only 'AND SUB' at 0.001289 and 'PXOR MOVUPS' at 0.000687 higher\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/16/value and /evidence/top_features/12/value\",\"reason\":\"'MOVQ PUNPCKLQDQ' has value 0.000331, which is also above 0.0003, so 'only' two is incorrect.\",\"category\":\"other\"},{\"quote\":\"they occur at extremely low frequencies, which is more typical of incidental code than a dominant hot loop\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature values are not established as counts or frequencies, and no occurrences or function context is supplied, so the hot-loop versus incidental-code inference is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"At 0.000687 it is among the more frequent n-grams, suggesting repeated vector initialization, which is non-specific.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1/value; /evidence/feature_value_semantics\",\"reason\":\"Inferring repeated initialization from an unconfirmed feature value is not supported, and the zero-and-store idiom assumes adjacency and same-register zeroing.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Consecutive register-clearing operations.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/top_features/3\",\"reason\":\"The evidence gives only the mnemonic pair 'PXOR PXOR'. It does not show that the operands are identical (zeroing) or that the instructions are consecutive.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Stack adjustment and register restore, typical of function epilogues.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/top_features/5; /evidence/function_context\",\"reason\":\"The evidence provides no function context, operands or adjacency, so the epilogue interpretation is asserted without support.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"SHAP signs, ranking and rounded magnitudes match the evidence. All 20 values are positive for the configured class 1, and the candidate calls the individual values low (max +0.016). It does not claim that omitted features cannot support benign, and it does not reconstruct the probability from the top-k subset. It does not mention the target-class assumption caveat, but this is not a misrepresentation.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Only mnemonic 2-grams are available; there are no occurrences, function context, operands, strings, APIs or network indicators.\",\"Feature value semantics are not established, so raw counts or relative frequencies cannot be assumed.\",\"The SHAP target class is a configured assumption, and the baseline and full attributions are null.\",\"The top-20 subset does not exclude omitted features that support benign.\",\"Graph-aware n-grams need not be adjacent, so control flow and operand relationships cannot be inferred.\"],\"summary\":\"The explanation is well organized, appropriately hedged and faithful to SHAP direction and magnitude, and its follow-up is useful. Its technical accuracy is reduced by one numeric slip and by several interpretations of unestablished feature values, zeroing and adjacency.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_c01ce963a1fb597a",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF 0.97, the 20 positive SHAP values and the +0.006117 to +0.016064 range match the evidence, and the uncertainty is stated. However, it treats the feature values as frequencies, although the artifact says value semantics are not established. It also assumes PXOR is register zeroing and that the n-grams are adjacent. Its claim that only two n-grams exceed 0.0003 is wrong, since 'MOVQ PUNPCKLQDQ' is 0.000331.",
+      "coherence": "The explanation, per-feature assessments, tier, confidence 0.5 and recommendation are consistent and clearly organized. Some repetition between the summary and evidence_analysis, and a slight tension between 'consistent with ... mining kernels' and the later low-frequency argument, keep it from a 5.",
+      "cybersecurity_relevance": "It ties the sample's SIMD, ARX-like and x87 n-grams to hash and mining hypotheses and to benign alternatives such as memset, memcpy, legacy FPU and compiler runtime code. It also states that function, API, string and network evidence is missing. The frequency-based inferences weaken the evidential links somewhat.",
+      "actionable_utility": "The recommended actions are concrete and proportionate: locate the functions, check for hash loops, mining-pool or stratum strings and algorithm constants, observe CPU use and connections in a sandbox, and run YARA and threat-intel checks. They are conditional and tied to the evidence gaps, but not explicitly prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "with only 'AND SUB' at 0.001289 and 'PXOR MOVUPS' at 0.000687 higher",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/16/value and /evidence/top_features/12/value",
+        "reason": "'MOVQ PUNPCKLQDQ' has value 0.000331, which is also above 0.0003, so 'only' two is incorrect.",
+        "category": "other"
+      },
+      {
+        "quote": "they occur at extremely low frequencies, which is more typical of incidental code than a dominant hot loop",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states feature values are not established as counts or frequencies, and no occurrences or function context is supplied, so the hot-loop versus incidental-code inference is unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "At 0.000687 it is among the more frequent n-grams, suggesting repeated vector initialization, which is non-specific.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/top_features/1/value; /evidence/feature_value_semantics",
+        "reason": "Inferring repeated initialization from an unconfirmed feature value is not supported, and the zero-and-store idiom assumes adjacency and same-register zeroing.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Consecutive register-clearing operations.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+        "evidence_reference": "/evidence/top_features/3",
+        "reason": "The evidence gives only the mnemonic pair 'PXOR PXOR'. It does not show that the operands are identical (zeroing) or that the instructions are consecutive.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Stack adjustment and register restore, typical of function epilogues.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+        "evidence_reference": "/evidence/top_features/5; /evidence/function_context",
+        "reason": "The evidence provides no function context, operands or adjacency, so the epilogue interpretation is asserted without support.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "SHAP signs, ranking and rounded magnitudes match the evidence. All 20 values are positive for the configured class 1, and the candidate calls the individual values low (max +0.016). It does not claim that omitted features cannot support benign, and it does not reconstruct the probability from the top-k subset. It does not mention the target-class assumption caveat, but this is not a misrepresentation.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Only mnemonic 2-grams are available; there are no occurrences, function context, operands, strings, APIs or network indicators.",
+      "Feature value semantics are not established, so raw counts or relative frequencies cannot be assumed.",
+      "The SHAP target class is a configured assumption, and the baseline and full attributions are null.",
+      "The top-20 subset does not exclude omitted features that support benign.",
+      "Graph-aware n-grams need not be adjacent, so control flow and operand relationships cannot be inferred."
+    ],
+    "summary": "The explanation is well organized, appropriately hedged and faithful to SHAP direction and magnitude, and its follow-up is useful. Its technical accuracy is reduced by one numeric slip and by several interpretations of unestablished feature values, zeroing and adjacency."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "with only 'AND SUB' at 0.001289 and 'PXOR MOVUPS' at 0.000687 higher",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/16/value and /evidence/top_features/12/value",
+      "reason": "'MOVQ PUNPCKLQDQ' has value 0.000331, which is also above 0.0003, so 'only' two is incorrect.",
+      "category": "other"
+    },
+    {
+      "quote": "they occur at extremely low frequencies, which is more typical of incidental code than a dominant hot loop",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states feature values are not established as counts or frequencies, and no occurrences or function context is supplied, so the hot-loop versus incidental-code inference is unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "At 0.000687 it is among the more frequent n-grams, suggesting repeated vector initialization, which is non-specific.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/top_features/1/value; /evidence/feature_value_semantics",
+      "reason": "Inferring repeated initialization from an unconfirmed feature value is not supported, and the zero-and-store idiom assumes adjacency and same-register zeroing.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Consecutive register-clearing operations.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "evidence_reference": "/evidence/top_features/3",
+      "reason": "The evidence gives only the mnemonic pair 'PXOR PXOR'. It does not show that the operands are identical (zeroing) or that the instructions are consecutive.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Stack adjustment and register restore, typical of function epilogues.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+      "evidence_reference": "/evidence/top_features/5; /evidence/function_context",
+      "reason": "The evidence provides no function context, operands or adjacency, so the epilogue interpretation is asserted without support.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "c78ba64e698b6db6a9a1c05b3c82c5d12ba12d668a440f844f287828c031d825.exe_analysis.json"
+}

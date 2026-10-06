@@ -1,0 +1,237 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_c9ff3229711b1107",
+  "status": "success",
+  "source_sha256": "c0a15ded973cdd20923390ca3266d9b98da457a0e7c2e1a0ca64a68498282b14",
+  "input_sha256": "ec30518e8ef50d28eb412b4ea197a14307506f05de76d93df7fde2e98f140c40",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "e85141b23c76fe7b5b6cd7a7a6e4e3ccc444f8b7515e7883f64e1b91423997d8.exe",
+      "source_name": "e85141b23c76fe7b5b6cd7a7a6e4e3ccc444f8b7515e7883f64e1b91423997d8.exe.json",
+      "source_path": "ml/dataset/cryptojacking/e85141b23c76fe7b5b6cd7a7a6e4e3ccc444f8b7515e7883f64e1b91423997d8.exe.json",
+      "split": "test",
+      "batch_number": 0,
+      "row_index_in_batch": 34,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "e85141b23c76fe7b5b6cd7a7a6e4e3ccc444f8b7515e7883f64e1b91423997d8.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:55:35.448080+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:55:35.448114+00:00",
+      "error": null,
+      "request_sha256": "bfeb40bd4974c94ff720fd599969692a106bc7f5c2a3b3bd8fee44414ebb0e72",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm6eRVZVuuTAk9iD9FWM",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "Looking at the RF probability of 0.91 for class 1, I'm checking the top 20 features—19 positive and only one negative (XCHG ADD.LOCK at -0.005174). The candidate's claim that 19 of the top 20 n-grams push toward cryptojacking holds up, and the description of SHAP contributions being small and evenly spread in the +0.005 to +0.011 range also checks out for this top-20 set.\n\nI verify the n-gram frequency claim too: most values sit under 0.0006, with PXOR MOVUPS at 0.002413 standing out as the exception, which matches. But the candidate mislabels the strongest contributors—claiming PXOR PXOR, XOR PXOR, PXOR MOVUPS, and MOVDQA PAND are top, when XOR PXOR is actually ranked 13th and MOV FLD (the true second-strongest at 0.009136) is omitted entirely. I'm flagging this as a SHAP ranking discrepancy, though the broader interpretive claim about SIMD register zeroing and vector manipulation resembling mining kernels is appropriately hedged.\n\nI also notice several adjacency assumptions that aren't actually supported by the rule that graph-aware n-grams need not be consecutive—like PXOR PXOR being read as back-to-back register clearing, CALL RET being treated as an immediate call-then-return thunk, and MOVAPD DIVSD or the aligned-load-then-AND pairing being interpreted as strictly ordered operations. The XCHG ADD.LOCK synchronization read seems reasonable given implicit locking semantics, but the broader claim about multi-word shift arithmetic reinforcement feels like a mild overreach.\n\nThe claim that every single instruction pattern also appears in legitimate crypto, compression, and multimedia code is too sweeping to be fully supported by the evidence—it's generally true but stated with more certainty than warranted, especially for something like the CALL RET idiom. And the high overall RF probability of 0.91 stands out as not being grounded in any function-level or API-level evidence.\n\nOn the recommendations side, the suggested dynamic sandbox analysis, function location, mining hash algorithm checks, packing detection, persistence checks, and config string review are reasonable conditional next steps, though not strongly prioritized—I'd rate actionability around a 4, noting missing items like verifying the upstream extraction and target-class assumption, and the lack of full SHAP attributions. For technical accuracy, it's mostly solid but repeats some adjacency assumptions the rubric specifically warns against, so I'm leaning toward a 4, maybe edging toward a 3 given how often \"consecutive\" and \"immediately followed by\" phrasing shows up.\n\nFor coherence I'm settling on a 4 given the sloppy \"strongest contributors\" list despite otherwise consistent explanation, and for relevance I'm debating between 4 and 5 since the candidate does address benign alternatives and limits but misses the target-class assumption—I'll go with 5 since it fits the top anchor description of connecting evidence, limits, and alternatives consistently. Now I'm identifying specific unsupported claims, starting with the consecutive SSE register-clearing and XOR operations claim.\n\nI'm flagging the \"call immediately followed by return\" interpretation as a thunk or trivial wrapper—unsupported since it's just one n-gram example (CALL RET) among the thirteen patterns listed. I'm also noting the claim that every instruction pattern occurs in legitimate crypto, compression, multimedia and numeric software is an overreach in certainty, and similarly the characterization of n-gram frequencies as \"very low, mostly under 0.0006\" treats raw feature values as established frequency semantics without that being confirmed.\n\nFor the SHAP section, I'm checking whether labeling PXOR PXOR and XOR PXOR as the \"strongest contributors\" misrepresents the actual ranking—since MOV FLD and ADD MOVQ aren't mentioned despite potentially ranking higher. I'm leaning toward marking this as a moderate, not severe, faithfulness issue tied to ranking misstatement rather than direction or magnitude errors. I'm also listing the evidence limitations: unverified target class assumption, unestablished feature value semantics, missing occurrence counts or function context, and reliance on top-k features only.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_c9ff3229711b1107\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF 0.91, the 19/20 positive split, the +0.005 to +0.011 range and the PXOR MOVUPS value 0.002413 all match the evidence. Mnemonic interpretations are mostly hedged. Minor issues: adjacency or ordering is assumed (e.g. 'immediately followed by return'), 'frequencies' is used although value semantics are unestablished, and the strongest-contributor list misstates the ranking.\",\"coherence\":\"Evidence, interpretation, tier (low-confidence), confidence 0.55 and the recommendation agree with each other. The 'strongest contributors' sentence is inconsistent with the per-feature SHAP values listed later, and the explanation is somewhat long.\",\"cybersecurity_relevance\":\"Ties the specific n-grams to crypto-hash/SIMD patterns and to benign alternatives (math libraries, compression, multimedia, synchronization). States that there are no function or API clues and that the n-grams cannot confirm cryptojacking.\",\"actionable_utility\":\"Proposes concrete, proportionate, conditional checks: sandbox CPU use, mining-pool and stratum traffic, locating the rotate/SIMD functions, packing, persistence and config strings, and a benign-library fallback. It is not prioritized and does not suggest verifying the SHAP target class or upstream extraction.\"},\"unsupported_claims\":[{\"quote\":\"The strongest contributors are PXOR PXOR (+0.011429) and XOR PXOR (+0.005707), plus PXOR MOVUPS (+0.007954) and MOVDQA PAND (+0.008113).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"XOR PXOR (+0.005707) ranks 13th of 20, while MOV FLD (+0.009136) is second and is omitted from the 'strongest' list.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"Consecutive SSE register-clearing or XOR operations.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"No extraction or context evidence establishes adjacency or control flow, or that the pattern is register zeroing.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It indicates a call immediately followed by return, such as a thunk or trivial wrapper.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"The immediate-adjacency and thunk/wrapper interpretation is asserted without occurrence or function context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The n-gram frequencies are very low, mostly under 0.0006, apart from PXOR MOVUPS at 0.002413.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The numbers are correct, but the artifact says the values must not be treated as raw counts or frequencies without upstream confirmation.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Every one of these instruction patterns also occurs in legitimate crypto libraries, compression, multimedia and numeric software.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"A universal claim about all 20 patterns is not supported by sample evidence.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Together they reinforce the presence of multi-word shift arithmetic, which is weakly suggestive.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Two mnemonic pairs are used to assert the 'presence' of multi-word arithmetic without context.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, values and the 19/1 split are reported correctly, and the 'small, evenly spread' description is fair for the top-20. The 'strongest contributors' sentence misstates the magnitude ranking.\",\"discrepancies\":[{\"quote\":\"The strongest contributors are PXOR PXOR (+0.011429) and XOR PXOR (+0.005707), plus PXOR MOVUPS (+0.007954) and MOVDQA PAND (+0.008113).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"XOR PXOR is 13th by SHAP magnitude, and the second-ranked MOV FLD (+0.009136) and the fifth-ranked ADD MOVQ (+0.007876) are left out.\"}]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption (class 1) and the artifact says to verify the upstream extraction.\",\"Feature value semantics are unestablished, so the values may not be raw counts or frequencies.\",\"Occurrences and function_context are empty, so adjacency, control flow and routine membership cannot be verified.\",\"Only the top-20 features are provided. The baseline and full attributions are null, so omitted features may support benign.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation is mostly accurate, appropriately cautious (low-confidence, unconfirmed) and offers feasible conditional follow-up. Deductions are for a misstated SHAP ranking, adjacency assumptions, treating feature values as frequencies, and one overbroad universal claim.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7387,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4982,
+          "output_tokens_details": {
+            "thinking_tokens": 3019
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7387,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4982,
+        "output_tokens_details": {
+          "thinking_tokens": 3019
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_c9ff3229711b1107\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF 0.91, the 19/20 positive split, the +0.005 to +0.011 range and the PXOR MOVUPS value 0.002413 all match the evidence. Mnemonic interpretations are mostly hedged. Minor issues: adjacency or ordering is assumed (e.g. 'immediately followed by return'), 'frequencies' is used although value semantics are unestablished, and the strongest-contributor list misstates the ranking.\",\"coherence\":\"Evidence, interpretation, tier (low-confidence), confidence 0.55 and the recommendation agree with each other. The 'strongest contributors' sentence is inconsistent with the per-feature SHAP values listed later, and the explanation is somewhat long.\",\"cybersecurity_relevance\":\"Ties the specific n-grams to crypto-hash/SIMD patterns and to benign alternatives (math libraries, compression, multimedia, synchronization). States that there are no function or API clues and that the n-grams cannot confirm cryptojacking.\",\"actionable_utility\":\"Proposes concrete, proportionate, conditional checks: sandbox CPU use, mining-pool and stratum traffic, locating the rotate/SIMD functions, packing, persistence and config strings, and a benign-library fallback. It is not prioritized and does not suggest verifying the SHAP target class or upstream extraction.\"},\"unsupported_claims\":[{\"quote\":\"The strongest contributors are PXOR PXOR (+0.011429) and XOR PXOR (+0.005707), plus PXOR MOVUPS (+0.007954) and MOVDQA PAND (+0.008113).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"XOR PXOR (+0.005707) ranks 13th of 20, while MOV FLD (+0.009136) is second and is omitted from the 'strongest' list.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"Consecutive SSE register-clearing or XOR operations.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"No extraction or context evidence establishes adjacency or control flow, or that the pattern is register zeroing.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It indicates a call immediately followed by return, such as a thunk or trivial wrapper.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"The immediate-adjacency and thunk/wrapper interpretation is asserted without occurrence or function context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The n-gram frequencies are very low, mostly under 0.0006, apart from PXOR MOVUPS at 0.002413.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The numbers are correct, but the artifact says the values must not be treated as raw counts or frequencies without upstream confirmation.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Every one of these instruction patterns also occurs in legitimate crypto libraries, compression, multimedia and numeric software.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"A universal claim about all 20 patterns is not supported by sample evidence.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Together they reinforce the presence of multi-word shift arithmetic, which is weakly suggestive.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Two mnemonic pairs are used to assert the 'presence' of multi-word arithmetic without context.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, values and the 19/1 split are reported correctly, and the 'small, evenly spread' description is fair for the top-20. The 'strongest contributors' sentence misstates the magnitude ranking.\",\"discrepancies\":[{\"quote\":\"The strongest contributors are PXOR PXOR (+0.011429) and XOR PXOR (+0.005707), plus PXOR MOVUPS (+0.007954) and MOVDQA PAND (+0.008113).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"XOR PXOR is 13th by SHAP magnitude, and the second-ranked MOV FLD (+0.009136) and the fifth-ranked ADD MOVQ (+0.007876) are left out.\"}]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption (class 1) and the artifact says to verify the upstream extraction.\",\"Feature value semantics are unestablished, so the values may not be raw counts or frequencies.\",\"Occurrences and function_context are empty, so adjacency, control flow and routine membership cannot be verified.\",\"Only the top-20 features are provided. The baseline and full attributions are null, so omitted features may support benign.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation is mostly accurate, appropriately cautious (low-confidence, unconfirmed) and offers feasible conditional follow-up. Deductions are for a misstated SHAP ranking, adjacency assumptions, treating feature values as frequencies, and one overbroad universal claim.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_c9ff3229711b1107",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF 0.91, the 19/20 positive split, the +0.005 to +0.011 range and the PXOR MOVUPS value 0.002413 all match the evidence. Mnemonic interpretations are mostly hedged. Minor issues: adjacency or ordering is assumed (e.g. 'immediately followed by return'), 'frequencies' is used although value semantics are unestablished, and the strongest-contributor list misstates the ranking.",
+      "coherence": "Evidence, interpretation, tier (low-confidence), confidence 0.55 and the recommendation agree with each other. The 'strongest contributors' sentence is inconsistent with the per-feature SHAP values listed later, and the explanation is somewhat long.",
+      "cybersecurity_relevance": "Ties the specific n-grams to crypto-hash/SIMD patterns and to benign alternatives (math libraries, compression, multimedia, synchronization). States that there are no function or API clues and that the n-grams cannot confirm cryptojacking.",
+      "actionable_utility": "Proposes concrete, proportionate, conditional checks: sandbox CPU use, mining-pool and stratum traffic, locating the rotate/SIMD functions, packing, persistence and config strings, and a benign-library fallback. It is not prioritized and does not suggest verifying the SHAP target class or upstream extraction."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "The strongest contributors are PXOR PXOR (+0.011429) and XOR PXOR (+0.005707), plus PXOR MOVUPS (+0.007954) and MOVDQA PAND (+0.008113).",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "XOR PXOR (+0.005707) ranks 13th of 20, while MOV FLD (+0.009136) is second and is omitted from the 'strongest' list.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "Consecutive SSE register-clearing or XOR operations.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "No extraction or context evidence establishes adjacency or control flow, or that the pattern is register zeroing.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "It indicates a call immediately followed by return, such as a thunk or trivial wrapper.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+        "evidence_reference": "/evidence/function_context",
+        "reason": "The immediate-adjacency and thunk/wrapper interpretation is asserted without occurrence or function context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "The n-gram frequencies are very low, mostly under 0.0006, apart from PXOR MOVUPS at 0.002413.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The numbers are correct, but the artifact says the values must not be treated as raw counts or frequencies without upstream confirmation.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Every one of these instruction patterns also occurs in legitimate crypto libraries, compression, multimedia and numeric software.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "A universal claim about all 20 patterns is not supported by sample evidence.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Together they reinforce the presence of multi-word shift arithmetic, which is weakly suggestive.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Two mnemonic pairs are used to assert the 'presence' of multi-word arithmetic without context.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "Signs, values and the 19/1 split are reported correctly, and the 'small, evenly spread' description is fair for the top-20. The 'strongest contributors' sentence misstates the magnitude ranking.",
+      "discrepancies": [
+        {
+          "quote": "The strongest contributors are PXOR PXOR (+0.011429) and XOR PXOR (+0.005707), plus PXOR MOVUPS (+0.007954) and MOVDQA PAND (+0.008113).",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "XOR PXOR is 13th by SHAP magnitude, and the second-ranked MOV FLD (+0.009136) and the fifth-ranked ADD MOVQ (+0.007876) are left out."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption (class 1) and the artifact says to verify the upstream extraction.",
+      "Feature value semantics are unestablished, so the values may not be raw counts or frequencies.",
+      "Occurrences and function_context are empty, so adjacency, control flow and routine membership cannot be verified.",
+      "Only the top-20 features are provided. The baseline and full attributions are null, so omitted features may support benign.",
+      "The RF probability is not behavioral proof of cryptojacking."
+    ],
+    "summary": "The explanation is mostly accurate, appropriately cautious (low-confidence, unconfirmed) and offers feasible conditional follow-up. Deductions are for a misstated SHAP ranking, adjacency assumptions, treating feature values as frequencies, and one overbroad universal claim."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "The strongest contributors are PXOR PXOR (+0.011429) and XOR PXOR (+0.005707), plus PXOR MOVUPS (+0.007954) and MOVDQA PAND (+0.008113).",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "XOR PXOR (+0.005707) ranks 13th of 20, while MOV FLD (+0.009136) is second and is omitted from the 'strongest' list.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "Consecutive SSE register-clearing or XOR operations.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "No extraction or context evidence establishes adjacency or control flow, or that the pattern is register zeroing.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "It indicates a call immediately followed by return, such as a thunk or trivial wrapper.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+      "evidence_reference": "/evidence/function_context",
+      "reason": "The immediate-adjacency and thunk/wrapper interpretation is asserted without occurrence or function context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The n-gram frequencies are very low, mostly under 0.0006, apart from PXOR MOVUPS at 0.002413.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The numbers are correct, but the artifact says the values must not be treated as raw counts or frequencies without upstream confirmation.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Every one of these instruction patterns also occurs in legitimate crypto libraries, compression, multimedia and numeric software.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "A universal claim about all 20 patterns is not supported by sample evidence.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Together they reinforce the presence of multi-word shift arithmetic, which is weakly suggestive.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Two mnemonic pairs are used to assert the 'presence' of multi-word arithmetic without context.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "e85141b23c76fe7b5b6cd7a7a6e4e3ccc444f8b7515e7883f64e1b91423997d8.exe_analysis.json"
+}

@@ -1,0 +1,239 @@
+{
+  "sample_id": "sample_a64cffe3d8cfbeff",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 1.0,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "XOR VMOVDQA",
+        "value": 4.4010212150169536e-05,
+        "shap_value": 0.011675446533797906
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "value": 0.00015403573343064636,
+        "shap_value": 0.011549652599309356
+      },
+      {
+        "ngram": "DIV MUL",
+        "value": 1.1002553037542384e-05,
+        "shap_value": 0.011474650950307383
+      },
+      {
+        "ngram": "MOV SYSCALL",
+        "value": 0.0001320306328125298,
+        "shap_value": 0.011085291151302022
+      },
+      {
+        "ngram": "VPXOR VMOVDQU",
+        "value": 0.0001430331903975457,
+        "shap_value": 0.00956726414333012
+      },
+      {
+        "ngram": "CALL RET",
+        "value": 2.2005106075084768e-05,
+        "shap_value": 0.009395767575810723
+      },
+      {
+        "ngram": "SUB CMOVG",
+        "value": 1.1002553037542384e-05,
+        "shap_value": 0.007589889978202903
+      },
+      {
+        "ngram": "CVTSI2SD MULSD",
+        "value": 0.0001980459492187947,
+        "shap_value": 0.007338048749681347
+      },
+      {
+        "ngram": "SHL XCHG",
+        "value": 1.1002553037542384e-05,
+        "shap_value": 0.00716795158717263
+      },
+      {
+        "ngram": "ADD POP",
+        "value": 7.701786671532318e-05,
+        "shap_value": 0.006946368032610004
+      },
+      {
+        "ngram": "UCOMISD JC",
+        "value": 1.1002553037542384e-05,
+        "shap_value": 0.006794606855854355
+      },
+      {
+        "ngram": "XCHG XCHG",
+        "value": 7.701786671532318e-05,
+        "shap_value": 0.006740580350924095
+      },
+      {
+        "ngram": "TEST JGE",
+        "value": 0.0005941378185525537,
+        "shap_value": 0.006655857902565898
+      },
+      {
+        "ngram": "AND DEC",
+        "value": 8.802042430033907e-05,
+        "shap_value": 0.006585179755336577
+      },
+      {
+        "ngram": "PCMPEQB PMOVMSKB",
+        "value": 4.4010212150169536e-05,
+        "shap_value": 0.00646947256703884
+      },
+      {
+        "ngram": "PAND PXOR",
+        "value": 1.1002553037542384e-05,
+        "shap_value": 0.006418453590632681
+      },
+      {
+        "ngram": "CALL PUSH",
+        "value": 2.2005106075084768e-05,
+        "shap_value": 0.0063271154237791345
+      },
+      {
+        "ngram": "PAND PMOVMSKB",
+        "value": 1.1002553037542384e-05,
+        "shap_value": 0.006284411379419513
+      },
+      {
+        "ngram": "XCHG ADD",
+        "value": 1.1002553037542384e-05,
+        "shap_value": 0.006260735782932971
+      },
+      {
+        "ngram": "SHL SBB",
+        "value": 5.5012762459227815e-05,
+        "shap_value": 0.006258084591757907
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "high-confidence",
+    "explanation": "The Random Forest classified this binary as malware with probability 1.0000, and all 20 top SHAP features push toward cryptojacking (+0.0063 to +0.0117). No single n-gram is conclusive, and several are common compiler or runtime idioms. The combined profile is still consistent with a compute-heavy mining payload. Vectorized bitwise mixing appears in XOR VMOVDQA (+0.011675), PXOR PXOR (+0.011550), VPXOR VMOVDQU (+0.009567) and PAND PXOR (+0.006418). This is the kind of SIMD XOR/AND mixing found in hashing and cipher inner loops. DIV MUL (+0.011475) suggests multi-precision or modular arithmetic. CVTSI2SD MULSD (+0.007338) and UCOMISD JC (+0.006795) show scalar floating-point work. MOV SYSCALL (+0.011085) indicates direct system-call invocation. SHL XCHG, XCHG XCHG, XCHG ADD and SHL SBB suggest bit manipulation and register shuffling that could belong to a hash or round function. PCMPEQB PMOVMSKB and PAND PMOVMSKB are SIMD byte-comparison idioms often used in string scanning. The remaining n-grams (CALL RET, CALL PUSH, ADD POP, TEST JGE, AND DEC, SUB CMOVG) are generic control-flow and arithmetic patterns that add little on their own. The evidence lists no function names, APIs or strings, and the n-gram frequencies are very low (at most 0.000594). The tier therefore rests on the cumulative SHAP signal and the model's maximal confidence, not on any specific mining-related artifact.",
+    "evidence_analysis": [
+      {
+        "ngram": "XOR VMOVDQA",
+        "shap_contribution": 0.011675,
+        "assessment": "Mixes scalar XOR with AVX aligned vector moves, which fits state initialization or mixing in a vectorized hash or cipher kernel. This is the strongest single signal toward cryptojacking."
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "shap_contribution": 0.01155,
+        "assessment": "Consecutive SSE XORs are typical of vectorized hash and cipher round operations. They can also be a register-zeroing idiom, so this is suggestive but not conclusive."
+      },
+      {
+        "ngram": "DIV MUL",
+        "shap_contribution": 0.011475,
+        "assessment": "Division followed by multiplication is consistent with modular or big-number arithmetic. It is very rare in the binary (frequency 0.000011), yet it carries a high SHAP weight."
+      },
+      {
+        "ngram": "MOV SYSCALL",
+        "shap_contribution": 0.011085,
+        "assessment": "Direct system-call invocation. It may reflect a statically linked runtime or low-level OS interaction. It is only weakly tied to mining and is more of a generic malware-leaning feature."
+      },
+      {
+        "ngram": "VPXOR VMOVDQU",
+        "shap_contribution": 0.009567,
+        "assessment": "AVX2 XOR with unaligned vector load/store is typical of optimized bulk hashing or cipher loops that process data in wide blocks. This supports a compute-intensive payload."
+      },
+      {
+        "ngram": "CALL RET",
+        "shap_contribution": 0.009396,
+        "assessment": "Generic control-flow pattern with no specific link to mining. It contributes to the model's score but is not independently interpretable."
+      },
+      {
+        "ngram": "SUB CMOVG",
+        "shap_contribution": 0.00759,
+        "assessment": "Branchless conditional selection after subtraction. It appears in constant-time or optimized arithmetic and is weakly consistent with numeric or crypto code."
+      },
+      {
+        "ngram": "CVTSI2SD MULSD",
+        "shap_contribution": 0.007338,
+        "assessment": "Integer-to-double conversion followed by floating-point multiply. This points to floating-point computation, possibly for statistics, scheduling or throttling. It is only weakly indicative."
+      },
+      {
+        "ngram": "SHL XCHG",
+        "shap_contribution": 0.007168,
+        "assessment": "Bit shifting combined with exchange operations can occur in rotate-and-swap steps of hash functions. Weak to moderate signal."
+      },
+      {
+        "ngram": "ADD POP",
+        "shap_contribution": 0.006946,
+        "assessment": "Typical function epilogue or stack cleanup. It is generic and non-specific."
+      },
+      {
+        "ngram": "UCOMISD JC",
+        "shap_contribution": 0.006795,
+        "assessment": "Floating-point comparison followed by a conditional branch. This is consistent with numeric threshold checks and is weakly indicative."
+      },
+      {
+        "ngram": "XCHG XCHG",
+        "shap_contribution": 0.006741,
+        "assessment": "Repeated register exchanges are unusual in ordinary compiled code. They may reflect hand-optimized or obfuscated routines such as permutation steps, and are mildly suspicious."
+      },
+      {
+        "ngram": "TEST JGE",
+        "shap_contribution": 0.006656,
+        "assessment": "Common sign-test branch idiom. It is the most frequent n-gram listed (0.000594) but is generic and offers little discriminative meaning."
+      },
+      {
+        "ngram": "AND DEC",
+        "shap_contribution": 0.006585,
+        "assessment": "Masking followed by a decrement is typical of loop counters and bounds handling in tight loops. Non-specific."
+      },
+      {
+        "ngram": "PCMPEQB PMOVMSKB",
+        "shap_contribution": 0.006469,
+        "assessment": "SIMD byte comparison with mask extraction is a standard vectorized string or memory scan idiom. It may come from library code, so it is of limited specificity."
+      },
+      {
+        "ngram": "PAND PXOR",
+        "shap_contribution": 0.006418,
+        "assessment": "SIMD AND and XOR combined are consistent with bitwise mixing in vectorized hash or cipher rounds. This reinforces the XOR-heavy SIMD cluster."
+      },
+      {
+        "ngram": "CALL PUSH",
+        "shap_contribution": 0.006327,
+        "assessment": "Generic call-site and stack setup pattern. It is not independently interpretable."
+      },
+      {
+        "ngram": "PAND PMOVMSKB",
+        "shap_contribution": 0.006284,
+        "assessment": "SIMD mask-and-extract sequence, similar to the PCMPEQB PMOVMSKB idiom. It indicates vectorized data scanning or filtering and is of limited specificity."
+      },
+      {
+        "ngram": "XCHG ADD",
+        "shap_contribution": 0.006261,
+        "assessment": "Exchange followed by addition suggests register juggling in arithmetic-heavy code. Weak signal that adds to the XCHG cluster."
+      },
+      {
+        "ngram": "SHL SBB",
+        "shap_contribution": 0.006258,
+        "assessment": "Shift with subtract-with-borrow is typical of multi-word arithmetic or carry propagation, which is consistent with big-number or hash computation."
+      }
+    ],
+    "confidence_score": 0.78,
+    "key_indicators": [
+      "Random Forest probability of 1.0000 for the malware class, with all top-20 SHAP contributions positive",
+      "Cluster of SIMD XOR/AND mixing n-grams (XOR VMOVDQA, PXOR PXOR, VPXOR VMOVDQU, PAND PXOR) consistent with vectorized hash or cipher loops",
+      "DIV MUL and SHL SBB suggest multi-precision or modular arithmetic",
+      "XCHG-based n-grams (SHL XCHG, XCHG XCHG, XCHG ADD) suggest hand-optimized or obfuscated bit manipulation",
+      "Floating-point sequences (CVTSI2SD MULSD, UCOMISD JC) indicate numeric computation",
+      "MOV SYSCALL indicates direct system-call usage",
+      "No function names, APIs or strings in the evidence, so the assessment relies on instruction-level patterns only"
+    ],
+    "recommended_action": "Treat the sample as likely cryptojacking and prioritize it for confirmation. Locate the functions containing the XOR/PXOR/VPXOR vector-heavy loops and the DIV MUL and SHL SBB arithmetic, and check whether they implement a known mining hash algorithm. Run it in a sandbox and watch for sustained high CPU use, outbound connections to mining pools, and persistence. Also extract strings and configuration data (wallet addresses, pool URLs) to confirm. Isolate any hosts where it has run until confirmed."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

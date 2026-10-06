@@ -1,0 +1,240 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_d00eca002717e992",
+  "status": "success",
+  "source_sha256": "1c0b6b93258dd1e27dba795b27489ea8996d44d960f67134d7585005ace8edc5",
+  "input_sha256": "0671058a1682494b6e3fcb75f1a06c18cc931eed9f4c43f98d246a089a382620",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "ba2d1265f9355b41a1e6a5571ae72ac5550cb045993b0fa9dc399264f0861845.exe",
+      "source_name": "ba2d1265f9355b41a1e6a5571ae72ac5550cb045993b0fa9dc399264f0861845.exe.json",
+      "source_path": "ml/dataset/cryptojacking/ba2d1265f9355b41a1e6a5571ae72ac5550cb045993b0fa9dc399264f0861845.exe.json",
+      "split": "test",
+      "batch_number": 0,
+      "row_index_in_batch": 71,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "ba2d1265f9355b41a1e6a5571ae72ac5550cb045993b0fa9dc399264f0861845.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:23:32.876436+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:23:32.876463+00:00",
+      "error": null,
+      "request_sha256": "49aeb39e274172476ee04ff5a31eacf68a7cdac33c322f5d32e76fb29bce48d4",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm4ChggDKCquFY35ZWPx",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_d00eca002717e992\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP values and frequencies match the evidence, and most instruction semantics are correct. Several points overreach: it treats feature values as 'relative frequency', it calls `add blx` an 'indirect branch-with-link', and it says `XOR CALL` is a 'zeroing idiom before a call'. It also says \\\"Most of the n-grams are generic compiler-produced instruction pairs\\\" and that they \\\"are common in benign code\\\" without support. Also, \\\"mixes x86-style (uppercase) and ARM-style (lowercase) mnemonics in one binary\\\" asserts a single binary without context.\",\"coherence\":\"The argument is well organized: strong RF output, small SHAP values, near-zero values, no context, hence low-confidence. Minor repetition across the explanation, key indicators and per-feature entries. One inconsistency: it says \\\"all 20 top n-grams push toward cryptojacking\\\" but then says the model's \\\"suggests maliciousness\\\" and the recommendation allows reclassification as general malware.\",\"cybersecurity_relevance\":\"It ties the evidence to cryptojacking triage, covering hash-like mixing, missing function/API context, the mixed-architecture oddity and benign-compiler alternatives. It also states that the n-gram evidence is not specific to mining. It cites mining-oriented checks but leaves out some benign alternatives, such as legitimate crypto or hashing code.\",\"actionable_utility\":\"The recommendations are concrete and proportionate: disassemble, find hash-like loops, investigate the mixed x86/ARM content, run a sandbox for CPU use and pool connections, and validate against mining-algorithm signatures. They are tied to the stated evidence gaps. They lack prioritization and specific indicators, and the 'reclassify as general malware' step is not directly supported.\"},\"unsupported_claims\":[{\"quote\":\"nearly all n-grams have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature value semantics are not established and should not be treated as raw counts without upstream confirmation; 'relative frequency' is an assumed meaning, and \\\"nearly all\\\" is not exact since the value is exactly 0.0 for 12 of 20 features.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The evidence also mixes x86-style (uppercase) and ARM-style (lowercase) mnemonics in one binary.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"The mnemonic case differs across features, but nothing indicates the features came from a single binary or how the sample was extracted.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"They are common in benign code and are not specific to mining.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"No benign baseline, omitted-feature data or function context is provided, so the benign prevalence of these n-grams cannot be confirmed; the second half is general reasoning.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Even so, their frequencies are essentially zero, so they do not show a dominant compute kernel.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Inferring the absence of a compute kernel from feature values with unestablished semantics is an unsupported behavioral inference.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"An XOR followed by a call, often a zeroing idiom before a call.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4\",\"reason\":\"Treating this as a zeroing idiom assumes adjacency and operand identity, but graph-aware n-grams need not be adjacent and no operands are given.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A call followed by stack or pointer adjustment. A generic calling-convention pattern with no mining specificity.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/evidence/top_features/7\",\"reason\":\"Adjacency and the intent of the ADD (stack cleanup) are assumed; no operand or context evidence is provided.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A common function-epilogue pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1\",\"reason\":\"The function-epilogue interpretation presumes adjacency and position in a function, but function context is empty.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The signs are all positive, and the magnitudes and ranking are consistent with the supplied values, including the stated range +0.0048 to +0.0114. Features are described as pushing toward the configured class 1. The note that SHAP values are small is accurate, and the explanation does not claim omitted features lack benign support.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The shap_target_class is a configured assumption to be verified upstream.\",\"Feature value semantics (counts versus frequencies) are not established.\",\"SHAP baseline and the full attributions are null, and omitted features are unknown.\",\"Occurrences and function context are empty, so adjacency, control flow, API calls and behavior cannot be verified.\",\"Only the artifact is supplied, with no binary, disassembly or dynamic analysis.\"],\"summary\":\"The explanation is cautious and well organized, with correct numbers and SHAP direction. It loses some technical accuracy through assumed feature-value semantics, a single-binary claim, and idiom interpretations that rest on assumed adjacency. The follow-up actions are concrete and proportionate.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6918,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2067,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6918,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2067,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_d00eca002717e992\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP values and frequencies match the evidence, and most instruction semantics are correct. Several points overreach: it treats feature values as 'relative frequency', it calls `add blx` an 'indirect branch-with-link', and it says `XOR CALL` is a 'zeroing idiom before a call'. It also says \\\"Most of the n-grams are generic compiler-produced instruction pairs\\\" and that they \\\"are common in benign code\\\" without support. Also, \\\"mixes x86-style (uppercase) and ARM-style (lowercase) mnemonics in one binary\\\" asserts a single binary without context.\",\"coherence\":\"The argument is well organized: strong RF output, small SHAP values, near-zero values, no context, hence low-confidence. Minor repetition across the explanation, key indicators and per-feature entries. One inconsistency: it says \\\"all 20 top n-grams push toward cryptojacking\\\" but then says the model's \\\"suggests maliciousness\\\" and the recommendation allows reclassification as general malware.\",\"cybersecurity_relevance\":\"It ties the evidence to cryptojacking triage, covering hash-like mixing, missing function/API context, the mixed-architecture oddity and benign-compiler alternatives. It also states that the n-gram evidence is not specific to mining. It cites mining-oriented checks but leaves out some benign alternatives, such as legitimate crypto or hashing code.\",\"actionable_utility\":\"The recommendations are concrete and proportionate: disassemble, find hash-like loops, investigate the mixed x86/ARM content, run a sandbox for CPU use and pool connections, and validate against mining-algorithm signatures. They are tied to the stated evidence gaps. They lack prioritization and specific indicators, and the 'reclassify as general malware' step is not directly supported.\"},\"unsupported_claims\":[{\"quote\":\"nearly all n-grams have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature value semantics are not established and should not be treated as raw counts without upstream confirmation; 'relative frequency' is an assumed meaning, and \\\"nearly all\\\" is not exact since the value is exactly 0.0 for 12 of 20 features.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The evidence also mixes x86-style (uppercase) and ARM-style (lowercase) mnemonics in one binary.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"The mnemonic case differs across features, but nothing indicates the features came from a single binary or how the sample was extracted.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"They are common in benign code and are not specific to mining.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"No benign baseline, omitted-feature data or function context is provided, so the benign prevalence of these n-grams cannot be confirmed; the second half is general reasoning.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Even so, their frequencies are essentially zero, so they do not show a dominant compute kernel.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Inferring the absence of a compute kernel from feature values with unestablished semantics is an unsupported behavioral inference.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"An XOR followed by a call, often a zeroing idiom before a call.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4\",\"reason\":\"Treating this as a zeroing idiom assumes adjacency and operand identity, but graph-aware n-grams need not be adjacent and no operands are given.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A call followed by stack or pointer adjustment. A generic calling-convention pattern with no mining specificity.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/evidence/top_features/7\",\"reason\":\"Adjacency and the intent of the ADD (stack cleanup) are assumed; no operand or context evidence is provided.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A common function-epilogue pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1\",\"reason\":\"The function-epilogue interpretation presumes adjacency and position in a function, but function context is empty.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The signs are all positive, and the magnitudes and ranking are consistent with the supplied values, including the stated range +0.0048 to +0.0114. Features are described as pushing toward the configured class 1. The note that SHAP values are small is accurate, and the explanation does not claim omitted features lack benign support.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The shap_target_class is a configured assumption to be verified upstream.\",\"Feature value semantics (counts versus frequencies) are not established.\",\"SHAP baseline and the full attributions are null, and omitted features are unknown.\",\"Occurrences and function context are empty, so adjacency, control flow, API calls and behavior cannot be verified.\",\"Only the artifact is supplied, with no binary, disassembly or dynamic analysis.\"],\"summary\":\"The explanation is cautious and well organized, with correct numbers and SHAP direction. It loses some technical accuracy through assumed feature-value semantics, a single-binary claim, and idiom interpretations that rest on assumed adjacency. The follow-up actions are concrete and proportionate.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_d00eca002717e992",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability, SHAP values and frequencies match the evidence, and most instruction semantics are correct. Several points overreach: it treats feature values as 'relative frequency', it calls `add blx` an 'indirect branch-with-link', and it says `XOR CALL` is a 'zeroing idiom before a call'. It also says \"Most of the n-grams are generic compiler-produced instruction pairs\" and that they \"are common in benign code\" without support. Also, \"mixes x86-style (uppercase) and ARM-style (lowercase) mnemonics in one binary\" asserts a single binary without context.",
+      "coherence": "The argument is well organized: strong RF output, small SHAP values, near-zero values, no context, hence low-confidence. Minor repetition across the explanation, key indicators and per-feature entries. One inconsistency: it says \"all 20 top n-grams push toward cryptojacking\" but then says the model's \"suggests maliciousness\" and the recommendation allows reclassification as general malware.",
+      "cybersecurity_relevance": "It ties the evidence to cryptojacking triage, covering hash-like mixing, missing function/API context, the mixed-architecture oddity and benign-compiler alternatives. It also states that the n-gram evidence is not specific to mining. It cites mining-oriented checks but leaves out some benign alternatives, such as legitimate crypto or hashing code.",
+      "actionable_utility": "The recommendations are concrete and proportionate: disassemble, find hash-like loops, investigate the mixed x86/ARM content, run a sandbox for CPU use and pool connections, and validate against mining-algorithm signatures. They are tied to the stated evidence gaps. They lack prioritization and specific indicators, and the 'reclassify as general malware' step is not directly supported."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "nearly all n-grams have a relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature value semantics are not established and should not be treated as raw counts without upstream confirmation; 'relative frequency' is an assumed meaning, and \"nearly all\" is not exact since the value is exactly 0.0 for 12 of 20 features.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "The evidence also mixes x86-style (uppercase) and ARM-style (lowercase) mnemonics in one binary.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "The mnemonic case differs across features, but nothing indicates the features came from a single binary or how the sample was extracted.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "They are common in benign code and are not specific to mining.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "No benign baseline, omitted-feature data or function context is provided, so the benign prevalence of these n-grams cannot be confirmed; the second half is general reasoning.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Even so, their frequencies are essentially zero, so they do not show a dominant compute kernel.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "Inferring the absence of a compute kernel from feature values with unestablished semantics is an unsupported behavioral inference.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "An XOR followed by a call, often a zeroing idiom before a call.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/top_features/4",
+        "reason": "Treating this as a zeroing idiom assumes adjacency and operand identity, but graph-aware n-grams need not be adjacent and no operands are given.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "A call followed by stack or pointer adjustment. A generic calling-convention pattern with no mining specificity.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+        "evidence_reference": "/evidence/top_features/7",
+        "reason": "Adjacency and the intent of the ADD (stack cleanup) are assumed; no operand or context evidence is provided.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "A common function-epilogue pattern.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/top_features/1",
+        "reason": "The function-epilogue interpretation presumes adjacency and position in a function, but function context is empty.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "The signs are all positive, and the magnitudes and ranking are consistent with the supplied values, including the stated range +0.0048 to +0.0114. Features are described as pushing toward the configured class 1. The note that SHAP values are small is accurate, and the explanation does not claim omitted features lack benign support.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The shap_target_class is a configured assumption to be verified upstream.",
+      "Feature value semantics (counts versus frequencies) are not established.",
+      "SHAP baseline and the full attributions are null, and omitted features are unknown.",
+      "Occurrences and function context are empty, so adjacency, control flow, API calls and behavior cannot be verified.",
+      "Only the artifact is supplied, with no binary, disassembly or dynamic analysis."
+    ],
+    "summary": "The explanation is cautious and well organized, with correct numbers and SHAP direction. It loses some technical accuracy through assumed feature-value semantics, a single-binary claim, and idiom interpretations that rest on assumed adjacency. The follow-up actions are concrete and proportionate."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "nearly all n-grams have a relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature value semantics are not established and should not be treated as raw counts without upstream confirmation; 'relative frequency' is an assumed meaning, and \"nearly all\" is not exact since the value is exactly 0.0 for 12 of 20 features.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The evidence also mixes x86-style (uppercase) and ARM-style (lowercase) mnemonics in one binary.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "The mnemonic case differs across features, but nothing indicates the features came from a single binary or how the sample was extracted.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "They are common in benign code and are not specific to mining.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "No benign baseline, omitted-feature data or function context is provided, so the benign prevalence of these n-grams cannot be confirmed; the second half is general reasoning.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Even so, their frequencies are essentially zero, so they do not show a dominant compute kernel.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "Inferring the absence of a compute kernel from feature values with unestablished semantics is an unsupported behavioral inference.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "An XOR followed by a call, often a zeroing idiom before a call.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/top_features/4",
+      "reason": "Treating this as a zeroing idiom assumes adjacency and operand identity, but graph-aware n-grams need not be adjacent and no operands are given.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "A call followed by stack or pointer adjustment. A generic calling-convention pattern with no mining specificity.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+      "evidence_reference": "/evidence/top_features/7",
+      "reason": "Adjacency and the intent of the ADD (stack cleanup) are assumed; no operand or context evidence is provided.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "A common function-epilogue pattern.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/top_features/1",
+      "reason": "The function-epilogue interpretation presumes adjacency and position in a function, but function context is empty.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "ba2d1265f9355b41a1e6a5571ae72ac5550cb045993b0fa9dc399264f0861845.exe_analysis.json"
+}

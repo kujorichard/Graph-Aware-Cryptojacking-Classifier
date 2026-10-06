@@ -1,0 +1,188 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_3bdb1d685abbdea5",
+  "status": "success",
+  "source_sha256": "64856a38e18eff8db8065f7a7b99ecb2975b8da00a599732ec4e53291820b858",
+  "input_sha256": "a1805dbd472c3c686c2c086acd6ea901d7d2f0f6c3873552985bb004723bd682",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "c2c074381d900532e327a4667664949b3436f8896a1be2e7ead279863cf98036.exe",
+      "source_name": "c2c074381d900532e327a4667664949b3436f8896a1be2e7ead279863cf98036.exe.json",
+      "source_path": "ml/dataset/cryptojacking/c2c074381d900532e327a4667664949b3436f8896a1be2e7ead279863cf98036.exe.json",
+      "split": "test",
+      "batch_number": 4,
+      "row_index_in_batch": 94,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "c2c074381d900532e327a4667664949b3436f8896a1be2e7ead279863cf98036.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:27:20.036611+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:27:20.036640+00:00",
+      "error": null,
+      "request_sha256": "b73d4eec88e149003fd389c0b76476198bb06ea36c8dc265a7aad537e953471f",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm4VTBmguCi3JN8JAAdo",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF prediction of 1 with full confidence, confirming all 20 top n-grams have positive SHAP values ranging from 0.0066 to 0.0115, which does support the claim that the malware classification is unambiguous—though I want to verify the shap_target_class matches the assumed \"malware\" label.\n\nCross-referencing the frequency values cited (PUSH CALL at 0.0505, MOV PUSH at 0.0421, CALL PUSH at 0.0354, PUSH RET at ~0.000019, SHL NEG similarly low, POP LEA and SBB INC at 0.000075) and they all check out against the evidence. I'm noting some minor overreach though: the candidate treats these values as straightforward \"frequency\" counts when the semantics weren't actually established, and calling the top value the \"most frequent n-gram\" overstates things since it's only most frequent among the top-20 subset. The claims about PUSH RET as an indirect-jump idiom and packed/obfuscated code associations seem like reasonable general knowledge rather than evidence-specific overreach.\n\nMore significantly, I'm flagging that several descriptions assert instruction adjacency (call-immediately-followed-by-return, shift-followed-by-negate, restore-then-compare, counter-increment-then-push) when the evidence actually specifies these n-grams could be graph-aware rather than strictly sequential — so adjacency itself is unsupported and should be treated as a mild inference the candidate shouldn't have stated as fact.\n\nI'm also noting the \"most frequent n-gram\" claim is only true among the top-20 shown, not globally, so that's an unsupported_certainty issue, and the RF probability of 1.0 being described as \"unambiguous\" overstates calibration — these should feed into a low-confidence tier assessment around 0.5, even though the overall direction toward a suspicious/malicious classification remains reasonably supported by the pattern dominance.\n\nChecking SHAP faithfulness, the direction and relative magnitudes line up correctly, with POP/XOR correctly identified as the strongest contributor; the candidate's framing of n-gram patterns as a learned stylistic signature is reasonable speculation but should be flagged as such rather than stated as fact, and it doesn't address omitted features or baseline comparison, which is a limitation worth noting even though the top-20 framing is technically accurate. I'm landing on a technical accuracy score around 4, factoring in these calibration gaps.\n\nFor coherence, there's some repetition between the explanation, evidence, and indicators sections, and overall length runs a bit long, so I'd put that around 4 as well. Relevance is strong since it ties evidence limits to alternative explanations like compiler style and packing, though it could more explicitly address benign alternatives such as legitimate crypto/hashing libraries rather than just compiler artifacts — I'll settle on a 4 there. Actionability also seems solid, pointing toward sandboxing, string analysis, and YARA rule development as next steps.\n\nI'm noting a couple of unsupported claims and cross-referencing them back to specific evidence paths, like the CALL/RET index flagged in the assessment and the frequency note marked elsewhere as \"very low,\" before formatting everything into a single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_3bdb1d685abbdea5\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF class/probability, the 20 positive SHAP values (+0.0066 to +0.0115) and the quoted n-gram values match the evidence. Instruction semantics (SHLD, SBB, PUSH RET) are generally accurate and mostly hedged. Minor overreach: values are treated as 'frequency' and some pairs as adjacent instructions, though the evidence says value semantics are unestablished and graph-aware n-grams need not be adjacent.\",\"coherence\":\"The tier, the 'cannot confirm cryptojacking' conclusion, the per-feature analysis and the recommendations are consistent. Some repetition across the explanation, evidence_analysis and key_indicators weakens concision.\",\"cybersecurity_relevance\":\"The explanation ties sample n-grams to packing/obfuscation versus compiler-style alternatives and to hash/wide-integer arithmetic. It states that no API, string or function evidence links the sample to mining. It does not discuss benign alternatives such as legitimate crypto or hash libraries.\",\"actionable_utility\":\"Recommends concrete, proportionate checks: sandbox CPU and stratum/pool network monitoring, inspecting functions with the rare n-grams, strings/imports for pools and wallets, and YARA. The actions are conditional and tied to the evidence gap, but they are not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Call immediately followed by return (0.000528).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features/11; /evidence/occurrences\",\"reason\":\"Asserts literal adjacency for CALL RET, but there is no occurrence or context evidence, and graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Most frequent n-gram (0.050545), the standard argument-then-call pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/top_features/16; /evidence/feature_value_semantics\",\"reason\":\"Only the top-20 features are supplied and the value semantics are not established. This feature is not shown to be the most frequent overall, and 'frequency' is not confirmed.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"so the model's malware call is unambiguous\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /evidence/shap_target_class_source\",\"reason\":\"The RF probability of 1.0 is not behavioral proof or a calibrated confidence. The class-1 = malware mapping and the SHAP target class are only configured assumptions, and the top-k positives do not cover omitted features.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP signs are positive for the configured target class 1, the range +0.0066 to +0.0115 is correct, and POP XOR is correctly the strongest contributor. The per-feature SHAP contributions match the evidence within rounding. Feature values are quoted correctly.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No occurrences, function context, API/strings or extraction details are supplied, so adjacency and behavior cannot be verified.\",\"Feature value semantics are not established, so values should not be read as raw counts or frequencies.\",\"SHAP baseline and full attributions are null, and the top-k subset cannot exclude omitted benign-supporting features.\",\"The SHAP target class is a configured assumption and should be verified upstream.\"],\"summary\":\"A largely accurate and well-hedged explanation that faithfully represents SHAP direction and magnitude and correctly declines to confirm cryptojacking. Minor issues are the assumed adjacency and frequency semantics, a 'most frequent' claim that exceeds the top-k evidence, and treating RF probability 1.0 as 'unambiguous'.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7126,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3291,
+          "output_tokens_details": {
+            "thinking_tokens": 1866
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7126,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3291,
+        "output_tokens_details": {
+          "thinking_tokens": 1866
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_3bdb1d685abbdea5\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF class/probability, the 20 positive SHAP values (+0.0066 to +0.0115) and the quoted n-gram values match the evidence. Instruction semantics (SHLD, SBB, PUSH RET) are generally accurate and mostly hedged. Minor overreach: values are treated as 'frequency' and some pairs as adjacent instructions, though the evidence says value semantics are unestablished and graph-aware n-grams need not be adjacent.\",\"coherence\":\"The tier, the 'cannot confirm cryptojacking' conclusion, the per-feature analysis and the recommendations are consistent. Some repetition across the explanation, evidence_analysis and key_indicators weakens concision.\",\"cybersecurity_relevance\":\"The explanation ties sample n-grams to packing/obfuscation versus compiler-style alternatives and to hash/wide-integer arithmetic. It states that no API, string or function evidence links the sample to mining. It does not discuss benign alternatives such as legitimate crypto or hash libraries.\",\"actionable_utility\":\"Recommends concrete, proportionate checks: sandbox CPU and stratum/pool network monitoring, inspecting functions with the rare n-grams, strings/imports for pools and wallets, and YARA. The actions are conditional and tied to the evidence gap, but they are not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Call immediately followed by return (0.000528).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/top_features/11; /evidence/occurrences\",\"reason\":\"Asserts literal adjacency for CALL RET, but there is no occurrence or context evidence, and graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Most frequent n-gram (0.050545), the standard argument-then-call pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/top_features/16; /evidence/feature_value_semantics\",\"reason\":\"Only the top-20 features are supplied and the value semantics are not established. This feature is not shown to be the most frequent overall, and 'frequency' is not confirmed.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"so the model's malware call is unambiguous\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /evidence/shap_target_class_source\",\"reason\":\"The RF probability of 1.0 is not behavioral proof or a calibrated confidence. The class-1 = malware mapping and the SHAP target class are only configured assumptions, and the top-k positives do not cover omitted features.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP signs are positive for the configured target class 1, the range +0.0066 to +0.0115 is correct, and POP XOR is correctly the strongest contributor. The per-feature SHAP contributions match the evidence within rounding. Feature values are quoted correctly.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No occurrences, function context, API/strings or extraction details are supplied, so adjacency and behavior cannot be verified.\",\"Feature value semantics are not established, so values should not be read as raw counts or frequencies.\",\"SHAP baseline and full attributions are null, and the top-k subset cannot exclude omitted benign-supporting features.\",\"The SHAP target class is a configured assumption and should be verified upstream.\"],\"summary\":\"A largely accurate and well-hedged explanation that faithfully represents SHAP direction and magnitude and correctly declines to confirm cryptojacking. Minor issues are the assumed adjacency and frequency semantics, a 'most frequent' claim that exceeds the top-k evidence, and treating RF probability 1.0 as 'unambiguous'.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_3bdb1d685abbdea5",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF class/probability, the 20 positive SHAP values (+0.0066 to +0.0115) and the quoted n-gram values match the evidence. Instruction semantics (SHLD, SBB, PUSH RET) are generally accurate and mostly hedged. Minor overreach: values are treated as 'frequency' and some pairs as adjacent instructions, though the evidence says value semantics are unestablished and graph-aware n-grams need not be adjacent.",
+      "coherence": "The tier, the 'cannot confirm cryptojacking' conclusion, the per-feature analysis and the recommendations are consistent. Some repetition across the explanation, evidence_analysis and key_indicators weakens concision.",
+      "cybersecurity_relevance": "The explanation ties sample n-grams to packing/obfuscation versus compiler-style alternatives and to hash/wide-integer arithmetic. It states that no API, string or function evidence links the sample to mining. It does not discuss benign alternatives such as legitimate crypto or hash libraries.",
+      "actionable_utility": "Recommends concrete, proportionate checks: sandbox CPU and stratum/pool network monitoring, inspecting functions with the rare n-grams, strings/imports for pools and wallets, and YARA. The actions are conditional and tied to the evidence gap, but they are not explicitly prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Call immediately followed by return (0.000528).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/top_features/11; /evidence/occurrences",
+        "reason": "Asserts literal adjacency for CALL RET, but there is no occurrence or context evidence, and graph-aware n-grams need not be adjacent.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Most frequent n-gram (0.050545), the standard argument-then-call pattern.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+        "evidence_reference": "/evidence/top_features/16; /evidence/feature_value_semantics",
+        "reason": "Only the top-20 features are supplied and the value semantics are not established. This feature is not shown to be the most frequent overall, and 'frequency' is not confirmed.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "so the model's malware call is unambiguous",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/rf_probability_class_1; /evidence/shap_target_class_source",
+        "reason": "The RF probability of 1.0 is not behavioral proof or a calibrated confidence. The class-1 = malware mapping and the SHAP target class are only configured assumptions, and the top-k positives do not cover omitted features.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP signs are positive for the configured target class 1, the range +0.0066 to +0.0115 is correct, and POP XOR is correctly the strongest contributor. The per-feature SHAP contributions match the evidence within rounding. Feature values are quoted correctly.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No occurrences, function context, API/strings or extraction details are supplied, so adjacency and behavior cannot be verified.",
+      "Feature value semantics are not established, so values should not be read as raw counts or frequencies.",
+      "SHAP baseline and full attributions are null, and the top-k subset cannot exclude omitted benign-supporting features.",
+      "The SHAP target class is a configured assumption and should be verified upstream."
+    ],
+    "summary": "A largely accurate and well-hedged explanation that faithfully represents SHAP direction and magnitude and correctly declines to confirm cryptojacking. Minor issues are the assumed adjacency and frequency semantics, a 'most frequent' claim that exceeds the top-k evidence, and treating RF probability 1.0 as 'unambiguous'."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Call immediately followed by return (0.000528).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/top_features/11; /evidence/occurrences",
+      "reason": "Asserts literal adjacency for CALL RET, but there is no occurrence or context evidence, and graph-aware n-grams need not be adjacent.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Most frequent n-gram (0.050545), the standard argument-then-call pattern.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+      "evidence_reference": "/evidence/top_features/16; /evidence/feature_value_semantics",
+      "reason": "Only the top-20 features are supplied and the value semantics are not established. This feature is not shown to be the most frequent overall, and 'frequency' is not confirmed.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "so the model's malware call is unambiguous",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/rf_probability_class_1; /evidence/shap_target_class_source",
+      "reason": "The RF probability of 1.0 is not behavioral proof or a calibrated confidence. The class-1 = malware mapping and the SHAP target class are only configured assumptions, and the top-k positives do not cover omitted features.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "c2c074381d900532e327a4667664949b3436f8896a1be2e7ead279863cf98036.exe_analysis.json"
+}

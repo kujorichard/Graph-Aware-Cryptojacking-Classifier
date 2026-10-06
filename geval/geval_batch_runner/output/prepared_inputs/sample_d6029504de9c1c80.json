@@ -1,0 +1,237 @@
+{
+  "sample_id": "sample_d6029504de9c1c80",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 1.0,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "PXOR MOVUPS",
+        "value": 0.0011612738016992807,
+        "shap_value": 0.01284990850336788
+      },
+      {
+        "ngram": "FSTP MOV",
+        "value": 9.305078492616303e-06,
+        "shap_value": 0.01261733353566705
+      },
+      {
+        "ngram": "SUB CMOVG",
+        "value": 4.094234463991597e-05,
+        "shap_value": 0.010713438001320711
+      },
+      {
+        "ngram": "MOV FLD",
+        "value": 7.63016432756558e-05,
+        "shap_value": 0.010083977812810707
+      },
+      {
+        "ngram": "XOR ADC",
+        "value": 0.00039639632450416684,
+        "shap_value": 0.009332992313666286
+      },
+      {
+        "ngram": "SHL NEG",
+        "value": 3.7220313515717862e-06,
+        "shap_value": 0.009043562237896432
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "value": 2.977625081257429e-05,
+        "shap_value": 0.008982599896292697
+      },
+      {
+        "ngram": "CALL PUSH",
+        "value": 1.1166093827341683e-05,
+        "shap_value": 0.008237840275823324
+      },
+      {
+        "ngram": "MOVQ PUNPCKLQDQ",
+        "value": 0.00037592515582218766,
+        "shap_value": 0.007830934621091626
+      },
+      {
+        "ngram": "LEA PXOR",
+        "value": 4.094234463991597e-05,
+        "shap_value": 0.007472049048754126
+      },
+      {
+        "ngram": "ADD ROR",
+        "value": 5.583046913670842e-06,
+        "shap_value": 0.007020465411217638
+      },
+      {
+        "ngram": "ADD MOVQ",
+        "value": 0.0002456540532875806,
+        "shap_value": 0.00701186996206465
+      },
+      {
+        "ngram": "MOVSXD BSR",
+        "value": 5.583046913670842e-06,
+        "shap_value": 0.006819209883651964
+      },
+      {
+        "ngram": "MOVUPS PXOR",
+        "value": 3.535929863573983e-05,
+        "shap_value": 0.006804648025824229
+      },
+      {
+        "ngram": "ROL MOVZX",
+        "value": 7.4440627031435724e-06,
+        "shap_value": 0.006800157794342702
+      },
+      {
+        "ngram": "SAR JNZ",
+        "value": 1.3027109162067063e-05,
+        "shap_value": 0.006743687839872374
+      },
+      {
+        "ngram": "CVTSI2SD PXOR",
+        "value": 5.583046913670842e-06,
+        "shap_value": 0.006623013361573527
+      },
+      {
+        "ngram": "FSTP FSTP",
+        "value": 3.908132930519059e-05,
+        "shap_value": 0.0065814753804588665
+      },
+      {
+        "ngram": "ADD FLD",
+        "value": 3.3498279663035646e-05,
+        "shap_value": 0.006537240923158108
+      },
+      {
+        "ngram": "MOVAPD DIVSD",
+        "value": 5.583046913670842e-06,
+        "shap_value": 0.006164135468188062
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "high-confidence",
+    "explanation": "The Random Forest predicts MALWARE with probability 1.0000, and all 20 top n-grams push toward cryptojacking, with no counter-evidence among them. The strongest cluster is SSE2 vector XOR and move activity: PXOR MOVUPS (+0.012850, the top feature and the most frequent at 0.001161), PXOR PXOR (+0.008983), LEA PXOR (+0.007472), MOVUPS PXOR (+0.006805) and MOVQ PUNPCKLQDQ (+0.007831). Together these suggest repeated 128-bit state mixing, as in hashing or cipher-style inner loops. A second cluster of integer bit-manipulation and carry patterns also points to hash-like arithmetic: XOR ADC (+0.009333), ADD ROR (+0.007020), ROL MOVZX (+0.006800), SHL NEG (+0.009044), SAR JNZ (+0.006744), SUB CMOVG (+0.010713) and MOVSXD BSR (+0.006819). A third cluster is floating-point activity, both x87 (FSTP MOV +0.012617, MOV FLD +0.010084, FSTP FSTP +0.006581, ADD FLD +0.006537) and SSE scalar (CVTSI2SD PXOR +0.006623, MOVAPD DIVSD +0.006164). Mixed integer, vector and floating-point compute of this kind is consistent with a compute-heavy mining kernel. Caveats: the evidence contains no function names or API context, and most n-grams have very low frequencies (many below 0.00005). Individually these mnemonics also appear in ordinary compiler output, so the tier rests on the model's output and the combined pattern rather than on any single decisive indicator.",
+    "evidence_analysis": [
+      {
+        "ngram": "PXOR MOVUPS",
+        "shap_contribution": 0.01285,
+        "assessment": "Top-ranked and relatively frequent. Vector XOR followed by an unaligned 128-bit move fits wide state mixing or buffer handling in a hash or cipher loop."
+      },
+      {
+        "ngram": "FSTP MOV",
+        "shap_contribution": 0.012617,
+        "assessment": "x87 store followed by an integer move. Very rare (0.000009) but heavily weighted, suggesting floating-point results being moved into integer state. Fits a mixed FP/integer compute routine."
+      },
+      {
+        "ngram": "SUB CMOVG",
+        "shap_contribution": 0.010713,
+        "assessment": "Branchless conditional selection after subtraction. Common in constant-time or tight-loop numeric code, which is typical of mining kernels but not specific to them."
+      },
+      {
+        "ngram": "MOV FLD",
+        "shap_contribution": 0.010084,
+        "assessment": "Loading a value onto the x87 stack. Together with the other FLD/FSTP n-grams it indicates a notable amount of floating-point work."
+      },
+      {
+        "ngram": "XOR ADC",
+        "shap_contribution": 0.009333,
+        "assessment": "XOR combined with add-with-carry suggests multi-word arithmetic or mixing steps, as in big-integer or hash computations."
+      },
+      {
+        "ngram": "SHL NEG",
+        "shap_contribution": 0.009044,
+        "assessment": "Shift and negate bit manipulation, often used for masks or arithmetic tricks in low-level compute loops."
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "shap_contribution": 0.008983,
+        "assessment": "Consecutive vector XORs, consistent with register zeroing or chained XOR mixing in vectorized round functions."
+      },
+      {
+        "ngram": "CALL PUSH",
+        "shap_contribution": 0.008238,
+        "assessment": "Generic call/stack-setup pattern. Weak on its own, but it contributes meaningfully to the model's score."
+      },
+      {
+        "ngram": "MOVQ PUNPCKLQDQ",
+        "shap_contribution": 0.007831,
+        "assessment": "Packing 64-bit values into a 128-bit register, typical of SIMD data preparation for vectorized arithmetic or hashing."
+      },
+      {
+        "ngram": "LEA PXOR",
+        "shap_contribution": 0.007472,
+        "assessment": "Address computation followed by vector XOR, indicating table or state lookups feeding SIMD mixing."
+      },
+      {
+        "ngram": "ADD ROR",
+        "shap_contribution": 0.00702,
+        "assessment": "Addition followed by rotate right is the classic add-rotate-xor style of hash and cipher rounds."
+      },
+      {
+        "ngram": "ADD MOVQ",
+        "shap_contribution": 0.007012,
+        "assessment": "Integer addition followed by a move into an XMM register, bridging scalar and vector computation."
+      },
+      {
+        "ngram": "MOVSXD BSR",
+        "shap_contribution": 0.006819,
+        "assessment": "Sign-extension followed by a bit-scan-reverse. Suggests bit-length or normalization logic, e.g. in multi-precision arithmetic."
+      },
+      {
+        "ngram": "MOVUPS PXOR",
+        "shap_contribution": 0.006805,
+        "assessment": "The reverse ordering of the top n-gram: load then XOR. Reinforces the vector state-mixing pattern."
+      },
+      {
+        "ngram": "ROL MOVZX",
+        "shap_contribution": 0.0068,
+        "assessment": "Rotate left followed by zero-extension of a byte or word, consistent with byte-oriented hash or cipher operations."
+      },
+      {
+        "ngram": "SAR JNZ",
+        "shap_contribution": 0.006744,
+        "assessment": "Arithmetic shift feeding a conditional branch, typical of bit-testing loops. Moderately suggestive in combination with the other bit-manipulation n-grams."
+      },
+      {
+        "ngram": "CVTSI2SD PXOR",
+        "shap_contribution": 0.006623,
+        "assessment": "Integer-to-double conversion with vector XOR, usually zeroing the destination first. Indicates integer values being fed into floating-point computation."
+      },
+      {
+        "ngram": "FSTP FSTP",
+        "shap_contribution": 0.006581,
+        "assessment": "Consecutive x87 stores, reinforcing x87 floating-point-heavy code."
+      },
+      {
+        "ngram": "ADD FLD",
+        "shap_contribution": 0.006537,
+        "assessment": "Integer add or pointer arithmetic followed by an x87 load, typical of FP array processing loops."
+      },
+      {
+        "ngram": "MOVAPD DIVSD",
+        "shap_contribution": 0.006164,
+        "assessment": "Double-precision move and scalar divide. Further evidence of floating-point computation alongside the integer and vector patterns."
+      }
+    ],
+    "confidence_score": 0.8,
+    "key_indicators": [
+      "Random Forest probability of 1.0000 for MALWARE, with all top-20 SHAP contributions positive",
+      "Dense SSE2 PXOR/MOVUPS/MOVQ/PUNPCKLQDQ cluster indicating vectorized state mixing",
+      "Add/rotate/XOR-with-carry integer patterns (XOR ADC, ADD ROR, ROL MOVZX, SHL NEG) typical of hash-like rounds",
+      "Mixed x87 and SSE floating-point sequences (FLD/FSTP, CVTSI2SD, DIVSD) alongside integer bit manipulation",
+      "No function-level or API context in the evidence, so the assessment relies on instruction-pattern and model-score signals"
+    ],
+    "recommended_action": "Treat the sample as likely cryptojacking malware and quarantine it. Locate the functions containing the PXOR/MOVUPS and ADD/ROR/ROL clusters and check whether they form a hashing or mining inner loop. Confirm dynamically in a sandbox by looking for sustained high CPU usage, outbound pool or stratum-style network connections, and persistence. Because the n-grams alone are generic compiler-like patterns, corroborate with strings, network indicators and runtime behavior before final attribution."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

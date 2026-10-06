@@ -1,0 +1,203 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_ac27066daf885ea3",
+  "status": "success",
+  "source_sha256": "0c11e59e849931dd37e5a41e55df299e07923d55e8251b147e2787b01fa51788",
+  "input_sha256": "5e41e51202007047c31addf0f4b7bc6e54bca70814f1184f94abe235b22ade7c",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "15f1df9c3b4868199d06b324179ad35c61f42f80cf81138be4f774089d88527b.exe",
+      "source_name": "15f1df9c3b4868199d06b324179ad35c61f42f80cf81138be4f774089d88527b.exe.json",
+      "source_path": "ml/dataset/cryptojacking/15f1df9c3b4868199d06b324179ad35c61f42f80cf81138be4f774089d88527b.exe.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 47,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "15f1df9c3b4868199d06b324179ad35c61f42f80cf81138be4f774089d88527b.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:09:55.829981+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:09:55.830009+00:00",
+      "error": null,
+      "request_sha256": "e08a412dcfce33c388ddfab1fcc0a6a827d18d59ae491d850535d8b99a698c74",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfkxb8ScUQCxB6WYJkxkv",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm summing up the SHAP values one by one to check whether they total correctly.\n\nLooking more closely, the frequency ranges and rotate-related n-gram rankings seem reasonable, but I'm noticing the candidate treats these frequencies as more established than they are, slightly overreaching on raw count semantics. There's also an issue where it assumes the target class is verified toward malware/cryptojacking without acknowledging that's just a configured assumption.\n\nThe \"rotate-heavy cluster\" framing feels like an overreach too, since each individual n-gram frequency is actually quite tiny—calling it \"ARX-style\" and inferring adjacency between ADD and ROR instructions isn't something graph-aware n-grams necessarily establish.\n\nOther interpretations like \"push then return as control-flow redirection\" or \"XOR-then-call as register-zeroing\" are generic and appropriately hedged speculation rather than solid claims. Overall the recommended actions and low-confidence tier (0.58, \"inconclusive and leans suspicious\") seem consistent with the SHAP values and model probability, and the summed top-k contribution of about +0.13 doesn't overstate what's being captured.\n\nI'm checking whether any claim implies the omitted features support a benign verdict — doesn't look like it; stating \"all 20 top features contribute positively\" is fine. But there are still some unsupported assertions I'm flagging: claims about instruction \"frequency\" semantics, \"add-then-rotate-right is characteristic of ARX-style\" ciphers, \"rotate-heavy\" patterns, and attributing the prediction \"toward the malware/cryptojacking class\" when the target class isn't actually verified. I'm cataloging these with their JSON paths (like /candidate_analysis/explanation and /candidate_analysis/evidence_analysis/2/assessment) alongside the specific opcode-pair indices they correspond to — things like MOVZX/PUSH, MOV/ROL, ADD/ROR, SUB/SBB, PUSH/RET, POP/TEST, ROL/MOV, SBB/INC, CMOVZ/MOV, and so on through the feature list.\n\nFor SHAP faithfulness, I'm concluding it's largely faithful — signs and magnitudes line up, with only a minor quibble about how \"relative frequency\" is framed (not strictly a SHAP property) and an unflagged assumption about the target class. I'll mark faithfulness as true with no major discrepancies listed.\n\nOn scoring, I'm leaning toward technical accuracy of 4 given the numbers check out but there's some adjacency/frequency overreach, coherence around 4 since the explanation is clear but repeats itself across sections, relevance at 5, and I'm now thinking through what to credit for actionability.\n\nFor actionability, the suggested actions — locating functions via disassembly, stratum, wallet, sandbox, YARA — are reasonable but aren't explicitly prioritized, so I'll settle on a 4.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_ac27066daf885ea3\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Numbers check out: 20 positive SHAP values from 0.004919 to 0.010458 sum to about 0.132, and the cited frequencies and the two zero-frequency n-grams match. The weaker points are minor overreach: it treats the values as 'relative frequency' despite the semantics caveat, and it reads some n-grams as ordered, adjacent ARX patterns without extraction context. The overall conclusion is appropriately hedged.\",\"coherence\":\"Observations, interpretation, the low-confidence tier, the 0.58 score and the 'inconclusive and leans suspicious' conclusion are consistent. Some repetition across the explanation, evidence_analysis and key_indicators, and the 'rotate-heavy' label sits awkwardly beside the stated very low frequencies.\",\"cybersecurity_relevance\":\"Ties the sample's actual n-grams (rotate and carry clusters, stack idioms) to hash and proof-of-work hypotheses. It names benign alternatives (checksum, compression, runtime-library code) and states the evidence limits: no functions, APIs or strings, and zero-frequency features.\",\"actionable_utility\":\"The follow-up is concrete, feasible and conditional: locate functions containing the ROL/ADC sequences, check for stratum or pool config and wallet addresses, check for packing, run a sandbox, and use YARA or constant matching. It is linked to the evidence gaps and not treated as observed behavior. It is not explicitly prioritized, and the function-location step presumes disassembly access.\"},\"unsupported_claims\":[{\"quote\":\"Add-then-rotate-right is characteristic of ARX-style (add-rotate-xor) primitives used in hashing.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2; /evidence/occurrences is empty\",\"reason\":\"Assumes a strict add-then-rotate order and adjacency. The graph-aware n-gram has no extraction or context evidence for ordering, and no XOR accompanies it in the top features.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Rotate then add is a classic ARX pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/12/assessment\",\"evidence_reference\":\"/evidence/top_features/12; /evidence/occurrences is empty\",\"reason\":\"Infers an ordered ARX construct from a mnemonic n-gram alone, without context or adjacency evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"every n-gram has a very low relative frequency (at most about 0.002)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states the feature-value semantics are not established and the values should not be treated as raw counts. Calling them relative frequencies assumes unconfirmed semantics, though the numbers themselves are correct.\",\"category\":\"other\"},{\"quote\":\"Rotate-heavy n-gram cluster (MOV ROL, ADD ROR, MOVZX ROL, ROL MOV, ROL ADD, ROL AND) consistent with ARX-style hash/crypto mixing\",\"candidate_path\":\"/candidate_analysis/key_indicators/0\",\"evidence_reference\":\"/evidence/top_features (values 0.000164 to 0.002134)\",\"reason\":\"'Rotate-heavy' is not supported when the listed n-grams have very low values, and the semantics are unconfirmed. The ARX-style framing is a hypothesis stated with more specificity than the evidence allows.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 cited SHAP values match the evidence in sign and magnitude within rounding. The total of about +0.13 is correctly stated for the top-k subset only, and the candidate does not claim omitted features cannot support benign. The candidate does not flag that target class 1 is a configured assumption, but it makes no incorrect SHAP claim.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function context, occurrences, APIs or strings are provided.\",\"The SHAP target class is a configured assumption pending upstream verification.\",\"feature_value_semantics is not established, so the values should not be read as raw counts or frequencies.\",\"The SHAP baseline and full attributions are absent, so omitted features are unknown.\",\"The 0.96 RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"Accurate numbers and a faithful SHAP representation with a well-hedged, inconclusive conclusion and proportionate follow-up. Minor deductions apply for ordered ARX-pattern inferences, the unconfirmed 'frequency' reading and the 'rotate-heavy' label, plus some repetition.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7432,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3672,
+          "output_tokens_details": {
+            "thinking_tokens": 1971
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7432,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3672,
+        "output_tokens_details": {
+          "thinking_tokens": 1971
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_ac27066daf885ea3\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Numbers check out: 20 positive SHAP values from 0.004919 to 0.010458 sum to about 0.132, and the cited frequencies and the two zero-frequency n-grams match. The weaker points are minor overreach: it treats the values as 'relative frequency' despite the semantics caveat, and it reads some n-grams as ordered, adjacent ARX patterns without extraction context. The overall conclusion is appropriately hedged.\",\"coherence\":\"Observations, interpretation, the low-confidence tier, the 0.58 score and the 'inconclusive and leans suspicious' conclusion are consistent. Some repetition across the explanation, evidence_analysis and key_indicators, and the 'rotate-heavy' label sits awkwardly beside the stated very low frequencies.\",\"cybersecurity_relevance\":\"Ties the sample's actual n-grams (rotate and carry clusters, stack idioms) to hash and proof-of-work hypotheses. It names benign alternatives (checksum, compression, runtime-library code) and states the evidence limits: no functions, APIs or strings, and zero-frequency features.\",\"actionable_utility\":\"The follow-up is concrete, feasible and conditional: locate functions containing the ROL/ADC sequences, check for stratum or pool config and wallet addresses, check for packing, run a sandbox, and use YARA or constant matching. It is linked to the evidence gaps and not treated as observed behavior. It is not explicitly prioritized, and the function-location step presumes disassembly access.\"},\"unsupported_claims\":[{\"quote\":\"Add-then-rotate-right is characteristic of ARX-style (add-rotate-xor) primitives used in hashing.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2; /evidence/occurrences is empty\",\"reason\":\"Assumes a strict add-then-rotate order and adjacency. The graph-aware n-gram has no extraction or context evidence for ordering, and no XOR accompanies it in the top features.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Rotate then add is a classic ARX pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/12/assessment\",\"evidence_reference\":\"/evidence/top_features/12; /evidence/occurrences is empty\",\"reason\":\"Infers an ordered ARX construct from a mnemonic n-gram alone, without context or adjacency evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"every n-gram has a very low relative frequency (at most about 0.002)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states the feature-value semantics are not established and the values should not be treated as raw counts. Calling them relative frequencies assumes unconfirmed semantics, though the numbers themselves are correct.\",\"category\":\"other\"},{\"quote\":\"Rotate-heavy n-gram cluster (MOV ROL, ADD ROR, MOVZX ROL, ROL MOV, ROL ADD, ROL AND) consistent with ARX-style hash/crypto mixing\",\"candidate_path\":\"/candidate_analysis/key_indicators/0\",\"evidence_reference\":\"/evidence/top_features (values 0.000164 to 0.002134)\",\"reason\":\"'Rotate-heavy' is not supported when the listed n-grams have very low values, and the semantics are unconfirmed. The ARX-style framing is a hypothesis stated with more specificity than the evidence allows.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 cited SHAP values match the evidence in sign and magnitude within rounding. The total of about +0.13 is correctly stated for the top-k subset only, and the candidate does not claim omitted features cannot support benign. The candidate does not flag that target class 1 is a configured assumption, but it makes no incorrect SHAP claim.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function context, occurrences, APIs or strings are provided.\",\"The SHAP target class is a configured assumption pending upstream verification.\",\"feature_value_semantics is not established, so the values should not be read as raw counts or frequencies.\",\"The SHAP baseline and full attributions are absent, so omitted features are unknown.\",\"The 0.96 RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"Accurate numbers and a faithful SHAP representation with a well-hedged, inconclusive conclusion and proportionate follow-up. Minor deductions apply for ordered ARX-pattern inferences, the unconfirmed 'frequency' reading and the 'rotate-heavy' label, plus some repetition.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_ac27066daf885ea3",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Numbers check out: 20 positive SHAP values from 0.004919 to 0.010458 sum to about 0.132, and the cited frequencies and the two zero-frequency n-grams match. The weaker points are minor overreach: it treats the values as 'relative frequency' despite the semantics caveat, and it reads some n-grams as ordered, adjacent ARX patterns without extraction context. The overall conclusion is appropriately hedged.",
+      "coherence": "Observations, interpretation, the low-confidence tier, the 0.58 score and the 'inconclusive and leans suspicious' conclusion are consistent. Some repetition across the explanation, evidence_analysis and key_indicators, and the 'rotate-heavy' label sits awkwardly beside the stated very low frequencies.",
+      "cybersecurity_relevance": "Ties the sample's actual n-grams (rotate and carry clusters, stack idioms) to hash and proof-of-work hypotheses. It names benign alternatives (checksum, compression, runtime-library code) and states the evidence limits: no functions, APIs or strings, and zero-frequency features.",
+      "actionable_utility": "The follow-up is concrete, feasible and conditional: locate functions containing the ROL/ADC sequences, check for stratum or pool config and wallet addresses, check for packing, run a sandbox, and use YARA or constant matching. It is linked to the evidence gaps and not treated as observed behavior. It is not explicitly prioritized, and the function-location step presumes disassembly access."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Add-then-rotate-right is characteristic of ARX-style (add-rotate-xor) primitives used in hashing.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/top_features/2; /evidence/occurrences is empty",
+        "reason": "Assumes a strict add-then-rotate order and adjacency. The graph-aware n-gram has no extraction or context evidence for ordering, and no XOR accompanies it in the top features.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Rotate then add is a classic ARX pattern.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/12/assessment",
+        "evidence_reference": "/evidence/top_features/12; /evidence/occurrences is empty",
+        "reason": "Infers an ordered ARX construct from a mnemonic n-gram alone, without context or adjacency evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "every n-gram has a very low relative frequency (at most about 0.002)",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states the feature-value semantics are not established and the values should not be treated as raw counts. Calling them relative frequencies assumes unconfirmed semantics, though the numbers themselves are correct.",
+        "category": "other"
+      },
+      {
+        "quote": "Rotate-heavy n-gram cluster (MOV ROL, ADD ROR, MOVZX ROL, ROL MOV, ROL ADD, ROL AND) consistent with ARX-style hash/crypto mixing",
+        "candidate_path": "/candidate_analysis/key_indicators/0",
+        "evidence_reference": "/evidence/top_features (values 0.000164 to 0.002134)",
+        "reason": "'Rotate-heavy' is not supported when the listed n-grams have very low values, and the semantics are unconfirmed. The ARX-style framing is a hypothesis stated with more specificity than the evidence allows.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 cited SHAP values match the evidence in sign and magnitude within rounding. The total of about +0.13 is correctly stated for the top-k subset only, and the candidate does not claim omitted features cannot support benign. The candidate does not flag that target class 1 is a configured assumption, but it makes no incorrect SHAP claim.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No function context, occurrences, APIs or strings are provided.",
+      "The SHAP target class is a configured assumption pending upstream verification.",
+      "feature_value_semantics is not established, so the values should not be read as raw counts or frequencies.",
+      "The SHAP baseline and full attributions are absent, so omitted features are unknown.",
+      "The 0.96 RF probability is not behavioral proof of cryptojacking."
+    ],
+    "summary": "Accurate numbers and a faithful SHAP representation with a well-hedged, inconclusive conclusion and proportionate follow-up. Minor deductions apply for ordered ARX-pattern inferences, the unconfirmed 'frequency' reading and the 'rotate-heavy' label, plus some repetition."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Add-then-rotate-right is characteristic of ARX-style (add-rotate-xor) primitives used in hashing.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/top_features/2; /evidence/occurrences is empty",
+      "reason": "Assumes a strict add-then-rotate order and adjacency. The graph-aware n-gram has no extraction or context evidence for ordering, and no XOR accompanies it in the top features.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Rotate then add is a classic ARX pattern.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/12/assessment",
+      "evidence_reference": "/evidence/top_features/12; /evidence/occurrences is empty",
+      "reason": "Infers an ordered ARX construct from a mnemonic n-gram alone, without context or adjacency evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "every n-gram has a very low relative frequency (at most about 0.002)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states the feature-value semantics are not established and the values should not be treated as raw counts. Calling them relative frequencies assumes unconfirmed semantics, though the numbers themselves are correct.",
+      "category": "other"
+    },
+    {
+      "quote": "Rotate-heavy n-gram cluster (MOV ROL, ADD ROR, MOVZX ROL, ROL MOV, ROL ADD, ROL AND) consistent with ARX-style hash/crypto mixing",
+      "candidate_path": "/candidate_analysis/key_indicators/0",
+      "evidence_reference": "/evidence/top_features (values 0.000164 to 0.002134)",
+      "reason": "'Rotate-heavy' is not supported when the listed n-grams have very low values, and the semantics are unconfirmed. The ARX-style framing is a hypothesis stated with more specificity than the evidence allows.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "15f1df9c3b4868199d06b324179ad35c61f42f80cf81138be4f774089d88527b.exe_analysis.json"
+}

@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_a552a1e5d59ec18c",
+  "status": "success",
+  "source_sha256": "306291e23ad2b5afb90fdda09a89ab308634272a240c9236ac3df33606cee5d8",
+  "input_sha256": "e59cc8015ab811a6a1ff6fdd3bc40b3f90dce60a2c4a2cd0883e0242a9b7cf9f",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "0f61c7d939ea77fff7eb409522338347b140beb1c5977bd0fc84ff301dd31605.exe",
+      "source_name": "0f61c7d939ea77fff7eb409522338347b140beb1c5977bd0fc84ff301dd31605.exe.json",
+      "source_path": "ml/dataset/cryptojacking/0f61c7d939ea77fff7eb409522338347b140beb1c5977bd0fc84ff301dd31605.exe.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 85,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "0f61c7d939ea77fff7eb409522338347b140beb1c5977bd0fc84ff301dd31605.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:07:18.263838+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:07:18.263865+00:00",
+      "error": null,
+      "request_sha256": "d4bc240a39176ab082a95c1e483d5ee9a24cb22cdaf8ed74f18601f6d23ff090",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkxPVXJ7VWQrp9iJED1K",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the SHAP values for the top 20 features, confirming they range from about 0.0062 to 0.0129 and all push the prediction toward the cryptojacking class with high confidence (0.985).\n\nLooking at \"PXOR MOVUPS\" as the top contributor with value 0.001179, I notice the analysis treats these numbers as frequencies without clear evidence that's the actual feature encoding—it could be normalized counts or tf-idf weights instead. The claim that a \"very low frequency (0.000006) limits its weight\" seems shaky since that SHAP value already represents the contribution itself, not something constrained by an external frequency measure.\n\nI'm also flagging that several interpretations assume adjacency between opcodes—phrases like \"ADD FLD: followed by,\" \"consecutive SIMD XORs,\" and \"back-to-back x87 stores\" all presume the n-gram extraction preserves strict ordering and adjacency, which isn't established given the unknown extraction method and ngram_size of 2. These adjacency assumptions, plus overreaching semantic claims like \"indicating address or index arithmetic,\" are places where the candidate interpretation goes beyond what the data actually supports.\n\nFlagging a few more unsupported adjacency claims at indices 16-17, plus the low-frequency n-gram indicator and consecutive SIMD XOR point. Then I'm spot-checking the SHAP value roundings against their source figures to confirm they all match correctly.\n\nThere's one subtle issue: the explanation that \"low value limits its weight\" seems like a slight misstatement of how SHAP contributions work, but the direction and magnitude are still faithfully represented overall, so I'll mark this as faithful without listing a discrepancy.\n\nFor the hedged claim about statistical association with training data, that's reasonably cautious phrasing so it's fine. On scoring, the core evidence is accurate but there's some minor overreach on frequency semantics and adjacency interpretations — nothing severe enough to drop below a 4, since the overreaches are hedged and limited in scope.\n\nLooking at coherence, there's some repetition but the reasoning stays clear overall, so I'd put that around a 4. Relevance is strong since it ties together evidence, limitations, and alternative explanations — that merits a 5. For actionability, the suggested steps (disassembling, locating, checking, sandboxing, comparing) are reasonable but not explicitly prioritized by purpose, so that lands at a 4 rather than a 5.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_a552a1e5d59ec18c\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.985, SHAP range +0.0062 to +0.0129 and per-feature SHAP values all match the evidence within rounding. Instruction semantics are generally correct and mostly hedged. Minor overreach: treats feature values as n-gram frequencies, assumes adjacency, and says low frequency 'limits its weight'.\",\"coherence\":\"The explanation is well organized: observations, then ambiguity, then a low-confidence tier, then corroboration steps, all consistent. Some repetition between the summary, per-feature analysis and key indicators, and the suspicious-and-prioritize action sits slightly against the low-confidence framing.\",\"cybersecurity_relevance\":\"It ties this sample's top n-grams to mining-relevant hypotheses (SIMD, ARX, carry chains) and to benign alternatives (crypto, compression, math libraries, numeric code). It states clearly that function names, APIs and locations are missing, so the evidence is inconclusive.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: disassemble, locate the SIMD and rotate/carry functions, check for hash-loop structure and mining-pool traffic, sandbox with CPU and network monitoring, and compare against known libraries. It is conditional and does not invent indicators. Ordering and purpose of each step are only loosely prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Top contributor and the most frequent n-gram (0.001179).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values are not established as counts or frequencies. 'Most frequent' holds at best among the listed top-k, not for the sample overall.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Very rare (0.000009).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Interprets the feature value as a rarity or frequency, which the artifact explicitly does not establish.\",\"category\":\"other\"},{\"quote\":\"but its very low frequency (0.000006) limits its weight.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"/evidence/top_features/9\",\"reason\":\"Assumes the value is a frequency and that it limits the feature's influence. The SHAP value (+0.007021) already is the contribution, and no evidence supports a separate frequency-based weight reduction.\",\"category\":\"other\"},{\"quote\":\"Consecutive SIMD XORs or register clears.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/scope_notes/0\",\"reason\":\"Asserts adjacency of the two instructions. Graph-aware n-grams need not be adjacent, and no extraction or context evidence is provided.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Back-to-back x87 stores.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Asserts that the stores are adjacent, but no occurrences or code context are supplied to show this.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Integer add followed by an x87 load, indicating address or index arithmetic before an FPU load.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Infers adjacency and a specific purpose (address or index arithmetic) without any code context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Very low n-gram frequencies and evenly distributed SHAP values with no dominant discriminating feature\",\"candidate_path\":\"/candidate_analysis/key_indicators/5\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"'Frequencies' is unsupported. 'No dominant feature' is supported only within the top-20 subset, since omitted features and the baseline are unknown.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP signs are reported as positive for target class 1, the range +0.0062 to +0.0129 matches, and every per-feature shap_contribution matches the evidence within the stated rounding tolerance. The explanation does not claim that omitted features are non-benign, and its framing of the model score as suspicion rather than proof is appropriate.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function names, API calls, occurrences or function context are supplied, so n-grams cannot be tied to specific routines.\",\"Feature value semantics are not established, so values should not be read as counts or frequencies.\",\"SHAP baseline and full attributions are null, and only the top-k subset is available.\",\"The SHAP target class is a configured assumption that should be verified upstream.\",\"The extraction does not show whether n-grams are adjacent instructions.\"],\"summary\":\"The explanation is faithful to the RF probability and SHAP signs and magnitudes. It is appropriately hedged and low-confidence, with a relevant mining-versus-benign discussion and sensible conditional follow-up. Minor unsupported assertions treat feature values as frequencies and assume instruction adjacency.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7483,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4055,
+          "output_tokens_details": {
+            "thinking_tokens": 2157
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7483,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4055,
+        "output_tokens_details": {
+          "thinking_tokens": 2157
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_a552a1e5d59ec18c\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.985, SHAP range +0.0062 to +0.0129 and per-feature SHAP values all match the evidence within rounding. Instruction semantics are generally correct and mostly hedged. Minor overreach: treats feature values as n-gram frequencies, assumes adjacency, and says low frequency 'limits its weight'.\",\"coherence\":\"The explanation is well organized: observations, then ambiguity, then a low-confidence tier, then corroboration steps, all consistent. Some repetition between the summary, per-feature analysis and key indicators, and the suspicious-and-prioritize action sits slightly against the low-confidence framing.\",\"cybersecurity_relevance\":\"It ties this sample's top n-grams to mining-relevant hypotheses (SIMD, ARX, carry chains) and to benign alternatives (crypto, compression, math libraries, numeric code). It states clearly that function names, APIs and locations are missing, so the evidence is inconclusive.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: disassemble, locate the SIMD and rotate/carry functions, check for hash-loop structure and mining-pool traffic, sandbox with CPU and network monitoring, and compare against known libraries. It is conditional and does not invent indicators. Ordering and purpose of each step are only loosely prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Top contributor and the most frequent n-gram (0.001179).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature values are not established as counts or frequencies. 'Most frequent' holds at best among the listed top-k, not for the sample overall.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Very rare (0.000009).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Interprets the feature value as a rarity or frequency, which the artifact explicitly does not establish.\",\"category\":\"other\"},{\"quote\":\"but its very low frequency (0.000006) limits its weight.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/9/assessment\",\"evidence_reference\":\"/evidence/top_features/9\",\"reason\":\"Assumes the value is a frequency and that it limits the feature's influence. The SHAP value (+0.007021) already is the contribution, and no evidence supports a separate frequency-based weight reduction.\",\"category\":\"other\"},{\"quote\":\"Consecutive SIMD XORs or register clears.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/scope_notes/0\",\"reason\":\"Asserts adjacency of the two instructions. Graph-aware n-grams need not be adjacent, and no extraction or context evidence is provided.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Back-to-back x87 stores.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Asserts that the stores are adjacent, but no occurrences or code context are supplied to show this.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Integer add followed by an x87 load, indicating address or index arithmetic before an FPU load.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Infers adjacency and a specific purpose (address or index arithmetic) without any code context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Very low n-gram frequencies and evenly distributed SHAP values with no dominant discriminating feature\",\"candidate_path\":\"/candidate_analysis/key_indicators/5\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"'Frequencies' is unsupported. 'No dominant feature' is supported only within the top-20 subset, since omitted features and the baseline are unknown.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP signs are reported as positive for target class 1, the range +0.0062 to +0.0129 matches, and every per-feature shap_contribution matches the evidence within the stated rounding tolerance. The explanation does not claim that omitted features are non-benign, and its framing of the model score as suspicion rather than proof is appropriate.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No function names, API calls, occurrences or function context are supplied, so n-grams cannot be tied to specific routines.\",\"Feature value semantics are not established, so values should not be read as counts or frequencies.\",\"SHAP baseline and full attributions are null, and only the top-k subset is available.\",\"The SHAP target class is a configured assumption that should be verified upstream.\",\"The extraction does not show whether n-grams are adjacent instructions.\"],\"summary\":\"The explanation is faithful to the RF probability and SHAP signs and magnitudes. It is appropriately hedged and low-confidence, with a relevant mining-versus-benign discussion and sensible conditional follow-up. Minor unsupported assertions treat feature values as frequencies and assume instruction adjacency.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_a552a1e5d59ec18c",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability 0.985, SHAP range +0.0062 to +0.0129 and per-feature SHAP values all match the evidence within rounding. Instruction semantics are generally correct and mostly hedged. Minor overreach: treats feature values as n-gram frequencies, assumes adjacency, and says low frequency 'limits its weight'.",
+      "coherence": "The explanation is well organized: observations, then ambiguity, then a low-confidence tier, then corroboration steps, all consistent. Some repetition between the summary, per-feature analysis and key indicators, and the suspicious-and-prioritize action sits slightly against the low-confidence framing.",
+      "cybersecurity_relevance": "It ties this sample's top n-grams to mining-relevant hypotheses (SIMD, ARX, carry chains) and to benign alternatives (crypto, compression, math libraries, numeric code). It states clearly that function names, APIs and locations are missing, so the evidence is inconclusive.",
+      "actionable_utility": "The follow-up is concrete and proportionate: disassemble, locate the SIMD and rotate/carry functions, check for hash-loop structure and mining-pool traffic, sandbox with CPU and network monitoring, and compare against known libraries. It is conditional and does not invent indicators. Ordering and purpose of each step are only loosely prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Top contributor and the most frequent n-gram (0.001179).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature values are not established as counts or frequencies. 'Most frequent' holds at best among the listed top-k, not for the sample overall.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Very rare (0.000009).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "Interprets the feature value as a rarity or frequency, which the artifact explicitly does not establish.",
+        "category": "other"
+      },
+      {
+        "quote": "but its very low frequency (0.000006) limits its weight.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+        "evidence_reference": "/evidence/top_features/9",
+        "reason": "Assumes the value is a frequency and that it limits the feature's influence. The SHAP value (+0.007021) already is the contribution, and no evidence supports a separate frequency-based weight reduction.",
+        "category": "other"
+      },
+      {
+        "quote": "Consecutive SIMD XORs or register clears.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+        "evidence_reference": "/scope_notes/0",
+        "reason": "Asserts adjacency of the two instructions. Graph-aware n-grams need not be adjacent, and no extraction or context evidence is provided.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Back-to-back x87 stores.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Asserts that the stores are adjacent, but no occurrences or code context are supplied to show this.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Integer add followed by an x87 load, indicating address or index arithmetic before an FPU load.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Infers adjacency and a specific purpose (address or index arithmetic) without any code context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Very low n-gram frequencies and evenly distributed SHAP values with no dominant discriminating feature",
+        "candidate_path": "/candidate_analysis/key_indicators/5",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "'Frequencies' is unsupported. 'No dominant feature' is supported only within the top-20 subset, since omitted features and the baseline are unknown.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP signs are reported as positive for target class 1, the range +0.0062 to +0.0129 matches, and every per-feature shap_contribution matches the evidence within the stated rounding tolerance. The explanation does not claim that omitted features are non-benign, and its framing of the model score as suspicion rather than proof is appropriate.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No function names, API calls, occurrences or function context are supplied, so n-grams cannot be tied to specific routines.",
+      "Feature value semantics are not established, so values should not be read as counts or frequencies.",
+      "SHAP baseline and full attributions are null, and only the top-k subset is available.",
+      "The SHAP target class is a configured assumption that should be verified upstream.",
+      "The extraction does not show whether n-grams are adjacent instructions."
+    ],
+    "summary": "The explanation is faithful to the RF probability and SHAP signs and magnitudes. It is appropriately hedged and low-confidence, with a relevant mining-versus-benign discussion and sensible conditional follow-up. Minor unsupported assertions treat feature values as frequencies and assume instruction adjacency."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Top contributor and the most frequent n-gram (0.001179).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature values are not established as counts or frequencies. 'Most frequent' holds at best among the listed top-k, not for the sample overall.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Very rare (0.000009).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "Interprets the feature value as a rarity or frequency, which the artifact explicitly does not establish.",
+      "category": "other"
+    },
+    {
+      "quote": "but its very low frequency (0.000006) limits its weight.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/9/assessment",
+      "evidence_reference": "/evidence/top_features/9",
+      "reason": "Assumes the value is a frequency and that it limits the feature's influence. The SHAP value (+0.007021) already is the contribution, and no evidence supports a separate frequency-based weight reduction.",
+      "category": "other"
+    },
+    {
+      "quote": "Consecutive SIMD XORs or register clears.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+      "evidence_reference": "/scope_notes/0",
+      "reason": "Asserts adjacency of the two instructions. Graph-aware n-grams need not be adjacent, and no extraction or context evidence is provided.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Back-to-back x87 stores.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Asserts that the stores are adjacent, but no occurrences or code context are supplied to show this.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Integer add followed by an x87 load, indicating address or index arithmetic before an FPU load.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Infers adjacency and a specific purpose (address or index arithmetic) without any code context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Very low n-gram frequencies and evenly distributed SHAP values with no dominant discriminating feature",
+      "candidate_path": "/candidate_analysis/key_indicators/5",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "'Frequencies' is unsupported. 'No dominant feature' is supported only within the top-20 subset, since omitted features and the baseline are unknown.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "0f61c7d939ea77fff7eb409522338347b140beb1c5977bd0fc84ff301dd31605.exe_analysis.json"
+}

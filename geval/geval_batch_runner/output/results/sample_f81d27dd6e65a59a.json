@@ -1,0 +1,188 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_f81d27dd6e65a59a",
+  "status": "success",
+  "source_sha256": "743d3bdd2d31afa2d4f75b99eeebd78add7879d0c8ddad6a1d76618c65d0ec87",
+  "input_sha256": "b912305d31c3aa8783ff7f184066c8e3844079823df53495adea55c3c02acce6",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "65ef4c948050199ef320f05d1a5144f5e1f188d824e01e6f50f58cea83f56dd9.exe",
+      "source_name": "65ef4c948050199ef320f05d1a5144f5e1f188d824e01e6f50f58cea83f56dd9.exe.json",
+      "source_path": "ml/dataset/cryptojacking/65ef4c948050199ef320f05d1a5144f5e1f188d824e01e6f50f58cea83f56dd9.exe.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 87,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "65ef4c948050199ef320f05d1a5144f5e1f188d824e01e6f50f58cea83f56dd9.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:46:52.628563+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:46:52.628590+00:00",
+      "error": null,
+      "request_sha256": "84dee59fd794c78bd908901beeb8f42aa2d4f440c7f738b079b1347fcba79516",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm1QWporHgoJMzFdX6Ty",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "The RF model predicts class 1 with full confidence, and all 20 top SHAP features are positive, but I'm flagging that the candidate's claim about \"relative frequency\" semantics isn't actually established by the data — the feature value meaning hasn't been confirmed, so calling values near zero \"rare or nearly absent\" is an unsupported interpretation.\n\nThere's also a labeling inconsistency: \"ADD BLX\" is grouped with x86-style n-grams in one place but called ARM elsewhere in the evidence — a minor but real error worth noting, alongside the fact that the sparse non-zero values do correctly match ARM-style n-grams like \"sub strb\" and \"orr bic.\"\n\nThe per-mnemonic semantic interpretations (stack cleanup, register zeroing, loop bounds checks, indirect BLX calls) are mostly generic and hedged, though the claim that \"add blx\" indicates an indirect call sequence slightly overreaches since BLX can also take an immediate operand rather than just a register.\n\nAlso several of the candidate's phrasings like \"followed by\" assume adjacency between mnemonics, which the rubric doesn't require for graph-aware n-grams -- a minor but worth-flagging issue since it's used repeatedly. I should note one unsupported \"relative frequency\" claim and the ADD BLX misclassification as low-severity issues in my evaluation.\n\nThe recommended action is concrete and proportional (checking architecture, functions, dynamic analysis, strings) though it doesn't consider legitimate explanations like crypto libraries, which lowers relevance slightly. Technical accuracy seems like a 3-4 given the correct core numbers but that unsupported frequency assertion.\n\nCoherence is strong at 4 despite some repetition and the ADD BLX inconsistency. SHAP faithfulness also checks out well — directions and magnitudes are accurately reported and rounding is fine, though the frequency interpretation isn't actually something SHAP values support.\n\nNow I'm flagging unsupported claims: the explanation's assertion that zero-frequency n-grams are \"rare or nearly absent in the binary\" overreaches beyond what's evidenced, and I'm also noting the inconsistency where ADD BLX gets labeled as x86-style despite being grouped with ARM instructions elsewhere.\n\nLooking at item 18 (cmn mov) and item 19 (add blx) in the indexed list, the claim that an indirect call sequence's target is \"not identified in the evidence\" is a minor unsupported_behavior issue since BLX could plausibly be direct. I'll leave hedged phrases like the byte-level buffer manipulation guess out of the unsupported claims list and fold them into limitations instead, then finalize the JSON as a single line.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_f81d27dd6e65a59a\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP signs and magnitudes, and the listed n-gram values are reported correctly. The explanation treats the values as 'relative frequency' and infers the n-grams are 'rare or nearly absent in the binary', but feature_value_semantics says this is not established. It also lists ADD BLX among x86-style n-grams and later calls it ARM-style.\",\"coherence\":\"The explanation, per-feature assessments, indicators and action are consistent and clearly separate evidence from hypothesis. There is some repetition across sections and the ADD BLX architecture inconsistency.\",\"cybersecurity_relevance\":\"It links the evidence to cryptojacking, the lack of mining-specific context, and benign alternatives (checksums, compression, ordinary compiled code). It also flags the mixed x86/ARM anomaly. Some per-n-gram commentary is generic.\",\"actionable_utility\":\"The recommendations are concrete, conditional and proportionate: verify the architecture mix, locate the functions, check for hash/cipher loops, run dynamic CPU/network checks, and review strings/config. They are not strongly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"have a relative frequency of 0.000000, so they are rare or nearly absent in the binary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature values are not established as counts or frequencies without upstream confirmation. Reading them as relative frequencies and concluding the n-grams are absent from the binary is unsupported. The same assumption recurs in the evidence_analysis entries.\",\"category\":\"other\"},{\"quote\":\"XOR CMOVNZ, ADD BLX) have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/19/ngram\",\"reason\":\"The evidence's 'add blx' is lowercase, ARM-style, and the candidate itself calls it ARM-style in evidence_analysis. Listing it among the x86-style n-grams is internally inconsistent.\",\"category\":\"other\"},{\"quote\":\"It indicates an indirect call sequence, but the target is not identified in the evidence.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"No operands or occurrence context were supplied. A mnemonic pair alone does not establish that BLX is register-indirect, since BLX can also take an immediate.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All listed SHAP values are positive toward target class 1, matching 'push toward cryptojacking'. The stated range (+0.0048 to +0.0114) and per-feature values match within rounding. The 'no single feature is decisive' wording is limited to the shown top-k features and does not claim anything about omitted ones.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Only the top-20 SHAP features are supplied. There is no baseline or full attribution, so omitted features cannot be assessed.\",\"Feature value semantics are unconfirmed, so the 'frequency' interpretation cannot be verified.\",\"No occurrences, function context or adjacency information is supplied. Phrases such as 'followed by' assume adjacency that the evidence does not show.\",\"The shap_target_class is a configured assumption that needs upstream verification.\"],\"summary\":\"Faithful to the SHAP evidence and appropriately cautious about cryptojacking, with sensible, proportionate follow-up. It is held back by treating unverified feature values as relative frequencies of absence, an ADD BLX architecture inconsistency, and a slight overreach on BLX being an indirect call.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7101,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3937,
+          "output_tokens_details": {
+            "thinking_tokens": 2583
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7101,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3937,
+        "output_tokens_details": {
+          "thinking_tokens": 2583
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_f81d27dd6e65a59a\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP signs and magnitudes, and the listed n-gram values are reported correctly. The explanation treats the values as 'relative frequency' and infers the n-grams are 'rare or nearly absent in the binary', but feature_value_semantics says this is not established. It also lists ADD BLX among x86-style n-grams and later calls it ARM-style.\",\"coherence\":\"The explanation, per-feature assessments, indicators and action are consistent and clearly separate evidence from hypothesis. There is some repetition across sections and the ADD BLX architecture inconsistency.\",\"cybersecurity_relevance\":\"It links the evidence to cryptojacking, the lack of mining-specific context, and benign alternatives (checksums, compression, ordinary compiled code). It also flags the mixed x86/ARM anomaly. Some per-n-gram commentary is generic.\",\"actionable_utility\":\"The recommendations are concrete, conditional and proportionate: verify the architecture mix, locate the functions, check for hash/cipher loops, run dynamic CPU/network checks, and review strings/config. They are not strongly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"have a relative frequency of 0.000000, so they are rare or nearly absent in the binary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature values are not established as counts or frequencies without upstream confirmation. Reading them as relative frequencies and concluding the n-grams are absent from the binary is unsupported. The same assumption recurs in the evidence_analysis entries.\",\"category\":\"other\"},{\"quote\":\"XOR CMOVNZ, ADD BLX) have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/19/ngram\",\"reason\":\"The evidence's 'add blx' is lowercase, ARM-style, and the candidate itself calls it ARM-style in evidence_analysis. Listing it among the x86-style n-grams is internally inconsistent.\",\"category\":\"other\"},{\"quote\":\"It indicates an indirect call sequence, but the target is not identified in the evidence.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"No operands or occurrence context were supplied. A mnemonic pair alone does not establish that BLX is register-indirect, since BLX can also take an immediate.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All listed SHAP values are positive toward target class 1, matching 'push toward cryptojacking'. The stated range (+0.0048 to +0.0114) and per-feature values match within rounding. The 'no single feature is decisive' wording is limited to the shown top-k features and does not claim anything about omitted ones.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Only the top-20 SHAP features are supplied. There is no baseline or full attribution, so omitted features cannot be assessed.\",\"Feature value semantics are unconfirmed, so the 'frequency' interpretation cannot be verified.\",\"No occurrences, function context or adjacency information is supplied. Phrases such as 'followed by' assume adjacency that the evidence does not show.\",\"The shap_target_class is a configured assumption that needs upstream verification.\"],\"summary\":\"Faithful to the SHAP evidence and appropriately cautious about cryptojacking, with sensible, proportionate follow-up. It is held back by treating unverified feature values as relative frequencies of absence, an ADD BLX architecture inconsistency, and a slight overreach on BLX being an indirect call.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_f81d27dd6e65a59a",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, SHAP signs and magnitudes, and the listed n-gram values are reported correctly. The explanation treats the values as 'relative frequency' and infers the n-grams are 'rare or nearly absent in the binary', but feature_value_semantics says this is not established. It also lists ADD BLX among x86-style n-grams and later calls it ARM-style.",
+      "coherence": "The explanation, per-feature assessments, indicators and action are consistent and clearly separate evidence from hypothesis. There is some repetition across sections and the ADD BLX architecture inconsistency.",
+      "cybersecurity_relevance": "It links the evidence to cryptojacking, the lack of mining-specific context, and benign alternatives (checksums, compression, ordinary compiled code). It also flags the mixed x86/ARM anomaly. Some per-n-gram commentary is generic.",
+      "actionable_utility": "The recommendations are concrete, conditional and proportionate: verify the architecture mix, locate the functions, check for hash/cipher loops, run dynamic CPU/network checks, and review strings/config. They are not strongly prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "have a relative frequency of 0.000000, so they are rare or nearly absent in the binary",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states feature values are not established as counts or frequencies without upstream confirmation. Reading them as relative frequencies and concluding the n-grams are absent from the binary is unsupported. The same assumption recurs in the evidence_analysis entries.",
+        "category": "other"
+      },
+      {
+        "quote": "XOR CMOVNZ, ADD BLX) have a relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/19/ngram",
+        "reason": "The evidence's 'add blx' is lowercase, ARM-style, and the candidate itself calls it ARM-style in evidence_analysis. Listing it among the x86-style n-grams is internally inconsistent.",
+        "category": "other"
+      },
+      {
+        "quote": "It indicates an indirect call sequence, but the target is not identified in the evidence.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "No operands or occurrence context were supplied. A mnemonic pair alone does not establish that BLX is register-indirect, since BLX can also take an immediate.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All listed SHAP values are positive toward target class 1, matching 'push toward cryptojacking'. The stated range (+0.0048 to +0.0114) and per-feature values match within rounding. The 'no single feature is decisive' wording is limited to the shown top-k features and does not claim anything about omitted ones.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Only the top-20 SHAP features are supplied. There is no baseline or full attribution, so omitted features cannot be assessed.",
+      "Feature value semantics are unconfirmed, so the 'frequency' interpretation cannot be verified.",
+      "No occurrences, function context or adjacency information is supplied. Phrases such as 'followed by' assume adjacency that the evidence does not show.",
+      "The shap_target_class is a configured assumption that needs upstream verification."
+    ],
+    "summary": "Faithful to the SHAP evidence and appropriately cautious about cryptojacking, with sensible, proportionate follow-up. It is held back by treating unverified feature values as relative frequencies of absence, an ADD BLX architecture inconsistency, and a slight overreach on BLX being an indirect call."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "have a relative frequency of 0.000000, so they are rare or nearly absent in the binary",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states feature values are not established as counts or frequencies without upstream confirmation. Reading them as relative frequencies and concluding the n-grams are absent from the binary is unsupported. The same assumption recurs in the evidence_analysis entries.",
+      "category": "other"
+    },
+    {
+      "quote": "XOR CMOVNZ, ADD BLX) have a relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/19/ngram",
+      "reason": "The evidence's 'add blx' is lowercase, ARM-style, and the candidate itself calls it ARM-style in evidence_analysis. Listing it among the x86-style n-grams is internally inconsistent.",
+      "category": "other"
+    },
+    {
+      "quote": "It indicates an indirect call sequence, but the target is not identified in the evidence.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "No operands or occurrence context were supplied. A mnemonic pair alone does not establish that BLX is register-indirect, since BLX can also take an immediate.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "65ef4c948050199ef320f05d1a5144f5e1f188d824e01e6f50f58cea83f56dd9.exe_analysis.json"
+}

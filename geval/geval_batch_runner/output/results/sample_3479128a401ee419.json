@@ -1,0 +1,211 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_3479128a401ee419",
+  "status": "success",
+  "source_sha256": "3da7d43f065c8782e326b908b5565701a3e013a5af9e6607c1cc424ddba730a0",
+  "input_sha256": "189261aadca8bb694ca004e44ad45c4279c9c0947dc194af87340b8970a9d5f8",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "825519b4b90f70d6272166110f7e7cdc2318ed090fcd3cb63597189cb0a639f2.elf",
+      "source_name": "825519b4b90f70d6272166110f7e7cdc2318ed090fcd3cb63597189cb0a639f2.elf.json",
+      "source_path": "ml/dataset/cryptojacking/825519b4b90f70d6272166110f7e7cdc2318ed090fcd3cb63597189cb0a639f2.elf.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 58,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "825519b4b90f70d6272166110f7e7cdc2318ed090fcd3cb63597189cb0a639f2.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:58:32.089524+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:58:32.089553+00:00",
+      "error": null,
+      "request_sha256": "d7d5fe51c9d7f3f5004e4ba00355a5f4570855bd9cdbd219dce3c6f4d9aa9061",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm2J57vmJkUvhJY93T2R",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_3479128a401ee419\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":5},\"justifications\":{\"technical_accuracy\":\"RF class/probability, SHAP values, frequencies and the XOR/ARM groupings match the evidence, and instruction semantics are mostly right. But it overreaches in several places: 'all 20 top n-grams push toward cryptojacking' ignores the unconfirmed target-class assumption, the 'code disassembled for more than one instruction set' inference is unsupported, and it asserts 'ELF'. Some per-feature semantics treat adjacency as established.\",\"coherence\":\"The structure is clear (verdict, weakness of evidence, XOR group, generic remainder, action) and the low-confidence tier is consistent with the hedged analysis. Minor issues: the 'strong malware verdict' sits awkwardly beside the low-confidence tier, and some per-feature entries repeat the same caveat.\",\"cybersecurity_relevance\":\"Ties the sample's XOR/shift and ARM logic n-grams to hash/cipher hypotheses and names benign alternatives (compiler output, obfuscation, generic malware). It also notes the missing function context. It does not discuss the unverified target-class source or the unknown feature-value semantics, and it leans on the unsupported multi-architecture inference.\",\"actionable_utility\":\"Recommendations are concrete, prioritized and proportionate: disassemble, locate the functions, check for hash/cipher or PoW loops, and look for pool strings, stratum traffic, wallets, persistence and CPU use. All are framed as checks, not as observed behavior. It also advises confirming the architecture.\"},\"unsupported_claims\":[{\"quote\":\"which suggests the sample contains code disassembled for more than one instruction set\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; no extraction/context evidence provided\",\"reason\":\"Mixed-case mnemonic names alone do not establish multi-architecture content. This could be an extraction or labeling artifact, and no extraction context is supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"suggesting code for more than one instruction set\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features; /evidence/function_context is empty\",\"reason\":\"This repeats the unsupported architecture inference; the evidence does not confirm multiple instruction sets.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"confirm which architecture or architectures the ELF actually contains\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence (no file format information)\",\"reason\":\"The ELF format is asserted as a fact about the sample, but no file-format evidence is supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"This is often a register-zeroing idiom before a function call, so it is probably benign structure.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4; no adjacency or operand context\",\"reason\":\"The n-gram is positive toward class 1, and the 'probably benign' conclusion is inferred without operand or context evidence. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"It has the highest frequency in the list (0.001080), which suggests byte-wise data processing or buffer writes.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The evidence states feature values must not be treated as raw counts or confirmed frequencies, and the behavioral inference about byte-wise processing is unsupported.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Values are rounded within tolerance, all 20 are positive toward configured class 1, the ranking is correct, and the 'small/diffuse, no single dominant feature' characterization is accurate. The wording 'push toward cryptojacking' does not flag the configured-assumption target class and treats the SHAP values as stronger than the artifact warrants, but direction and magnitude are not misreported.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption pending upstream verification.\",\"Feature value semantics are unconfirmed (raw counts vs. frequencies).\",\"No occurrences, function context, baseline or full attributions are supplied; omitted features are unknown.\",\"No adjacency, operand or file-format information is available to establish idiom semantics or architecture.\"],\"summary\":\"Accurate on probabilities, SHAP values and frequencies, with a hedged, well-organized analysis and strong follow-up actions. Technical accuracy is held back by the unsupported multi-architecture and ELF assertions and some idiom-level inferences, and by not flagging the unverified target class.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7342,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 1705,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7342,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1705,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_3479128a401ee419\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":5},\"justifications\":{\"technical_accuracy\":\"RF class/probability, SHAP values, frequencies and the XOR/ARM groupings match the evidence, and instruction semantics are mostly right. But it overreaches in several places: 'all 20 top n-grams push toward cryptojacking' ignores the unconfirmed target-class assumption, the 'code disassembled for more than one instruction set' inference is unsupported, and it asserts 'ELF'. Some per-feature semantics treat adjacency as established.\",\"coherence\":\"The structure is clear (verdict, weakness of evidence, XOR group, generic remainder, action) and the low-confidence tier is consistent with the hedged analysis. Minor issues: the 'strong malware verdict' sits awkwardly beside the low-confidence tier, and some per-feature entries repeat the same caveat.\",\"cybersecurity_relevance\":\"Ties the sample's XOR/shift and ARM logic n-grams to hash/cipher hypotheses and names benign alternatives (compiler output, obfuscation, generic malware). It also notes the missing function context. It does not discuss the unverified target-class source or the unknown feature-value semantics, and it leans on the unsupported multi-architecture inference.\",\"actionable_utility\":\"Recommendations are concrete, prioritized and proportionate: disassemble, locate the functions, check for hash/cipher or PoW loops, and look for pool strings, stratum traffic, wallets, persistence and CPU use. All are framed as checks, not as observed behavior. It also advises confirming the architecture.\"},\"unsupported_claims\":[{\"quote\":\"which suggests the sample contains code disassembled for more than one instruction set\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; no extraction/context evidence provided\",\"reason\":\"Mixed-case mnemonic names alone do not establish multi-architecture content. This could be an extraction or labeling artifact, and no extraction context is supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"suggesting code for more than one instruction set\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features; /evidence/function_context is empty\",\"reason\":\"This repeats the unsupported architecture inference; the evidence does not confirm multiple instruction sets.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"confirm which architecture or architectures the ELF actually contains\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence (no file format information)\",\"reason\":\"The ELF format is asserted as a fact about the sample, but no file-format evidence is supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"This is often a register-zeroing idiom before a function call, so it is probably benign structure.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4; no adjacency or operand context\",\"reason\":\"The n-gram is positive toward class 1, and the 'probably benign' conclusion is inferred without operand or context evidence. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"It has the highest frequency in the list (0.001080), which suggests byte-wise data processing or buffer writes.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The evidence states feature values must not be treated as raw counts or confirmed frequencies, and the behavioral inference about byte-wise processing is unsupported.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Values are rounded within tolerance, all 20 are positive toward configured class 1, the ranking is correct, and the 'small/diffuse, no single dominant feature' characterization is accurate. The wording 'push toward cryptojacking' does not flag the configured-assumption target class and treats the SHAP values as stronger than the artifact warrants, but direction and magnitude are not misreported.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption pending upstream verification.\",\"Feature value semantics are unconfirmed (raw counts vs. frequencies).\",\"No occurrences, function context, baseline or full attributions are supplied; omitted features are unknown.\",\"No adjacency, operand or file-format information is available to establish idiom semantics or architecture.\"],\"summary\":\"Accurate on probabilities, SHAP values and frequencies, with a hedged, well-organized analysis and strong follow-up actions. Technical accuracy is held back by the unsupported multi-architecture and ELF assertions and some idiom-level inferences, and by not flagging the unverified target class.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_3479128a401ee419",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 5
+    },
+    "justifications": {
+      "technical_accuracy": "RF class/probability, SHAP values, frequencies and the XOR/ARM groupings match the evidence, and instruction semantics are mostly right. But it overreaches in several places: 'all 20 top n-grams push toward cryptojacking' ignores the unconfirmed target-class assumption, the 'code disassembled for more than one instruction set' inference is unsupported, and it asserts 'ELF'. Some per-feature semantics treat adjacency as established.",
+      "coherence": "The structure is clear (verdict, weakness of evidence, XOR group, generic remainder, action) and the low-confidence tier is consistent with the hedged analysis. Minor issues: the 'strong malware verdict' sits awkwardly beside the low-confidence tier, and some per-feature entries repeat the same caveat.",
+      "cybersecurity_relevance": "Ties the sample's XOR/shift and ARM logic n-grams to hash/cipher hypotheses and names benign alternatives (compiler output, obfuscation, generic malware). It also notes the missing function context. It does not discuss the unverified target-class source or the unknown feature-value semantics, and it leans on the unsupported multi-architecture inference.",
+      "actionable_utility": "Recommendations are concrete, prioritized and proportionate: disassemble, locate the functions, check for hash/cipher or PoW loops, and look for pool strings, stratum traffic, wallets, persistence and CPU use. All are framed as checks, not as observed behavior. It also advises confirming the architecture."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "which suggests the sample contains code disassembled for more than one instruction set",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; no extraction/context evidence provided",
+        "reason": "Mixed-case mnemonic names alone do not establish multi-architecture content. This could be an extraction or labeling artifact, and no extraction context is supplied.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "suggesting code for more than one instruction set",
+        "candidate_path": "/candidate_analysis/key_indicators/2",
+        "evidence_reference": "/evidence/top_features; /evidence/function_context is empty",
+        "reason": "This repeats the unsupported architecture inference; the evidence does not confirm multiple instruction sets.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "confirm which architecture or architectures the ELF actually contains",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "/evidence (no file format information)",
+        "reason": "The ELF format is asserted as a fact about the sample, but no file-format evidence is supplied.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "This is often a register-zeroing idiom before a function call, so it is probably benign structure.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/top_features/4; no adjacency or operand context",
+        "reason": "The n-gram is positive toward class 1, and the 'probably benign' conclusion is inferred without operand or context evidence. Graph-aware n-grams need not be adjacent.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "It has the highest frequency in the list (0.001080), which suggests byte-wise data processing or buffer writes.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The evidence states feature values must not be treated as raw counts or confirmed frequencies, and the behavioral inference about byte-wise processing is unsupported.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "Values are rounded within tolerance, all 20 are positive toward configured class 1, the ranking is correct, and the 'small/diffuse, no single dominant feature' characterization is accurate. The wording 'push toward cryptojacking' does not flag the configured-assumption target class and treats the SHAP values as stronger than the artifact warrants, but direction and magnitude are not misreported.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption pending upstream verification.",
+      "Feature value semantics are unconfirmed (raw counts vs. frequencies).",
+      "No occurrences, function context, baseline or full attributions are supplied; omitted features are unknown.",
+      "No adjacency, operand or file-format information is available to establish idiom semantics or architecture."
+    ],
+    "summary": "Accurate on probabilities, SHAP values and frequencies, with a hedged, well-organized analysis and strong follow-up actions. Technical accuracy is held back by the unsupported multi-architecture and ELF assertions and some idiom-level inferences, and by not flagging the unverified target class."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "which suggests the sample contains code disassembled for more than one instruction set",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; no extraction/context evidence provided",
+      "reason": "Mixed-case mnemonic names alone do not establish multi-architecture content. This could be an extraction or labeling artifact, and no extraction context is supplied.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "suggesting code for more than one instruction set",
+      "candidate_path": "/candidate_analysis/key_indicators/2",
+      "evidence_reference": "/evidence/top_features; /evidence/function_context is empty",
+      "reason": "This repeats the unsupported architecture inference; the evidence does not confirm multiple instruction sets.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "confirm which architecture or architectures the ELF actually contains",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "/evidence (no file format information)",
+      "reason": "The ELF format is asserted as a fact about the sample, but no file-format evidence is supplied.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "This is often a register-zeroing idiom before a function call, so it is probably benign structure.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/top_features/4; no adjacency or operand context",
+      "reason": "The n-gram is positive toward class 1, and the 'probably benign' conclusion is inferred without operand or context evidence. Graph-aware n-grams need not be adjacent.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "It has the highest frequency in the list (0.001080), which suggests byte-wise data processing or buffer writes.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The evidence states feature values must not be treated as raw counts or confirmed frequencies, and the behavioral inference about byte-wise processing is unsupported.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "825519b4b90f70d6272166110f7e7cdc2318ed090fcd3cb63597189cb0a639f2.elf_analysis.json"
+}

@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_c1b6ef987005bb5e",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.955,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "ADD PUSH",
+        "value": 1.5542189430561848e-05,
+        "shap_value": 0.01085846189089412
+      },
+      {
+        "ngram": "ROL MOVZX",
+        "value": 2.331328323634807e-05,
+        "shap_value": 0.010753858028259056
+      },
+      {
+        "ngram": "FSTP MOV",
+        "value": 9.325313294539228e-05,
+        "shap_value": 0.010146421696036492
+      },
+      {
+        "ngram": "POP PUSH",
+        "value": 1.1656641618174035e-05,
+        "shap_value": 0.010010501317684458
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "value": 2.331328323634807e-05,
+        "shap_value": 0.009754054419361224
+      },
+      {
+        "ngram": "POP LEA",
+        "value": 0.00018262072990182787,
+        "shap_value": 0.009706477641598366
+      },
+      {
+        "ngram": "ADC SUB",
+        "value": 1.1656641618174035e-05,
+        "shap_value": 0.009641319283492714
+      },
+      {
+        "ngram": "MOV FLD",
+        "value": 0.00043906684732064605,
+        "shap_value": 0.0093127592238178
+      },
+      {
+        "ngram": "CALL PUSH",
+        "value": 0.00037689809687435627,
+        "shap_value": 0.009168012085651031
+      },
+      {
+        "ngram": "SHRD MOV",
+        "value": 3.885547357640462e-06,
+        "shap_value": 0.008944654484891049
+      },
+      {
+        "ngram": "ADD FLD",
+        "value": 4.662656647269614e-05,
+        "shap_value": 0.008852159852230677
+      },
+      {
+        "ngram": "PXOR MOVUPS",
+        "value": 0.0003458137216512114,
+        "shap_value": 0.007860049659708731
+      },
+      {
+        "ngram": "MOVZX PUSH",
+        "value": 3.885547357640462e-06,
+        "shap_value": 0.0073430064170198865
+      },
+      {
+        "ngram": "MOV MOVSD.REP",
+        "value": 4.274101956980303e-05,
+        "shap_value": 0.007232471572613501
+      },
+      {
+        "ngram": "MOVZX ROL",
+        "value": 2.331328323634807e-05,
+        "shap_value": 0.007213892377841442
+      },
+      {
+        "ngram": "POP XOR",
+        "value": 2.331328323634807e-05,
+        "shap_value": 0.007203755195002305
+      },
+      {
+        "ngram": "SHL NEG",
+        "value": 7.771094715280924e-06,
+        "shap_value": 0.006995545478577021
+      },
+      {
+        "ngram": "ROL ADD",
+        "value": 1.5542189430561848e-05,
+        "shap_value": 0.006956161364233567
+      },
+      {
+        "ngram": "LEA POP",
+        "value": 0.002778166439384222,
+        "shap_value": 0.006847542703904981
+      },
+      {
+        "ngram": "MOV LEAVE",
+        "value": 0.00024867503088898957,
+        "shap_value": 0.006635783553306905
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest assigns a 0.955 malware probability, but the supplied evidence does not show clear cryptojacking behavior. All 20 n-grams push toward cryptojacking, yet the SHAP values are small and nearly flat (+0.0066 to +0.0109), so no single feature dominates. Most n-grams are generic compiler or stack-management sequences: ADD PUSH, POP PUSH, CALL PUSH, POP LEA, LEA POP, MOV LEAVE, and POP XOR. These appear in nearly all x86 binaries and are not specific to mining. Some n-grams are more suggestive of compute-heavy or obfuscated code. ROL MOVZX, MOVZX ROL, and ROL ADD (rotate/byte-extract patterns) can occur in hashing, checksum, or cipher routines. PXOR PXOR and PXOR MOVUPS indicate SSE vector operations that appear in bulk data transforms and memory clearing. SHRD MOV, ADC SUB, and SHL NEG suggest multi-precision or 64-bit arithmetic emulation on 32-bit code. The FPU patterns (FSTP MOV, MOV FLD, ADD FLD) and MOV MOVSD.REP (block memory copy) are common in ordinary numeric and runtime code. The evidence has no function names, API references, or constants such as stratum or algorithm identifiers, so the hash-like and vector patterns cannot be tied to a mining kernel. The very low frequencies (mostly below 0.0005) also suggest sparse signals. The model's high score supports suspicion, but the n-gram evidence alone is inconclusive and does not reach high confidence.",
+    "evidence_analysis": [
+      {
+        "ngram": "ADD PUSH",
+        "shap_contribution": 0.010858,
+        "assessment": "Generic arithmetic followed by a stack push. It is common in compiled code, not mining-specific, and only weakly informative."
+      },
+      {
+        "ngram": "ROL MOVZX",
+        "shap_contribution": 0.010754,
+        "assessment": "Rotate followed by a zero-extending byte/word load. This is consistent with hash or cipher round logic, but it is also used in general bit manipulation. Suggestive but not conclusive."
+      },
+      {
+        "ngram": "FSTP MOV",
+        "shap_contribution": 0.010146,
+        "assessment": "x87 FPU store followed by a move. This is typical of floating-point handling in ordinary runtime or numeric code and has no direct link to mining."
+      },
+      {
+        "ngram": "POP PUSH",
+        "shap_contribution": 0.010011,
+        "assessment": "Stack register restore and save sequence from function epilogues and prologues. It is generic and benign-looking."
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "shap_contribution": 0.009754,
+        "assessment": "Consecutive SSE XORs, typically register zeroing or vectorized mixing. They could appear in crypto or hash routines but are also common in compiler-generated initialization."
+      },
+      {
+        "ngram": "POP LEA",
+        "shap_contribution": 0.009706,
+        "assessment": "Stack restore followed by address computation. Generic compiler output with low specificity."
+      },
+      {
+        "ngram": "ADC SUB",
+        "shap_contribution": 0.009641,
+        "assessment": "Add-with-carry followed by subtraction suggests multi-word arithmetic, as in big-integer or 64-bit emulation. It is weakly consistent with cryptographic math but not specific."
+      },
+      {
+        "ngram": "MOV FLD",
+        "shap_contribution": 0.009313,
+        "assessment": "Move followed by an x87 load. Common floating-point setup with no clear mining connection."
+      },
+      {
+        "ngram": "CALL PUSH",
+        "shap_contribution": 0.009168,
+        "assessment": "Call followed by a push is a standard calling-convention pattern and benign-looking by itself."
+      },
+      {
+        "ngram": "SHRD MOV",
+        "shap_contribution": 0.008945,
+        "assessment": "Double-precision shift, typically 64-bit shifts on 32-bit code or multi-precision arithmetic. It is mildly suggestive of crypto-like math."
+      },
+      {
+        "ngram": "ADD FLD",
+        "shap_contribution": 0.008852,
+        "assessment": "Arithmetic followed by an x87 load. This is generic floating-point code and not indicative of mining."
+      },
+      {
+        "ngram": "PXOR MOVUPS",
+        "shap_contribution": 0.00786,
+        "assessment": "SSE XOR with an unaligned vector move, used for buffer clearing or vectorized data transformation. It is relatively frequent (0.000346) but ambiguous."
+      },
+      {
+        "ngram": "MOVZX PUSH",
+        "shap_contribution": 0.007343,
+        "assessment": "Zero-extended load pushed onto the stack. It is a generic pattern with low specificity."
+      },
+      {
+        "ngram": "MOV MOVSD.REP",
+        "shap_contribution": 0.007232,
+        "assessment": "Block memory copy via REP MOVSD. It is typical of struct or buffer copies and common in many programs."
+      },
+      {
+        "ngram": "MOVZX ROL",
+        "shap_contribution": 0.007214,
+        "assessment": "Byte extraction followed by rotate, the reverse of the ROL MOVZX pairing. Together they hint at hash or cipher-style bit mixing, though the evidence is not definitive."
+      },
+      {
+        "ngram": "POP XOR",
+        "shap_contribution": 0.007204,
+        "assessment": "Stack restore followed by XOR, often register zeroing in epilogues. It is generic."
+      },
+      {
+        "ngram": "SHL NEG",
+        "shap_contribution": 0.006996,
+        "assessment": "Shift followed by negate, used in arithmetic or mask generation. It is mildly unusual but not mining-specific."
+      },
+      {
+        "ngram": "ROL ADD",
+        "shap_contribution": 0.006956,
+        "assessment": "Rotate followed by add is a classic hash and cipher round pattern, as in ARX-style constructions. Combined with the other ROL n-grams, it is the most mining-relevant motif here, but it is still circumstantial."
+      },
+      {
+        "ngram": "LEA POP",
+        "shap_contribution": 0.006848,
+        "assessment": "The highest-frequency n-gram (0.002778), a standard compiler epilogue pattern. It is benign-looking, and its contribution probably reflects the model's overall statistical profile."
+      },
+      {
+        "ngram": "MOV LEAVE",
+        "shap_contribution": 0.006636,
+        "assessment": "Standard function epilogue that tears down a stack frame. It carries no cryptojacking-specific information."
+      }
+    ],
+    "confidence_score": 0.45,
+    "key_indicators": [
+      "Random Forest malware probability of 0.955, though SHAP contributions are small and evenly spread (0.0066-0.0109)",
+      "Rotate/zero-extend n-grams (ROL MOVZX, MOVZX ROL, ROL ADD) that are consistent with hash or cipher round logic",
+      "SSE vector XOR patterns (PXOR PXOR, PXOR MOVUPS) that could indicate vectorized data mixing",
+      "Multi-precision arithmetic patterns (ADC SUB, SHRD MOV, SHL NEG)",
+      "Many top features are generic stack, epilogue, or FPU patterns with low specificity",
+      "No function names, API references, or mining-specific constants in the evidence"
+    ],
+    "recommended_action": "Treat as suspicious but unconfirmed. Review the functions containing the ROL/MOVZX/ADD and PXOR sequences in a disassembler for hash-like round structures, such as repeated rotate-add-xor loops or large constant tables. Check imports and strings for mining-pool, stratum, or wallet indicators. Run the sample in a sandbox and monitor sustained CPU usage and outbound network connections. Escalate to high-confidence only if mining kernels or pool communication are found."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

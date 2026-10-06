@@ -1,0 +1,233 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_57fcdfb9a49474ab",
+  "status": "success",
+  "source_sha256": "fe6ac24160072b7031575d120630499db661494b1d7b53b5b1adbb9313501c92",
+  "input_sha256": "3bd7f77e664307b90aca7e62eb04de3303a1431764f49ddd65a97cfe52efa03d",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "0c562a5c681740b9496f31015d6ec74b9daf4ca21ce5dbde6788c866fb0d6aea.exe",
+      "source_name": "0c562a5c681740b9496f31015d6ec74b9daf4ca21ce5dbde6788c866fb0d6aea.exe.json",
+      "source_path": "ml/dataset/cryptojacking/0c562a5c681740b9496f31015d6ec74b9daf4ca21ce5dbde6788c866fb0d6aea.exe.json",
+      "split": "test",
+      "batch_number": 5,
+      "row_index_in_batch": 29,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "0c562a5c681740b9496f31015d6ec74b9daf4ca21ce5dbde6788c866fb0d6aea.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:05:54.076452+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:05:54.076479+00:00",
+      "error": null,
+      "request_sha256": "287da7770863160b4a2dcaede50fe4b129a99d6f9c8587ed60afb043e0323cfd",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkxHHHBPJsmJAXdbx1AF",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF prediction confidence of 0.883 and verifying the feature counts — the candidate claims 18 positive-SHAP n-grams, but recounting the list shows 19 positive and 1 negative (MOV TEST), so I need to correct that discrepancy.\n\nThe candidate also asserts none of the top features are arithmetic or bitwise operations, but ADD ADD and XOR XOR clearly are, so that's another inconsistency to flag. I'm also recounting the \"13 of top 20 have zero relative frequency\" claim and getting 11 instead, so I should verify this more carefully before concluding.\n\nLooking at individual feature pairs, most explanations seem like generic but plausible idioms (CMOVZ MOV as conditional-move, MOV TEST as null checking), though some like MOV PUSH being tied specifically to calls feels like a mild stretch. The frequency claims for XOR MOV and ADD ADD mostly check out against the numbers given, while the \"13 of top 20\" count still appears to be an error.\n\nThe bigger issue is the SHAP count discrepancies — claiming \"all 18 positive-SHAP features\" when there are 19, and misstating how many land in the top 20. The direction and magnitude of individual SHAP values do seem faithful, but these counting errors are enough to call the overall summary unfaithful, even if the interpretation of \"positive SHAP from absence\" is a defensible but unverified read of the feature semantics.\n\nFor scoring: technical_accuracy around 3 given the count errors, coherence around 4 despite the arithmetic mismatch, relevance 4, and actionability 4 since the recommended checks (sandboxing, imports, packing, string analysis) are sound and proportionate. I'll flag the unsupported claims with JSON pointers into the explanation and key_indicators fields, categorizing the count errors as \"other\" and the absence-interpretation as \"unsupported_behavior,\" while verifying the exact quoted text matches what's actually in the source.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_57fcdfb9a49474ab\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.8833, ADD ADD (0.392982, +0.013618), MOV TEST (-0.006484) and the generic instruction semantics are correct. But it says 18 positive-SHAP n-grams (the top 20 has 19) and 13 zero-value features (there are 11). It also treats feature values as 'relative frequency' and says positive SHAP 'comes from absence', although the artifact says value semantics are not established.\",\"coherence\":\"Well organized: it separates observations, the ambiguous ADD ADD anomaly, the benign counter-signal, the low-confidence tier and the follow-up, and these are mutually consistent. Minor flaws: the repeated wrong counts, and 'None of them are the arithmetic...' sits awkwardly beside ADD ADD and XOR XOR.\",\"cybersecurity_relevance\":\"It ties this sample's n-grams to mining-kernel expectations, notes the missing function context, and offers padding, data or packing as alternatives to mining. It avoids claiming cryptojacking. It could say more about specific benign alternatives such as ordinary compiled software.\",\"actionable_utility\":\"Recommendations are conditional and proportionate: inspect the ADD ADD concentration, check for packing, run a sandbox for CPU, network and process behavior, and corroborate with strings, imports and function-level disassembly. They are tied to the evidence gaps but lack prioritization and specifics such as which imports or strings to look for.\"},\"unsupported_claims\":[{\"quote\":\"All 18 positive-SHAP n-grams are generic x86 compiler idioms\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"The top-20 list has 19 positive-SHAP n-grams (only MOV TEST is negative), not 18. The 'all ... compiler idioms' claim also rests on mnemonics alone and includes XOR XOR, ADD ADD and AND MOV, which are not shown to be compiler boilerplate.\",\"category\":\"other\"},{\"quote\":\"Of the top 20 n-grams, 13 have a relative frequency of 0.000000, so their positive SHAP values come from absence, not from observed code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/feature_value_semantics\",\"reason\":\"Only 11 of the top 20 have value 0.0. The artifact also says feature value semantics are not established and the values should not be treated as raw counts, so 'relative frequency' and the 'from absence' mechanism are unsupported.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"13 of the top 20 n-grams have zero frequency, so their positive SHAP comes from absence\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Repeats the incorrect count (11 zero-valued features) and the unestablished absence interpretation.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"It indicates ordinary compiled functions and nothing malicious.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/top_features; /evidence/function_context\",\"reason\":\"A single low-frequency LEAVE RET n-gram with no function context cannot show that the code is ordinary or non-malicious, and the same candidate treats the sample as suspicious.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP directions and magnitudes are reported correctly: all listed contributions are positive except MOV TEST, with values matching within rounding. But the candidate misstates the counts of positive and zero-valued features and presents the absence mechanism as established.\",\"discrepancies\":[{\"quote\":\"All 18 positive-SHAP n-grams\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The supplied top-20 list contains 19 positive-SHAP features.\"},{\"quote\":\"Of the top 20 n-grams, 13 have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only 11 of the top 20 have value 0.0.\"},{\"quote\":\"13 of the top 20 n-grams have zero frequency, so their positive SHAP comes from absence\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"reason\":\"Same count error. The 'comes from absence' mechanism is asserted although feature value semantics are not established by the artifact.\"}]},\"evidence_limitations\":[\"Feature value semantics are unconfirmed, so the 'relative frequency' reading is an assumption.\",\"The SHAP target class is a configured assumption, and the SHAP baseline and full attributions are null.\",\"The top-20 subset cannot show that omitted features do not support the benign class.\",\"There are no occurrences or function context, so n-gram adjacency, location and control flow cannot be verified.\",\"The RF probability is not behavioral proof and does not establish cryptojacking.\"],\"summary\":\"The explanation is cautious, mostly coherent and useful, and it correctly avoids asserting cryptojacking. But it miscounts positive-SHAP features (18 vs 19) and zero-valued features (13 vs 11) and overstates the 'absence' interpretation, which lowers technical accuracy and SHAP faithfulness.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6721,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3984,
+          "output_tokens_details": {
+            "thinking_tokens": 2082
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6721,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3984,
+        "output_tokens_details": {
+          "thinking_tokens": 2082
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_57fcdfb9a49474ab\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.8833, ADD ADD (0.392982, +0.013618), MOV TEST (-0.006484) and the generic instruction semantics are correct. But it says 18 positive-SHAP n-grams (the top 20 has 19) and 13 zero-value features (there are 11). It also treats feature values as 'relative frequency' and says positive SHAP 'comes from absence', although the artifact says value semantics are not established.\",\"coherence\":\"Well organized: it separates observations, the ambiguous ADD ADD anomaly, the benign counter-signal, the low-confidence tier and the follow-up, and these are mutually consistent. Minor flaws: the repeated wrong counts, and 'None of them are the arithmetic...' sits awkwardly beside ADD ADD and XOR XOR.\",\"cybersecurity_relevance\":\"It ties this sample's n-grams to mining-kernel expectations, notes the missing function context, and offers padding, data or packing as alternatives to mining. It avoids claiming cryptojacking. It could say more about specific benign alternatives such as ordinary compiled software.\",\"actionable_utility\":\"Recommendations are conditional and proportionate: inspect the ADD ADD concentration, check for packing, run a sandbox for CPU, network and process behavior, and corroborate with strings, imports and function-level disassembly. They are tied to the evidence gaps but lack prioritization and specifics such as which imports or strings to look for.\"},\"unsupported_claims\":[{\"quote\":\"All 18 positive-SHAP n-grams are generic x86 compiler idioms\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"The top-20 list has 19 positive-SHAP n-grams (only MOV TEST is negative), not 18. The 'all ... compiler idioms' claim also rests on mnemonics alone and includes XOR XOR, ADD ADD and AND MOV, which are not shown to be compiler boilerplate.\",\"category\":\"other\"},{\"quote\":\"Of the top 20 n-grams, 13 have a relative frequency of 0.000000, so their positive SHAP values come from absence, not from observed code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/feature_value_semantics\",\"reason\":\"Only 11 of the top 20 have value 0.0. The artifact also says feature value semantics are not established and the values should not be treated as raw counts, so 'relative frequency' and the 'from absence' mechanism are unsupported.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"13 of the top 20 n-grams have zero frequency, so their positive SHAP comes from absence\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Repeats the incorrect count (11 zero-valued features) and the unestablished absence interpretation.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"It indicates ordinary compiled functions and nothing malicious.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/top_features; /evidence/function_context\",\"reason\":\"A single low-frequency LEAVE RET n-gram with no function context cannot show that the code is ordinary or non-malicious, and the same candidate treats the sample as suspicious.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP directions and magnitudes are reported correctly: all listed contributions are positive except MOV TEST, with values matching within rounding. But the candidate misstates the counts of positive and zero-valued features and presents the absence mechanism as established.\",\"discrepancies\":[{\"quote\":\"All 18 positive-SHAP n-grams\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The supplied top-20 list contains 19 positive-SHAP features.\"},{\"quote\":\"Of the top 20 n-grams, 13 have a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only 11 of the top 20 have value 0.0.\"},{\"quote\":\"13 of the top 20 n-grams have zero frequency, so their positive SHAP comes from absence\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"reason\":\"Same count error. The 'comes from absence' mechanism is asserted although feature value semantics are not established by the artifact.\"}]},\"evidence_limitations\":[\"Feature value semantics are unconfirmed, so the 'relative frequency' reading is an assumption.\",\"The SHAP target class is a configured assumption, and the SHAP baseline and full attributions are null.\",\"The top-20 subset cannot show that omitted features do not support the benign class.\",\"There are no occurrences or function context, so n-gram adjacency, location and control flow cannot be verified.\",\"The RF probability is not behavioral proof and does not establish cryptojacking.\"],\"summary\":\"The explanation is cautious, mostly coherent and useful, and it correctly avoids asserting cryptojacking. But it miscounts positive-SHAP features (18 vs 19) and zero-valued features (13 vs 11) and overstates the 'absence' interpretation, which lowers technical accuracy and SHAP faithfulness.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_57fcdfb9a49474ab",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability 0.8833, ADD ADD (0.392982, +0.013618), MOV TEST (-0.006484) and the generic instruction semantics are correct. But it says 18 positive-SHAP n-grams (the top 20 has 19) and 13 zero-value features (there are 11). It also treats feature values as 'relative frequency' and says positive SHAP 'comes from absence', although the artifact says value semantics are not established.",
+      "coherence": "Well organized: it separates observations, the ambiguous ADD ADD anomaly, the benign counter-signal, the low-confidence tier and the follow-up, and these are mutually consistent. Minor flaws: the repeated wrong counts, and 'None of them are the arithmetic...' sits awkwardly beside ADD ADD and XOR XOR.",
+      "cybersecurity_relevance": "It ties this sample's n-grams to mining-kernel expectations, notes the missing function context, and offers padding, data or packing as alternatives to mining. It avoids claiming cryptojacking. It could say more about specific benign alternatives such as ordinary compiled software.",
+      "actionable_utility": "Recommendations are conditional and proportionate: inspect the ADD ADD concentration, check for packing, run a sandbox for CPU, network and process behavior, and corroborate with strings, imports and function-level disassembly. They are tied to the evidence gaps but lack prioritization and specifics such as which imports or strings to look for."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "All 18 positive-SHAP n-grams are generic x86 compiler idioms",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "The top-20 list has 19 positive-SHAP n-grams (only MOV TEST is negative), not 18. The 'all ... compiler idioms' claim also rests on mnemonics alone and includes XOR XOR, ADD ADD and AND MOV, which are not shown to be compiler boilerplate.",
+        "category": "other"
+      },
+      {
+        "quote": "Of the top 20 n-grams, 13 have a relative frequency of 0.000000, so their positive SHAP values come from absence, not from observed code.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; /evidence/feature_value_semantics",
+        "reason": "Only 11 of the top 20 have value 0.0. The artifact also says feature value semantics are not established and the values should not be treated as raw counts, so 'relative frequency' and the 'from absence' mechanism are unsupported.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "13 of the top 20 n-grams have zero frequency, so their positive SHAP comes from absence",
+        "candidate_path": "/candidate_analysis/key_indicators/2",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "Repeats the incorrect count (11 zero-valued features) and the unestablished absence interpretation.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "It indicates ordinary compiled functions and nothing malicious.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+        "evidence_reference": "/evidence/top_features; /evidence/function_context",
+        "reason": "A single low-frequency LEAVE RET n-gram with no function context cannot show that the code is ordinary or non-malicious, and the same candidate treats the sample as suspicious.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "SHAP directions and magnitudes are reported correctly: all listed contributions are positive except MOV TEST, with values matching within rounding. But the candidate misstates the counts of positive and zero-valued features and presents the absence mechanism as established.",
+      "discrepancies": [
+        {
+          "quote": "All 18 positive-SHAP n-grams",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The supplied top-20 list contains 19 positive-SHAP features."
+        },
+        {
+          "quote": "Of the top 20 n-grams, 13 have a relative frequency of 0.000000",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "Only 11 of the top 20 have value 0.0."
+        },
+        {
+          "quote": "13 of the top 20 n-grams have zero frequency, so their positive SHAP comes from absence",
+          "candidate_path": "/candidate_analysis/key_indicators/2",
+          "reason": "Same count error. The 'comes from absence' mechanism is asserted although feature value semantics are not established by the artifact."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "Feature value semantics are unconfirmed, so the 'relative frequency' reading is an assumption.",
+      "The SHAP target class is a configured assumption, and the SHAP baseline and full attributions are null.",
+      "The top-20 subset cannot show that omitted features do not support the benign class.",
+      "There are no occurrences or function context, so n-gram adjacency, location and control flow cannot be verified.",
+      "The RF probability is not behavioral proof and does not establish cryptojacking."
+    ],
+    "summary": "The explanation is cautious, mostly coherent and useful, and it correctly avoids asserting cryptojacking. But it miscounts positive-SHAP features (18 vs 19) and zero-valued features (13 vs 11) and overstates the 'absence' interpretation, which lowers technical accuracy and SHAP faithfulness."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "All 18 positive-SHAP n-grams are generic x86 compiler idioms",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "The top-20 list has 19 positive-SHAP n-grams (only MOV TEST is negative), not 18. The 'all ... compiler idioms' claim also rests on mnemonics alone and includes XOR XOR, ADD ADD and AND MOV, which are not shown to be compiler boilerplate.",
+      "category": "other"
+    },
+    {
+      "quote": "Of the top 20 n-grams, 13 have a relative frequency of 0.000000, so their positive SHAP values come from absence, not from observed code.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; /evidence/feature_value_semantics",
+      "reason": "Only 11 of the top 20 have value 0.0. The artifact also says feature value semantics are not established and the values should not be treated as raw counts, so 'relative frequency' and the 'from absence' mechanism are unsupported.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "13 of the top 20 n-grams have zero frequency, so their positive SHAP comes from absence",
+      "candidate_path": "/candidate_analysis/key_indicators/2",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "Repeats the incorrect count (11 zero-valued features) and the unestablished absence interpretation.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "It indicates ordinary compiled functions and nothing malicious.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/16/assessment",
+      "evidence_reference": "/evidence/top_features; /evidence/function_context",
+      "reason": "A single low-frequency LEAVE RET n-gram with no function context cannot show that the code is ordinary or non-malicious, and the same candidate treats the sample as suspicious.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "All 18 positive-SHAP n-grams",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "The supplied top-20 list contains 19 positive-SHAP features.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "Of the top 20 n-grams, 13 have a relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "Only 11 of the top 20 have value 0.0.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "0c562a5c681740b9496f31015d6ec74b9daf4ca21ce5dbde6788c866fb0d6aea.exe_analysis.json"
+}

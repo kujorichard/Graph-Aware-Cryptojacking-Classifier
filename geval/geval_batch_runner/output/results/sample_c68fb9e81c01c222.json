@@ -1,0 +1,244 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_c68fb9e81c01c222",
+  "status": "success",
+  "source_sha256": "918dd2707f33741fc276fcc06adf43ddd056627a4fb22826bf2fdf66be313f62",
+  "input_sha256": "85b46e98932251c5b624eac8667376bfcbb3f101cff649127fe6446e43aa403f",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "4d90753ef2115ad9c5c646f537c1b10285bed07b4f96813557c2a80013af24d9.exe",
+      "source_name": "4d90753ef2115ad9c5c646f537c1b10285bed07b4f96813557c2a80013af24d9.exe.json",
+      "source_path": "ml/dataset/cryptojacking/4d90753ef2115ad9c5c646f537c1b10285bed07b4f96813557c2a80013af24d9.exe.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 38,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "4d90753ef2115ad9c5c646f537c1b10285bed07b4f96813557c2a80013af24d9.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:35:33.750770+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:35:33.750815+00:00",
+      "error": null,
+      "request_sha256": "3bfed6aa074cb434df5f01c15643888a85540fc7d6405b42f9247a975e082411",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkzYUKLuDVTMnaL4RDMF",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_c68fb9e81c01c222\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP values, ranks and n-gram names match the evidence, and the instruction semantics are mostly correct. It overreaches by saying 'no listed feature argues against cryptojacking' (the evidence is only a top-k subset), by inferring 'loops' and 'mining kernels' from bare mnemonics, and by calling the MOV SYSCALL n-gram 'direct system-call usage' without context. It also gives 'frequency' values, though the artifact says feature value semantics are not established. Caveats are present but do not cancel these overreaches.\",\"coherence\":\"Well organized into clusters with a per-feature evidence list, and the tier, indicators and recommended action are consistent. Minor repetition between the explanation and evidence_analysis, and 'high-confidence' sits alongside the caveat that n-grams are inconclusive.\",\"cybersecurity_relevance\":\"It links the evidence directly to cryptojacking investigation (ARX/rotate cluster, SIMD XOR, syscall) and names benign alternatives such as legitimate crypto or checksum routines and compiler-generated code. It also notes that no API or function context was supplied. It does not discuss benign explanations for the SIMD cluster, such as media or compression code, and treats the mining hypothesis as fairly strong.\",\"actionable_utility\":\"Concrete, feasible and mostly proportionate: sandbox for CPU and stratum traffic, locate functions with rotate/SIMD sequences, check hash constants, extract wallet and pool config, and inspect code around the syscall. The recommendation is framed as verification, so proposed checks are not treated as observed behavior. Quarantine until confirmed is reasonable. It is not prioritized, and the high-confidence tier is somewhat stronger than the evidence supports.\"},\"unsupported_claims\":[{\"quote\":\"so no listed feature argues against cryptojacking\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; scope_notes\",\"reason\":\"The statement is true only of the supplied top-20; omitted features and the baseline are unknown. The wording 'cryptojacking' also conflates malware-class SHAP with the specific cryptojacking behavior.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"suggest vectorized bitwise and state-mixing loops, consistent with mining kernels\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; occurrences and function_context empty\",\"reason\":\"Loops and mining kernels cannot be established from isolated n-gram mnemonics with no occurrences, adjacency or control-flow context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"MOV SYSCALL (+0.005564) indicates direct system-call usage, which can point to evasion or low-level OS interaction.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (MOV SYSCALL); function_context empty\",\"reason\":\"The n-gram only shows a syscall mnemonic associated with the class. Syscall intent or evasion is not established without context. The claim is hedged but still presented as an indication.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Such sequences are typical of hash and cipher round functions, which fits proof-of-work mining code\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (ADD ROR, MOV ROL, ROL AND, SUB ADC)\",\"reason\":\"Mnemonics alone do not establish algorithms or mining. The sequence is also not shown to be adjacent, since the n-grams are graph-aware.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Call immediately followed by return, indicating a thunk or tiny wrapper function.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/top_features (CALL RET); occurrences empty\",\"reason\":\"Adjacency and control flow are not established by the artifact, and the structure is not verified.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Frequent (0.001172)\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the values should not be treated as raw counts or frequencies without upstream confirmation. The candidate describes them as frequencies and uses 'Frequent' and 'Very rare' on that basis.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"The SHAP signs, magnitudes and ranking match the evidence. The faithfulness problem is an overgeneralization from the top-k subset, which the rubric treats as unable to show that no omitted feature supports benign.\",\"discrepancies\":[{\"quote\":\"so no listed feature argues against cryptojacking\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"It correctly refers to listed features, but the conclusion is used to support the verdict even though omitted features and the baseline are unknown. It also equates class-1 SHAP with cryptojacking specifically.\"},{\"quote\":\"Frequent (0.001172) and consistent with vectorized state mixing or zeroing in mining loops.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"reason\":\"It uses feature values as frequencies and ties SHAP contribution to mining loops, although the value semantics are unconfirmed and no loop evidence exists.\"}]},\"evidence_limitations\":[\"Only a top-20 SHAP subset is provided; omitted features and the SHAP baseline are unknown.\",\"No occurrences, function context, adjacency or API information is supplied.\",\"Feature value semantics are not established, so they should not be treated as raw counts or frequencies.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation reports the numbers and SHAP signs accurately, is well organized, and ends with a concrete, evidence-linked verification plan. It overreaches by inferring mining loops, kernels, algorithms and syscall evasion from isolated mnemonics, by treating feature values as frequencies, and by implying from the top-k subset that nothing argues against the verdict. Several caveats soften these claims.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7372,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2245,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7372,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2245,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_c68fb9e81c01c222\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP values, ranks and n-gram names match the evidence, and the instruction semantics are mostly correct. It overreaches by saying 'no listed feature argues against cryptojacking' (the evidence is only a top-k subset), by inferring 'loops' and 'mining kernels' from bare mnemonics, and by calling the MOV SYSCALL n-gram 'direct system-call usage' without context. It also gives 'frequency' values, though the artifact says feature value semantics are not established. Caveats are present but do not cancel these overreaches.\",\"coherence\":\"Well organized into clusters with a per-feature evidence list, and the tier, indicators and recommended action are consistent. Minor repetition between the explanation and evidence_analysis, and 'high-confidence' sits alongside the caveat that n-grams are inconclusive.\",\"cybersecurity_relevance\":\"It links the evidence directly to cryptojacking investigation (ARX/rotate cluster, SIMD XOR, syscall) and names benign alternatives such as legitimate crypto or checksum routines and compiler-generated code. It also notes that no API or function context was supplied. It does not discuss benign explanations for the SIMD cluster, such as media or compression code, and treats the mining hypothesis as fairly strong.\",\"actionable_utility\":\"Concrete, feasible and mostly proportionate: sandbox for CPU and stratum traffic, locate functions with rotate/SIMD sequences, check hash constants, extract wallet and pool config, and inspect code around the syscall. The recommendation is framed as verification, so proposed checks are not treated as observed behavior. Quarantine until confirmed is reasonable. It is not prioritized, and the high-confidence tier is somewhat stronger than the evidence supports.\"},\"unsupported_claims\":[{\"quote\":\"so no listed feature argues against cryptojacking\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; scope_notes\",\"reason\":\"The statement is true only of the supplied top-20; omitted features and the baseline are unknown. The wording 'cryptojacking' also conflates malware-class SHAP with the specific cryptojacking behavior.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"suggest vectorized bitwise and state-mixing loops, consistent with mining kernels\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; occurrences and function_context empty\",\"reason\":\"Loops and mining kernels cannot be established from isolated n-gram mnemonics with no occurrences, adjacency or control-flow context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"MOV SYSCALL (+0.005564) indicates direct system-call usage, which can point to evasion or low-level OS interaction.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (MOV SYSCALL); function_context empty\",\"reason\":\"The n-gram only shows a syscall mnemonic associated with the class. Syscall intent or evasion is not established without context. The claim is hedged but still presented as an indication.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Such sequences are typical of hash and cipher round functions, which fits proof-of-work mining code\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (ADD ROR, MOV ROL, ROL AND, SUB ADC)\",\"reason\":\"Mnemonics alone do not establish algorithms or mining. The sequence is also not shown to be adjacent, since the n-grams are graph-aware.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Call immediately followed by return, indicating a thunk or tiny wrapper function.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/17/assessment\",\"evidence_reference\":\"/evidence/top_features (CALL RET); occurrences empty\",\"reason\":\"Adjacency and control flow are not established by the artifact, and the structure is not verified.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Frequent (0.001172)\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the values should not be treated as raw counts or frequencies without upstream confirmation. The candidate describes them as frequencies and uses 'Frequent' and 'Very rare' on that basis.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"The SHAP signs, magnitudes and ranking match the evidence. The faithfulness problem is an overgeneralization from the top-k subset, which the rubric treats as unable to show that no omitted feature supports benign.\",\"discrepancies\":[{\"quote\":\"so no listed feature argues against cryptojacking\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"It correctly refers to listed features, but the conclusion is used to support the verdict even though omitted features and the baseline are unknown. It also equates class-1 SHAP with cryptojacking specifically.\"},{\"quote\":\"Frequent (0.001172) and consistent with vectorized state mixing or zeroing in mining loops.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"reason\":\"It uses feature values as frequencies and ties SHAP contribution to mining loops, although the value semantics are unconfirmed and no loop evidence exists.\"}]},\"evidence_limitations\":[\"Only a top-20 SHAP subset is provided; omitted features and the SHAP baseline are unknown.\",\"No occurrences, function context, adjacency or API information is supplied.\",\"Feature value semantics are not established, so they should not be treated as raw counts or frequencies.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation reports the numbers and SHAP signs accurately, is well organized, and ends with a concrete, evidence-linked verification plan. It overreaches by inferring mining loops, kernels, algorithms and syscall evasion from isolated mnemonics, by treating feature values as frequencies, and by implying from the top-k subset that nothing argues against the verdict. Several caveats soften these claims.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_c68fb9e81c01c222",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability, SHAP values, ranks and n-gram names match the evidence, and the instruction semantics are mostly correct. It overreaches by saying 'no listed feature argues against cryptojacking' (the evidence is only a top-k subset), by inferring 'loops' and 'mining kernels' from bare mnemonics, and by calling the MOV SYSCALL n-gram 'direct system-call usage' without context. It also gives 'frequency' values, though the artifact says feature value semantics are not established. Caveats are present but do not cancel these overreaches.",
+      "coherence": "Well organized into clusters with a per-feature evidence list, and the tier, indicators and recommended action are consistent. Minor repetition between the explanation and evidence_analysis, and 'high-confidence' sits alongside the caveat that n-grams are inconclusive.",
+      "cybersecurity_relevance": "It links the evidence directly to cryptojacking investigation (ARX/rotate cluster, SIMD XOR, syscall) and names benign alternatives such as legitimate crypto or checksum routines and compiler-generated code. It also notes that no API or function context was supplied. It does not discuss benign explanations for the SIMD cluster, such as media or compression code, and treats the mining hypothesis as fairly strong.",
+      "actionable_utility": "Concrete, feasible and mostly proportionate: sandbox for CPU and stratum traffic, locate functions with rotate/SIMD sequences, check hash constants, extract wallet and pool config, and inspect code around the syscall. The recommendation is framed as verification, so proposed checks are not treated as observed behavior. Quarantine until confirmed is reasonable. It is not prioritized, and the high-confidence tier is somewhat stronger than the evidence supports."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "so no listed feature argues against cryptojacking",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; scope_notes",
+        "reason": "The statement is true only of the supplied top-20; omitted features and the baseline are unknown. The wording 'cryptojacking' also conflates malware-class SHAP with the specific cryptojacking behavior.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "suggest vectorized bitwise and state-mixing loops, consistent with mining kernels",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; occurrences and function_context empty",
+        "reason": "Loops and mining kernels cannot be established from isolated n-gram mnemonics with no occurrences, adjacency or control-flow context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "MOV SYSCALL (+0.005564) indicates direct system-call usage, which can point to evasion or low-level OS interaction.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features (MOV SYSCALL); function_context empty",
+        "reason": "The n-gram only shows a syscall mnemonic associated with the class. Syscall intent or evasion is not established without context. The claim is hedged but still presented as an indication.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Such sequences are typical of hash and cipher round functions, which fits proof-of-work mining code",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features (ADD ROR, MOV ROL, ROL AND, SUB ADC)",
+        "reason": "Mnemonics alone do not establish algorithms or mining. The sequence is also not shown to be adjacent, since the n-grams are graph-aware.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "Call immediately followed by return, indicating a thunk or tiny wrapper function.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+        "evidence_reference": "/evidence/top_features (CALL RET); occurrences empty",
+        "reason": "Adjacency and control flow are not established by the artifact, and the structure is not verified.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Frequent (0.001172)",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says the values should not be treated as raw counts or frequencies without upstream confirmation. The candidate describes them as frequencies and uses 'Frequent' and 'Very rare' on that basis.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "The SHAP signs, magnitudes and ranking match the evidence. The faithfulness problem is an overgeneralization from the top-k subset, which the rubric treats as unable to show that no omitted feature supports benign.",
+      "discrepancies": [
+        {
+          "quote": "so no listed feature argues against cryptojacking",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "It correctly refers to listed features, but the conclusion is used to support the verdict even though omitted features and the baseline are unknown. It also equates class-1 SHAP with cryptojacking specifically."
+        },
+        {
+          "quote": "Frequent (0.001172) and consistent with vectorized state mixing or zeroing in mining loops.",
+          "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+          "reason": "It uses feature values as frequencies and ties SHAP contribution to mining loops, although the value semantics are unconfirmed and no loop evidence exists."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "Only a top-20 SHAP subset is provided; omitted features and the SHAP baseline are unknown.",
+      "No occurrences, function context, adjacency or API information is supplied.",
+      "Feature value semantics are not established, so they should not be treated as raw counts or frequencies.",
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "RF probability is not behavioral proof of cryptojacking."
+    ],
+    "summary": "The explanation reports the numbers and SHAP signs accurately, is well organized, and ends with a concrete, evidence-linked verification plan. It overreaches by inferring mining loops, kernels, algorithms and syscall evasion from isolated mnemonics, by treating feature values as frequencies, and by implying from the top-k subset that nothing argues against the verdict. Several caveats soften these claims."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "so no listed feature argues against cryptojacking",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; scope_notes",
+      "reason": "The statement is true only of the supplied top-20; omitted features and the baseline are unknown. The wording 'cryptojacking' also conflates malware-class SHAP with the specific cryptojacking behavior.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "suggest vectorized bitwise and state-mixing loops, consistent with mining kernels",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; occurrences and function_context empty",
+      "reason": "Loops and mining kernels cannot be established from isolated n-gram mnemonics with no occurrences, adjacency or control-flow context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "MOV SYSCALL (+0.005564) indicates direct system-call usage, which can point to evasion or low-level OS interaction.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features (MOV SYSCALL); function_context empty",
+      "reason": "The n-gram only shows a syscall mnemonic associated with the class. Syscall intent or evasion is not established without context. The claim is hedged but still presented as an indication.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Such sequences are typical of hash and cipher round functions, which fits proof-of-work mining code",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features (ADD ROR, MOV ROL, ROL AND, SUB ADC)",
+      "reason": "Mnemonics alone do not establish algorithms or mining. The sequence is also not shown to be adjacent, since the n-grams are graph-aware.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "Call immediately followed by return, indicating a thunk or tiny wrapper function.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/17/assessment",
+      "evidence_reference": "/evidence/top_features (CALL RET); occurrences empty",
+      "reason": "Adjacency and control flow are not established by the artifact, and the structure is not verified.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Frequent (0.001172)",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says the values should not be treated as raw counts or frequencies without upstream confirmation. The candidate describes them as frequencies and uses 'Frequent' and 'Very rare' on that basis.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Frequent (0.001172) and consistent with vectorized state mixing or zeroing in mining loops.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "reason": "It uses feature values as frequencies and ties SHAP contribution to mining loops, although the value semantics are unconfirmed and no loop evidence exists.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "4d90753ef2115ad9c5c646f537c1b10285bed07b4f96813557c2a80013af24d9.exe_analysis.json"
+}

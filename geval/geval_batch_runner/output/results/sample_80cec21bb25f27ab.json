@@ -1,0 +1,228 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_80cec21bb25f27ab",
+  "status": "success",
+  "source_sha256": "8fe8fd1fdea9fcdd4fc5d03f0b34974e85cd67e5d817aca45f5d5e2d6118f52e",
+  "input_sha256": "c895fb8ff88820bd223df5cafc85842800409c6cec3430ea8aaa37559ea8930e",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "251cd9370d29267d554aede7ddb3be295175644b59e2dbb7244186943ddea79c.exe",
+      "source_name": "251cd9370d29267d554aede7ddb3be295175644b59e2dbb7244186943ddea79c.exe.json",
+      "source_path": "ml/dataset/cryptojacking/251cd9370d29267d554aede7ddb3be295175644b59e2dbb7244186943ddea79c.exe.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 31,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "251cd9370d29267d554aede7ddb3be295175644b59e2dbb7244186943ddea79c.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:19:12.942752+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:19:12.942779+00:00",
+      "error": null,
+      "request_sha256": "ae1b29389707da3d3eae9805f0de5f8573d491cccfcbbc7e9218eb368b834bc8",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkyJBXnechKTvWkzUFyM",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm scanning through the top 20 features to count how many have zero values among instruction pairs like ADD POP, CMOVZ MOV, and XOR MOV.\n\nCounting carefully, I find 11 zero-valued features, not twelve as the candidate claims - that's a numerical error on their part. The 18-positive/2-negative split checks out though, with CMP JNZ and CALL MOV being the two negative SHAP values. But I'm noticing the candidate makes unsupported assumptions about treating these zero values as \"absence\" signals or interpreting them as \"frequency\" percentages, when the actual semantics of what these feature values represent hasn't been established in the evidence.\n\nLabeling some of these as compiler-generated prologue/epilogue patterns seems like an overreach too - ADD PUSH doesn't fit a typical prologue pattern, so that characterization feels inconsistent. I'm now summing up the positive contribution values to check whether \"most\" is an accurate characterization of how concentrated they are among the top features.\n\nThe listed features only account for 44% of total positive contribution, not a majority, so claiming \"most\" comes from common patterns misrepresents the SHAP breakdown both by magnitude and by count. This also contradicts the candidate's own claim that absence features are driving most of the positive signal, which is an internal inconsistency worth flagging.\n\nThe individual feature claims—largest negative magnitude, largest positive contributor, absent XOR-heavy n-grams, 0.83 malware probability for cryptojacking, and generic CALL/ADD stack cleanup pattern—all seem roughly accurate, though some framing (like calling XOR CMOVNZ \"rare\") is unsupported.\n\nChecking the recommended actions: dynamic analysis, strings, imports, and hash-loop review are reasonable but incomplete—they don't mention verifying upstream extraction semantics or considering benign alternatives like legitimate crypto software. I'd rate actionability around a 4, and confidence at 0.4 seems consistent with an inconclusive verdict.\n\nOn SHAP faithfulness, the signs mostly check out, but magnitude claims like \"most of positive contributions\" and specific counts like \"twelve\" appear incorrect, so I'm leaning toward marking faithfulness as false overall.\n\nTechnical accuracy lands around 3 given the count error and overreaching language, with coherence also around 3-4 since the count of 12 conflicts with only 11 items actually listed. Relevance seems solid at 4, actionable at 4. I'm cataloging the unsupported claims now—the frequency assertions about n-grams having zero occurrence, the \"most contributions from compiler patterns\" claim that misrepresents the SHAP data, and specific frequency percentages cited without clear support.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_80cec21bb25f27ab\",\"scores\":{\"technical_accuracy\":3,\"coherence\":3,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The 0.83 probability, the 18 positive / 2 negative split and the individual SHAP values match the evidence. But the zero-feature count is wrong (11, not 12). The claim that most positive SHAP comes from common patterns is wrong by magnitude. Treating values as 'frequency' and 'absent' goes beyond the stated semantics.\",\"coherence\":\"The structure is clear and the conclusion is appropriately inconclusive, and the tier, confidence and actions agree. But the text says 'Twelve' zero-valued n-grams while listing 11. It also says most positive contribution comes from common patterns while arguing that absence-type features drive the positive SHAP.\",\"cybersecurity_relevance\":\"It ties the n-grams to cryptojacking questions, explains why XOR/shift n-grams give no evidence, and avoids concluding cryptojacking. It does not discuss benign alternatives beyond generic compiler output, and does not flag the unverified value semantics as a limit.\",\"actionable_utility\":\"The follow-ups are concrete, feasible and conditional: sandbox CPU and network checks, strings, imports, config and known-family comparison. They are not prioritized, and they omit verifying upstream extraction and feature-value semantics.\"},\"unsupported_claims\":[{\"quote\":\"Twelve of the 20 n-grams have a frequency of 0.000000 in this binary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (11 entries have value 0.0); /evidence/feature_value_semantics\",\"reason\":\"Only 11 of the 20 features have value 0.0, and the candidate's own list names 11. The evidence also says the values should not be treated as raw counts or frequencies without upstream confirmation.\",\"category\":\"other\"},{\"quote\":\"Most of the positive contributions come from very common compiler-generated patterns\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features SHAP values\",\"reason\":\"The seven cited n-grams sum to about 0.074 of roughly 0.169 total positive top-20 SHAP, about 44%. The 11 zero-valued features contribute more, so 'most' is false. This also conflicts with the candidate's later statement that absence-type features drive positive SHAP. The compiler-generated origin is also unsupported without function context.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"12 of 20 top n-grams have zero frequency; their SHAP contributions reflect absence\",\"candidate_path\":\"/candidate_analysis/key_indicators/1\",\"evidence_reference\":\"/evidence/top_features; /evidence/feature_value_semantics\",\"reason\":\"The count is wrong (11, not 12). Describing the values as frequencies that reflect 'absence' assumes semantics the artifact explicitly does not establish.\",\"category\":\"other\"},{\"quote\":\"Absent from the binary (frequency 0). The positive contribution reflects the absence of this pattern, not an observed behavior.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"A value of 0.0 is asserted to mean absence from the binary even though the feature-value semantics are unconfirmed. There are also no occurrence or function context data.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"These reflect ordinary function prologue/epilogue and stack handling, not mining behavior.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences (empty); /evidence/function_context (empty)\",\"reason\":\"Sample-specific code roles are inferred from mnemonic pairs alone, with no adjacency, control-flow or function context. Pairs such as ADD PUSH and POP PUSH are not clearly prologue or epilogue patterns.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, individual magnitudes and the 18/2 direction split are faithful. The aggregate claim that most positive contribution comes from common observed patterns misstates relative magnitude, and the zero-feature count is misreported.\",\"discrepancies\":[{\"quote\":\"Most of the positive contributions come from very common compiler-generated patterns\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The listed patterns account for about 44% of positive top-20 SHAP. The zero-valued features contribute more, so 'most' misrepresents magnitude.\"},{\"quote\":\"Twelve of the 20 n-grams have a frequency of 0.000000 in this binary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only 11 top features have value 0.0, so the count of zero-valued positive-SHAP features is misreported.\"}]},\"evidence_limitations\":[\"No SHAP baseline or full attributions are supplied, so omitted features cannot be assessed.\",\"Feature-value semantics are unconfirmed, so values cannot be treated as frequencies or counts.\",\"No occurrences or function context are supplied, so adjacency, control flow and code role cannot be verified.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation is appropriately cautious and inconclusive, with relevant and feasible follow-up. It has a numerical error (12 vs 11 zero-valued features), an inaccurate 'most positive contribution' claim, and an unsupported frequency/absence interpretation. Together these make its SHAP representation unfaithful.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6656,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4363,
+          "output_tokens_details": {
+            "thinking_tokens": 2403
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6656,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4363,
+        "output_tokens_details": {
+          "thinking_tokens": 2403
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_80cec21bb25f27ab\",\"scores\":{\"technical_accuracy\":3,\"coherence\":3,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The 0.83 probability, the 18 positive / 2 negative split and the individual SHAP values match the evidence. But the zero-feature count is wrong (11, not 12). The claim that most positive SHAP comes from common patterns is wrong by magnitude. Treating values as 'frequency' and 'absent' goes beyond the stated semantics.\",\"coherence\":\"The structure is clear and the conclusion is appropriately inconclusive, and the tier, confidence and actions agree. But the text says 'Twelve' zero-valued n-grams while listing 11. It also says most positive contribution comes from common patterns while arguing that absence-type features drive the positive SHAP.\",\"cybersecurity_relevance\":\"It ties the n-grams to cryptojacking questions, explains why XOR/shift n-grams give no evidence, and avoids concluding cryptojacking. It does not discuss benign alternatives beyond generic compiler output, and does not flag the unverified value semantics as a limit.\",\"actionable_utility\":\"The follow-ups are concrete, feasible and conditional: sandbox CPU and network checks, strings, imports, config and known-family comparison. They are not prioritized, and they omit verifying upstream extraction and feature-value semantics.\"},\"unsupported_claims\":[{\"quote\":\"Twelve of the 20 n-grams have a frequency of 0.000000 in this binary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (11 entries have value 0.0); /evidence/feature_value_semantics\",\"reason\":\"Only 11 of the 20 features have value 0.0, and the candidate's own list names 11. The evidence also says the values should not be treated as raw counts or frequencies without upstream confirmation.\",\"category\":\"other\"},{\"quote\":\"Most of the positive contributions come from very common compiler-generated patterns\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features SHAP values\",\"reason\":\"The seven cited n-grams sum to about 0.074 of roughly 0.169 total positive top-20 SHAP, about 44%. The 11 zero-valued features contribute more, so 'most' is false. This also conflicts with the candidate's later statement that absence-type features drive positive SHAP. The compiler-generated origin is also unsupported without function context.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"12 of 20 top n-grams have zero frequency; their SHAP contributions reflect absence\",\"candidate_path\":\"/candidate_analysis/key_indicators/1\",\"evidence_reference\":\"/evidence/top_features; /evidence/feature_value_semantics\",\"reason\":\"The count is wrong (11, not 12). Describing the values as frequencies that reflect 'absence' assumes semantics the artifact explicitly does not establish.\",\"category\":\"other\"},{\"quote\":\"Absent from the binary (frequency 0). The positive contribution reflects the absence of this pattern, not an observed behavior.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/3/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"A value of 0.0 is asserted to mean absence from the binary even though the feature-value semantics are unconfirmed. There are also no occurrence or function context data.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"These reflect ordinary function prologue/epilogue and stack handling, not mining behavior.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences (empty); /evidence/function_context (empty)\",\"reason\":\"Sample-specific code roles are inferred from mnemonic pairs alone, with no adjacency, control-flow or function context. Pairs such as ADD PUSH and POP PUSH are not clearly prologue or epilogue patterns.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, individual magnitudes and the 18/2 direction split are faithful. The aggregate claim that most positive contribution comes from common observed patterns misstates relative magnitude, and the zero-feature count is misreported.\",\"discrepancies\":[{\"quote\":\"Most of the positive contributions come from very common compiler-generated patterns\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The listed patterns account for about 44% of positive top-20 SHAP. The zero-valued features contribute more, so 'most' misrepresents magnitude.\"},{\"quote\":\"Twelve of the 20 n-grams have a frequency of 0.000000 in this binary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only 11 top features have value 0.0, so the count of zero-valued positive-SHAP features is misreported.\"}]},\"evidence_limitations\":[\"No SHAP baseline or full attributions are supplied, so omitted features cannot be assessed.\",\"Feature-value semantics are unconfirmed, so values cannot be treated as frequencies or counts.\",\"No occurrences or function context are supplied, so adjacency, control flow and code role cannot be verified.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation is appropriately cautious and inconclusive, with relevant and feasible follow-up. It has a numerical error (12 vs 11 zero-valued features), an inaccurate 'most positive contribution' claim, and an unsupported frequency/absence interpretation. Together these make its SHAP representation unfaithful.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_80cec21bb25f27ab",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 3,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The 0.83 probability, the 18 positive / 2 negative split and the individual SHAP values match the evidence. But the zero-feature count is wrong (11, not 12). The claim that most positive SHAP comes from common patterns is wrong by magnitude. Treating values as 'frequency' and 'absent' goes beyond the stated semantics.",
+      "coherence": "The structure is clear and the conclusion is appropriately inconclusive, and the tier, confidence and actions agree. But the text says 'Twelve' zero-valued n-grams while listing 11. It also says most positive contribution comes from common patterns while arguing that absence-type features drive the positive SHAP.",
+      "cybersecurity_relevance": "It ties the n-grams to cryptojacking questions, explains why XOR/shift n-grams give no evidence, and avoids concluding cryptojacking. It does not discuss benign alternatives beyond generic compiler output, and does not flag the unverified value semantics as a limit.",
+      "actionable_utility": "The follow-ups are concrete, feasible and conditional: sandbox CPU and network checks, strings, imports, config and known-family comparison. They are not prioritized, and they omit verifying upstream extraction and feature-value semantics."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Twelve of the 20 n-grams have a frequency of 0.000000 in this binary",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features (11 entries have value 0.0); /evidence/feature_value_semantics",
+        "reason": "Only 11 of the 20 features have value 0.0, and the candidate's own list names 11. The evidence also says the values should not be treated as raw counts or frequencies without upstream confirmation.",
+        "category": "other"
+      },
+      {
+        "quote": "Most of the positive contributions come from very common compiler-generated patterns",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features SHAP values",
+        "reason": "The seven cited n-grams sum to about 0.074 of roughly 0.169 total positive top-20 SHAP, about 44%. The 11 zero-valued features contribute more, so 'most' is false. This also conflicts with the candidate's later statement that absence-type features drive positive SHAP. The compiler-generated origin is also unsupported without function context.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "12 of 20 top n-grams have zero frequency; their SHAP contributions reflect absence",
+        "candidate_path": "/candidate_analysis/key_indicators/1",
+        "evidence_reference": "/evidence/top_features; /evidence/feature_value_semantics",
+        "reason": "The count is wrong (11, not 12). Describing the values as frequencies that reflect 'absence' assumes semantics the artifact explicitly does not establish.",
+        "category": "other"
+      },
+      {
+        "quote": "Absent from the binary (frequency 0). The positive contribution reflects the absence of this pattern, not an observed behavior.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "A value of 0.0 is asserted to mean absence from the binary even though the feature-value semantics are unconfirmed. There are also no occurrence or function context data.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "These reflect ordinary function prologue/epilogue and stack handling, not mining behavior.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/occurrences (empty); /evidence/function_context (empty)",
+        "reason": "Sample-specific code roles are inferred from mnemonic pairs alone, with no adjacency, control-flow or function context. Pairs such as ADD PUSH and POP PUSH are not clearly prologue or epilogue patterns.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "Signs, individual magnitudes and the 18/2 direction split are faithful. The aggregate claim that most positive contribution comes from common observed patterns misstates relative magnitude, and the zero-feature count is misreported.",
+      "discrepancies": [
+        {
+          "quote": "Most of the positive contributions come from very common compiler-generated patterns",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The listed patterns account for about 44% of positive top-20 SHAP. The zero-valued features contribute more, so 'most' misrepresents magnitude."
+        },
+        {
+          "quote": "Twelve of the 20 n-grams have a frequency of 0.000000 in this binary",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "Only 11 top features have value 0.0, so the count of zero-valued positive-SHAP features is misreported."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "No SHAP baseline or full attributions are supplied, so omitted features cannot be assessed.",
+      "Feature-value semantics are unconfirmed, so values cannot be treated as frequencies or counts.",
+      "No occurrences or function context are supplied, so adjacency, control flow and code role cannot be verified.",
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "The RF probability is not behavioral proof."
+    ],
+    "summary": "The explanation is appropriately cautious and inconclusive, with relevant and feasible follow-up. It has a numerical error (12 vs 11 zero-valued features), an inaccurate 'most positive contribution' claim, and an unsupported frequency/absence interpretation. Together these make its SHAP representation unfaithful."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Twelve of the 20 n-grams have a frequency of 0.000000 in this binary",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features (11 entries have value 0.0); /evidence/feature_value_semantics",
+      "reason": "Only 11 of the 20 features have value 0.0, and the candidate's own list names 11. The evidence also says the values should not be treated as raw counts or frequencies without upstream confirmation.",
+      "category": "other"
+    },
+    {
+      "quote": "Most of the positive contributions come from very common compiler-generated patterns",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features SHAP values",
+      "reason": "The seven cited n-grams sum to about 0.074 of roughly 0.169 total positive top-20 SHAP, about 44%. The 11 zero-valued features contribute more, so 'most' is false. This also conflicts with the candidate's later statement that absence-type features drive positive SHAP. The compiler-generated origin is also unsupported without function context.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "12 of 20 top n-grams have zero frequency; their SHAP contributions reflect absence",
+      "candidate_path": "/candidate_analysis/key_indicators/1",
+      "evidence_reference": "/evidence/top_features; /evidence/feature_value_semantics",
+      "reason": "The count is wrong (11, not 12). Describing the values as frequencies that reflect 'absence' assumes semantics the artifact explicitly does not establish.",
+      "category": "other"
+    },
+    {
+      "quote": "Absent from the binary (frequency 0). The positive contribution reflects the absence of this pattern, not an observed behavior.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/3/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "A value of 0.0 is asserted to mean absence from the binary even though the feature-value semantics are unconfirmed. There are also no occurrence or function context data.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "These reflect ordinary function prologue/epilogue and stack handling, not mining behavior.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/occurrences (empty); /evidence/function_context (empty)",
+      "reason": "Sample-specific code roles are inferred from mnemonic pairs alone, with no adjacency, control-flow or function context. Pairs such as ADD PUSH and POP PUSH are not clearly prologue or epilogue patterns.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "251cd9370d29267d554aede7ddb3be295175644b59e2dbb7244186943ddea79c.exe_analysis.json"
+}

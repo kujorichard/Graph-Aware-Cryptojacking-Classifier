@@ -1,0 +1,222 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_089057da352528a4",
+  "status": "success",
+  "source_sha256": "9522d1bb343d2206337f32931c93ee49b79cc7c72d4082d22acf41b2495604b3",
+  "input_sha256": "8a99ffda06762822d71262a039bbb163679740a6e02f34e038af9b997021109b",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "a2e965f684e50d61a8ccc98b123d7c53983a6931f165e2ab7d9c58cc9001980f.exe",
+      "source_name": "a2e965f684e50d61a8ccc98b123d7c53983a6931f165e2ab7d9c58cc9001980f.exe.json",
+      "source_path": "ml/dataset/cryptojacking/a2e965f684e50d61a8ccc98b123d7c53983a6931f165e2ab7d9c58cc9001980f.exe.json",
+      "split": "test",
+      "batch_number": 1,
+      "row_index_in_batch": 30,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "a2e965f684e50d61a8ccc98b123d7c53983a6931f165e2ab7d9c58cc9001980f.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:11:38.048036+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:11:38.048063+00:00",
+      "error": null,
+      "request_sha256": "2563c0e69b8def45d7411ccab7066e85f39bfeb77ee7356b76dc622df12d4110",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm3J1WWcvE395CRpgQ9p",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I should double-check the claim that eleven features have exactly zero frequency by counting through the feature list for zero values.\n\nCounting them, I only find eight features with a zero value, not eleven — ADD POP, CMOVZ MOV, XOR XOR, XOR CALL, CMP JL, XOR SHL, LEA CALL, and SUB MOV. So the \"11 of 20\" claim looks like a numeric error. The percentage conversions for the other frequency values mostly check out against the raw numbers, though the underlying semantic meaning of \"frequency\" here isn't firmly established, so treating them as confirmed percentages carries some risk. I'm also considering the interpretive leap that the model is specifically \"rewarding the absence of a pattern\" when a feature value is zero — that's an inference beyond what the data directly shows.\n\nThe claims about SUB PUSH, MOV PUSH, and PUSH CALL reflecting stack allocation, argument staging, and heavy function-call usage are plausible but unsupported generalizations, since adjacency in the n-gram features isn't guaranteed and the behavioral interpretation is speculative.\n\nThe overall conclusion that the opcode distribution resembles training-data malware seems reasonable, and correctly notes this can't be read as evidence of actual mining behavior. The RandomX/CryptoNight examples are appropriate, and SHAP signs and magnitudes appear faithful to direction even though the exact numeric values aren't verified.\n\nChecking the actual ranked list, I notice \"highest-ranked\" is misleading — PUSH CALL is only rank 14, while ADD POP, CMOVZ MOV, and XOR XOR actually rank higher but were omitted. This makes the ranking claim inaccurate even though direction and magnitude are fine, so I'm leaning toward marking faithful false due to this misrepresentation, though it's a fairly minor one.\n\nFor scoring: technical accuracy around 3 given the numeric error (11 vs 8) plus the ranking misstatement and an unverified frequency assumption; coherence around 4 due to the internal \"11\" vs \"8 and others\" inconsistency; relevance I'll land on 4 since it misses noting the target-class assumption limit; actionable utility 4, concrete and proportionate but not prioritized.\n\nI'm now logging the unsupported claims — one about \"eleven of the 20 features have a frequency of exactly 0.000000\" against evidence of only 8 zero values, categorized as other, and I'm starting on a second entry about the \"11 of 20 top n-grams\" claim.\n\nI'm also flagging the mismatched highest-ranked n-gram list as a shap misrepresentation, the \"heavy use of function calls, not mining\" claim as unsupported behavior, and considering whether to include a frequency-certainty claim like \"absent in the binary.\" I'm mapping these to their evidence_analysis and key_indicators indices so I can write out the final JSON in one line.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_089057da352528a4\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP signs, the +0.0074 to +0.0163 range and most per-feature values are reported correctly. But only 8 features have value 0.0, not 11. The 'highest-ranked' list is wrong, and the values are treated as frequencies and percentages although their semantics are unconfirmed.\",\"coherence\":\"The argument is clear: generic features, absence-driven contributions, no context, so the result is inconclusive and the recommended action follows from that. The '11' zero-value count conflicts with the 8 zero-valued n-grams listed (plus 'and others'), and it is repeated in key_indicators.\",\"cybersecurity_relevance\":\"It ties the n-grams to mining-relevant questions (hash/XOR/shift routines, loops, pool strings, no APIs or locations) and names benign or other explanations such as packing, compiler profile or a different malware type. It does not flag that the target-class assumption and value semantics are unverified.\",\"actionable_utility\":\"The recommendations are concrete, conditional and proportionate: check stratum/pool strings, network connections, hashing loops, sandbox CPU use, persistence and packers. They are linked to the evidence gaps, though not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Eleven of the 20 features have a frequency of exactly 0.000000 (ADD POP, CMOVZ MOV, XOR XOR, XOR CALL, CMP JL, XOR SHL, LEA CALL, SUB MOV, and others).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (value fields)\",\"reason\":\"Only 8 features have value 0.0: ADD POP, CMOVZ MOV, XOR XOR, XOR CALL, CMP JL, XOR SHL, LEA CALL, SUB MOV. IDIV ADD and XOR MOV are about 0.0011, so there are no 'other' zeros.\",\"category\":\"other\"},{\"quote\":\"11 of 20 top n-grams have zero frequency, so their contribution reflects absence and not observed behavior\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features (value fields)\",\"reason\":\"The count is wrong (8 zero values, not 11). The conclusion is also stated as 'absence' even though feature_value_semantics is not established.\",\"category\":\"other\"},{\"quote\":\"The highest-ranked n-grams (PUSH MOV, MOV PUSH, SUB PUSH, ADD PUSH, PUSH CALL, MOV LEAVE, LEAVE RET, LEA PUSH, CALL PUSH, INC PUSH)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/*/shap_value\",\"reason\":\"This is not the SHAP top 10. PUSH CALL is ranked 14th, and ADD POP (4th), CMOVZ MOV (8th) and XOR XOR (9th) rank above LEAVE RET, INC PUSH and LEA PUSH.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"It is generic and shows heavy use of function calls, not mining.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"/evidence/top_features/13; /evidence/occurrences; /evidence/function_context\",\"reason\":\"One n-gram value, with no occurrences or function context, cannot establish heavy use of function calls in the sample.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Zero frequency. Absent in the binary, so it provides no behavioral evidence.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/12/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Presenting 0.0 as definite absence from the binary overreaches. The artifact says feature values must not be treated as raw counts or frequencies without upstream confirmation.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs (all positive toward the configured class 1) and the per-feature magnitudes match the evidence within rounding. The only unfaithful element is the misstated ranking of the top contributors, which is minor.\",\"discrepancies\":[{\"quote\":\"The highest-ranked n-grams (PUSH MOV, MOV PUSH, SUB PUSH, ADD PUSH, PUSH CALL, MOV LEAVE, LEAVE RET, LEA PUSH, CALL PUSH, INC PUSH)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The list is not the ten highest SHAP contributors. It includes PUSH CALL (rank 14) and omits the higher-ranked ADD POP, CMOVZ MOV and XOR XOR.\"}]},\"evidence_limitations\":[\"feature_value_semantics is unconfirmed, so the frequency or percentage and absence interpretations are provisional.\",\"SHAP target class 1 is a configured assumption and needs upstream verification.\",\"No occurrences, function context, SHAP baseline or full attributions were supplied, and omitted features are unknown.\",\"RF probability 1.0 is not behavioral proof or calibrated confidence.\"],\"summary\":\"This is a cautious, mostly well-grounded and well-organized explanation that correctly treats the evidence as generic and inconclusive and gives a proportionate verification plan. Its main flaws are the incorrect count of zero-valued features (11 stated, 8 actual), a misstated SHAP top-feature ranking, and some overconfident frequency and absence interpretations.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6855,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4672,
+          "output_tokens_details": {
+            "thinking_tokens": 2672
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6855,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4672,
+        "output_tokens_details": {
+          "thinking_tokens": 2672
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_089057da352528a4\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP signs, the +0.0074 to +0.0163 range and most per-feature values are reported correctly. But only 8 features have value 0.0, not 11. The 'highest-ranked' list is wrong, and the values are treated as frequencies and percentages although their semantics are unconfirmed.\",\"coherence\":\"The argument is clear: generic features, absence-driven contributions, no context, so the result is inconclusive and the recommended action follows from that. The '11' zero-value count conflicts with the 8 zero-valued n-grams listed (plus 'and others'), and it is repeated in key_indicators.\",\"cybersecurity_relevance\":\"It ties the n-grams to mining-relevant questions (hash/XOR/shift routines, loops, pool strings, no APIs or locations) and names benign or other explanations such as packing, compiler profile or a different malware type. It does not flag that the target-class assumption and value semantics are unverified.\",\"actionable_utility\":\"The recommendations are concrete, conditional and proportionate: check stratum/pool strings, network connections, hashing loops, sandbox CPU use, persistence and packers. They are linked to the evidence gaps, though not explicitly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Eleven of the 20 features have a frequency of exactly 0.000000 (ADD POP, CMOVZ MOV, XOR XOR, XOR CALL, CMP JL, XOR SHL, LEA CALL, SUB MOV, and others).\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (value fields)\",\"reason\":\"Only 8 features have value 0.0: ADD POP, CMOVZ MOV, XOR XOR, XOR CALL, CMP JL, XOR SHL, LEA CALL, SUB MOV. IDIV ADD and XOR MOV are about 0.0011, so there are no 'other' zeros.\",\"category\":\"other\"},{\"quote\":\"11 of 20 top n-grams have zero frequency, so their contribution reflects absence and not observed behavior\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/top_features (value fields)\",\"reason\":\"The count is wrong (8 zero values, not 11). The conclusion is also stated as 'absence' even though feature_value_semantics is not established.\",\"category\":\"other\"},{\"quote\":\"The highest-ranked n-grams (PUSH MOV, MOV PUSH, SUB PUSH, ADD PUSH, PUSH CALL, MOV LEAVE, LEAVE RET, LEA PUSH, CALL PUSH, INC PUSH)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/*/shap_value\",\"reason\":\"This is not the SHAP top 10. PUSH CALL is ranked 14th, and ADD POP (4th), CMOVZ MOV (8th) and XOR XOR (9th) rank above LEAVE RET, INC PUSH and LEA PUSH.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"It is generic and shows heavy use of function calls, not mining.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"/evidence/top_features/13; /evidence/occurrences; /evidence/function_context\",\"reason\":\"One n-gram value, with no occurrences or function context, cannot establish heavy use of function calls in the sample.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Zero frequency. Absent in the binary, so it provides no behavioral evidence.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/12/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Presenting 0.0 as definite absence from the binary overreaches. The artifact says feature values must not be treated as raw counts or frequencies without upstream confirmation.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs (all positive toward the configured class 1) and the per-feature magnitudes match the evidence within rounding. The only unfaithful element is the misstated ranking of the top contributors, which is minor.\",\"discrepancies\":[{\"quote\":\"The highest-ranked n-grams (PUSH MOV, MOV PUSH, SUB PUSH, ADD PUSH, PUSH CALL, MOV LEAVE, LEAVE RET, LEA PUSH, CALL PUSH, INC PUSH)\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The list is not the ten highest SHAP contributors. It includes PUSH CALL (rank 14) and omits the higher-ranked ADD POP, CMOVZ MOV and XOR XOR.\"}]},\"evidence_limitations\":[\"feature_value_semantics is unconfirmed, so the frequency or percentage and absence interpretations are provisional.\",\"SHAP target class 1 is a configured assumption and needs upstream verification.\",\"No occurrences, function context, SHAP baseline or full attributions were supplied, and omitted features are unknown.\",\"RF probability 1.0 is not behavioral proof or calibrated confidence.\"],\"summary\":\"This is a cautious, mostly well-grounded and well-organized explanation that correctly treats the evidence as generic and inconclusive and gives a proportionate verification plan. Its main flaws are the incorrect count of zero-valued features (11 stated, 8 actual), a misstated SHAP top-feature ranking, and some overconfident frequency and absence interpretations.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_089057da352528a4",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, SHAP signs, the +0.0074 to +0.0163 range and most per-feature values are reported correctly. But only 8 features have value 0.0, not 11. The 'highest-ranked' list is wrong, and the values are treated as frequencies and percentages although their semantics are unconfirmed.",
+      "coherence": "The argument is clear: generic features, absence-driven contributions, no context, so the result is inconclusive and the recommended action follows from that. The '11' zero-value count conflicts with the 8 zero-valued n-grams listed (plus 'and others'), and it is repeated in key_indicators.",
+      "cybersecurity_relevance": "It ties the n-grams to mining-relevant questions (hash/XOR/shift routines, loops, pool strings, no APIs or locations) and names benign or other explanations such as packing, compiler profile or a different malware type. It does not flag that the target-class assumption and value semantics are unverified.",
+      "actionable_utility": "The recommendations are concrete, conditional and proportionate: check stratum/pool strings, network connections, hashing loops, sandbox CPU use, persistence and packers. They are linked to the evidence gaps, though not explicitly prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Eleven of the 20 features have a frequency of exactly 0.000000 (ADD POP, CMOVZ MOV, XOR XOR, XOR CALL, CMP JL, XOR SHL, LEA CALL, SUB MOV, and others).",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features (value fields)",
+        "reason": "Only 8 features have value 0.0: ADD POP, CMOVZ MOV, XOR XOR, XOR CALL, CMP JL, XOR SHL, LEA CALL, SUB MOV. IDIV ADD and XOR MOV are about 0.0011, so there are no 'other' zeros.",
+        "category": "other"
+      },
+      {
+        "quote": "11 of 20 top n-grams have zero frequency, so their contribution reflects absence and not observed behavior",
+        "candidate_path": "/candidate_analysis/key_indicators/2",
+        "evidence_reference": "/evidence/top_features (value fields)",
+        "reason": "The count is wrong (8 zero values, not 11). The conclusion is also stated as 'absence' even though feature_value_semantics is not established.",
+        "category": "other"
+      },
+      {
+        "quote": "The highest-ranked n-grams (PUSH MOV, MOV PUSH, SUB PUSH, ADD PUSH, PUSH CALL, MOV LEAVE, LEAVE RET, LEA PUSH, CALL PUSH, INC PUSH)",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/*/shap_value",
+        "reason": "This is not the SHAP top 10. PUSH CALL is ranked 14th, and ADD POP (4th), CMOVZ MOV (8th) and XOR XOR (9th) rank above LEAVE RET, INC PUSH and LEA PUSH.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "It is generic and shows heavy use of function calls, not mining.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+        "evidence_reference": "/evidence/top_features/13; /evidence/occurrences; /evidence/function_context",
+        "reason": "One n-gram value, with no occurrences or function context, cannot establish heavy use of function calls in the sample.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Zero frequency. Absent in the binary, so it provides no behavioral evidence.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/12/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "Presenting 0.0 as definite absence from the binary overreaches. The artifact says feature values must not be treated as raw counts or frequencies without upstream confirmation.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "SHAP signs (all positive toward the configured class 1) and the per-feature magnitudes match the evidence within rounding. The only unfaithful element is the misstated ranking of the top contributors, which is minor.",
+      "discrepancies": [
+        {
+          "quote": "The highest-ranked n-grams (PUSH MOV, MOV PUSH, SUB PUSH, ADD PUSH, PUSH CALL, MOV LEAVE, LEAVE RET, LEA PUSH, CALL PUSH, INC PUSH)",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The list is not the ten highest SHAP contributors. It includes PUSH CALL (rank 14) and omits the higher-ranked ADD POP, CMOVZ MOV and XOR XOR."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "feature_value_semantics is unconfirmed, so the frequency or percentage and absence interpretations are provisional.",
+      "SHAP target class 1 is a configured assumption and needs upstream verification.",
+      "No occurrences, function context, SHAP baseline or full attributions were supplied, and omitted features are unknown.",
+      "RF probability 1.0 is not behavioral proof or calibrated confidence."
+    ],
+    "summary": "This is a cautious, mostly well-grounded and well-organized explanation that correctly treats the evidence as generic and inconclusive and gives a proportionate verification plan. Its main flaws are the incorrect count of zero-valued features (11 stated, 8 actual), a misstated SHAP top-feature ranking, and some overconfident frequency and absence interpretations."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Eleven of the 20 features have a frequency of exactly 0.000000 (ADD POP, CMOVZ MOV, XOR XOR, XOR CALL, CMP JL, XOR SHL, LEA CALL, SUB MOV, and others).",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features (value fields)",
+      "reason": "Only 8 features have value 0.0: ADD POP, CMOVZ MOV, XOR XOR, XOR CALL, CMP JL, XOR SHL, LEA CALL, SUB MOV. IDIV ADD and XOR MOV are about 0.0011, so there are no 'other' zeros.",
+      "category": "other"
+    },
+    {
+      "quote": "11 of 20 top n-grams have zero frequency, so their contribution reflects absence and not observed behavior",
+      "candidate_path": "/candidate_analysis/key_indicators/2",
+      "evidence_reference": "/evidence/top_features (value fields)",
+      "reason": "The count is wrong (8 zero values, not 11). The conclusion is also stated as 'absence' even though feature_value_semantics is not established.",
+      "category": "other"
+    },
+    {
+      "quote": "The highest-ranked n-grams (PUSH MOV, MOV PUSH, SUB PUSH, ADD PUSH, PUSH CALL, MOV LEAVE, LEAVE RET, LEA PUSH, CALL PUSH, INC PUSH)",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/*/shap_value",
+      "reason": "This is not the SHAP top 10. PUSH CALL is ranked 14th, and ADD POP (4th), CMOVZ MOV (8th) and XOR XOR (9th) rank above LEAVE RET, INC PUSH and LEA PUSH.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "It is generic and shows heavy use of function calls, not mining.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+      "evidence_reference": "/evidence/top_features/13; /evidence/occurrences; /evidence/function_context",
+      "reason": "One n-gram value, with no occurrences or function context, cannot establish heavy use of function calls in the sample.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Zero frequency. Absent in the binary, so it provides no behavioral evidence.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/12/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "Presenting 0.0 as definite absence from the binary overreaches. The artifact says feature values must not be treated as raw counts or frequencies without upstream confirmation.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "a2e965f684e50d61a8ccc98b123d7c53983a6931f165e2ab7d9c58cc9001980f.exe_analysis.json"
+}

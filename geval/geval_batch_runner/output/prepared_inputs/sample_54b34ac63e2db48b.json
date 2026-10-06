@@ -1,0 +1,239 @@
+{
+  "sample_id": "sample_54b34ac63e2db48b",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 1.0,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "PXOR MOVAPS",
+        "value": 8.174268441507593e-05,
+        "shap_value": 0.011065582727256587
+      },
+      {
+        "ngram": "VPXOR VMOVDQU",
+        "value": 3.130570985376835e-05,
+        "shap_value": 0.007784647679632982
+      },
+      {
+        "ngram": "POP XOR",
+        "value": 6.087221117923036e-05,
+        "shap_value": 0.0076477277098656975
+      },
+      {
+        "ngram": "ADD PUSH",
+        "value": 1.2174442417745013e-05,
+        "shap_value": 0.007644875282032639
+      },
+      {
+        "ngram": "PUSH RET",
+        "value": 3.4784120543918107e-06,
+        "shap_value": 0.007474342704732102
+      },
+      {
+        "ngram": "PXOR MOVUPS",
+        "value": 0.00014087569434195757,
+        "shap_value": 0.007137490837440126
+      },
+      {
+        "ngram": "POP LEA",
+        "value": 9.217792103299871e-05,
+        "shap_value": 0.007104822393408444
+      },
+      {
+        "ngram": "MOV ROL",
+        "value": 2.9566503144451417e-05,
+        "shap_value": 0.006757179667108042
+      },
+      {
+        "ngram": "CALL RET",
+        "value": 8.696029908605851e-06,
+        "shap_value": 0.006750774089898089
+      },
+      {
+        "ngram": "SUB POP",
+        "value": 0.00015652854926884174,
+        "shap_value": 0.0067493680689563445
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "value": 0.00013391886022873223,
+        "shap_value": 0.006473036087374543
+      },
+      {
+        "ngram": "MOVZX ROL",
+        "value": 8.522109419573098e-05,
+        "shap_value": 0.006365079381513387
+      },
+      {
+        "ngram": "SUB ADC",
+        "value": 1.9131266526528634e-05,
+        "shap_value": 0.006180631318655199
+      },
+      {
+        "ngram": "ADD CVTSI2SD",
+        "value": 1.3913648217567243e-05,
+        "shap_value": 0.006106982181105592
+      },
+      {
+        "ngram": "SHRD SHR",
+        "value": 1.7392059817211702e-05,
+        "shap_value": 0.006045712470297753
+      },
+      {
+        "ngram": "BSWAP LEA",
+        "value": 3.4784120543918107e-06,
+        "shap_value": 0.005713514147677171
+      },
+      {
+        "ngram": "POP TEST",
+        "value": 1.0435236617922783e-05,
+        "shap_value": 0.005484159341194804
+      },
+      {
+        "ngram": "SHRD MOV",
+        "value": 1.2174442417745013e-05,
+        "shap_value": 0.005450592139483717
+      },
+      {
+        "ngram": "CALL PUSH",
+        "value": 0.00014783251390326768,
+        "shap_value": 0.005407005595311839
+      },
+      {
+        "ngram": "MOV SYSCALL",
+        "value": 6.782903801649809e-05,
+        "shap_value": 0.00529419451412893
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "high-confidence",
+    "explanation": "The Random Forest classified this binary as malware with probability 1.0000, and all 20 of the top SHAP features push toward cryptojacking, with no opposing features in the list. Several of the n-grams are characteristic of the compute kernels used in mining. The strongest is PXOR MOVAPS (+0.011066). It is joined by PXOR MOVUPS (+0.007137), PXOR PXOR (+0.006473) and VPXOR VMOVDQU (+0.007785), which together indicate heavy SSE/AVX XOR and vector data movement of the kind seen in hashing and cipher inner loops. Rotate, byte-swap and multi-word shift/carry patterns add to this: MOV ROL (+0.006757), MOVZX ROL (+0.006365), BSWAP LEA (+0.005714), SHRD SHR (+0.006046), SHRD MOV (+0.005451) and SUB ADC (+0.006181). These resemble hash-function rounds and big-integer arithmetic. ADD CVTSI2SD (+0.006107) suggests integer-to-double conversion mixed into the arithmetic, which is consistent with floating-point-based proof-of-work variants but is not conclusive. The control-flow and stack patterns (POP XOR, ADD PUSH, PUSH RET, CALL RET, POP LEA, SUB POP, POP TEST, CALL PUSH) each carry +0.005 to +0.0076. They may point to unusual call/return handling, possibly obfuscation or packing, but they are generic and weak on their own. MOV SYSCALL (+0.005294) suggests direct system-call invocation, which could indicate API-hook evasion, though that is only an inference. The evidence has limits. The n-gram frequencies are all very low (0.000003 to 0.000157). No function names, strings or API imports were provided, so no mining-specific behavior (pool connections, stratum protocol) can be confirmed. Legitimate cryptographic libraries also produce many of these vector and rotate patterns. Still, the cluster of crypto-kernel instruction patterns, the possible evasion-style patterns and the unanimous SHAP direction at probability 1.0 support a high-confidence call, with some discount for the lack of direct behavioral evidence.",
+    "evidence_analysis": [
+      {
+        "ngram": "PXOR MOVAPS",
+        "shap_contribution": 0.011066,
+        "assessment": "Top contributor. SSE XOR followed by an aligned 128-bit move is typical of vectorized hash/cipher state handling and scratchpad mixing in mining algorithms. It also appears in generic memory-clearing and SIMD code, so it is not conclusive alone."
+      },
+      {
+        "ngram": "VPXOR VMOVDQU",
+        "shap_contribution": 0.007785,
+        "assessment": "AVX/AVX2 XOR with an unaligned vector move. This suggests optimized wide-vector crypto or hashing routines, which are common in high-throughput miners."
+      },
+      {
+        "ngram": "POP XOR",
+        "shap_contribution": 0.007648,
+        "assessment": "A register restore followed by an XOR. This may be a function epilogue next to a hash or checksum computation, or part of obfuscated register handling. Weak on its own."
+      },
+      {
+        "ngram": "ADD PUSH",
+        "shap_contribution": 0.007645,
+        "assessment": "Stack adjustment followed by a push. Generic, but it may reflect unusual prologue or call setup that contributes to the model's malware signal."
+      },
+      {
+        "ngram": "PUSH RET",
+        "shap_contribution": 0.007474,
+        "assessment": "Push followed by return is an indirect control-transfer idiom. It is often seen in obfuscated or packed code and suggests deliberate control-flow manipulation. It is very rare here (0.000003) but high-impact."
+      },
+      {
+        "ngram": "PXOR MOVUPS",
+        "shap_contribution": 0.007137,
+        "assessment": "SSE XOR followed by an unaligned vector store or load. This supports vectorized state mixing or buffer zeroing and reinforces the SIMD-heavy compute profile."
+      },
+      {
+        "ngram": "POP LEA",
+        "shap_contribution": 0.007105,
+        "assessment": "Register restore followed by an address computation. Generic code flow that is moderately associated with the malware class, with little specific meaning."
+      },
+      {
+        "ngram": "MOV ROL",
+        "shap_contribution": 0.006757,
+        "assessment": "Rotate operations are the core of many hash and cipher rounds (e.g., Blake, SHA, ChaCha-style mixing). This is a meaningful crypto-primitive indicator."
+      },
+      {
+        "ngram": "CALL RET",
+        "shap_contribution": 0.006751,
+        "assessment": "A call immediately followed by a return suggests thunks, trampolines or stub-like code. It is rare (0.000009) and may indicate indirection or obfuscation."
+      },
+      {
+        "ngram": "SUB POP",
+        "shap_contribution": 0.006749,
+        "assessment": "Stack and register handling sequence. Common, but it adds to the pattern of unusual stack manipulation."
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "shap_contribution": 0.006473,
+        "assessment": "Consecutive vector XORs, often used for register zeroing or chained mixing in vectorized crypto and hash loops. Consistent with the other SIMD XOR features."
+      },
+      {
+        "ngram": "MOVZX ROL",
+        "shap_contribution": 0.006365,
+        "assessment": "Byte or word zero-extension followed by a rotate. This pattern appears in table-driven or byte-oriented hash and cipher round functions and supports the crypto-primitive hypothesis."
+      },
+      {
+        "ngram": "SUB ADC",
+        "shap_contribution": 0.006181,
+        "assessment": "A subtract followed by add-with-carry indicates multi-precision arithmetic. This is relevant to big-integer or modular math in proof-of-work or cryptographic code."
+      },
+      {
+        "ngram": "ADD CVTSI2SD",
+        "shap_contribution": 0.006107,
+        "assessment": "Integer addition followed by int-to-double conversion. This implies floating-point work mixed with integer logic, which can occur in some mining algorithms' mixing steps but is also common in ordinary numeric code."
+      },
+      {
+        "ngram": "SHRD SHR",
+        "shap_contribution": 0.006046,
+        "assessment": "Double-precision shifts used for multi-word or 128-bit arithmetic. This is typical of big-number routines and some hashing and multiplication helpers."
+      },
+      {
+        "ngram": "BSWAP LEA",
+        "shap_contribution": 0.005714,
+        "assessment": "Byte-swap is used for endianness conversion in hash functions and network or serialization of digests. It is very rare (0.000003) and supports hash-related computation."
+      },
+      {
+        "ngram": "POP TEST",
+        "shap_contribution": 0.005484,
+        "assessment": "Register restore followed by a flag test. Generic control-flow behavior with weak specific meaning."
+      },
+      {
+        "ngram": "SHRD MOV",
+        "shap_contribution": 0.005451,
+        "assessment": "A second variant of the double-shift pattern, reinforcing evidence of multi-word shifting and arithmetic."
+      },
+      {
+        "ngram": "CALL PUSH",
+        "shap_contribution": 0.005407,
+        "assessment": "Fairly frequent (0.000148) call-site setup pattern. Generic, but it contributes to the overall model signal alongside the other stack idioms."
+      },
+      {
+        "ngram": "MOV SYSCALL",
+        "shap_contribution": 0.005294,
+        "assessment": "Loading a value and then executing SYSCALL suggests direct system-call invocation, which can bypass user-mode API monitoring. This is a possible evasion or low-level execution indicator, but its relevance to mining is inferential."
+      }
+    ],
+    "confidence_score": 0.82,
+    "key_indicators": [
+      "Random Forest malware probability of 1.0000 with all top-20 SHAP contributions positive",
+      "Dense SIMD XOR/move patterns (PXOR MOVAPS, PXOR MOVUPS, PXOR PXOR, VPXOR VMOVDQU) consistent with vectorized hashing kernels",
+      "Rotate and byte-swap patterns (MOV ROL, MOVZX ROL, BSWAP LEA) typical of hash and cipher rounds",
+      "Multi-precision arithmetic patterns (SUB ADC, SHRD SHR, SHRD MOV)",
+      "Integer-to-double conversion mixed with arithmetic (ADD CVTSI2SD)",
+      "Indirect control-flow idioms (PUSH RET, CALL RET) suggesting possible obfuscation",
+      "MOV SYSCALL pattern suggesting possible direct system-call use, which may be evasion"
+    ],
+    "recommended_action": "Treat as likely cryptojacking malware and isolate it for dynamic analysis in a sandbox. Locate the functions containing the PXOR/VPXOR, ROL, BSWAP and SHRD/ADC clusters and check whether they implement a known mining hash algorithm. Look for network activity to mining pools (stratum-style traffic), sustained high CPU usage, and persistence mechanisms. Examine the PUSH RET, CALL RET and MOV SYSCALL sites for packing, indirect control flow or syscall-based evasion. Rule out a legitimate cryptographic library before final attribution, since the evidence has no function names, strings or imports."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

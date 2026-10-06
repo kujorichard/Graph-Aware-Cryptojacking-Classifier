@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_5dff9219c18f8d33",
+  "status": "success",
+  "source_sha256": "6895ea656e979adc8f9af60da99d8548a9771b39261590a30072fd360f01573e",
+  "input_sha256": "eecf750750d89af88f12f6ac1daa582a35de352b8ff0cb58742f9669c559b436",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "076be2c09b944ec56381f42405728f7f657d2597b6e27191354568fb70170b29.exe",
+      "source_name": "076be2c09b944ec56381f42405728f7f657d2597b6e27191354568fb70170b29.exe.json",
+      "source_path": "ml/dataset/cryptojacking/076be2c09b944ec56381f42405728f7f657d2597b6e27191354568fb70170b29.exe.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 13,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "076be2c09b944ec56381f42405728f7f657d2597b6e27191354568fb70170b29.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:04:18.443764+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:04:18.443799+00:00",
+      "error": null,
+      "request_sha256": "904d91a88b12deb5eb603465f925ab48b8cc7c6fb18e0fac46c291b9330c0fa9",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkxAF2JA4X8ScqKCbmkP",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm looking at the prediction evidence: class 1 with full confidence, all top 20 features showing positive SHAP contributions. I notice the feature values lack established semantics, so I should be cautious about the candidate calling them \"freq\" since that implies a specific interpretation (frequency) that isn't actually confirmed by the evidence.\n\nI'm cross-checking each SHAP value and n-gram pair against the listed numbers, and they all match up correctly. The claims about labeling the sample MALWARE and attributing certain n-grams to compiler/packer style rather than mining behavior are reasonably hedged with \"most likely\" and \"probably,\" so those feel acceptable even though speculative.\n\nI also notice the statement that \"no n-gram dense in XOR/ROL/ADD patterns is present\" overreaches since only the top-20 n-grams were given — absence can't really be established from a partial list. Similarly, the claim that CALL RET implies strict adjacency assumes something the extraction method doesn't necessarily guarantee, since n-gram features need not be strictly adjacent in the underlying graph.\n\nGoing through the rest of the bigram interpretations — POP XOR as \"register zeroing,\" counter-increment-then-push as loop-related, SBB INC as multi-precision arithmetic, MOV LEAVE as function epilogue — most are reasonably hedged with \"may\" or \"suggests,\" though they still carry an unverified assumption of sequential adjacency. The ADD PUSH example is just restating that high SHAP value means the model finds it discriminative for this sample, which is circular but not wrong.\n\nThe tier placement of \"low-confidence\" with a 0.55 score is internally consistent, and the explanation that this reflects a confidence gap rather than doubt about the malware verdict holds together. The recommended action to treat the sample as malicious while quarantining pending behavioral verification is reasonable, though \"treat as malicious\" slightly overstates what an RF probability alone supports. It's missing explicit benign alternatives like legitimate compiler artifacts or packers, and doesn't flag that feature-value semantics (like n-gram frequency) remain unverified assumptions.\n\nFor technical accuracy, the numbers check out but several interpretive claims—like asserting adjacency between opcodes or treating PUSH/RET as confirmed indirect control-flow—go beyond what's actually supported by the data, even if mostly hedged. I'm landing on a 4 for technical accuracy given the unsupported claims are relatively minor and mostly framed as plausible hypotheses rather than hard facts.\n\nOn SHAP faithfulness, the directions and magnitudes attributed to features look correct, and POP XOR correctly stands out as the strongest contributor, though the frequency-semantics mismatch is a separate issue from SHAP fidelity itself.\n\nNow I'm cataloging the specific unsupported claims across the various evidence paths—things like the \"freq 0.035428\" interpretation, the overreaching statement about no dense hash-round n-gram patterns being present, the adjacency assumption about a call immediately followed by a return being uncommon, and the claim that PUSH followed by RET is a known obfuscation trick. I'm going through each path index (0 through 19, covering opcode pairs like POP XOR, CALL PUSH, MOV PUSH, etc.) to tag which assertions cross into unsupported territory versus which stay appropriately hedged.\n\nI'm deciding whether to include the hedged claim about these patterns reflecting \"the binary's overall compiler or packer style\" since it's speculative but softened with \"most likely\"—leaning toward including it as a mild case. I'm also pulling exact quotes from the explanation text to cite precisely, noting the evidence reference paths like /evidence/top_features and /evidence/feature_value_semantics, and settling on technical and coherence scores of 4 each.\n\n",
+            "signature": "CAQSxDsKEAgSGAI4AUIIdGhpbmtpbmcSDAmKmjafrVZ9LXnthBoMcvRIs17dzK4T6quYIjBxejxLrmILDna/h8MabYUDQhZaOGGgMy/YIouFadWLL/3TWXYyMEZnZQVB1sldthYq4Tr9NMjWBP9AE2//5vu4wIc4eiO2fDThNYTAigPBSxRXajIKSOpCFfJ11ph5hBl5nYtLlGE0AtYwH4kJomfW8Eq2ZVTXl3o7iFj/W8mek5G+T3RdDt8/RIp9iZI9t0MVlOx7a7JxlVT5sIB0yMAhN7oHlPDVRJfYjbiLM8lWXx0rPJj7IiGjZ0DTh9aNbhSNtwG2XdbR6PcTC2xa/K499UO/kCFcI+8KMfLFOwdOYtLAI1IXirdJOcrV+30QvqZXrhsdFDn49Xp0eojsWc4iZrWTuMJs96wcINm31mmZN96c1sgHn/OvRUEn/y1wTOo3UPpSzw702he1rtzMJgwP172OO5di/ndaZc4UM6aVFtZ9TV13IwURHS0crpdwczbWNEKXLpjhPwQzGECaIHoyHUEVwZfLjQiWiXQ5TbuHG3Aq0acn6/cJgIq+xB3h8NIvgPMeHPE8td/VmEcjrdShZuEAfGQ8hCZdhsAk1OeqcyF9yLgx+4gsvZUWRn/pA1xby3Pb8P6G8Q+GZn1RHR4NvUA/snpasnRcqSDAP206jCU2bcLNppETQifEya1+GbBfM8QBNesAdX9bH7HIiRIX31pB9lFT3UnXLtQGAxGfuCVG1qXKGvYMbNMDRpHXQSsU9emCpcgMYw35CY3CV+9EOsT+WJrXtOdV4InQFIP57ut5Ug2rL8AWTey0Qh8Zg44I5X+EMnEUvnwagLImXLYmG7wx/YH93Y1OFx1+0tOd1ilvL57JdYy/ReeBOlUUhnpuSsZ0ug4gERlvNnkec9SnAL1aTvGmxcqUAuJh087UxShaL0DitJNNarWCQsoI+hmiGdu4MmJ+cjAp1PTnwxfx2mao+HNYnWJIH3v+4C39B5BCGSCepAMkAhFHYa+jlMyOc44A1cHvLbQAkeIoej9jhYBT16OFdjQyeivpI9MGUJso6PQyMODbCnQqyh5Y8YaRLOHkwviDOS85ISQNcHSDPthXGzYh5zHQN9f/nOH0mlAnqw3aMou2/xixt4ea30GxzZMgaDZeW9cY2JAzYCxvQ/uDhgOcRMw0QNHJgFU8WwjtaveV9Tfa+odn+6h3K0gGpbn4EhEcB7LH7d/oFjSFMjeT2ySfpiEFMz8uhSHlUK9Mq4uovk58THXG1k7rHQCHTNKNlwNgvPboTHXdrg98ikgpU3E778esvd5GHM2kZ6vEfInBcbMIXNpRrCkFfw8VYF4CElWaHoNjBUNqV+b5sPDiY7VUNq/skAxMMDr+kUoLdiSF4Uh6n/+I7d9Q9MSx7CoOw9lpiMhWkTNmGDwHWYlvtFGbsMfn3sbJP38Rng7GBiZ/v8QP0fzgu3dsbgvVfVoxSEMtCdz+jn68YsMd0FcL149E+fojmgpHr/dEor+UjYIFU1dmkbbXB//328wMWkX+d4dV81ZiyIRWHgVszTQ0gQHPU8O0L+YKoSbtHjzRXQznJ0i8YrZ9SqqzzbNuAfymAHF8Yk3LfZROd66z5mUoWrZ1G8MOMdl3Jg1W1zn0CKWunHQlDNpXwEouCQ5bD7Cc7Mvn5JUFbGrVm6FgHP+4iSQxF4oiaD26UIIt4vJfWi3dzRfSUIJ+dWi5DcPB9M0EUTlki/KymH7d9ichlTSaBQmjNlMv1nYnx+uH5nYxN1duKogD6g6nlapFJaUV6dDBSZmmZY3TeDGXttnlNW+RMlGpl1qYJZ4Qz9fsggee6w7A6+3WjB7qWn8GVja4ppT50amfCiIgUTxAxVM/xw6XMkISibOAn9HD28jfTjcL9egcANqJz/gm3eq9G0NuJgpQ4a91hNaMFngKc27qv2rsKe3uZEArHWK+uIi0RuUL/YKLWlAZl/TcvOMy8GUfQuIWKalutQZ3Y9S6kW+C0jkV1+rIPg0evfcqoOIQRK83Hb4VRaqCQ1L/vzD/dSfg6ir/zbT7DKHpPnWqTDKvdWbxjwd9Py7ZeEZ1gNZ0zTIpcr/zJ0ipCVl0q0NFUF5hDLhmt19+EEIJaE/aH56XyEnsnkS9pVxW/qD7V9H563/BcQsaLMCEuGMvVK5bi/PuBKsiU7qXAAFMBsLSQyhaNohkWbjfsVMfaHsltIdD+lI2+IDKMB/pSOOT4MQWK2dMnfIKE+B/HDRID7oyAjRMa71iCYudkltBckwA9QHZbw39JybixNxYQJ+XPPNtqDpPrVRPSy6JgFVJPOZFrJo7ZYib3RaR4RxE+Taw+CK0YLudobJtwbpUngZbSaruSoSD1aFYjS77N+U3iLc5Ufd55v6epRMuPNbUxAkXOnaAQg9QKN0UjQTrMvFc9tJAdCNZ2ne2eT511KucAEbGka3iiDssF8/uQbd6iClGmt+K5g/MfvqGEI2XdX4a+ajyrVhtxIrqRN5zbFI0R1B/4OPRHqRWGsVLVTTBwXbLv/ONrs+LpWeWCHFG8C0tnmKa9kgzeQ7J0ww8x4gzCI84uEi5z0eunXGxKcTWYzSte/h9+pfst+2d7GGIys0vBTXGqKZS0mm9aWysdQ4KI9htz0ujrzBdnJ7kq1CoeV17I6+NW4pnWvak2O2GtR23mf6MJjq4x7q+9XknNPUJ0SlYMLAWda07zZeFzEdNXrOqu8YhtdvMePhOdWTwL9+OvSJTKr9Ssz+RXd6Ho+g4SoE5piqZHwL0vCUJSx8mXlVaZ2nVHGDEP6XHXwTfQwVd83/TxixfZki2xPcohFpf0m52tSiZimwbZXimO8exZHUGPhqDz596L7IARK3L+72lzeJeghSTsdGE3+4cddMbVmlyKWJsQ9KLJn+i/yViHMbDYv2D+XgvYW23keXrg6nWI2o8Y8iTYWv63+WVnw3iXCG4OXBX9YWD9r4p5HDHe7BOlruwyYTpHU6h2cOdnrMCTQbXSld9hc34Gc+popuDKv6aH+22dZxx7zUTr52X/lUOmTUeW8TIXr1ZAm5BN87juQ55cjyib+y+mXyVvBHxyHhFYP6e/zNYcfta1en9kOIylZhhaGgAzqr0ac/scKUzR1nJ+r+K7R8r3vkem4HneH5WXPsakNjthfaEWBMfPqNDVJgYuHJnmKLbKrPFWyMLt9uitc20DLI7lA/mqR3F4Z+8tDjaNKLBQhOd/aUs5p6cbh+mf4PQaSFx4cFt/8O7gZu/3om/mm359DGGdiwu/BF9gYYWFXQHdoDci34WucueTA6oOksCs+oa4pIrmojzukUHWnPA+Sf6Oaf9KDa77aBKqr30nzvzNkDWIFUgSBJaILi43J9/IO0zRXt3UIDm05QbGDXK71Zkxom0UXyOC1IkEqZiXxTQpYY2WQSDjXOuepyPXJXlIQ9O+3QcfnZBH8PUQYHMht+kF4F6V3htSgDHxUnXfTgZuJNUuxAUayFOOpr1LqtSM0Nap4Hxwu81rppkchGxX9zch4jyzIwrCnc+/3WqygNtT3t+63JbI31CSvfBZKlQ7TBmQSYHCPdZHMMrsJasHbk7c1pe3GfDMCvwZ3cctW38YH+2FPwnuOZHg8pkBICZLmAaoc17vdF6jv3sqT+eNTXtP1i4jA4Ym6rernRtuNf7psWI5CRvhzapZdeYHd6DYzDFMBdqLUN4paHoomQriDIizOGWWD6jHzcWegA8iw6anGrHa2fNH6PGOY5N2ASXlUvDsMiRINz/P3a+0HRo2qjz0dT0m7oR1YO0GftbTr7QSQJSSB32SvGP7MkqYS47VZSDdbVwB+6ows+wkYqSlE78rGCwR5iWjCkKtIFeyBvBEnoLd9B9vxE+f8QuxzczeHRMi1IPtSynHmvA8xhz7MqcGf8JL7Ke+/JcX6apbFpVV4UzyL/PkhlzPw5IT7xGSOOqGlaPeu2dgSfa+P86Sh2hzAyXNlYl73waSfY8C9NyqufWY+2DELK2UpQSFP6G0WedwyzyuHYic4n56ZFyouePYs2GLLIF0V84OnS/mX/vyJHIQM8EVsrTId12bVXlWjqsndKk9EGW3RdnTJ3jp/pbbxj3mLisEZjUdraSMiiKRqc7c87VhGuVWOgX9XRvpoeQ7qRGDGnApOIEidv3w4USW3zPoEx2w5/MCNWrf6L0D8Iqm3QB2MfXDFZTxDIn4OmzGWr4fIJqgTqTXKPT5/ktREN89nj96H49MJpQfgdEjEDr2zFTMu/yJmMebiG08kncVFKWzm4qWnYa44BYRBXOJ5sRXOi+UQCmat0kRNpBBQ1sr/ZFB0bvd83pKPHgXXLTJabbUJl0KLbxIdxpZdw5CyHlO2FMEjtoPqb6s2D8S4841fnuqRwqsN7skdo4aG8S0yz51DRQV0cLB9CHcVgoqdn/dduRefwXOOE+ldOjqHxWj238qMOupjsQwg5FU1Y488HrEGOmz7GZV47cFXjX8Nesk/BeP/jGGl5teFe1uk1IglfRiGwkk9BM+wceVP2COANEG4RsegLO6IrMhsvE4VH0wTiC1g+IFKn3Nh4xMe0ccCWdBF8fX5RzuWaHucm1KX3L1aLMvdZC58QOwDWSZyufyxWkYKkttmR1jt3mS6bvBNPM75ko7yS9O7KD+MALpBCJO3jTFexON8qc53gW/YpeR2/xdjBZwmoesuH1x97pMQgOuFg0Kvy6UdIbvBiz9M/hN9HSU/C9fEMw2BcbkXJxy6ap149AqUbHPgu8uR5LU8iTox+21Qb2cj/rsi277JKxVCDFz+Czc/Oc/qib5p5bgVLDH1Gw6U3qoliS3q7TbgMSh9Sr9Tq8Xm5RkqybtolnPJRFwGE1+ZNCTKw0rgJ6izRBsDcWZvHiK7+tOF4T4rbvarfvFWhbwD1gZfR8o+Z+G8W42o4e2F3OPNJEhLL6LAc2hkvjwjT9qHygnmASVc5MsBYMa5f/MQ0gXEHGidAh2iZQw4lXM2KQg/pVNRTB1gprfN9Xd8pIa9opO5YedUWVcc0OMgG8Y0qScqOcheMlFEjq506mLo9tlze/UM0pvmU26kirMMQK0jjevanMguy98M704zguHPf8XjjYhspCl+Qj3FJIun5Mg37ePhQtC8NdmjMQcEKfutSBRcEGH2vrpHv7RcdVWX5YgXKWVY/TFqGq+Yuqfl2aSTtKqSPPUL+1Ky9x2fvgRZPApOK32wpdaPRWRtBgJtSHoJydyk2E1ZF5j+PpGJuMS7inf5DDfG6OvWuXvhtwIuVz3Fzftvb0khZN7FHHap0gfp7PsohdVhFLhm6ukUw94rjYkukY183ixCuiCzJv1ViM5nC3waKbZavoh52ecjxyOiuISE5n/Z0vaYVGe7X6YVPuk5deJgsV7Yl3UJiGtj5w57fPpaWDmFpcFvBkd41V4m2F07RXF68hu8Aiomo9ljmbnfid2CkxYEjSZLmDVYsVRetrNODaLEqlEVYFxc7DuCvyM945c9rA6iNA+qCT9yuCRnQqnciWtXUXqFaAsDlzhbL2pHBwRz2qxv9FKU+bCEV/KPY9B3VBIQ1FyQEh7RtkKoV599fdnsItjmZOWsFSlo9LEwC/HkH4LBm4+qDHJCdom+DEFfgyE+xXO4SVN98J4ZIfE6lbl1I7kT0oSPiNASoxkSh/O70ZMUlbcuwBklLA8d7b58jwvjgHk1tP9Xa++nYGS6GIO7+mj8yjpIlIHLVXgOIle2Mo5msnncH0fIROdG/9wPs+R8HTxUwu5hs1d7zJWnPwCFiW6zIHAKi2lGlHCNX5ddKD3DdTOUDWDbabxCqsPVXyACL8C9xpD5CTKSP1QLYCHhbO5N7xZHrZVnTkZiF/cw7eXVJsz/YaFBkH9T3S0tiy4W5/Tz8ymj5EIpohr+T4e4hA3TM3aOyaKs1aKH7eHoFg8fnrATWHCvSYKR5vhsQykc6ar736dbMFroO06bQFD2fsNgnD0FVb4VUbeJETBNCGwh/hs2fyurQUSdjhT/uoSohuA/x6yZZv5AaMvI9b/9pqlP7xNLJ0PfuHKKcrkGIDwFuCHl/tP7VJSl4e/gePPGTvhUZdvKaags5XyUU4OLw3uRUmsVi6nnKbu4hThadKNBpi6zQm1ew//rcSg/z1n9TSVUJa33TIRT5Md4jT4zMgHJo4TOBVSXQEt0v8OwLJyoVnd/ROPP9Msl1RN8qZiEGzpOTRyApLQoFGezEEXoYpbMOXlhXx5FLfnQkKvS2/ExB1V/5HvYgE9wwz2+R2xWXLg70r0CHh2hxd4CUUUofZ9Y8rb/MyURa0LzMcRpM1fkzrfRRFIlaRI4gxD6vtAz2OgHPpvFWz//BvSPNH1p2VN0M8BX5tJdEc1xxAqmQjeF4cAT+bTXrtNXpbn3XL50+ky29UR8JOEQA612Dbx64c3vo8lWjVMus4S5EWchVr8ubu8Rsx86mqHysQVZtYIZ6VK9MdDpnIgut1fm8EtFdY3FsX40kfs0CUOdCM+I+fqvHDRP5mcpOPpsOkJHz/Qqjwu87Wwb9KI54OudHmm4prSCCWFsBiIOM6ry0EzRgSEsgs110xgH+VUL4NzhGMw6h26Y9/yi/SEJmHDTLO+bbHX1i0SN31dHhvq11W1R/WLc7WFG6Xj5rbmTPc7bIlhFSdFyu7FCLg7M6mDrhnOXctVnzX3ICaN8yNbj9tMuqHVZHlgePBAzNHWJ49kyvWvvFJU7KanhSBojwfAhdPfPskQ8Us/HW3W9odL55wLBnFtCyaBnPw4+yoYqPMN8UXu5Q/COQkG7mU/PFtA/cTTHL6b7aFsA6ojDw93TJF2YKYuwg0grUVMYkvtFKX2PllrVPnSCgClIS0qbDWygBoldK4/Jnq213oy5w2aXFOslM/h9D2unz+Zk2fZCjVEWf6CI4ZeukdmAPWLiQDCS2ohOUuXkdAcLnzoEeTYj3ijoRTS2FI5PQ/yMO1wKO/VvyZi222Y7GaGUBeg0M6KBWXpbwMHwgYxl5ZZvihfyUYrjnBJbh+FQ/PWXqgBzy7pKgnzap3Mj3JeV/EoUhDFlNzuDBNX3b4Pj4K3fGGaln/Lg47cFSAzoY9IOTtRhYm9AZNrxF+dV4unoIkyy2oRJ0dZxyPDbgTUpXQvNuNcMc2kPkYfJoUcJyFszi2dCRQwb4l+PwbYovSK46AXLj7kjHOWW/MxvSy8xZJvrRsNcyAJ1nGPIJAM4w9lrK653Wsq1knx1v/Wdjj68Z8h3k3RfSh2c3u1F0CWTm5C6SgxXn/KJo9LTz2KY5u+yF/J890Dp+NcjJ62BFmtszluDmGAzqYtVEw+8u8HBJTJbS78UC/BOs4+whukKr5priUHykmrdJyBqUjxGoBcA+ZjQciSq37zLi857up6/BqKVgaqGuaoL26obxdOTpIOwi5S5146wrTdnHWlH4EeXuTZu+bC4lFJkw5JOQULZd2noGi/JPvbuNTjofAtDBqgnswnsmu+hMQ4lTSpTkuglWiEY+gVWJ7e004Q8kFNoFoZhBxgGzf4YD2c6e7t9hbTtriTVhyULXejWZrHley1obhGZJ9Ikemf09aBQ3ZBR7e2pQGn+ywjyxea3wdUEmFUwZzgRRpYSxXYNtNafhbrZdA9D5QopweNp/zxhsVvDAkQEVSX9R4wd+PnzBhe7OqjKRnpTuZ7U1xcZ3/JU6WeH12l+ZDiw4TTnh8Cl+XPiS/3AoVDXWthvZ2GRaiYV5ZOxsUL//0f0V1Q9OaLKuR/QJ3OmDiqtHbm5epHxfkD0EsJ3qzNkcAemeufoOMbjX0lU7iXJzfiFIeXmuG3ePKMASGZEcqtn7u7RweXRphgyM6JD5qDzxlB7yVkira+bjVEx6vJl6siD38NhgCVOPH7a5aVySd+9shgRLRjP0NLEQ9GkPDXIvwzhWgGMDlyyCg6r2RNy4hKxISTc3qEGBBG9z2xx7LLb0VNJv5AmWlk0qVolXpTnWis771VXzBDLFKYCN6meA1Mom7yry0y3QjCKobkpxXNxdzy7vrpH4ThSMJ+NpxYx0EcBD74azIJv1z7xIrmwxJljAenTOh/hDUgOI90Lh9EpM+FS7GZkHqSbEh+jJQEIpuQu8aVGI1BPD4upjofDV/KRlJBp7c/6d70wlZAazu1xvMsx7JZSEQu0mSZk0S5z1OMMFZISZrMuu7pDzh5AJRQiSSfVUF0F8QCGXZ8vCPeV32p2LJbMkDE8K7rSJdJUB42w2FFbapuI1zegZlnUWgYJN9jlHyicyhyzFOko6zKWGeLET1T85oIU16VzVEFOJ8TggXFwP9v22nF33yPTaTEEjiMacHmRnVAI2K4MxkFWqSMRHlFN4ElwcFGMZXKdZjPbX+pGAvnkbcpCKtqnn16CzUpA+efKmUFT5RookSLu0/84Zi5GNZf6l15A71V9j4IkkKBYDNsSJfLSTHHqpUrl3OuS+qTM3zyQK8t4XS2amjWfXQLff/IiQa6cIaSiO35FeD3R2/NgP5JyiRqN2p6RSe1p+SuQBDtzBxaROcq7S9ycXuno1WasRrImTIcpZ6bnD26wHPPRKNSvkbKp20yhhApXIXIho3x2AeCfgjoxGi/hr7WnRVIsxH8+cpB/+ZOiSvcj44AaqQJvNZbfXxxusGuFE9ItSsTHMb1e+F26tpYWFj51ljepP+uoGc5dd+z/NvUKh8Mf/gmDHP5Jqr6dxd9yTFS8RXRBpGdhv3Se9dvvOCDekcPV4A+0pLQ/WFwaPVfJ1H9VdjBrSsVKCZMa+OtzXiAVa/VKNMkJq34fQqPA853wT6WAD70Z0robIT0qp7ORGW17i2P4QvKbnYP8cGetm9bNpiclmEXPdBA3b1EjV+OmLgVkLJYgaoBxO5YxgKYnMFKgyTSpNcHLbb5IUYN/jKU0w1KhHXJ32jkepNFkXJXw0wB55PPOTUEbgEajm3EgV+QmyqfgT2AGbuERRHYFkq6LheZdASSuac/PJSShzdLk0Axj9ffOYSb/+7YzwS3KUytp3nPG0+jPb9xj48lKleM4Ridkx7Ve8VGM75KmhcUkTqSLrSPkvTDqJn1xbMCaCKahambnPHizcLLK2ODGl9U0rl0hGEXZAIv7UoQjaeAcS1pbSStL+7UbWpLUmc2Ew5YQ/zQTRiylHoE5WNbnwYGv4ueFfUPSF1bPszJHoIzzCo/EKCx167/RMsdBZ6Sj3C6cAv/AuplgflH8qVOl97xI5o16IFkgdDs4z+UdKpl4nLrZAclPkt6ZYwwO31YsPC9vFEneUtUk/EhZZZOjxMv+b/hEIuDPG92CZPvw2PNrECXP0ZKQC7HankYPjJh/XuIP8srt5Vruhf7mC4xByiZ82VjMDz9ob1omndpTPPZTlwqiMUVV/xq1PIMipwAYAXnhvCML4GkerHYIwAao6Wf5HIGj/2gx9nis5nJuzEjIiLvhx94hsw10U+WIqAo+4v/UuyffuEywZFN2bwQ6leEllRoJT5Wq0A/+gj+eSdCrx1SFpK1q4BQEJOevn1ShJ22yzItnEgsLdK3Dh0izcJ+pORS+1HEokLa/r0/dt/DGMJa+KGpf9fTxqR4At5K6qDiIgDCPdy0b5IWsqlIjFDQmtKmbox1nHpYV6sc+bnZ3wqtXrWdXNWnL8Zwbeawp7s4h5RnE7XmN525YWFIYqC1D5M0kTKu6tXUaG/bFOc4P6S7Aju9pjhc0Kk1mwhjd/V9NUv3J78SdtPkOZ75zb53eHCiVUsupPwcMmMVj1I+8N5Ww+29b//UQfzGnyPWQao9c/WglHGC8ESL60TrGDh2Q+MtvRs0y4VOH4m/5S4zfu9tdI2TltVbPqUIxRkm5EQeQTAaNvhAxpGVifyADDWYU2R9mrIh3E+1fHyrljpDSaP98HbTWpr+rUqFtxBhzqLMudxQ1kfgA4sh3sDzjj/jyPBA0KBruvQmBIpyMxan1dojCLQ2prDxzM3l48W18FBp5VKi2MeAd31k441WU4bqEMPe71grpDUV9LitPLfS/acHI+ZVFDMV4AdPdFbBTHSwmSQJ+y1XqgO3YcG2swxfSjSsG87WOvTOsIoG2fzFxnqXtqf/+0+m3O0+avc3AZFgSKCrxgDcCisuNi9ZXb57ePzthy32zIwGjSVnrm0saDRNa/uSuLliTyjkDKPWXRs+aOXK5MYAQ=="
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_5dff9219c18f8d33\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF class/probability, the SHAP range (+0.0066 to +0.0115), the top contributor and the quoted values all match the evidence. Most bigram interpretations are hedged. Minor overreach comes from labeling values as \\\"freq\\\", assuming adjacency (\\\"CALL RET\\\", \\\"PUSH RET\\\"), and claiming no hash-like n-gram is present from a top-20 subset.\",\"coherence\":\"The explanation, per-feature assessments, low-confidence tier and recommended action fit together. It repeatedly says the signal is generic and not mining-specific. Some repetition between the summary and per-feature text, and slight tension between 'Treat the sample as malicious' and the low-confidence tier, are minor.\",\"cybersecurity_relevance\":\"It ties the specific rare and generic bigrams to a cryptojacking hypothesis and to obfuscation or packing. It states clearly that no API or function context supports mining. It names compiler style as a benign explanation but does not discuss legitimate software alternatives or the unverified target-class assumption.\",\"actionable_utility\":\"The recommendations are concrete and proportionate: locate the rare n-gram regions, check for packing or obfuscation, look for hash-like loops, and run a sandbox for CPU and network behavior. Quarantine is held until behavior is confirmed. Prioritization and static IOC checks (strings, pool addresses) are thin, and 'Treat the sample as malicious given the model output' leans on RF output.\"},\"unsupported_claims\":[{\"quote\":\"freq 0.035428\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The evidence says feature values must not be treated as raw counts and their semantics are unconfirmed. Labeling them \\\"freq\\\" (frequency) asserts a meaning not established.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"no n-gram dense in the XOR/ROL/ADD patterns typical of a hash round is present\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/scope_notes/1\",\"reason\":\"Only a top-20 subset is available and omitted features are unknown, so absence of such n-grams across the sample cannot be established.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"A call immediately followed by a return is uncommon (0.000529).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"No occurrence or extraction context shows the instructions are adjacent. The n-grams may be graph-aware, so immediacy is inferred without evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"PUSH followed by RET is a known indirect control-flow transfer trick used in obfuscated or packed code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"This assumes adjacent PUSH/RET sequences exist in the sample; no code context supports the sample-specific control-flow interpretation.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"they most likely reflect the binary's overall compiler or packer style rather than a mining routine\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"No compiler, packer or function-level evidence was supplied, so this is a speculative sample-specific attribution even though hedged.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are reported as positive toward target class 1, with the correct range and the correct top contributor. Cited per-feature values match the evidence within rounding. The explanation does not claim the top-k subset covers all features, and it separates SHAP signal from proof of mining.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that must be verified upstream.\",\"Feature value semantics are unconfirmed.\",\"There is no occurrence, function context or API evidence, so adjacency and control flow cannot be checked.\",\"Only the top 20 features are provided; the baseline and full attributions are null.\",\"RF probability 1.0 is a model output, not behavioral proof.\"],\"summary\":\"Numerically and directionally faithful, appropriately cautious explanation that it cannot confirm mining. Minor issues: \\\"freq\\\" labeling, adjacency assumptions and a top-k absence claim. The follow-up actions are practical and proportionate.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7138,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4437,
+          "output_tokens_details": {
+            "thinking_tokens": 2818
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7138,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4437,
+        "output_tokens_details": {
+          "thinking_tokens": 2818
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_5dff9219c18f8d33\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF class/probability, the SHAP range (+0.0066 to +0.0115), the top contributor and the quoted values all match the evidence. Most bigram interpretations are hedged. Minor overreach comes from labeling values as \\\"freq\\\", assuming adjacency (\\\"CALL RET\\\", \\\"PUSH RET\\\"), and claiming no hash-like n-gram is present from a top-20 subset.\",\"coherence\":\"The explanation, per-feature assessments, low-confidence tier and recommended action fit together. It repeatedly says the signal is generic and not mining-specific. Some repetition between the summary and per-feature text, and slight tension between 'Treat the sample as malicious' and the low-confidence tier, are minor.\",\"cybersecurity_relevance\":\"It ties the specific rare and generic bigrams to a cryptojacking hypothesis and to obfuscation or packing. It states clearly that no API or function context supports mining. It names compiler style as a benign explanation but does not discuss legitimate software alternatives or the unverified target-class assumption.\",\"actionable_utility\":\"The recommendations are concrete and proportionate: locate the rare n-gram regions, check for packing or obfuscation, look for hash-like loops, and run a sandbox for CPU and network behavior. Quarantine is held until behavior is confirmed. Prioritization and static IOC checks (strings, pool addresses) are thin, and 'Treat the sample as malicious given the model output' leans on RF output.\"},\"unsupported_claims\":[{\"quote\":\"freq 0.035428\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The evidence says feature values must not be treated as raw counts and their semantics are unconfirmed. Labeling them \\\"freq\\\" (frequency) asserts a meaning not established.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"no n-gram dense in the XOR/ROL/ADD patterns typical of a hash round is present\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/scope_notes/1\",\"reason\":\"Only a top-20 subset is available and omitted features are unknown, so absence of such n-grams across the sample cannot be established.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"A call immediately followed by a return is uncommon (0.000529).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/11/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"No occurrence or extraction context shows the instructions are adjacent. The n-grams may be graph-aware, so immediacy is inferred without evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"PUSH followed by RET is a known indirect control-flow transfer trick used in obfuscated or packed code.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"This assumes adjacent PUSH/RET sequences exist in the sample; no code context supports the sample-specific control-flow interpretation.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"they most likely reflect the binary's overall compiler or packer style rather than a mining routine\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"No compiler, packer or function-level evidence was supplied, so this is a speculative sample-specific attribution even though hedged.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are reported as positive toward target class 1, with the correct range and the correct top contributor. Cited per-feature values match the evidence within rounding. The explanation does not claim the top-k subset covers all features, and it separates SHAP signal from proof of mining.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that must be verified upstream.\",\"Feature value semantics are unconfirmed.\",\"There is no occurrence, function context or API evidence, so adjacency and control flow cannot be checked.\",\"Only the top 20 features are provided; the baseline and full attributions are null.\",\"RF probability 1.0 is a model output, not behavioral proof.\"],\"summary\":\"Numerically and directionally faithful, appropriately cautious explanation that it cannot confirm mining. Minor issues: \\\"freq\\\" labeling, adjacency assumptions and a top-k absence claim. The follow-up actions are practical and proportionate.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_5dff9219c18f8d33",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF class/probability, the SHAP range (+0.0066 to +0.0115), the top contributor and the quoted values all match the evidence. Most bigram interpretations are hedged. Minor overreach comes from labeling values as \"freq\", assuming adjacency (\"CALL RET\", \"PUSH RET\"), and claiming no hash-like n-gram is present from a top-20 subset.",
+      "coherence": "The explanation, per-feature assessments, low-confidence tier and recommended action fit together. It repeatedly says the signal is generic and not mining-specific. Some repetition between the summary and per-feature text, and slight tension between 'Treat the sample as malicious' and the low-confidence tier, are minor.",
+      "cybersecurity_relevance": "It ties the specific rare and generic bigrams to a cryptojacking hypothesis and to obfuscation or packing. It states clearly that no API or function context supports mining. It names compiler style as a benign explanation but does not discuss legitimate software alternatives or the unverified target-class assumption.",
+      "actionable_utility": "The recommendations are concrete and proportionate: locate the rare n-gram regions, check for packing or obfuscation, look for hash-like loops, and run a sandbox for CPU and network behavior. Quarantine is held until behavior is confirmed. Prioritization and static IOC checks (strings, pool addresses) are thin, and 'Treat the sample as malicious given the model output' leans on RF output."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "freq 0.035428",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The evidence says feature values must not be treated as raw counts and their semantics are unconfirmed. Labeling them \"freq\" (frequency) asserts a meaning not established.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "no n-gram dense in the XOR/ROL/ADD patterns typical of a hash round is present",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/scope_notes/1",
+        "reason": "Only a top-20 subset is available and omitted features are unknown, so absence of such n-grams across the sample cannot be established.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "A call immediately followed by a return is uncommon (0.000529).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "No occurrence or extraction context shows the instructions are adjacent. The n-grams may be graph-aware, so immediacy is inferred without evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "PUSH followed by RET is a known indirect control-flow transfer trick used in obfuscated or packed code.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "This assumes adjacent PUSH/RET sequences exist in the sample; no code context supports the sample-specific control-flow interpretation.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "they most likely reflect the binary's overall compiler or packer style rather than a mining routine",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/function_context",
+        "reason": "No compiler, packer or function-level evidence was supplied, so this is a speculative sample-specific attribution even though hedged.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are reported as positive toward target class 1, with the correct range and the correct top contributor. Cited per-feature values match the evidence within rounding. The explanation does not claim the top-k subset covers all features, and it separates SHAP signal from proof of mining.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that must be verified upstream.",
+      "Feature value semantics are unconfirmed.",
+      "There is no occurrence, function context or API evidence, so adjacency and control flow cannot be checked.",
+      "Only the top 20 features are provided; the baseline and full attributions are null.",
+      "RF probability 1.0 is a model output, not behavioral proof."
+    ],
+    "summary": "Numerically and directionally faithful, appropriately cautious explanation that it cannot confirm mining. Minor issues: \"freq\" labeling, adjacency assumptions and a top-k absence claim. The follow-up actions are practical and proportionate."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "freq 0.035428",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The evidence says feature values must not be treated as raw counts and their semantics are unconfirmed. Labeling them \"freq\" (frequency) asserts a meaning not established.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "no n-gram dense in the XOR/ROL/ADD patterns typical of a hash round is present",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/scope_notes/1",
+      "reason": "Only a top-20 subset is available and omitted features are unknown, so absence of such n-grams across the sample cannot be established.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "A call immediately followed by a return is uncommon (0.000529).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/11/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "No occurrence or extraction context shows the instructions are adjacent. The n-grams may be graph-aware, so immediacy is inferred without evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "PUSH followed by RET is a known indirect control-flow transfer trick used in obfuscated or packed code.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "This assumes adjacent PUSH/RET sequences exist in the sample; no code context supports the sample-specific control-flow interpretation.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "they most likely reflect the binary's overall compiler or packer style rather than a mining routine",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/function_context",
+      "reason": "No compiler, packer or function-level evidence was supplied, so this is a speculative sample-specific attribution even though hedged.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "076be2c09b944ec56381f42405728f7f657d2597b6e27191354568fb70170b29.exe_analysis.json"
+}

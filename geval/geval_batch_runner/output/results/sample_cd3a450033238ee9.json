@@ -1,0 +1,262 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_cd3a450033238ee9",
+  "status": "success",
+  "source_sha256": "d9c598ad100fc86fb7957102e61d4a65aa26e5fa345e45c0de72f67854291df5",
+  "input_sha256": "1f6e8897d4ceae730cf417a38bc26afd1af55515ab510d49e9ae638a8ed3cb32",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "16d20b9cf5bc20f04368d323cd4729649b1be1e0569ec263c3ddad0421c26d79.elf",
+      "source_name": "16d20b9cf5bc20f04368d323cd4729649b1be1e0569ec263c3ddad0421c26d79.elf.json",
+      "source_path": "ml/dataset/cryptojacking/16d20b9cf5bc20f04368d323cd4729649b1be1e0569ec263c3ddad0421c26d79.elf.json",
+      "split": "test",
+      "batch_number": 6,
+      "row_index_in_batch": 83,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "16d20b9cf5bc20f04368d323cd4729649b1be1e0569ec263c3ddad0421c26d79.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:11:17.032643+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:11:17.032691+00:00",
+      "error": null,
+      "request_sha256": "759a6c7817d78f43e2c563d7de1c69fbafa0069082876d3d409b8df8b68c63b4",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfkxh6D6YBwPbX67pi9ta",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking whether calling these SHAP feature values \"frequency\" is a fair interpretation, since the artifact explicitly says their semantics aren't established and shouldn't be treated as raw counts — so labeling one as \"high-frequency\" at 0.000371 is a mild overreach rather than strictly supported by the evidence.\n\nI'm now verifying each SHAP value against the candidate's numbers one by one, and most match, but POP PUSH is listed as 0.005024 when the actual value is 0.007022 — a clear error. This also creates an internal contradiction: the candidate's own stated range of contributions (0.006963 to 0.012436) would exclude 0.005024, meaning the quoted figure can't be right.\n\nI notice the same issue recurs with several other numbers cited as \"SHAP weight\" — PUSH CALL's 0.030419, MOV PUSH's 0.020764, CALL PUSH's 0.013916, and similar figures for XOR PUSH and ADD PUSH — these are actually feature values, not SHAP contributions, which sit much lower in reality. So the candidate is conflating feature values with SHAP weights throughout, which is a real misrepresentation. On the other hand, the claim that 8 of the top 20 features are POP-prefixed checks out correctly when I count them.\n\nLooking at rankings, POP XOR and ADD PUSH are actually top, while POP CALL and POP PUSH aren't particularly strong — and POP PUSH isn't even rare at 0.005, higher than ADD PUSH, so the \"rare POP-prefixed\" framing is a bit loose but minor. The claim that all 20 top SHAP features push toward cryptojacking (class 1) seems reasonable given rf_prediction is 1, though the candidate doesn't flag that this class-to-label mapping is an assumption. I also think the DEC JZ interpretation as \"tight counted loops\" and some of the arithmetic-leaning claims around XOR PUSH are overreaching beyond what the evidence supports, even if hedged with \"suggests.\"\n\nThe candidate keeps inferring adjacency — \"immediately followed,\" \"directly followed\" — for n-grams that may not actually be adjacent in a graph-aware context, which isn't something the rules support. Speculative claims about CDQ, POP LEA, and the compute-loop/hash-routine framing are hedged but still lean too far, and labeling this \"high-confidence cryptojacking malware\" overclaims relative to the lack of mining-specific features, even with caveats attached.\n\nI'm also catching a factual error: the candidate calls POP XOR the \"rarest\" feature, but its own data shows DIV MUL is rarer (0.000007 vs 0.000371) — a direct internal contradiction. Combined with unsupported claims about frequency semantics and the \"most frequent\" label only applying within the top 20, I'd land on a technical accuracy score around 3, since the errors don't ultimately shift the hedged conclusion, and I'm weighing coherence next given that internal inconsistency.\n\nFor coherence, the confusion between SHAP weights and raw feature values pulls the score down, but the overall structure and caveats stay clear, so I'll settle around 3. Relevance seems strong (4) given the cryptojacking framing and conditional caveats, and actionability also lands at 4 since the recommended steps — sandboxing, checking strings/signatures — are proportionate and conditional rather than overconfident.\n\nNow I need to document the SHAP faithfulness issues (the POP PUSH 0.005024 discrepancy and conflating feature values with SHAP weights) along with exact quotes and JSON pointers for each unsupported claim, including index references for POP PUSH, DIV MUL, CALL RET, DEC JZ, PUSH CALL, and POP XOR.\n\nI'm compiling the six unsupported-claim entries with their exact quotes, JSON pointer paths, and categories — covering the rarest-feature claim, the SHAP weight misattribution for several opcode pairs, the 0.005024 shap_contribution value, the call-immediately-followed-by-return inference, the integer/FP math and loop hint, and the n-gram frequency claim — while skipping the more generic/defensible DEC JZ idiom description. Then I'll output this as a single-line JSON object.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_cd3a450033238ee9\",\"scores\":{\"technical_accuracy\":3,\"coherence\":3,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF class/probability, the 20 positive SHAP signs, 19 of 20 SHAP magnitudes and the 8 POP-prefixed count are correct. But POP PUSH is given a SHAP value of 0.005024, which is its feature value. POP XOR is called 'Rarest' although DIV MUL has a lower value. Feature values are treated as frequencies despite the artifact's warning. Adjacency and loop semantics are inferred without extraction evidence.\",\"coherence\":\"The structure is clear and the caveats match the hedged recommendation. It is undercut by internal inconsistencies: the stated SHAP range of 0.006963 to 0.012436 contradicts the 0.005024 'SHAP' figure for POP PUSH. Feature values are presented as SHAP weights, and XOR PUSH is listed twice.\",\"cybersecurity_relevance\":\"It ties the n-grams to cryptojacking questions such as hash or compute loops, and states that the n-grams are generic and lack function locations. Discussion of benign explanations such as ordinary compiled code is brief, and some interpretations overreach beyond the sample evidence.\",\"actionable_utility\":\"The follow-up actions are concrete and mostly proportionate: sandbox CPU monitoring, locating functions that contain the named n-grams, checking strings and traffic for pool or wallet configuration, and comparing against miner signatures. They are linked to the evidence gap, and the final sentence withholds attribution until corroborated. 'Treat the sample as likely cryptojacking malware' is stronger than the evidence supports.\"},\"unsupported_claims\":[{\"quote\":\"Rarest, top-ranked feature (freq 0.000371).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features (DIV MUL value 7.27e-06; POP TEST 5.09e-05; ADD FLD 4.36e-05) and /evidence/feature_value_semantics\",\"reason\":\"Several listed features have lower values than POP XOR, so it is not the rarest. The artifact also says the values must not be treated as raw counts or frequencies.\",\"category\":\"other\"},{\"quote\":\"The high-frequency stack and call-setup patterns (PUSH CALL 0.030419, MOV PUSH 0.020764, CALL PUSH 0.013916, XOR PUSH 0.007852, ADD PUSH 0.007169, POP PUSH 0.005024) also carry sizeable SHAP weight.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (SHAP for PUSH CALL 0.007814, MOV PUSH 0.008123, CALL PUSH 0.010337, POP PUSH 0.007022)\",\"reason\":\"The numbers quoted are feature values, not SHAP contributions, and the actual SHAP values differ. The sentence reads as a SHAP-magnitude claim.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"0.005024\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/shap_contribution\",\"evidence_reference\":\"/evidence/top_features/18/shap_value = 0.007022125324876851\",\"reason\":\"The POP PUSH SHAP contribution is wrongly reported as its feature value. It would also fall below the stated minimum SHAP of 0.006963.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"Call immediately followed by return suggests thin wrapper or tail-style functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/occurrences = [], /evidence/function_context = []\",\"reason\":\"This asserts adjacency and function structure, but the evidence has no occurrence or context data, and graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"hint at integer/FP math and tight counted loops\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences = [], /evidence/function_context = []\",\"reason\":\"Loop structure is inferred from n-gram names alone, with no control-flow or extraction evidence, though the text is hedged with 'hint'.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Most frequent n-gram (0.030419).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"/evidence/top_features; /evidence/full_attributions = null; /evidence/feature_value_semantics\",\"reason\":\"Only the top 20 features are supplied and the value semantics are unconfirmed, so this cannot be established for all n-grams. At most it is the largest value among the listed features.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs and most magnitudes match, and the claim that no single n-gram dominates is reasonable. The explanation misreports the POP PUSH SHAP value and presents feature values as SHAP weights.\",\"discrepancies\":[{\"quote\":\"0.005024\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/shap_contribution\",\"reason\":\"The actual SHAP value for POP PUSH is 0.007022; 0.005024 is its feature value.\"},{\"quote\":\"The high-frequency stack and call-setup patterns (PUSH CALL 0.030419, MOV PUSH 0.020764, CALL PUSH 0.013916, XOR PUSH 0.007852, ADD PUSH 0.007169, POP PUSH 0.005024) also carry sizeable SHAP weight.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The numbers are feature values rather than SHAP contributions, which are about 0.0078 to 0.0115 for these n-grams. This conflates value with attribution.\"},{\"quote\":\"Call-heavy stack-staging patterns (PUSH CALL 0.030419, MOV PUSH 0.020764, CALL PUSH 0.013916) indicating dense call-and-spill code\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"reason\":\"The listed numbers are feature values and are not labeled as such in a SHAP-focused indicator.\"}]},\"evidence_limitations\":[\"Only the top 20 SHAP features are provided. Omitted features, the SHAP baseline and full attributions are null, so absence of benign-pushing features among omitted ones cannot be established.\",\"Feature value semantics are not established, so the values should not be read as counts or frequencies.\",\"SHAP target class 1 is a configured assumption that needs upstream verification.\",\"No occurrences or function context are provided, so adjacency, control flow, loops and function roles cannot be verified.\",\"The RF probability of 1.0 is not calibrated confidence and is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation is sample-relevant and well caveated, and it proposes sensible verification steps. It misstates one SHAP value (POP PUSH), presents feature values as SHAP weights, and makes some unsupported rarity and adjacency claims. It is therefore not SHAP-faithful and has mixed technical accuracy.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7312,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 5722,
+          "output_tokens_details": {
+            "thinking_tokens": 3204
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7312,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 5722,
+        "output_tokens_details": {
+          "thinking_tokens": 3204
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_cd3a450033238ee9\",\"scores\":{\"technical_accuracy\":3,\"coherence\":3,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF class/probability, the 20 positive SHAP signs, 19 of 20 SHAP magnitudes and the 8 POP-prefixed count are correct. But POP PUSH is given a SHAP value of 0.005024, which is its feature value. POP XOR is called 'Rarest' although DIV MUL has a lower value. Feature values are treated as frequencies despite the artifact's warning. Adjacency and loop semantics are inferred without extraction evidence.\",\"coherence\":\"The structure is clear and the caveats match the hedged recommendation. It is undercut by internal inconsistencies: the stated SHAP range of 0.006963 to 0.012436 contradicts the 0.005024 'SHAP' figure for POP PUSH. Feature values are presented as SHAP weights, and XOR PUSH is listed twice.\",\"cybersecurity_relevance\":\"It ties the n-grams to cryptojacking questions such as hash or compute loops, and states that the n-grams are generic and lack function locations. Discussion of benign explanations such as ordinary compiled code is brief, and some interpretations overreach beyond the sample evidence.\",\"actionable_utility\":\"The follow-up actions are concrete and mostly proportionate: sandbox CPU monitoring, locating functions that contain the named n-grams, checking strings and traffic for pool or wallet configuration, and comparing against miner signatures. They are linked to the evidence gap, and the final sentence withholds attribution until corroborated. 'Treat the sample as likely cryptojacking malware' is stronger than the evidence supports.\"},\"unsupported_claims\":[{\"quote\":\"Rarest, top-ranked feature (freq 0.000371).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/top_features (DIV MUL value 7.27e-06; POP TEST 5.09e-05; ADD FLD 4.36e-05) and /evidence/feature_value_semantics\",\"reason\":\"Several listed features have lower values than POP XOR, so it is not the rarest. The artifact also says the values must not be treated as raw counts or frequencies.\",\"category\":\"other\"},{\"quote\":\"The high-frequency stack and call-setup patterns (PUSH CALL 0.030419, MOV PUSH 0.020764, CALL PUSH 0.013916, XOR PUSH 0.007852, ADD PUSH 0.007169, POP PUSH 0.005024) also carry sizeable SHAP weight.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (SHAP for PUSH CALL 0.007814, MOV PUSH 0.008123, CALL PUSH 0.010337, POP PUSH 0.007022)\",\"reason\":\"The numbers quoted are feature values, not SHAP contributions, and the actual SHAP values differ. The sentence reads as a SHAP-magnitude claim.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"0.005024\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/shap_contribution\",\"evidence_reference\":\"/evidence/top_features/18/shap_value = 0.007022125324876851\",\"reason\":\"The POP PUSH SHAP contribution is wrongly reported as its feature value. It would also fall below the stated minimum SHAP of 0.006963.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"Call immediately followed by return suggests thin wrapper or tail-style functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/occurrences = [], /evidence/function_context = []\",\"reason\":\"This asserts adjacency and function structure, but the evidence has no occurrence or context data, and graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"hint at integer/FP math and tight counted loops\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/occurrences = [], /evidence/function_context = []\",\"reason\":\"Loop structure is inferred from n-gram names alone, with no control-flow or extraction evidence, though the text is hedged with 'hint'.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Most frequent n-gram (0.030419).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"/evidence/top_features; /evidence/full_attributions = null; /evidence/feature_value_semantics\",\"reason\":\"Only the top 20 features are supplied and the value semantics are unconfirmed, so this cannot be established for all n-grams. At most it is the largest value among the listed features.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs and most magnitudes match, and the claim that no single n-gram dominates is reasonable. The explanation misreports the POP PUSH SHAP value and presents feature values as SHAP weights.\",\"discrepancies\":[{\"quote\":\"0.005024\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/18/shap_contribution\",\"reason\":\"The actual SHAP value for POP PUSH is 0.007022; 0.005024 is its feature value.\"},{\"quote\":\"The high-frequency stack and call-setup patterns (PUSH CALL 0.030419, MOV PUSH 0.020764, CALL PUSH 0.013916, XOR PUSH 0.007852, ADD PUSH 0.007169, POP PUSH 0.005024) also carry sizeable SHAP weight.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The numbers are feature values rather than SHAP contributions, which are about 0.0078 to 0.0115 for these n-grams. This conflates value with attribution.\"},{\"quote\":\"Call-heavy stack-staging patterns (PUSH CALL 0.030419, MOV PUSH 0.020764, CALL PUSH 0.013916) indicating dense call-and-spill code\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"reason\":\"The listed numbers are feature values and are not labeled as such in a SHAP-focused indicator.\"}]},\"evidence_limitations\":[\"Only the top 20 SHAP features are provided. Omitted features, the SHAP baseline and full attributions are null, so absence of benign-pushing features among omitted ones cannot be established.\",\"Feature value semantics are not established, so the values should not be read as counts or frequencies.\",\"SHAP target class 1 is a configured assumption that needs upstream verification.\",\"No occurrences or function context are provided, so adjacency, control flow, loops and function roles cannot be verified.\",\"The RF probability of 1.0 is not calibrated confidence and is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation is sample-relevant and well caveated, and it proposes sensible verification steps. It misstates one SHAP value (POP PUSH), presents feature values as SHAP weights, and makes some unsupported rarity and adjacency claims. It is therefore not SHAP-faithful and has mixed technical accuracy.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_cd3a450033238ee9",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 3,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF class/probability, the 20 positive SHAP signs, 19 of 20 SHAP magnitudes and the 8 POP-prefixed count are correct. But POP PUSH is given a SHAP value of 0.005024, which is its feature value. POP XOR is called 'Rarest' although DIV MUL has a lower value. Feature values are treated as frequencies despite the artifact's warning. Adjacency and loop semantics are inferred without extraction evidence.",
+      "coherence": "The structure is clear and the caveats match the hedged recommendation. It is undercut by internal inconsistencies: the stated SHAP range of 0.006963 to 0.012436 contradicts the 0.005024 'SHAP' figure for POP PUSH. Feature values are presented as SHAP weights, and XOR PUSH is listed twice.",
+      "cybersecurity_relevance": "It ties the n-grams to cryptojacking questions such as hash or compute loops, and states that the n-grams are generic and lack function locations. Discussion of benign explanations such as ordinary compiled code is brief, and some interpretations overreach beyond the sample evidence.",
+      "actionable_utility": "The follow-up actions are concrete and mostly proportionate: sandbox CPU monitoring, locating functions that contain the named n-grams, checking strings and traffic for pool or wallet configuration, and comparing against miner signatures. They are linked to the evidence gap, and the final sentence withholds attribution until corroborated. 'Treat the sample as likely cryptojacking malware' is stronger than the evidence supports."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Rarest, top-ranked feature (freq 0.000371).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/top_features (DIV MUL value 7.27e-06; POP TEST 5.09e-05; ADD FLD 4.36e-05) and /evidence/feature_value_semantics",
+        "reason": "Several listed features have lower values than POP XOR, so it is not the rarest. The artifact also says the values must not be treated as raw counts or frequencies.",
+        "category": "other"
+      },
+      {
+        "quote": "The high-frequency stack and call-setup patterns (PUSH CALL 0.030419, MOV PUSH 0.020764, CALL PUSH 0.013916, XOR PUSH 0.007852, ADD PUSH 0.007169, POP PUSH 0.005024) also carry sizeable SHAP weight.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features (SHAP for PUSH CALL 0.007814, MOV PUSH 0.008123, CALL PUSH 0.010337, POP PUSH 0.007022)",
+        "reason": "The numbers quoted are feature values, not SHAP contributions, and the actual SHAP values differ. The sentence reads as a SHAP-magnitude claim.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "0.005024",
+        "candidate_path": "/candidate_analysis/evidence_analysis/18/shap_contribution",
+        "evidence_reference": "/evidence/top_features/18/shap_value = 0.007022125324876851",
+        "reason": "The POP PUSH SHAP contribution is wrongly reported as its feature value. It would also fall below the stated minimum SHAP of 0.006963.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "Call immediately followed by return suggests thin wrapper or tail-style functions.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+        "evidence_reference": "/evidence/occurrences = [], /evidence/function_context = []",
+        "reason": "This asserts adjacency and function structure, but the evidence has no occurrence or context data, and graph-aware n-grams need not be adjacent.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "hint at integer/FP math and tight counted loops",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/occurrences = [], /evidence/function_context = []",
+        "reason": "Loop structure is inferred from n-gram names alone, with no control-flow or extraction evidence, though the text is hedged with 'hint'.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Most frequent n-gram (0.030419).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+        "evidence_reference": "/evidence/top_features; /evidence/full_attributions = null; /evidence/feature_value_semantics",
+        "reason": "Only the top 20 features are supplied and the value semantics are unconfirmed, so this cannot be established for all n-grams. At most it is the largest value among the listed features.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "SHAP signs and most magnitudes match, and the claim that no single n-gram dominates is reasonable. The explanation misreports the POP PUSH SHAP value and presents feature values as SHAP weights.",
+      "discrepancies": [
+        {
+          "quote": "0.005024",
+          "candidate_path": "/candidate_analysis/evidence_analysis/18/shap_contribution",
+          "reason": "The actual SHAP value for POP PUSH is 0.007022; 0.005024 is its feature value."
+        },
+        {
+          "quote": "The high-frequency stack and call-setup patterns (PUSH CALL 0.030419, MOV PUSH 0.020764, CALL PUSH 0.013916, XOR PUSH 0.007852, ADD PUSH 0.007169, POP PUSH 0.005024) also carry sizeable SHAP weight.",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "The numbers are feature values rather than SHAP contributions, which are about 0.0078 to 0.0115 for these n-grams. This conflates value with attribution."
+        },
+        {
+          "quote": "Call-heavy stack-staging patterns (PUSH CALL 0.030419, MOV PUSH 0.020764, CALL PUSH 0.013916) indicating dense call-and-spill code",
+          "candidate_path": "/candidate_analysis/key_indicators/2",
+          "reason": "The listed numbers are feature values and are not labeled as such in a SHAP-focused indicator."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "Only the top 20 SHAP features are provided. Omitted features, the SHAP baseline and full attributions are null, so absence of benign-pushing features among omitted ones cannot be established.",
+      "Feature value semantics are not established, so the values should not be read as counts or frequencies.",
+      "SHAP target class 1 is a configured assumption that needs upstream verification.",
+      "No occurrences or function context are provided, so adjacency, control flow, loops and function roles cannot be verified.",
+      "The RF probability of 1.0 is not calibrated confidence and is not behavioral proof of cryptojacking."
+    ],
+    "summary": "The explanation is sample-relevant and well caveated, and it proposes sensible verification steps. It misstates one SHAP value (POP PUSH), presents feature values as SHAP weights, and makes some unsupported rarity and adjacency claims. It is therefore not SHAP-faithful and has mixed technical accuracy."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [
+      {
+        "quote": "0.005024",
+        "candidate_path": "/candidate_analysis/evidence_analysis/18/shap_contribution",
+        "evidence_reference": "/evidence/top_features",
+        "category": "shap_misrepresentation",
+        "reason": "N-gram 'POP PUSH': reported SHAP=0.005024; input=0.007022125324876851; tolerance=5e-07"
+      }
+    ],
+    "numeric_match": false,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Rarest, top-ranked feature (freq 0.000371).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/top_features (DIV MUL value 7.27e-06; POP TEST 5.09e-05; ADD FLD 4.36e-05) and /evidence/feature_value_semantics",
+      "reason": "Several listed features have lower values than POP XOR, so it is not the rarest. The artifact also says the values must not be treated as raw counts or frequencies.",
+      "category": "other"
+    },
+    {
+      "quote": "The high-frequency stack and call-setup patterns (PUSH CALL 0.030419, MOV PUSH 0.020764, CALL PUSH 0.013916, XOR PUSH 0.007852, ADD PUSH 0.007169, POP PUSH 0.005024) also carry sizeable SHAP weight.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features (SHAP for PUSH CALL 0.007814, MOV PUSH 0.008123, CALL PUSH 0.010337, POP PUSH 0.007022)",
+      "reason": "The numbers quoted are feature values, not SHAP contributions, and the actual SHAP values differ. The sentence reads as a SHAP-magnitude claim.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "0.005024",
+      "candidate_path": "/candidate_analysis/evidence_analysis/18/shap_contribution",
+      "evidence_reference": "/evidence/top_features/18/shap_value = 0.007022125324876851",
+      "reason": "The POP PUSH SHAP contribution is wrongly reported as its feature value. It would also fall below the stated minimum SHAP of 0.006963.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "Call immediately followed by return suggests thin wrapper or tail-style functions.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+      "evidence_reference": "/evidence/occurrences = [], /evidence/function_context = []",
+      "reason": "This asserts adjacency and function structure, but the evidence has no occurrence or context data, and graph-aware n-grams need not be adjacent.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "hint at integer/FP math and tight counted loops",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/occurrences = [], /evidence/function_context = []",
+      "reason": "Loop structure is inferred from n-gram names alone, with no control-flow or extraction evidence, though the text is hedged with 'hint'.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Most frequent n-gram (0.030419).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+      "evidence_reference": "/evidence/top_features; /evidence/full_attributions = null; /evidence/feature_value_semantics",
+      "reason": "Only the top 20 features are supplied and the value semantics are unconfirmed, so this cannot be established for all n-grams. At most it is the largest value among the listed features.",
+      "category": "other"
+    },
+    {
+      "quote": "Call-heavy stack-staging patterns (PUSH CALL 0.030419, MOV PUSH 0.020764, CALL PUSH 0.013916) indicating dense call-and-spill code",
+      "candidate_path": "/candidate_analysis/key_indicators/2",
+      "reason": "The listed numbers are feature values and are not labeled as such in a SHAP-focused indicator.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "16d20b9cf5bc20f04368d323cd4729649b1be1e0569ec263c3ddad0421c26d79.elf_analysis.json"
+}

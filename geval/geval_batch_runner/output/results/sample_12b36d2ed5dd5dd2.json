@@ -1,0 +1,288 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_12b36d2ed5dd5dd2",
+  "status": "success",
+  "source_sha256": "ccaedc1c9e4909e85c8a15d12559d0b4ddf9a70024686ec9fc3d4edaa5b9c4b4",
+  "input_sha256": "8b11210e04d6427a2a10bdd30eddee4223144cbd2aec4a2d12d02853563e21dc",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "bc4b8678d0fca85d3f80017b13e87f9b3eb8a279afe7f69db8f4fa7d65c3e5bc.elf",
+      "source_name": "bc4b8678d0fca85d3f80017b13e87f9b3eb8a279afe7f69db8f4fa7d65c3e5bc.elf.json",
+      "source_path": "ml/dataset/cryptojacking/bc4b8678d0fca85d3f80017b13e87f9b3eb8a279afe7f69db8f4fa7d65c3e5bc.elf.json",
+      "split": "test",
+      "batch_number": 4,
+      "row_index_in_batch": 6,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "bc4b8678d0fca85d3f80017b13e87f9b3eb8a279afe7f69db8f4fa7d65c3e5bc.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:25:01.357964+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:25:01.357992+00:00",
+      "error": {
+        "type": "ValueError",
+        "message": "SHAP faithful flag contradicts discrepancy list"
+      },
+      "request_sha256": "f3046a9c232907ade4c70f6080ad5d8d9d3192aa94dfe1afc7cc39816c2bb29d",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm4KEYyXHWSj4YsCs2KW",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_12b36d2ed5dd5dd2\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP values and n-gram frequencies are reported correctly, and the generic instruction semantics are fine. But the text overreaches on 'All 20 top SHAP features push toward cryptojacking' (the target-class source is only an assumption), on 'tight loops or register spilling', 'many small routines' and 'compute core', and on 'unusual in ordinary application code'. It also gives 'Treat as likely cryptominer' without adequate hedging. Mnemonic pairs do not establish loops or hashing kernels. The closing caveat is only partial mitigation.\",\"coherence\":\"Well organized: summary, per-feature assessment, tier and action line up. Minor issues are repetition between the explanation and evidence_analysis and a mild tension between 'high-confidence' and the later admission that the call rests only on instruction statistics. The 'unanimous direction' argument for the tier is also a weak rationale.\",\"cybersecurity_relevance\":\"Ties the arithmetic/rotate n-grams to proof-of-work hashing and names relevant benign alternatives (crypto or compression libraries). It correctly notes there are no strings, APIs or function names. It would be stronger if it flagged more clearly that the stack/call n-grams are non-specific, which it partly does.\",\"actionable_utility\":\"Concrete, feasible and mostly proportionate: sandbox for CPU use and Stratum traffic, locate functions containing the sequences, compare against CryptoNight/RandomX, extract strings and pool/wallet indicators, rule out legitimate libraries. The steps are not prioritized, and the lead-in 'Treat as likely cryptominer' presupposes the conclusion before the checks confirm it.\"},\"unsupported_claims\":[{\"quote\":\"A loop-counter decrement followed by a stack push. It is generic, but its high SHAP value suggests it is characteristic of this binary's code layout, such as tight loops or register spilling in compute routines.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/occurrences; /evidence/function_context\",\"reason\":\"No occurrence, function or control-flow context supports a loop counter, tight loops or spilling; DEC could be anything.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"which suggests many small routines with heavy call and stack traffic around a compute core\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context; /evidence/occurrences; /evidence/feature_value_semantics\",\"reason\":\"Program structure (many small routines, a compute core) is inferred from n-gram statistics with no function or occurrence context, and feature values are not established as counts.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A call directly followed by a return indicates tiny wrapper or stub routines.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/top_features/10; /evidence/scope_notes\",\"reason\":\"Adjacency is asserted as fact, but graph-aware n-grams need not be adjacent and no extraction context is given; stub routines are inferred without evidence.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"which is unusual in ordinary application code\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/top_features/16\",\"reason\":\"A population-level claim about ordinary code is not backed by any supplied baseline or comparison data.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Treat as likely cryptominer.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /evidence/function_context; /evidence/occurrences\",\"reason\":\"RF probability and static n-gram associations do not establish cryptomining; the explanation itself says no APIs, strings or functions are available.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"All 20 top SHAP features push toward cryptojacking, and none pushes away from it.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/shap_target_class_source; /evidence/top_features\",\"reason\":\"Positive SHAP signs are accurate for the configured target class 1, but that class is only an unverified assumption, and 'cryptojacking' equates the class with verified behavior.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The SHAP signs (all positive), magnitudes (rounded to 6 decimals), and n-gram names match the evidence, and the feature frequencies cited (0.003337, 0.020203, 0.000052, 0.003624, 0.016058) are correct. The candidate does not claim to see omitted features. The only issues are unhedged phrasing about the target-class assumption and over-interpreting SHAP as indicating 'characteristic of this binary's code layout'.\",\"discrepancies\":[{\"quote\":\"its high SHAP value suggests it is characteristic of this binary's code layout\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"reason\":\"Reads a structural meaning into the SHAP magnitude that is not established; SHAP shows model contribution, not code layout.\"}]},\"evidence_limitations\":[\"No occurrences, function context, strings or API references are available.\",\"Feature value semantics are unconfirmed, so values may not be raw counts.\",\"SHAP baseline and full attributions are null; only the top 20 features are shown.\",\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"RF probability is not behavioral proof.\"],\"summary\":\"The numbers and SHAP signs are reported faithfully and the follow-up plan is concrete, but the explanation overreaches on loops, stub routines, program structure and the 'likely cryptominer' framing from n-gram associations alone, though it partly caveats benign crypto libraries.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7084,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2102,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7084,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2102,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_12b36d2ed5dd5dd2\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP values and n-gram frequencies are reported correctly, and the generic instruction semantics are fine. But the text overreaches on 'All 20 top SHAP features push toward cryptojacking' (the target-class source is only an assumption), on 'tight loops or register spilling', 'many small routines' and 'compute core', and on 'unusual in ordinary application code'. It also gives 'Treat as likely cryptominer' without adequate hedging. Mnemonic pairs do not establish loops or hashing kernels. The closing caveat is only partial mitigation.\",\"coherence\":\"Well organized: summary, per-feature assessment, tier and action line up. Minor issues are repetition between the explanation and evidence_analysis and a mild tension between 'high-confidence' and the later admission that the call rests only on instruction statistics. The 'unanimous direction' argument for the tier is also a weak rationale.\",\"cybersecurity_relevance\":\"Ties the arithmetic/rotate n-grams to proof-of-work hashing and names relevant benign alternatives (crypto or compression libraries). It correctly notes there are no strings, APIs or function names. It would be stronger if it flagged more clearly that the stack/call n-grams are non-specific, which it partly does.\",\"actionable_utility\":\"Concrete, feasible and mostly proportionate: sandbox for CPU use and Stratum traffic, locate functions containing the sequences, compare against CryptoNight/RandomX, extract strings and pool/wallet indicators, rule out legitimate libraries. The steps are not prioritized, and the lead-in 'Treat as likely cryptominer' presupposes the conclusion before the checks confirm it.\"},\"unsupported_claims\":[{\"quote\":\"A loop-counter decrement followed by a stack push. It is generic, but its high SHAP value suggests it is characteristic of this binary's code layout, such as tight loops or register spilling in compute routines.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/top_features/1; /evidence/occurrences; /evidence/function_context\",\"reason\":\"No occurrence, function or control-flow context supports a loop counter, tight loops or spilling; DEC could be anything.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"which suggests many small routines with heavy call and stack traffic around a compute core\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context; /evidence/occurrences; /evidence/feature_value_semantics\",\"reason\":\"Program structure (many small routines, a compute core) is inferred from n-gram statistics with no function or occurrence context, and feature values are not established as counts.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A call directly followed by a return indicates tiny wrapper or stub routines.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/top_features/10; /evidence/scope_notes\",\"reason\":\"Adjacency is asserted as fact, but graph-aware n-grams need not be adjacent and no extraction context is given; stub routines are inferred without evidence.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"which is unusual in ordinary application code\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/16/assessment\",\"evidence_reference\":\"/evidence/top_features/16\",\"reason\":\"A population-level claim about ordinary code is not backed by any supplied baseline or comparison data.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Treat as likely cryptominer.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /evidence/function_context; /evidence/occurrences\",\"reason\":\"RF probability and static n-gram associations do not establish cryptomining; the explanation itself says no APIs, strings or functions are available.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"All 20 top SHAP features push toward cryptojacking, and none pushes away from it.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/shap_target_class_source; /evidence/top_features\",\"reason\":\"Positive SHAP signs are accurate for the configured target class 1, but that class is only an unverified assumption, and 'cryptojacking' equates the class with verified behavior.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The SHAP signs (all positive), magnitudes (rounded to 6 decimals), and n-gram names match the evidence, and the feature frequencies cited (0.003337, 0.020203, 0.000052, 0.003624, 0.016058) are correct. The candidate does not claim to see omitted features. The only issues are unhedged phrasing about the target-class assumption and over-interpreting SHAP as indicating 'characteristic of this binary's code layout'.\",\"discrepancies\":[{\"quote\":\"its high SHAP value suggests it is characteristic of this binary's code layout\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"reason\":\"Reads a structural meaning into the SHAP magnitude that is not established; SHAP shows model contribution, not code layout.\"}]},\"evidence_limitations\":[\"No occurrences, function context, strings or API references are available.\",\"Feature value semantics are unconfirmed, so values may not be raw counts.\",\"SHAP baseline and full attributions are null; only the top 20 features are shown.\",\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"RF probability is not behavioral proof.\"],\"summary\":\"The numbers and SHAP signs are reported faithfully and the follow-up plan is concrete, but the explanation overreaches on loops, stub routines, program structure and the 'likely cryptominer' framing from n-gram associations alone, though it partly caveats benign crypto libraries.\"}"
+    },
+    {
+      "number": 2,
+      "timestamp": "2026-10-06T13:25:17.254794+00:00",
+      "error": null,
+      "request_sha256": "759ac7d742ea799dbc4b3cccca2f6c1478f15d2d7ff56ce73cacf6d0467dff4a",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm4LPt5mjxmXm6SaX2fv",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I need to check whether the claim about all 20 top SHAP features pointing toward cryptojacking is actually accurate and consistent with the discrepancy list I'm building—since the faithful flag has to align with whatever discrepancies I end up flagging.\n\nI'm verifying each SHAP value against the source table one by one, and they all check out numerically. But I'm noticing some unsupported claims creeping in: calling the \"unanimous direction\" evidence for high confidence overreaches since it's only true for the top-k features shown, the target class assumption for SHAP isn't stated, and labeling feature values as \"frequency\" isn't actually established in the data. I'm also second-guessing the claim that bit-manipulation features are the \"strongest\" signals, since DEC PUSH (a stack-related feature) actually ranks second by SHAP magnitude.\n\nThere's a pattern of inferences that go beyond what the data supports — things like \"loop-counter decrement,\" \"tight loops or register spilling,\" \"many small routines with heavy call/stack traffic,\" and treating ADD-ROR adjacency as implied structure when the n-gram features aren't necessarily adjacency-based. I'm also flagging the \"tiny wrapper or stub routines\" inference from CALL RET as ungrounded, the rare-frequency claim as treating an unestablished value as frequency, and the final \"high-confidence\" tier and 0.82 confidence score as uncalibrated certainty not justified by the evidence.\n\nOn SHAP faithfulness, the directions and magnitudes seem accurate — the frequency semantics issue is about the underlying feature values, not the SHAP explanation itself. The phrase \"unanimous direction of the SHAP contributions\" is a bit ambiguous since it's scoped to the top-20 features, but since the explanation does explicitly state that scope, I'll lean toward marking faithful as true with no discrepancies, just noting the minor caveat in my reasoning rather than flagging it as a separate issue.\n\nScoring out: technical accuracy around 3 given the overreach on adjacency, loop-counter, wrapper, and frequency claims; coherence 4 for clarity despite some repetition; relevance 4 since it stays sample-linked and acknowledges legitimate alternatives like crypto or compression without ignoring the absence of strings; actionability 4 for concrete steps like sandboxing and string comparison, though the \"treat as likely cryptominer\" framing comes before verification and sandbox steps could be better prioritized. I'm also noting unsupported claims tied to specific JSON pointers in the evidence analysis, particularly around the DEC PUSH assessment.\n\nI'm pulling exact quotes to flag as unsupported: the loop-counter-decrement-then-push claim, the \"many small routines with heavy call and stack traffic\" explanation line, the call-then-return wrapper/stub inference, the \"rare but high SHAP weight\" phrasing, and the \"treat as likely cryptominer\" recommendation—categorizing these as either unsupported_behavior or unsupported_certainty, and considering whether to also flag the ADD-then-ROR \"ARX-style hashing round\" adjacency claim under the same rule against inferring behavior from instruction order. I'll keep the final list tight and write it concisely.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_12b36d2ed5dd5dd2\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.955, SHAP values and listed feature values match the evidence. Several interpretations overreach: adjacency and control-flow readings (e.g. 'loop-counter decrement', 'tiny wrapper or stub routines'), and treating feature values as frequencies although their semantics are not established.\",\"coherence\":\"The explanation, per-n-gram assessments, tier and recommendation agree with each other and are easy to follow. Some repetition between the summary and the per-feature section, and a high-confidence tier set alongside a stated uncertainty.\",\"cybersecurity_relevance\":\"It ties the arithmetic and rotate n-grams to proof-of-work investigation, notes the lack of strings, APIs or function names, and names legitimate crypto or compression libraries as a benign alternative. It leans on generic hash/bignum inference from mnemonics.\",\"actionable_utility\":\"Concrete, feasible checks: sandbox CPU use and Stratum traffic, locating functions, string and wallet extraction, and ruling out legitimate libraries. Mostly proportionate, but not prioritized, and it opens with 'Treat as likely cryptominer' before verification.\"},\"unsupported_claims\":[{\"quote\":\"A loop-counter decrement followed by a stack push.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"No occurrences, context or control-flow evidence shows a loop counter or adjacency; mnemonics alone do not establish loops.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"which suggests many small routines with heavy call and stack traffic around a compute core\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"Routine structure and a 'compute core' are asserted from top-k n-gram statistics with no function context or extraction evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A call directly followed by a return indicates tiny wrapper or stub routines.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Adjacency is assumed and stub or wrapper routines are asserted without extraction evidence; graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It is rare (0.000052)\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature values must not be treated as raw counts or frequencies without upstream confirmation; the same issue applies to 'relatively high frequency' and 'very frequent' elsewhere.\",\"category\":\"other\"},{\"quote\":\"Add followed by rotate-right is a typical ARX-style hashing round pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Adjacency is assumed and a hashing round is inferred from a mnemonic pair with no context, so this reads as sample-specific behavior.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Treat as likely cryptominer.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"RF probability is not behavioral proof. No strings, APIs or runtime evidence support a likely-cryptominer verdict before verification.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All quoted SHAP signs and magnitudes match the supplied top-20 values, and every listed value is positive toward class 1. The 'all 20 top features' wording is scoped to the top-k subset. The tier line's 'unanimous direction of the SHAP contributions' is slightly ambiguous, since omitted features are unknown, but it is not a misstatement of sign or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Only a top-20 SHAP subset is supplied; full attributions and SHAP baseline are null, so omitted features are unknown.\",\"SHAP target class 1 is a configured assumption that needs upstream verification.\",\"Feature value semantics are not established, so values cannot be read as counts or frequencies.\",\"No occurrences, function context, strings or API evidence, so adjacency, control flow and algorithm identity cannot be confirmed.\"],\"summary\":\"Numbers and SHAP direction are reported accurately, and the explanation is clear and well linked to cryptojacking investigation with sensible verification steps. Technical accuracy is held to a 3 by adjacency-based and frequency-based inferences and a premature 'likely cryptominer' framing; SHAP representation itself is faithful.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7135,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3940,
+          "output_tokens_details": {
+            "thinking_tokens": 2211
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7135,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3940,
+        "output_tokens_details": {
+          "thinking_tokens": 2211
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_12b36d2ed5dd5dd2\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 0.955, SHAP values and listed feature values match the evidence. Several interpretations overreach: adjacency and control-flow readings (e.g. 'loop-counter decrement', 'tiny wrapper or stub routines'), and treating feature values as frequencies although their semantics are not established.\",\"coherence\":\"The explanation, per-n-gram assessments, tier and recommendation agree with each other and are easy to follow. Some repetition between the summary and the per-feature section, and a high-confidence tier set alongside a stated uncertainty.\",\"cybersecurity_relevance\":\"It ties the arithmetic and rotate n-grams to proof-of-work investigation, notes the lack of strings, APIs or function names, and names legitimate crypto or compression libraries as a benign alternative. It leans on generic hash/bignum inference from mnemonics.\",\"actionable_utility\":\"Concrete, feasible checks: sandbox CPU use and Stratum traffic, locating functions, string and wallet extraction, and ruling out legitimate libraries. Mostly proportionate, but not prioritized, and it opens with 'Treat as likely cryptominer' before verification.\"},\"unsupported_claims\":[{\"quote\":\"A loop-counter decrement followed by a stack push.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"No occurrences, context or control-flow evidence shows a loop counter or adjacency; mnemonics alone do not establish loops.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"which suggests many small routines with heavy call and stack traffic around a compute core\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/function_context\",\"reason\":\"Routine structure and a 'compute core' are asserted from top-k n-gram statistics with no function context or extraction evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A call directly followed by a return indicates tiny wrapper or stub routines.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Adjacency is assumed and stub or wrapper routines are asserted without extraction evidence; graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It is rare (0.000052)\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature values must not be treated as raw counts or frequencies without upstream confirmation; the same issue applies to 'relatively high frequency' and 'very frequent' elsewhere.\",\"category\":\"other\"},{\"quote\":\"Add followed by rotate-right is a typical ARX-style hashing round pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/occurrences\",\"reason\":\"Adjacency is assumed and a hashing round is inferred from a mnemonic pair with no context, so this reads as sample-specific behavior.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Treat as likely cryptominer.\",\"candidate_path\":\"/candidate_analysis/recommended_action\",\"evidence_reference\":\"/evidence/rf_probability_class_1\",\"reason\":\"RF probability is not behavioral proof. No strings, APIs or runtime evidence support a likely-cryptominer verdict before verification.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All quoted SHAP signs and magnitudes match the supplied top-20 values, and every listed value is positive toward class 1. The 'all 20 top features' wording is scoped to the top-k subset. The tier line's 'unanimous direction of the SHAP contributions' is slightly ambiguous, since omitted features are unknown, but it is not a misstatement of sign or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Only a top-20 SHAP subset is supplied; full attributions and SHAP baseline are null, so omitted features are unknown.\",\"SHAP target class 1 is a configured assumption that needs upstream verification.\",\"Feature value semantics are not established, so values cannot be read as counts or frequencies.\",\"No occurrences, function context, strings or API evidence, so adjacency, control flow and algorithm identity cannot be confirmed.\"],\"summary\":\"Numbers and SHAP direction are reported accurately, and the explanation is clear and well linked to cryptojacking investigation with sensible verification steps. Technical accuracy is held to a 3 by adjacency-based and frequency-based inferences and a premature 'likely cryptominer' framing; SHAP representation itself is faithful.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_12b36d2ed5dd5dd2",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability 0.955, SHAP values and listed feature values match the evidence. Several interpretations overreach: adjacency and control-flow readings (e.g. 'loop-counter decrement', 'tiny wrapper or stub routines'), and treating feature values as frequencies although their semantics are not established.",
+      "coherence": "The explanation, per-n-gram assessments, tier and recommendation agree with each other and are easy to follow. Some repetition between the summary and the per-feature section, and a high-confidence tier set alongside a stated uncertainty.",
+      "cybersecurity_relevance": "It ties the arithmetic and rotate n-grams to proof-of-work investigation, notes the lack of strings, APIs or function names, and names legitimate crypto or compression libraries as a benign alternative. It leans on generic hash/bignum inference from mnemonics.",
+      "actionable_utility": "Concrete, feasible checks: sandbox CPU use and Stratum traffic, locating functions, string and wallet extraction, and ruling out legitimate libraries. Mostly proportionate, but not prioritized, and it opens with 'Treat as likely cryptominer' before verification."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "A loop-counter decrement followed by a stack push.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "No occurrences, context or control-flow evidence shows a loop counter or adjacency; mnemonics alone do not establish loops.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "which suggests many small routines with heavy call and stack traffic around a compute core",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/function_context",
+        "reason": "Routine structure and a 'compute core' are asserted from top-k n-gram statistics with no function context or extraction evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "A call directly followed by a return indicates tiny wrapper or stub routines.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Adjacency is assumed and stub or wrapper routines are asserted without extraction evidence; graph-aware n-grams need not be adjacent.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "It is rare (0.000052)",
+        "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states feature values must not be treated as raw counts or frequencies without upstream confirmation; the same issue applies to 'relatively high frequency' and 'very frequent' elsewhere.",
+        "category": "other"
+      },
+      {
+        "quote": "Add followed by rotate-right is a typical ARX-style hashing round pattern.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/occurrences",
+        "reason": "Adjacency is assumed and a hashing round is inferred from a mnemonic pair with no context, so this reads as sample-specific behavior.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Treat as likely cryptominer.",
+        "candidate_path": "/candidate_analysis/recommended_action",
+        "evidence_reference": "/evidence/rf_probability_class_1",
+        "reason": "RF probability is not behavioral proof. No strings, APIs or runtime evidence support a likely-cryptominer verdict before verification.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All quoted SHAP signs and magnitudes match the supplied top-20 values, and every listed value is positive toward class 1. The 'all 20 top features' wording is scoped to the top-k subset. The tier line's 'unanimous direction of the SHAP contributions' is slightly ambiguous, since omitted features are unknown, but it is not a misstatement of sign or magnitude.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Only a top-20 SHAP subset is supplied; full attributions and SHAP baseline are null, so omitted features are unknown.",
+      "SHAP target class 1 is a configured assumption that needs upstream verification.",
+      "Feature value semantics are not established, so values cannot be read as counts or frequencies.",
+      "No occurrences, function context, strings or API evidence, so adjacency, control flow and algorithm identity cannot be confirmed."
+    ],
+    "summary": "Numbers and SHAP direction are reported accurately, and the explanation is clear and well linked to cryptojacking investigation with sensible verification steps. Technical accuracy is held to a 3 by adjacency-based and frequency-based inferences and a premature 'likely cryptominer' framing; SHAP representation itself is faithful."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "A loop-counter decrement followed by a stack push.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "No occurrences, context or control-flow evidence shows a loop counter or adjacency; mnemonics alone do not establish loops.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "which suggests many small routines with heavy call and stack traffic around a compute core",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/function_context",
+      "reason": "Routine structure and a 'compute core' are asserted from top-k n-gram statistics with no function context or extraction evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "A call directly followed by a return indicates tiny wrapper or stub routines.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Adjacency is assumed and stub or wrapper routines are asserted without extraction evidence; graph-aware n-grams need not be adjacent.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "It is rare (0.000052)",
+      "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states feature values must not be treated as raw counts or frequencies without upstream confirmation; the same issue applies to 'relatively high frequency' and 'very frequent' elsewhere.",
+      "category": "other"
+    },
+    {
+      "quote": "Add followed by rotate-right is a typical ARX-style hashing round pattern.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/occurrences",
+      "reason": "Adjacency is assumed and a hashing round is inferred from a mnemonic pair with no context, so this reads as sample-specific behavior.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Treat as likely cryptominer.",
+      "candidate_path": "/candidate_analysis/recommended_action",
+      "evidence_reference": "/evidence/rf_probability_class_1",
+      "reason": "RF probability is not behavioral proof. No strings, APIs or runtime evidence support a likely-cryptominer verdict before verification.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "bc4b8678d0fca85d3f80017b13e87f9b3eb8a279afe7f69db8f4fa7d65c3e5bc.elf_analysis.json"
+}

@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_42421335716ef46d",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.98,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "ADD POP",
+        "value": 0.0,
+        "shap_value": 0.010096024852415779
+      },
+      {
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.009534525890412872
+      },
+      {
+        "ngram": "eor sub",
+        "value": 3.6063614970771596e-05,
+        "shap_value": 0.00860256123027608
+      },
+      {
+        "ngram": "mvn orr",
+        "value": 5.20918911206536e-05,
+        "shap_value": 0.007888271715765628
+      },
+      {
+        "ngram": "sub strb",
+        "value": 0.000964100647252053,
+        "shap_value": 0.006751520457795158
+      },
+      {
+        "ngram": "XOR CALL",
+        "value": 0.0,
+        "shap_value": 0.006743975322794932
+      },
+      {
+        "ngram": "AND MOV",
+        "value": 0.0,
+        "shap_value": 0.006645568039517636
+      },
+      {
+        "ngram": "cmn mov",
+        "value": 0.0011476244544610381,
+        "shap_value": 0.006308025536973493
+      },
+      {
+        "ngram": "CALL XOR",
+        "value": 0.0,
+        "shap_value": 0.006224488998387156
+      },
+      {
+        "ngram": "CALL ADD",
+        "value": 0.0,
+        "shap_value": 0.006100572275125982
+      },
+      {
+        "ngram": "sub umull",
+        "value": 1.1219791304029059e-05,
+        "shap_value": 0.005970184259876651
+      },
+      {
+        "ngram": "MOV JZ",
+        "value": 0.0,
+        "shap_value": 0.0054134267274768685
+      },
+      {
+        "ngram": "XOR SHL",
+        "value": 0.0,
+        "shap_value": 0.005307875722105011
+      },
+      {
+        "ngram": "CMP JL",
+        "value": 0.0,
+        "shap_value": 0.005097138032665347
+      },
+      {
+        "ngram": "TEST JZ",
+        "value": 0.0,
+        "shap_value": 0.004730832249278074
+      },
+      {
+        "ngram": "sub ldrh",
+        "value": 0.00015146718942560256,
+        "shap_value": 0.0047273744853809216
+      },
+      {
+        "ngram": "and ldrh",
+        "value": 7.2127231760532595e-06,
+        "shap_value": 0.0046664125802053915
+      },
+      {
+        "ngram": "add b",
+        "value": 1.8432514480082318e-05,
+        "shap_value": 0.004582748484626123
+      },
+      {
+        "ngram": "XOR XOR",
+        "value": 0.0,
+        "shap_value": 0.004577958645171377
+      },
+      {
+        "ngram": "TEST JS",
+        "value": 0.0,
+        "shap_value": 0.004444021155770339
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest assigns 0.98 probability of malware, and all 20 top features push toward cryptojacking. The supplied evidence is weak, though. The individual SHAP contributions are small (+0.0044 to +0.0101), so the score looks like many weak signals adding up rather than a few strong ones. No function-level locations are listed for any n-gram, and no API calls, strings or other cryptomining artifacts are given. Fourteen of the 20 n-grams have a relative frequency of 0.000000. Those are the uppercase x86-style ones (ADD POP, CMOVZ MOV, XOR CALL, AND MOV, CALL XOR, CALL ADD, MOV JZ, XOR SHL, CMP JL, TEST JZ, XOR XOR, TEST JS), so their presence in the binary is negligible or unconfirmed. The remaining n-grams are lowercase ARM-style (eor sub, mvn orr, sub strb, cmn mov, sub umull, sub ldrh, and ldrh, add b) with small but non-zero frequencies (0.000007 to 0.001148). The evidence therefore mixes x86-style and ARM-style mnemonics, which is unusual and may reflect a multi-architecture or unusual binary, or feature-extraction artifacts. Some patterns are loosely consistent with hash or arithmetic-heavy code: XOR SHL, XOR XOR, CALL XOR and XOR CALL (XOR/shift mixing), eor sub and mvn orr (ARM bitwise mixing), and sub umull (multiply-accumulate arithmetic). Each of these is also common in ordinary compiled code such as checksums, compression and general bit manipulation. The remaining items (TEST JZ, CMP JL, TEST JS, MOV JZ, ADD POP, sub ldrh, sub strb) are generic control-flow and data-movement idioms with no mining-specific meaning. Nothing in the evidence ties these patterns to a specific mining algorithm or behavior. The model's high score is a meaningful signal, but the evidence supplied cannot confirm cryptojacking, so the result is inconclusive and needs further analysis.",
+    "evidence_analysis": [
+      {
+        "ngram": "ADD POP",
+        "shap_contribution": 0.010096,
+        "assessment": "Generic stack cleanup or epilogue idiom. Frequency is 0.000000, so the pattern is essentially absent. It is the top SHAP feature but has no mining-specific meaning."
+      },
+      {
+        "ngram": "CMOVZ MOV",
+        "shap_contribution": 0.009535,
+        "assessment": "Conditional-move sequence, sometimes seen in branchless or optimized code. Frequency is 0.000000 and the pattern is not specific to mining."
+      },
+      {
+        "ngram": "eor sub",
+        "shap_contribution": 0.008603,
+        "assessment": "ARM XOR followed by subtract. Possible bitwise mixing as in hash or cipher rounds, but also common in general code. Frequency is very low (0.000036)."
+      },
+      {
+        "ngram": "mvn orr",
+        "shap_contribution": 0.007888,
+        "assessment": "ARM bitwise NOT followed by OR, a bit-manipulation idiom. Weakly consistent with hash-style logic but not distinctive (frequency 0.000052)."
+      },
+      {
+        "ngram": "sub strb",
+        "shap_contribution": 0.006752,
+        "assessment": "ARM subtract followed by byte store, typical of buffer or byte-wise processing. It is relatively more frequent (0.000964) but generic."
+      },
+      {
+        "ngram": "XOR CALL",
+        "shap_contribution": 0.006744,
+        "assessment": "x86 XOR (often register zeroing) before a call. Common argument-setup idiom. Frequency is 0.000000."
+      },
+      {
+        "ngram": "AND MOV",
+        "shap_contribution": 0.006646,
+        "assessment": "Masking followed by a move. Generic arithmetic or bit-field handling. Frequency is 0.000000."
+      },
+      {
+        "ngram": "cmn mov",
+        "shap_contribution": 0.006308,
+        "assessment": "ARM compare-negative followed by move, a generic comparison/control idiom. Frequency is 0.001148, the highest among the listed n-grams, but it has no mining-specific meaning."
+      },
+      {
+        "ngram": "CALL XOR",
+        "shap_contribution": 0.006224,
+        "assessment": "x86 call followed by XOR, typically post-call register clearing or value mixing. Not diagnostic, and frequency is 0.000000."
+      },
+      {
+        "ngram": "CALL ADD",
+        "shap_contribution": 0.006101,
+        "assessment": "Typical call followed by stack adjustment (cdecl-style cleanup). Generic compiler output. Frequency is 0.000000."
+      },
+      {
+        "ngram": "sub umull",
+        "shap_contribution": 0.00597,
+        "assessment": "ARM subtract followed by unsigned long multiply. Suggests multiply-heavy arithmetic that could appear in hashing or big-number code, but it is also common in ordinary math. Frequency is very low (0.000011)."
+      },
+      {
+        "ngram": "MOV JZ",
+        "shap_contribution": 0.005413,
+        "assessment": "Move followed by a conditional jump on zero. Generic control flow. Frequency is 0.000000."
+      },
+      {
+        "ngram": "XOR SHL",
+        "shap_contribution": 0.005308,
+        "assessment": "XOR followed by shift-left, the kind of mixing seen in hash, PRNG and cipher routines. This is the most crypto-suggestive pattern, but it is also common in non-malicious code, and its frequency is 0.000000."
+      },
+      {
+        "ngram": "CMP JL",
+        "shap_contribution": 0.005097,
+        "assessment": "Signed compare-and-branch loop or bounds check. Ubiquitous and non-specific."
+      },
+      {
+        "ngram": "TEST JZ",
+        "shap_contribution": 0.004731,
+        "assessment": "Null or zero check followed by a branch. Generic control flow."
+      },
+      {
+        "ngram": "sub ldrh",
+        "shap_contribution": 0.004727,
+        "assessment": "ARM subtract followed by halfword load. Generic data access or indexing (frequency 0.000151)."
+      },
+      {
+        "ngram": "and ldrh",
+        "shap_contribution": 0.004666,
+        "assessment": "ARM mask followed by halfword load, typical table or field access. Frequency is very low (0.000007) and the pattern is not specific."
+      },
+      {
+        "ngram": "add b",
+        "shap_contribution": 0.004583,
+        "assessment": "ARM add followed by an unconditional branch, generic loop or flow structure (frequency 0.000018)."
+      },
+      {
+        "ngram": "XOR XOR",
+        "shap_contribution": 0.004578,
+        "assessment": "Consecutive XORs may indicate register zeroing or repeated bitwise mixing, which is loosely consistent with hash or cipher code. Frequency is 0.000000 and the pattern is not diagnostic."
+      },
+      {
+        "ngram": "TEST JS",
+        "shap_contribution": 0.004444,
+        "assessment": "Sign-flag test and branch, a generic error or negative-value check. Frequency is 0.000000."
+      }
+    ],
+    "confidence_score": 0.45,
+    "key_indicators": [
+      "Random Forest probability of 0.98 for malware, but driven by many small SHAP contributions (max +0.0101)",
+      "XOR-heavy and shift patterns (XOR SHL, XOR XOR, CALL XOR, XOR CALL, eor sub) are loosely consistent with hash or cipher mixing but not specific to mining",
+      "ARM multiply and bitwise patterns (sub umull, mvn orr) are weakly suggestive of arithmetic-heavy routines",
+      "14 of the 20 n-grams have a relative frequency of 0.000000, so their presence is negligible or unconfirmed",
+      "Mixed x86-style and ARM-style mnemonics in the top features are anomalous and may indicate feature-extraction artifacts or a multi-architecture binary",
+      "No function-level locations or other mining-specific artifacts are provided in the evidence"
+    ],
+    "recommended_action": "Do not conclude cryptojacking from this evidence alone. Run deeper analysis: disassemble the binary and locate the functions containing XOR/shift and multiply-heavy sequences, and check whether they implement a known mining hash routine. Inspect strings, imports and network behavior for mining-pool indicators. Investigate the mixed x86/ARM mnemonic profile to rule out feature-extraction artifacts or an unusual multi-architecture binary. Run it in a sandbox and watch for sustained high CPU usage. Keep the sample flagged and quarantined until these checks are complete, given the 0.98 model score."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

@@ -1,0 +1,239 @@
+{
+  "sample_id": "sample_e91e2bdebfe458ac",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.635,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.015876103895128005
+      },
+      {
+        "ngram": "POP SUB",
+        "value": 5.1395386435615364e-06,
+        "shap_value": 0.012296687752586058
+      },
+      {
+        "ngram": "ADD PUSH",
+        "value": 1.0279077287123073e-05,
+        "shap_value": 0.012280726875087062
+      },
+      {
+        "ngram": "ADD POP",
+        "value": 0.000308372313156724,
+        "shap_value": 0.011558143356576542
+      },
+      {
+        "ngram": "MOV LEAVE",
+        "value": 0.00010793031106004491,
+        "shap_value": 0.009845230542026824
+      },
+      {
+        "ngram": "CALL PUSH",
+        "value": 1.0279077287123073e-05,
+        "shap_value": 0.009154840431028264
+      },
+      {
+        "ngram": "XOR CALL",
+        "value": 0.0,
+        "shap_value": 0.00906567012205025
+      },
+      {
+        "ngram": "POP RET",
+        "value": 0.00038546539144590497,
+        "shap_value": 0.008522202795394377
+      },
+      {
+        "ngram": "MOV ROL",
+        "value": 8.223261829698458e-05,
+        "shap_value": 0.008155833045578986
+      },
+      {
+        "ngram": "CALL CMP",
+        "value": 0.0017885593697428703,
+        "shap_value": -0.007865553045363358
+      },
+      {
+        "ngram": "POP ADD",
+        "value": 1.5418614566442557e-05,
+        "shap_value": 0.007720776392909193
+      },
+      {
+        "ngram": "POP LEA",
+        "value": 1.0279077287123073e-05,
+        "shap_value": 0.007492028827442201
+      },
+      {
+        "ngram": "PUSH SUB",
+        "value": 0.0003186513786204159,
+        "shap_value": 0.007085793719664475
+      },
+      {
+        "ngram": "SUB CALL",
+        "value": 0.00029809321858920157,
+        "shap_value": 0.00708020436628135
+      },
+      {
+        "ngram": "ADD ROL",
+        "value": 9.765123104443774e-05,
+        "shap_value": 0.0068293263874157776
+      },
+      {
+        "ngram": "POP CALL",
+        "value": 1.5418614566442557e-05,
+        "shap_value": 0.0066291338099221265
+      },
+      {
+        "ngram": "CALL ADD",
+        "value": 0.0004008839896414429,
+        "shap_value": 0.006592197818828842
+      },
+      {
+        "ngram": "CALL XOR",
+        "value": 5.1395386435615364e-06,
+        "shap_value": 0.006556925145094805
+      },
+      {
+        "ngram": "TEST JS",
+        "value": 0.0,
+        "shap_value": 0.006260455996007824
+      },
+      {
+        "ngram": "MOV POP",
+        "value": 5.1395386435615364e-06,
+        "shap_value": 0.005606298024080008
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest assigns a probability of 0.635 for malware, which is only modestly above the decision threshold. The SHAP evidence is weak and non-specific. 19 of the top 20 n-grams push toward cryptojacking, but each contributes only about +0.006 to +0.016, so no single feature dominates. Most of these n-grams are generic x86 stack and control-flow idioms: POP SUB, ADD PUSH, ADD POP, MOV LEAVE, CALL PUSH, POP RET, POP ADD, POP LEA, PUSH SUB, SUB CALL, POP CALL, CALL ADD, and MOV POP. They reflect ordinary function prologues and epilogues and call sequences found in nearly all compiled code. Several of the highest-ranked n-grams (CMOVZ MOV, XOR CALL, TEST JS) have a relative frequency of about 0.000000, meaning they are essentially absent or appear only once. Their SHAP contributions therefore reflect model artifacts, not clear behavior. The two n-grams with a possible link to cryptographic or hashing code are MOV ROL (+0.008156, frequency 0.000082) and ADD ROL (+0.006829, frequency 0.000098). Rotate instructions are common in hash and cipher primitives, which can include mining algorithms. However, they also appear in many benign checksum, PRNG, and crypto routines, and their frequencies are very low. CALL XOR (+0.006557) and XOR CALL fit the same mixing and obfuscation pattern but are similarly rare and non-specific. CALL CMP (-0.007866, frequency 0.001789) is the only benign-leaning feature, and it is the most frequent n-gram in the list, consistent with ordinary conditional logic. The evidence provides no function names, API calls, or other behavioral indicators, so it cannot confirm mining activity. The rotate-related signals are suggestive but inconclusive, and the verdict is low-confidence.",
+    "evidence_analysis": [
+      {
+        "ngram": "CMOVZ MOV",
+        "shap_contribution": 0.015876,
+        "assessment": "Top-ranked feature, but its frequency is about 0. A conditional move is a generic branchless-selection idiom, so this likely reflects a model artifact and not a specific mining behavior."
+      },
+      {
+        "ngram": "POP SUB",
+        "shap_contribution": 0.012297,
+        "assessment": "Generic stack and arithmetic sequence with very low frequency. It is not specific to cryptojacking."
+      },
+      {
+        "ngram": "ADD PUSH",
+        "shap_contribution": 0.012281,
+        "assessment": "Ordinary stack adjustment and argument setup. It has weak discriminative value on its own."
+      },
+      {
+        "ngram": "ADD POP",
+        "shap_contribution": 0.011558,
+        "assessment": "Common epilogue or stack cleanup pattern. Its relatively higher frequency reflects normal compiled code, so its contribution is weak, non-specific evidence."
+      },
+      {
+        "ngram": "MOV LEAVE",
+        "shap_contribution": 0.009845,
+        "assessment": "Standard function epilogue. It indicates compiler-generated code, not malicious intent."
+      },
+      {
+        "ngram": "CALL PUSH",
+        "shap_contribution": 0.009155,
+        "assessment": "Generic call and argument-passing sequence with very low frequency. Non-specific."
+      },
+      {
+        "ngram": "XOR CALL",
+        "shap_contribution": 0.009066,
+        "assessment": "Frequency is about 0. XOR before a call commonly zeroes a register for an argument, though it could also relate to mixing operations. Insufficient to infer mining."
+      },
+      {
+        "ngram": "POP RET",
+        "shap_contribution": 0.008522,
+        "assessment": "Standard function return sequence. Common in all binaries and not indicative of mining."
+      },
+      {
+        "ngram": "MOV ROL",
+        "shap_contribution": 0.008156,
+        "assessment": "Rotate operations are characteristic of hashing and cipher primitives, which can include mining algorithms. They also occur in benign crypto, checksum, and PRNG code. This is the most mining-relevant signal, but it is weak at a frequency of 0.000082."
+      },
+      {
+        "ngram": "CALL CMP",
+        "shap_contribution": -0.007866,
+        "assessment": "The only benign-leaning feature and the most frequent n-gram listed. It suggests ordinary return-value checking and conditional logic, partially offsetting the malware signals."
+      },
+      {
+        "ngram": "POP ADD",
+        "shap_contribution": 0.007721,
+        "assessment": "Generic stack and arithmetic sequence with very low frequency. Non-specific."
+      },
+      {
+        "ngram": "POP LEA",
+        "shap_contribution": 0.007492,
+        "assessment": "Typical address computation after restoring registers. Non-specific."
+      },
+      {
+        "ngram": "PUSH SUB",
+        "shap_contribution": 0.007086,
+        "assessment": "Typical function prologue and stack frame allocation. Reflects compiler patterns, not behavior."
+      },
+      {
+        "ngram": "SUB CALL",
+        "shap_contribution": 0.00708,
+        "assessment": "Stack frame setup followed by a call. Common and non-specific."
+      },
+      {
+        "ngram": "ADD ROL",
+        "shap_contribution": 0.006829,
+        "assessment": "A rotate following arithmetic is consistent with hash-round or cipher-style mixing. It is weak because the frequency is very low and the pattern is not unique to mining."
+      },
+      {
+        "ngram": "POP CALL",
+        "shap_contribution": 0.006629,
+        "assessment": "Generic control-flow sequence with very low frequency. Non-specific."
+      },
+      {
+        "ngram": "CALL ADD",
+        "shap_contribution": 0.006592,
+        "assessment": "Common post-call stack cleanup. Not indicative of mining."
+      },
+      {
+        "ngram": "CALL XOR",
+        "shap_contribution": 0.006557,
+        "assessment": "XOR after a call may reflect register zeroing or data mixing. Very low frequency and ambiguous."
+      },
+      {
+        "ngram": "TEST JS",
+        "shap_contribution": 0.00626,
+        "assessment": "Frequency is about 0. A sign-flag test and branch is generic conditional logic and does not support cryptojacking on its own."
+      },
+      {
+        "ngram": "MOV POP",
+        "shap_contribution": 0.005606,
+        "assessment": "Generic register movement and stack restoration. Non-specific."
+      }
+    ],
+    "confidence_score": 0.45,
+    "key_indicators": [
+      "Model probability of 0.635 is only modestly above the malware threshold",
+      "19 of 20 top n-grams lean toward cryptojacking, but each contribution is small (about +0.006 to +0.016)",
+      "Most features are generic stack, prologue, and epilogue idioms with no mining specificity",
+      "MOV ROL and ADD ROL suggest rotate-based mixing seen in hash and cipher routines, but their frequencies are very low",
+      "Several top features (CMOVZ MOV, XOR CALL, TEST JS) have a frequency of about 0, suggesting model artifacts",
+      "CALL CMP provides a benign-leaning counter-signal of -0.007866",
+      "No function names, API calls, or behavioral evidence are present to confirm mining"
+    ],
+    "recommended_action": "Treat as suspicious but unconfirmed. Perform deeper analysis before a verdict: inspect the functions containing the ROL-based sequences for hash or cipher round structure, check for known mining algorithm constants, and look for stratum or pool-connection strings and network behavior. Also check for high CPU usage and persistence mechanisms, and run the sample in a sandbox. If no mining indicators are found, downgrade to benign."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

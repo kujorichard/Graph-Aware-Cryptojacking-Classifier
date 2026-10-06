@@ -1,0 +1,216 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_c0e6a1f370bceb25",
+  "status": "success",
+  "source_sha256": "f72bf2b86a29c206508fba403f36ed3c5620264ba57013e9f94aa728f5a6fa36",
+  "input_sha256": "e894fae5630c29032cd52cc6e2ec34655fa54e3bdc02d367ae253fc304dabe4c",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "0260d9d84771b3c55dc3e6ecae78c94007f6d61e6198e43b80b500879aec9e35.exe",
+      "source_name": "0260d9d84771b3c55dc3e6ecae78c94007f6d61e6198e43b80b500879aec9e35.exe.json",
+      "source_path": "ml/dataset/cryptojacking/0260d9d84771b3c55dc3e6ecae78c94007f6d61e6198e43b80b500879aec9e35.exe.json",
+      "split": "test",
+      "batch_number": 8,
+      "row_index_in_batch": 44,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "0260d9d84771b3c55dc3e6ecae78c94007f6d61e6198e43b80b500879aec9e35.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:03:20.982905+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:03:20.982940+00:00",
+      "error": null,
+      "request_sha256": "9650562244e1635a2c3e90dfa8ba53ed64de65f180d91b58d6d060bfbe590a85",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfkx5zhDsHv4KV2aEh3zc",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the evidence here: the RF model predicts class 1 with 0.985 probability, and all 20 top features have positive SHAP values. But the feature value semantics aren't actually established—the candidate is assuming these represent \"frequencies\" without that being confirmed, which is a mild overreach I should flag.\n\nGoing through the actual numbers, the SHAP values and feature values all check out correctly—MOV PUSH, CALL PUSH, PUSH CALL, POP PUSH, XOR PUSH, LEA PUSH, ADD PUSH, plus the rarer ones like POP SUB and MOVZX PUSH all match what's reported, and the \"highest-frequency\" ranking holds up since nothing unlisted is higher than ADD PUSH. The claim about absence pushing the score toward malware is plausible but again relies on unestablished semantics, and the statement about SHAP values reflecting learned compiler associations is unsupported speculation.\n\nSeveral of the other explanations lean on unwarranted adjacency assumptions—CALL RET as a \"thin wrapper,\" POP XOR as \"register restore followed by XOR,\" XOR PUSH assuming register zeroing—these all treat the n-grams as literally adjacent instructions when that's not guaranteed by the model's graph-aware features. Other interpretations like MOV LEAVE as an epilogue or SUB PUSH as stack frame setup are reasonably hedged. The final malware classification at 0.985 probability and the claim that cumulative SHAP weight across the top-20 features supports the suspicion both seem consistent with the underlying data.\n\nChecking SHAP faithfulness overall: the directions and magnitudes cited are accurate, though the candidate doesn't address which class the explanation targets, and it treats SHAP values as frequencies despite that conflicting with how feature values are actually defined. The claim about \"disproportionately high\" SHAP values for rare n-grams is a bit of a stretch since all the values cluster closely together (roughly 0.008–0.016), making \"large\" relative rather than absolute—still, I'd call the explanation faithful on direction and magnitude, with the frequency framing being a minor limitation rather than a true discrepancy.\n\nFor scoring: technical accuracy lands around 3 given the frequency overreach and adjacency assumptions; coherence is solid at 4 since the explanation is clear despite slight tension between \"inconclusive\" and \"suspicious\" framing; relevance 4; actionable 4, since it suggests concrete sandboxing and static analysis steps but doesn't mention benign alternatives like legitimate crypto-related computation. I'm noting key reference pointers to the explanation and evidence-assessment entries for the opcode sequences (CALL/RET, XOR/PUSH, CMOVZ/MOV, POP/SUB) along with the exact quoted frequency figures from the explanation text.\n\nI'm pulling together the supporting quotes: the note that the absence of high-frequency pairs itself pushes the score toward malware, the observation that a call immediately followed by a return suggests thin wrapper or thunk functions, the idiom of XOR-zeroing followed by a push, and the caveat that large SHAP values likely reflect learned compiler/packer style associations rather than demonstrable mining behavior. I'll keep this to around four or five supporting claims.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_c0e6a1f370bceb25\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, SHAP range, top-feature values and the absence of function context are reported correctly. However, it treats feature values as 'frequency' despite the artifact disclaiming that, and it asserts adjacency, such as a call 'immediately followed by a return', which the n-gram evidence does not establish.\",\"coherence\":\"The explanation is well organized and consistent: suspicion from the RF score, generic n-grams, missing context, then an inconclusive finding that matches the low-confidence tier and the sandbox and static recommendations. The per-n-gram assessments are somewhat repetitive.\",\"cybersecurity_relevance\":\"It ties the top n-grams to a mining-kernel signature, missing function context, and the limits of what can be inferred. It does not explicitly name benign alternatives, though it mentions compiler and packer style.\",\"actionable_utility\":\"The recommendations are concrete and proportionate and are phrased as checks, not observed behavior: sandbox CPU and pool/stratum traffic, static search for hash loops, wallet addresses or pool URLs, and mapping the high-SHAP n-grams to functions. They are not strictly prioritized and do not name specific benign look-alikes.\"},\"unsupported_claims\":[{\"quote\":\"The highest-frequency ones (MOV PUSH 0.0764\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states the feature values are not established as raw counts or frequencies, yet the candidate treats them as frequencies and draws conclusions about code density from them.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"so their absence is itself pushing the score toward malware\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/12 and /evidence/top_features/16\",\"reason\":\"This interprets a value of 0.0 as the absence of the n-gram, but the value semantics are unconfirmed.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A call immediately followed by a return suggests thin wrapper or thunk functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/occurrences and /evidence/function_context (both empty)\",\"reason\":\"Adjacency and the existence of wrapper or thunk functions are inferred without extraction or context evidence. Graph-aware n-grams need not be adjacent instructions.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"XOR zeroing followed by a push is a common idiom.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/15/assessment\",\"evidence_reference\":\"/evidence/top_features/15\",\"reason\":\"Nothing shows that the XOR is a self-XOR zeroing or that the instructions are adjacent. This is assumed from the mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Their large SHAP values likely reflect the model's learned association with specific compiler or packer styles rather than demonstrable mining behavior.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions (null)\",\"reason\":\"The cause of the SHAP values is speculative. No evidence supports a compiler or packer style, and the SHAP values of the rare n-grams are comparable to those of the frequent ones. The claim is hedged with 'likely'.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP signs are positive toward the assumed class 1, the +0.0079 to +0.0164 range is correct, and SUB PUSH is correctly named the strongest. Individual SHAP values match the artifact within the display tolerance. The omitted-feature limit is respected by calling the evidence inconclusive. The main caveat is the 'frequency' interpretation of the feature values, which is a value-semantics issue and not a SHAP misrepresentation.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that still needs upstream verification.\",\"The feature value semantics are not established, so they should not be read as raw counts or frequencies.\",\"There are no occurrences, function context, SHAP baseline or full attributions, and the top-20 is only a subset of the features.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation accurately reports the numbers and SHAP directions and appropriately concludes the evidence is inconclusive, with sensible conditional follow-up. Its accuracy is reduced by treating feature values as frequencies and by inferring adjacency and idioms such as call-ret thunks and XOR zeroing without support.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7087,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3637,
+          "output_tokens_details": {
+            "thinking_tokens": 1964
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7087,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3637,
+        "output_tokens_details": {
+          "thinking_tokens": 1964
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_c0e6a1f370bceb25\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, SHAP range, top-feature values and the absence of function context are reported correctly. However, it treats feature values as 'frequency' despite the artifact disclaiming that, and it asserts adjacency, such as a call 'immediately followed by a return', which the n-gram evidence does not establish.\",\"coherence\":\"The explanation is well organized and consistent: suspicion from the RF score, generic n-grams, missing context, then an inconclusive finding that matches the low-confidence tier and the sandbox and static recommendations. The per-n-gram assessments are somewhat repetitive.\",\"cybersecurity_relevance\":\"It ties the top n-grams to a mining-kernel signature, missing function context, and the limits of what can be inferred. It does not explicitly name benign alternatives, though it mentions compiler and packer style.\",\"actionable_utility\":\"The recommendations are concrete and proportionate and are phrased as checks, not observed behavior: sandbox CPU and pool/stratum traffic, static search for hash loops, wallet addresses or pool URLs, and mapping the high-SHAP n-grams to functions. They are not strictly prioritized and do not name specific benign look-alikes.\"},\"unsupported_claims\":[{\"quote\":\"The highest-frequency ones (MOV PUSH 0.0764\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states the feature values are not established as raw counts or frequencies, yet the candidate treats them as frequencies and draws conclusions about code density from them.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"so their absence is itself pushing the score toward malware\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features/12 and /evidence/top_features/16\",\"reason\":\"This interprets a value of 0.0 as the absence of the n-gram, but the value semantics are unconfirmed.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A call immediately followed by a return suggests thin wrapper or thunk functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/occurrences and /evidence/function_context (both empty)\",\"reason\":\"Adjacency and the existence of wrapper or thunk functions are inferred without extraction or context evidence. Graph-aware n-grams need not be adjacent instructions.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"XOR zeroing followed by a push is a common idiom.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/15/assessment\",\"evidence_reference\":\"/evidence/top_features/15\",\"reason\":\"Nothing shows that the XOR is a self-XOR zeroing or that the instructions are adjacent. This is assumed from the mnemonics alone.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Their large SHAP values likely reflect the model's learned association with specific compiler or packer styles rather than demonstrable mining behavior.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions (null)\",\"reason\":\"The cause of the SHAP values is speculative. No evidence supports a compiler or packer style, and the SHAP values of the rare n-grams are comparable to those of the frequent ones. The claim is hedged with 'likely'.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP signs are positive toward the assumed class 1, the +0.0079 to +0.0164 range is correct, and SUB PUSH is correctly named the strongest. Individual SHAP values match the artifact within the display tolerance. The omitted-feature limit is respected by calling the evidence inconclusive. The main caveat is the 'frequency' interpretation of the feature values, which is a value-semantics issue and not a SHAP misrepresentation.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that still needs upstream verification.\",\"The feature value semantics are not established, so they should not be read as raw counts or frequencies.\",\"There are no occurrences, function context, SHAP baseline or full attributions, and the top-20 is only a subset of the features.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation accurately reports the numbers and SHAP directions and appropriately concludes the evidence is inconclusive, with sensible conditional follow-up. Its accuracy is reduced by treating feature values as frequencies and by inferring adjacency and idioms such as call-ret thunks and XOR zeroing without support.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_c0e6a1f370bceb25",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The probability, SHAP range, top-feature values and the absence of function context are reported correctly. However, it treats feature values as 'frequency' despite the artifact disclaiming that, and it asserts adjacency, such as a call 'immediately followed by a return', which the n-gram evidence does not establish.",
+      "coherence": "The explanation is well organized and consistent: suspicion from the RF score, generic n-grams, missing context, then an inconclusive finding that matches the low-confidence tier and the sandbox and static recommendations. The per-n-gram assessments are somewhat repetitive.",
+      "cybersecurity_relevance": "It ties the top n-grams to a mining-kernel signature, missing function context, and the limits of what can be inferred. It does not explicitly name benign alternatives, though it mentions compiler and packer style.",
+      "actionable_utility": "The recommendations are concrete and proportionate and are phrased as checks, not observed behavior: sandbox CPU and pool/stratum traffic, static search for hash loops, wallet addresses or pool URLs, and mapping the high-SHAP n-grams to functions. They are not strictly prioritized and do not name specific benign look-alikes."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "The highest-frequency ones (MOV PUSH 0.0764",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact states the feature values are not established as raw counts or frequencies, yet the candidate treats them as frequencies and draws conclusions about code density from them.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "so their absence is itself pushing the score toward malware",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features/12 and /evidence/top_features/16",
+        "reason": "This interprets a value of 0.0 as the absence of the n-gram, but the value semantics are unconfirmed.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "A call immediately followed by a return suggests thin wrapper or thunk functions.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "/evidence/occurrences and /evidence/function_context (both empty)",
+        "reason": "Adjacency and the existence of wrapper or thunk functions are inferred without extraction or context evidence. Graph-aware n-grams need not be adjacent instructions.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "XOR zeroing followed by a push is a common idiom.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/15/assessment",
+        "evidence_reference": "/evidence/top_features/15",
+        "reason": "Nothing shows that the XOR is a self-XOR zeroing or that the instructions are adjacent. This is assumed from the mnemonics alone.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Their large SHAP values likely reflect the model's learned association with specific compiler or packer styles rather than demonstrable mining behavior.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/full_attributions (null)",
+        "reason": "The cause of the SHAP values is speculative. No evidence supports a compiler or packer style, and the SHAP values of the rare n-grams are comparable to those of the frequent ones. The claim is hedged with 'likely'.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP signs are positive toward the assumed class 1, the +0.0079 to +0.0164 range is correct, and SUB PUSH is correctly named the strongest. Individual SHAP values match the artifact within the display tolerance. The omitted-feature limit is respected by calling the evidence inconclusive. The main caveat is the 'frequency' interpretation of the feature values, which is a value-semantics issue and not a SHAP misrepresentation.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that still needs upstream verification.",
+      "The feature value semantics are not established, so they should not be read as raw counts or frequencies.",
+      "There are no occurrences, function context, SHAP baseline or full attributions, and the top-20 is only a subset of the features.",
+      "The RF probability is not behavioral proof of cryptojacking."
+    ],
+    "summary": "The explanation accurately reports the numbers and SHAP directions and appropriately concludes the evidence is inconclusive, with sensible conditional follow-up. Its accuracy is reduced by treating feature values as frequencies and by inferring adjacency and idioms such as call-ret thunks and XOR zeroing without support."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "The highest-frequency ones (MOV PUSH 0.0764",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact states the feature values are not established as raw counts or frequencies, yet the candidate treats them as frequencies and draws conclusions about code density from them.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "so their absence is itself pushing the score toward malware",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features/12 and /evidence/top_features/16",
+      "reason": "This interprets a value of 0.0 as the absence of the n-gram, but the value semantics are unconfirmed.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "A call immediately followed by a return suggests thin wrapper or thunk functions.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "/evidence/occurrences and /evidence/function_context (both empty)",
+      "reason": "Adjacency and the existence of wrapper or thunk functions are inferred without extraction or context evidence. Graph-aware n-grams need not be adjacent instructions.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "XOR zeroing followed by a push is a common idiom.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/15/assessment",
+      "evidence_reference": "/evidence/top_features/15",
+      "reason": "Nothing shows that the XOR is a self-XOR zeroing or that the instructions are adjacent. This is assumed from the mnemonics alone.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Their large SHAP values likely reflect the model's learned association with specific compiler or packer styles rather than demonstrable mining behavior.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/full_attributions (null)",
+      "reason": "The cause of the SHAP values is speculative. No evidence supports a compiler or packer style, and the SHAP values of the rare n-grams are comparable to those of the frequent ones. The claim is hedged with 'likely'.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "0260d9d84771b3c55dc3e6ecae78c94007f6d61e6198e43b80b500879aec9e35.exe_analysis.json"
+}

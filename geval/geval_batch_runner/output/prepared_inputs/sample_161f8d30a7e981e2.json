@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_161f8d30a7e981e2",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.94,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "SUB SBB",
+        "value": 0.0009257544879801571,
+        "shap_value": 0.010849005832434463
+      },
+      {
+        "ngram": "CDQ MOV",
+        "value": 0.00037030180101282895,
+        "shap_value": 0.010563248231074846
+      },
+      {
+        "ngram": "ADD ROR",
+        "value": 0.0014812072040513158,
+        "shap_value": 0.008968200718763952
+      },
+      {
+        "ngram": "MOVZX PUSH",
+        "value": 0.0018515089759603143,
+        "shap_value": 0.007851445003411546
+      },
+      {
+        "ngram": "MOVZX ROL",
+        "value": 0.0007406036020256579,
+        "shap_value": 0.007133822291359481
+      },
+      {
+        "ngram": "SBB INC",
+        "value": 0.00018515090050641447,
+        "shap_value": 0.006973269554361706
+      },
+      {
+        "ngram": "MOV ROL",
+        "value": 0.0011109054321423173,
+        "shap_value": 0.006946922846211203
+      },
+      {
+        "ngram": "XOR PUSH",
+        "value": 0.00037030180101282895,
+        "shap_value": 0.006915730700528799
+      },
+      {
+        "ngram": "SUB PUSH",
+        "value": 0.00018515090050641447,
+        "shap_value": 0.0066375618960306994
+      },
+      {
+        "ngram": "ADD OR",
+        "value": 0.00037030180101282895,
+        "shap_value": 0.006464031911403919
+      },
+      {
+        "ngram": "CALL PUSH",
+        "value": 0.0005554527160711586,
+        "shap_value": 0.006357585812378436
+      },
+      {
+        "ngram": "ADD POP",
+        "value": 0.0007406036020256579,
+        "shap_value": 0.006073341360243916
+      },
+      {
+        "ngram": "LEA CALL",
+        "value": 0.0,
+        "shap_value": 0.0059580109670462475
+      },
+      {
+        "ngram": "SUB ADC",
+        "value": 0.0011109054321423173,
+        "shap_value": 0.005799373958139579
+      },
+      {
+        "ngram": "XOR CALL",
+        "value": 0.0,
+        "shap_value": 0.005632707865163419
+      },
+      {
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.00557105760365891
+      },
+      {
+        "ngram": "MOV SHRD",
+        "value": 0.0007406036020256579,
+        "shap_value": 0.005508922021485565
+      },
+      {
+        "ngram": "ROL ROR",
+        "value": 0.0009257544879801571,
+        "shap_value": 0.005456434957447828
+      },
+      {
+        "ngram": "DEC PUSH",
+        "value": 0.00037030180101282895,
+        "shap_value": 0.005382035756484683
+      },
+      {
+        "ngram": "ROL AND",
+        "value": 0.00037030180101282895,
+        "shap_value": 0.005351323640370636
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest assigned a 0.94 malware probability, and all 20 top n-grams have positive SHAP values (about +0.0054 to +0.0108) pushing toward cryptojacking. The evidence is weaker than that suggests. Several n-grams are consistent with hash or cipher-style computation: rotate-heavy sequences (ADD ROR, MOVZX ROL, MOV ROL, ROL ROR, ROL AND), carry-propagating arithmetic (SUB SBB, SBB INC, SUB ADC) and a double-precision shift (MOV SHRD). These patterns appear in cryptographic and big-integer code, and cryptominers use them heavily. They also appear in legitimate crypto libraries, compression, and checksums, and none of them is specific to mining. The remaining n-grams (MOVZX PUSH, XOR PUSH, SUB PUSH, CALL PUSH, ADD POP, DEC PUSH, ADD OR, CDQ MOV) are generic compiler output for stack handling and calling conventions, and say little about intent. LEA CALL, XOR CALL and CMOVZ MOV have a frequency of 0.000, so they are not meaningfully present in this binary's counts, and their SHAP contributions probably reflect model artifacts. No function names, API calls, strings, or network indicators were provided, so I cannot link any pattern to mining behavior such as stratum communication or a mining loop. All observed frequencies are very low (at most 0.001852), and each individual SHAP value is small. The model's high probability comes from many small additive contributions rather than a few strong signals. The evidence supports suspicion of cryptographic or arithmetic-intensive code but does not establish cryptojacking.",
+    "evidence_analysis": [
+      {
+        "ngram": "SUB SBB",
+        "shap_contribution": 0.010849,
+        "assessment": "Top contributor. Subtract-with-borrow chains are typical of multi-precision arithmetic used in crypto and hashing. Suggestive but not specific to mining."
+      },
+      {
+        "ngram": "CDQ MOV",
+        "shap_contribution": 0.010563,
+        "assessment": "Sign-extension followed by a move is common in ordinary 32-bit integer code. Its high SHAP value likely reflects a learned correlation rather than a mining behavior."
+      },
+      {
+        "ngram": "ADD ROR",
+        "shap_contribution": 0.008968,
+        "assessment": "Add followed by rotate-right is characteristic of hash and cipher rounds, so it mildly supports compute-heavy hashing."
+      },
+      {
+        "ngram": "MOVZX PUSH",
+        "shap_contribution": 0.007851,
+        "assessment": "Zero-extended byte load followed by a push is generic argument-preparation code. Weak indicator."
+      },
+      {
+        "ngram": "MOVZX ROL",
+        "shap_contribution": 0.007134,
+        "assessment": "Byte extraction followed by rotation is consistent with byte-oriented hashing or cipher routines."
+      },
+      {
+        "ngram": "SBB INC",
+        "shap_contribution": 0.006973,
+        "assessment": "Carry and borrow handling with an increment is consistent with big-integer arithmetic. Not mining-specific."
+      },
+      {
+        "ngram": "MOV ROL",
+        "shap_contribution": 0.006947,
+        "assessment": "Load followed by rotate is consistent with hash-function bit mixing."
+      },
+      {
+        "ngram": "XOR PUSH",
+        "shap_contribution": 0.006916,
+        "assessment": "Often a register-zeroing idiom before a push. Mostly generic, with limited diagnostic value."
+      },
+      {
+        "ngram": "SUB PUSH",
+        "shap_contribution": 0.006638,
+        "assessment": "Stack and frame manipulation is common compiler output and weakly informative."
+      },
+      {
+        "ngram": "ADD OR",
+        "shap_contribution": 0.006464,
+        "assessment": "Arithmetic followed by bitwise combination can occur in bit-mixing code but is also generic."
+      },
+      {
+        "ngram": "CALL PUSH",
+        "shap_contribution": 0.006358,
+        "assessment": "Call-site and argument-passing pattern with no mining-specific meaning."
+      },
+      {
+        "ngram": "ADD POP",
+        "shap_contribution": 0.006073,
+        "assessment": "Stack cleanup or epilogue pattern, generic and uninformative on its own."
+      },
+      {
+        "ngram": "LEA CALL",
+        "shap_contribution": 0.005958,
+        "assessment": "Frequency is 0.000, so there is no observed presence. The SHAP contribution is likely a model artifact, and this is not interpretable as evidence."
+      },
+      {
+        "ngram": "SUB ADC",
+        "shap_contribution": 0.005799,
+        "assessment": "Carry-propagating arithmetic suggests multi-word math, which is consistent with crypto or big-number routines."
+      },
+      {
+        "ngram": "XOR CALL",
+        "shap_contribution": 0.005633,
+        "assessment": "Frequency is 0.000, so there is no observed presence and no behavioral conclusion can be drawn."
+      },
+      {
+        "ngram": "CMOVZ MOV",
+        "shap_contribution": 0.005571,
+        "assessment": "Frequency is 0.000. The conditional move is sometimes used in branchless crypto code, but it is not observed here."
+      },
+      {
+        "ngram": "MOV SHRD",
+        "shap_contribution": 0.005509,
+        "assessment": "Double-precision shift is used in 64-bit arithmetic emulation on 32-bit code and in crypto or big-integer math. Moderately suggestive."
+      },
+      {
+        "ngram": "ROL ROR",
+        "shap_contribution": 0.005456,
+        "assessment": "Adjacent opposing rotations are a bit-mixing signature of hash and cipher code, and one of the stronger compute-oriented signals."
+      },
+      {
+        "ngram": "DEC PUSH",
+        "shap_contribution": 0.005382,
+        "assessment": "Generic loop-counter and stack code. Weak indicator."
+      },
+      {
+        "ngram": "ROL AND",
+        "shap_contribution": 0.005351,
+        "assessment": "Rotate followed by masking is consistent with bit-manipulation routines in hashing, but not specific."
+      }
+    ],
+    "confidence_score": 0.5,
+    "key_indicators": [
+      "Model probability of 0.94 built from many small positive SHAP contributions, with no dominant signal",
+      "Rotate-heavy n-grams (ADD ROR, MOVZX ROL, MOV ROL, ROL ROR, ROL AND) consistent with hash or cipher rounds",
+      "Carry and borrow chains (SUB SBB, SBB INC, SUB ADC) and MOV SHRD consistent with multi-precision arithmetic",
+      "Several n-grams are generic stack or call idioms with little diagnostic value",
+      "LEA CALL, XOR CALL and CMOVZ MOV have frequency 0.000, so they are likely model artifacts",
+      "No function names, APIs, strings or network evidence provided to confirm mining behavior"
+    ],
+    "recommended_action": "Treat as suspicious but unconfirmed. Perform static analysis to look for a hashing loop (rotate and add/xor rounds), and check for embedded mining-pool strings, wallet addresses, and network communication. Run the sample in a sandbox and monitor sustained CPU usage and outbound connections. Compare the rotate and carry-chain code against known crypto library routines to rule out a legitimate crypto, compression, or checksum implementation. Escalate to high-confidence only if mining-specific artifacts are found."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

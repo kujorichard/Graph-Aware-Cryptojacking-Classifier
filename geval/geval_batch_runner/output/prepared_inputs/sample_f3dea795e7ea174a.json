@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_f3dea795e7ea174a",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.61,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "PXOR MOVAPS",
+        "value": 7.431757694575936e-06,
+        "shap_value": 0.013424821167046467
+      },
+      {
+        "ngram": "CALL RET",
+        "value": 0.0008249251404777169,
+        "shap_value": 0.011600658111589947
+      },
+      {
+        "ngram": "POP XOR",
+        "value": 0.0005524273146875203,
+        "shap_value": 0.011071478178320588
+      },
+      {
+        "ngram": "ADD PUSH",
+        "value": 0.01295603159815073,
+        "shap_value": 0.010084049257374031
+      },
+      {
+        "ngram": "SUB PUSH",
+        "value": 0.010924683883786201,
+        "shap_value": 0.009761178942855215
+      },
+      {
+        "ngram": "POP SUB",
+        "value": 0.00037406515912152827,
+        "shap_value": 0.009383893449052536
+      },
+      {
+        "ngram": "CALL PUSH",
+        "value": 0.029897961765527725,
+        "shap_value": 0.00900576491465239
+      },
+      {
+        "ngram": "CDQ MOV",
+        "value": 0.00021056647528894246,
+        "shap_value": 0.007905286911176894
+      },
+      {
+        "ngram": "PUSH CALL",
+        "value": 0.04195970669388771,
+        "shap_value": 0.007667658208502763
+      },
+      {
+        "ngram": "LEA PUSH",
+        "value": 0.01665952429175377,
+        "shap_value": 0.007617652727907456
+      },
+      {
+        "ngram": "POP PUSH",
+        "value": 0.005482160020619631,
+        "shap_value": 0.006856676873408228
+      },
+      {
+        "ngram": "ADD FLD",
+        "value": 4.95450512971729e-06,
+        "shap_value": 0.006588747825857081
+      },
+      {
+        "ngram": "DEC PUSH",
+        "value": 6.936307181604207e-05,
+        "shap_value": 0.006509516691717822
+      },
+      {
+        "ngram": "XOR ADC",
+        "value": 0.00012633988808374852,
+        "shap_value": 0.006110396185724568
+      },
+      {
+        "ngram": "LEA MOVSD.REP",
+        "value": 0.000274975027423352,
+        "shap_value": 0.0060569330307130844
+      },
+      {
+        "ngram": "PUSH RET",
+        "value": 2.4772525648586452e-05,
+        "shap_value": 0.0060232679029500425
+      },
+      {
+        "ngram": "MOV LEAVE",
+        "value": 2.4772525648586452e-05,
+        "shap_value": 0.006020055214830617
+      },
+      {
+        "ngram": "SBB INC",
+        "value": 9.413559746462852e-05,
+        "shap_value": 0.006016183379223217
+      },
+      {
+        "ngram": "POP CMP",
+        "value": 0.0011147636687383056,
+        "shap_value": 0.005964119410583314
+      },
+      {
+        "ngram": "POP LEA",
+        "value": 0.00012633988808374852,
+        "shap_value": 0.0058130436035320875
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest assigns a probability of 0.61 to malware, which is only modestly above the decision boundary. All 20 top n-grams push toward cryptojacking, but the individual SHAP contributions are small and evenly spread, from +0.0134 down to +0.0058, with no single dominant feature. The highest-ranked n-gram, PXOR MOVAPS (+0.013425), is very rare (frequency 0.000007). It is the kind of SIMD register-zeroing and aligned-move pairing that could appear in vectorized hashing or compute loops, but it also appears in ordinary compiler-generated code such as memory initialization and runtime routines. Most of the other top features are generic control-flow and stack-management sequences: CALL RET, ADD PUSH, SUB PUSH, CALL PUSH, PUSH CALL, LEA PUSH, POP PUSH, POP XOR, POP SUB, POP CMP, POP LEA, DEC PUSH, PUSH RET and MOV LEAVE. These reflect function prologues, epilogues, argument passing and calling-convention behavior. They are common in nearly all compiled Windows binaries and are not specific to mining. Some features point to arithmetic or bit manipulation, namely XOR ADC, SBB INC, CDQ MOV and ADD FLD, which could resemble multi-precision or hash-style arithmetic. However, their frequencies are extremely low (0.000005 to 0.000211) and no function-level context is provided to tie them to a mining loop. LEA MOVSD.REP (0.000275) suggests block memory copying, which is not mining-specific. The evidence does not contain any rotate/shift-heavy round-function patterns, dense XOR/ADD/ROL sequences, or other strong hashing signatures. Overall, the signal looks like a diffuse accumulation of weak, generic code-structure features. The evidence does not support a high-confidence cryptojacking call, but it does not clearly exonerate the binary either, so the result is inconclusive.",
+    "evidence_analysis": [
+      {
+        "ngram": "PXOR MOVAPS",
+        "shap_contribution": 0.013425,
+        "assessment": "Rare SSE zeroing and aligned-move pair. It could indicate vectorized compute or hashing setup, but it is also common in compiler-generated buffer initialization. Top feature but weakly specific."
+      },
+      {
+        "ngram": "CALL RET",
+        "shap_contribution": 0.011601,
+        "assessment": "Call immediately followed by return, suggesting thin wrapper or thunk functions. Generic structural pattern, not mining-specific."
+      },
+      {
+        "ngram": "POP XOR",
+        "shap_contribution": 0.011071,
+        "assessment": "Register restore followed by XOR, typically a zeroing idiom or epilogue-adjacent logic. Mildly suggestive of arithmetic mixing but mostly generic."
+      },
+      {
+        "ngram": "ADD PUSH",
+        "shap_contribution": 0.010084,
+        "assessment": "Stack or pointer adjustment followed by argument push. Standard calling-convention code."
+      },
+      {
+        "ngram": "SUB PUSH",
+        "shap_contribution": 0.009761,
+        "assessment": "Stack-frame or arithmetic adjustment followed by a push. Ubiquitous compiler output."
+      },
+      {
+        "ngram": "POP SUB",
+        "shap_contribution": 0.009384,
+        "assessment": "Epilogue or register-restore sequence followed by subtraction. Generic and low specificity."
+      },
+      {
+        "ngram": "CALL PUSH",
+        "shap_contribution": 0.009006,
+        "assessment": "High-frequency call and argument-setup pattern reflecting normal function-call density."
+      },
+      {
+        "ngram": "CDQ MOV",
+        "shap_contribution": 0.007905,
+        "assessment": "Sign extension before a move, typical of 32-bit signed arithmetic or division setup. Weak signal of numeric processing."
+      },
+      {
+        "ngram": "PUSH CALL",
+        "shap_contribution": 0.007668,
+        "assessment": "Most frequent call-setup pattern (frequency 0.041960). Reflects general API or function-call-heavy code, not mining."
+      },
+      {
+        "ngram": "LEA PUSH",
+        "shap_contribution": 0.007618,
+        "assessment": "Address computation followed by a push of an argument or buffer pointer. Generic."
+      },
+      {
+        "ngram": "POP PUSH",
+        "shap_contribution": 0.006857,
+        "assessment": "Register restore and re-save, common in prologue/epilogue sequences."
+      },
+      {
+        "ngram": "ADD FLD",
+        "shap_contribution": 0.006589,
+        "assessment": "Very rare integer-to-x87 floating-point transition. Could indicate numeric code, but with no context it is inconclusive."
+      },
+      {
+        "ngram": "DEC PUSH",
+        "shap_contribution": 0.00651,
+        "assessment": "Counter decrement followed by a push, possibly loop or argument handling. Low specificity."
+      },
+      {
+        "ngram": "XOR ADC",
+        "shap_contribution": 0.00611,
+        "assessment": "XOR then add-with-carry, which can resemble multi-precision or hash-style arithmetic. Very low frequency, so weak support."
+      },
+      {
+        "ngram": "LEA MOVSD.REP",
+        "shap_contribution": 0.006057,
+        "assessment": "Address setup before a repeated string move, indicating block memory copy or initialization. Not mining-specific."
+      },
+      {
+        "ngram": "PUSH RET",
+        "shap_contribution": 0.006023,
+        "assessment": "Rare push-then-return sequence. It can indicate indirect control transfer or a compiler idiom, but it is unconfirmed without context."
+      },
+      {
+        "ngram": "MOV LEAVE",
+        "shap_contribution": 0.00602,
+        "assessment": "Standard function epilogue pattern. Benign structural feature."
+      },
+      {
+        "ngram": "SBB INC",
+        "shap_contribution": 0.006016,
+        "assessment": "Subtract-with-borrow then increment, a carry-flag arithmetic idiom. Weak indication of low-level arithmetic."
+      },
+      {
+        "ngram": "POP CMP",
+        "shap_contribution": 0.005964,
+        "assessment": "Register restore followed by a comparison, typical control-flow code."
+      },
+      {
+        "ngram": "POP LEA",
+        "shap_contribution": 0.005813,
+        "assessment": "Register restore followed by address computation. Generic compiler output."
+      }
+    ],
+    "confidence_score": 0.4,
+    "key_indicators": [
+      "Model probability of 0.61 is only marginally above the decision threshold",
+      "All 20 top features push toward malware, but each contributes weakly (+0.0058 to +0.0134)",
+      "Most features are generic stack, call and epilogue patterns (CALL RET, PUSH CALL, POP XOR, MOV LEAVE)",
+      "Rare SIMD pair PXOR MOVAPS is the top feature but is non-specific",
+      "Carry-flag and arithmetic idioms (XOR ADC, SBB INC, CDQ MOV) occur at extremely low frequency",
+      "No dense rotate/shift/XOR hashing signature or function-level context is present"
+    ],
+    "recommended_action": "Treat as inconclusive and escalate for deeper analysis rather than blocking outright. Verify the file's signature, origin and path, since the name wbiosrvc.dll resembles a system component and a legitimate or tampered copy must be distinguished by hash comparison against a known-good version. Then inspect the functions containing PXOR MOVAPS, XOR ADC and SBB INC for hashing or large-integer arithmetic loops. Check for sustained CPU usage and mining-pool network connections in a sandbox, and compare against a baseline of the legitimate binary before making a final determination."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

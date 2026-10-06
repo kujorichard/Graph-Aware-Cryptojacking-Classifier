@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_0d62dcc0ecb72a6b",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.865,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "LEA JC",
+        "value": 0.0001294498360948637,
+        "shap_value": 0.02115677586868842
+      },
+      {
+        "ngram": "XOR CALL",
+        "value": 0.0,
+        "shap_value": 0.014134379460554607
+      },
+      {
+        "ngram": "ADC SUB",
+        "value": 0.0007766990456730127,
+        "shap_value": 0.01404606759945465
+      },
+      {
+        "ngram": "ROL ADD",
+        "value": 0.00038834952283650637,
+        "shap_value": 0.01395437889127664
+      },
+      {
+        "ngram": "XOR ADC",
+        "value": 0.0006472491659224033,
+        "shap_value": 0.013623432400746219
+      },
+      {
+        "ngram": "MOV ROL",
+        "value": 0.0006472491659224033,
+        "shap_value": 0.013504711504521132
+      },
+      {
+        "ngram": "BSWAP XOR",
+        "value": 0.0001294498360948637,
+        "shap_value": 0.013469949477593208
+      },
+      {
+        "ngram": "ROL MOV",
+        "value": 0.001682847854681313,
+        "shap_value": 0.011833662928996246
+      },
+      {
+        "ngram": "MOV JZ",
+        "value": 0.0,
+        "shap_value": 0.011500325466437743
+      },
+      {
+        "ngram": "MOV ADC",
+        "value": 0.0010355986887589097,
+        "shap_value": 0.010527460046944648
+      },
+      {
+        "ngram": "CMP ROL",
+        "value": 0.0010355986887589097,
+        "shap_value": 0.009446045858937201
+      },
+      {
+        "ngram": "DEC JZ",
+        "value": 0.0001294498360948637,
+        "shap_value": 0.009141720682838939
+      },
+      {
+        "ngram": "XOR ROL",
+        "value": 0.0020711973775178194,
+        "shap_value": 0.009002677701139052
+      },
+      {
+        "ngram": "CMOVC XOR",
+        "value": 0.0007766990456730127,
+        "shap_value": 0.008887116974737555
+      },
+      {
+        "ngram": "ADD ROL",
+        "value": 0.0005177993443794549,
+        "shap_value": 0.008499315095623374
+      },
+      {
+        "ngram": "TEST JS",
+        "value": 0.00038834952283650637,
+        "shap_value": 0.00831585614364017
+      },
+      {
+        "ngram": "AND DEC",
+        "value": 0.0002588996721897274,
+        "shap_value": 0.00799470753798958
+      },
+      {
+        "ngram": "ADD OR",
+        "value": 0.0006472491659224033,
+        "shap_value": 0.007616821958389604
+      },
+      {
+        "ngram": "ADD POP",
+        "value": 0.003106796182692051,
+        "shap_value": 0.007434278032846102
+      },
+      {
+        "ngram": "CMP SHR",
+        "value": 0.020970873534679413,
+        "shap_value": 0.006528669794484763
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest assigns 0.865 probability of malware, and all 20 top n-grams push toward cryptojacking. However, the evidence is limited. No function names, API calls, or per-function locations are provided, and the individual SHAP values are modest (+0.0065 to +0.0212) and spread across many features rather than concentrated in a few. The strongest theme is a cluster of rotate, XOR, add-with-carry and byte-swap sequences: ROL ADD (+0.013954), XOR ADC (+0.013623), MOV ROL (+0.013505), BSWAP XOR (+0.013470), ROL MOV (+0.011834), MOV ADC (+0.010527), CMP ROL (+0.009446), XOR ROL (+0.009003), ADD ROL (+0.008499) and ADC SUB (+0.014046). This is the kind of bit-mixing and multi-word arithmetic found in hash and cipher routines, which is consistent with proof-of-work mining code. The same instructions also appear in legitimate cryptographic libraries, checksums, and compression code, so they do not uniquely identify mining. The observed frequencies are very low (mostly 0.0001 to 0.002), which means these patterns occupy a small fraction of the code. Two n-grams, XOR CALL and MOV JZ, have a frequency of 0.000000 yet still carry SHAP weight (+0.014134 and +0.011500). Their effect is likely a model artifact of absence rather than direct evidence of behavior. Control-flow and utility n-grams such as LEA JC, DEC JZ, TEST JS, AND DEC, ADD OR, ADD POP and CMP SHR are generic and give no specific indication of mining. The pattern is suggestive and consistent with the model's malware call, but without function-level context or other corroborating indicators it is inconclusive rather than strong proof of cryptojacking.",
+    "evidence_analysis": [
+      {
+        "ngram": "LEA JC",
+        "shap_contribution": 0.021157,
+        "assessment": "The largest single contributor, but it is a generic address-calculation and carry-branch sequence. It is rare (0.000129) and not specific to mining. It could reflect bounds or carry checks in big-number or hash arithmetic."
+      },
+      {
+        "ngram": "XOR CALL",
+        "shap_contribution": 0.014134,
+        "assessment": "Frequency is effectively zero, so the contribution likely reflects the n-gram's absence or a model artifact. It gives no direct behavioral evidence."
+      },
+      {
+        "ngram": "ADC SUB",
+        "shap_contribution": 0.014046,
+        "assessment": "Add-with-carry followed by subtract suggests multi-precision arithmetic, which is used in some cryptographic or hashing routines. It is weak evidence on its own."
+      },
+      {
+        "ngram": "ROL ADD",
+        "shap_contribution": 0.013954,
+        "assessment": "Rotate-then-add is a typical ARX-style round operation in hash functions. It is consistent with proof-of-work hashing but not exclusive to it."
+      },
+      {
+        "ngram": "XOR ADC",
+        "shap_contribution": 0.013623,
+        "assessment": "XOR combined with carry arithmetic is consistent with mixing steps in hash or cipher code. It is moderately suggestive."
+      },
+      {
+        "ngram": "MOV ROL",
+        "shap_contribution": 0.013505,
+        "assessment": "Loading a value and then rotating it is common in hash round functions. It is part of the rotate-heavy cluster."
+      },
+      {
+        "ngram": "BSWAP XOR",
+        "shap_contribution": 0.01347,
+        "assessment": "Byte swapping followed by XOR is typical of endianness handling in hash and cipher implementations such as SHA-family code. It is rare here (0.000129) but fairly characteristic of crypto code."
+      },
+      {
+        "ngram": "ROL MOV",
+        "shap_contribution": 0.011834,
+        "assessment": "One of the more frequent rotate sequences (0.001683). It reinforces the presence of rotation-based mixing code."
+      },
+      {
+        "ngram": "MOV JZ",
+        "shap_contribution": 0.0115,
+        "assessment": "Frequency is zero, and this is a generic control-flow pattern. It is not informative as direct evidence."
+      },
+      {
+        "ngram": "MOV ADC",
+        "shap_contribution": 0.010527,
+        "assessment": "A carry-propagating arithmetic pattern consistent with multi-word math. It is mildly supportive of crypto-style computation."
+      },
+      {
+        "ngram": "CMP ROL",
+        "shap_contribution": 0.009446,
+        "assessment": "A compare followed by a rotate may indicate rotation within a conditional or loop in a hash routine. It is a weak indicator."
+      },
+      {
+        "ngram": "DEC JZ",
+        "shap_contribution": 0.009142,
+        "assessment": "A generic loop-counter pattern that suggests tight iterative loops, but it is not specific to mining."
+      },
+      {
+        "ngram": "XOR ROL",
+        "shap_contribution": 0.009003,
+        "assessment": "The most frequent of the XOR/rotate mixing n-grams (0.002071). It is consistent with hash or cipher round logic."
+      },
+      {
+        "ngram": "CMOVC XOR",
+        "shap_contribution": 0.008887,
+        "assessment": "A conditional move on carry followed by XOR suggests branchless arithmetic. This style is common in optimized crypto code, but it is also found in other optimized code."
+      },
+      {
+        "ngram": "ADD ROL",
+        "shap_contribution": 0.008499,
+        "assessment": "Add followed by rotate is another ARX-style pairing that supports a hash-like computation theme."
+      },
+      {
+        "ngram": "TEST JS",
+        "shap_contribution": 0.008316,
+        "assessment": "A generic sign-check branch with no cryptographic specificity. It contributes only weakly."
+      },
+      {
+        "ngram": "AND DEC",
+        "shap_contribution": 0.007995,
+        "assessment": "A masking and counter decrement pattern often seen in loops. It is non-specific."
+      },
+      {
+        "ngram": "ADD OR",
+        "shap_contribution": 0.007617,
+        "assessment": "A generic arithmetic and bitwise combination that provides little discriminating information."
+      },
+      {
+        "ngram": "ADD POP",
+        "shap_contribution": 0.007434,
+        "assessment": "A common function-epilogue pattern, relatively frequent (0.003107). It is not indicative of mining."
+      },
+      {
+        "ngram": "CMP SHR",
+        "shap_contribution": 0.006529,
+        "assessment": "The most frequent n-gram (0.020971) but with the lowest SHAP value. It is a generic compare and shift pattern that is likely common across ordinary code."
+      }
+    ],
+    "confidence_score": 0.55,
+    "key_indicators": [
+      "Cluster of rotate/XOR/ADC/BSWAP n-grams consistent with hash or cipher round functions",
+      "All 20 top SHAP features push toward the cryptojacking class",
+      "Random Forest malware probability of 0.865",
+      "Individual SHAP contributions are modest and diffuse, with no dominant mining-specific signature",
+      "Several contributing n-grams have near-zero frequency and are generic control-flow sequences",
+      "No function-level context or API evidence available to corroborate mining behavior"
+    ],
+    "recommended_action": "Treat as suspicious and perform further analysis before concluding. Identify the functions containing the rotate/XOR/ADC/BSWAP sequences and check whether they implement a known hash algorithm used in mining. Review the binary's strings, imports, and network behavior for mining-pool or stratum indicators and for high sustained CPU use. Run it in a sandbox to observe runtime behavior, and compare it with known legitimate crypto-library code to rule out false positives."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

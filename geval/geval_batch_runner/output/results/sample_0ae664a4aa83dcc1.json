@@ -1,0 +1,295 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_0ae664a4aa83dcc1",
+  "status": "success",
+  "source_sha256": "b38d10883be136cf37336390b26b23958130ac28b27cda8ec9d1132b3896ca60",
+  "input_sha256": "3f71c5d80152bff4d40055ccb5fbacb11d20ff9ee509b5868ee13be6047acced",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "5493b99616ac9ef5b8391505dc0e07544a74efd78f113331e6d536db39fb985c.elf",
+      "source_name": "5493b99616ac9ef5b8391505dc0e07544a74efd78f113331e6d536db39fb985c.elf.json",
+      "source_path": "ml/dataset/cryptojacking/5493b99616ac9ef5b8391505dc0e07544a74efd78f113331e6d536db39fb985c.elf.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 32,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "5493b99616ac9ef5b8391505dc0e07544a74efd78f113331e6d536db39fb985c.elf",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:39:14.171355+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:39:14.171382+00:00",
+      "error": {
+        "type": "ValueError",
+        "message": "Finding must quote candidate text/value verbatim"
+      },
+      "request_sha256": "12acefd0b32700eb3ebd51a8f1e6e25143f3f5fee3a7326ce2ec048e0a90c13d",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfkzpj7HNpWzCSnHQZdn5",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_0ae664a4aa83dcc1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 1.0, the 20 positive SHAP values, ranges and frequencies match the evidence, and the text admits no function context. But it overreaches on several n-grams: \\\"typical of cryptographic mixing rounds\\\", \\\"characteristic of ARX-style hash and cipher rounds\\\", \\\"a code layout typical of this malware family\\\", and \\\"may be the loop counter for tight round-based computation\\\". These are presented as supported interpretations without extraction context.\",\"coherence\":\"The explanation is well organized: it moves from the RF result to n-gram groups, then to caveats, per-feature assessments and actions. There is some repetition between the summary and per-feature sections. The tier \\\"high-confidence\\\" and the 0.85 score sit alongside the admission that the evidence is \\\"circumstantial\\\", a mild tension.\",\"cybersecurity_relevance\":\"It ties sample n-grams to hashing/SIMD/bit-manipulation hypotheses relevant to mining and investigates mining-specific artifacts. It notes that the generic stack/control-flow n-grams are not mining-specific. It does not discuss benign alternatives such as legitimate crypto, compression, or media/SIMD libraries.\",\"actionable_utility\":\"Recommendations are concrete and feasible: disassemble, find the function context, check for constants and scratchpads, sandbox for pool/stratum traffic and CPU use, extract IOCs, and quarantine pending confirmation. They are mostly conditional and proportionate. The opening \\\"Treat as likely cryptojacking malware\\\" is stronger than the evidence supports, and benign-alternative checks are missing.\"},\"unsupported_claims\":[{\"quote\":\"which is typical of cryptographic mixing rounds\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (ROL ADD, MOV ROL, MOV SHRD, SHRD BT); function_context is empty\",\"reason\":\"Rotate/shift mnemonic bigrams alone do not establish crypto mixing rounds; no function context or adjacency is supplied.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Rotate followed by addition is characteristic of ARX-style hash and cipher rounds and is a strong crypto-computation indicator.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/top_features/6; occurrences and function_context empty\",\"reason\":\"Asserts a strong crypto-computation indicator from a single low-frequency n-gram without context. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"it suggests a code layout typical of this malware family\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2; no family information supplied\",\"reason\":\"Invents a malware family association not present in the evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"their rarity and high SHAP values suggest they mark unusual prologue/epilogue or dispatch structures that the model associates with the malware class\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; function_context empty\",\"reason\":\"Infers prologue/epilogue or dispatch structures without any function-level or control-flow evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"it may be the loop counter for tight round-based computation\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/top_features/19 (DEC JZ)\",\"reason\":\"Loop and round-based computation are inferred from a mnemonic pair alone. The hedge is minimal but the claim is still unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Unusual push-then-return sequence that can indicate a stub or indirect control transfer.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/top_features/5 (PUSH RET)\",\"reason\":\"Infers indirect control transfer from a mnemonic pair with no adjacency or control-flow evidence.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The sign, ranking, rounded magnitudes (+0.0087 to +0.0204) and frequencies match the evidence. It correctly states that all 20 listed features push toward class 1. \\\"No n-gram pushes toward benign\\\" is limited to the top features, and the text acknowledges missing function context, but it does not explicitly say that omitted features and the baseline are unknown. Interpretive overreach is scored under technical accuracy, not faithfulness.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Only the top 20 n-grams are provided; omitted features, baseline and full attributions are null.\",\"The target class is a configured assumption that needs upstream verification.\",\"The feature value semantics are not established, so \\\"frequency\\\" is an assumption.\",\"There are no occurrences or function context, so adjacency, control flow and function purpose cannot be verified.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"Numbers and SHAP direction are accurately reported, and the follow-up actions are practical. Several crypto and malware-family interpretations of generic mnemonic bigrams overreach, benign alternatives are not discussed, and the high-confidence framing is stronger than the evidence supports.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7223,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 1934,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7223,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1934,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_0ae664a4aa83dcc1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability 1.0, the 20 positive SHAP values, ranges and frequencies match the evidence, and the text admits no function context. But it overreaches on several n-grams: \\\"typical of cryptographic mixing rounds\\\", \\\"characteristic of ARX-style hash and cipher rounds\\\", \\\"a code layout typical of this malware family\\\", and \\\"may be the loop counter for tight round-based computation\\\". These are presented as supported interpretations without extraction context.\",\"coherence\":\"The explanation is well organized: it moves from the RF result to n-gram groups, then to caveats, per-feature assessments and actions. There is some repetition between the summary and per-feature sections. The tier \\\"high-confidence\\\" and the 0.85 score sit alongside the admission that the evidence is \\\"circumstantial\\\", a mild tension.\",\"cybersecurity_relevance\":\"It ties sample n-grams to hashing/SIMD/bit-manipulation hypotheses relevant to mining and investigates mining-specific artifacts. It notes that the generic stack/control-flow n-grams are not mining-specific. It does not discuss benign alternatives such as legitimate crypto, compression, or media/SIMD libraries.\",\"actionable_utility\":\"Recommendations are concrete and feasible: disassemble, find the function context, check for constants and scratchpads, sandbox for pool/stratum traffic and CPU use, extract IOCs, and quarantine pending confirmation. They are mostly conditional and proportionate. The opening \\\"Treat as likely cryptojacking malware\\\" is stronger than the evidence supports, and benign-alternative checks are missing.\"},\"unsupported_claims\":[{\"quote\":\"which is typical of cryptographic mixing rounds\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (ROL ADD, MOV ROL, MOV SHRD, SHRD BT); function_context is empty\",\"reason\":\"Rotate/shift mnemonic bigrams alone do not establish crypto mixing rounds; no function context or adjacency is supplied.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Rotate followed by addition is characteristic of ARX-style hash and cipher rounds and is a strong crypto-computation indicator.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/top_features/6; occurrences and function_context empty\",\"reason\":\"Asserts a strong crypto-computation indicator from a single low-frequency n-gram without context. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"it suggests a code layout typical of this malware family\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"/evidence/top_features/2; no family information supplied\",\"reason\":\"Invents a malware family association not present in the evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"their rarity and high SHAP values suggest they mark unusual prologue/epilogue or dispatch structures that the model associates with the malware class\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; function_context empty\",\"reason\":\"Infers prologue/epilogue or dispatch structures without any function-level or control-flow evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"it may be the loop counter for tight round-based computation\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"/evidence/top_features/19 (DEC JZ)\",\"reason\":\"Loop and round-based computation are inferred from a mnemonic pair alone. The hedge is minimal but the claim is still unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Unusual push-then-return sequence that can indicate a stub or indirect control transfer.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"/evidence/top_features/5 (PUSH RET)\",\"reason\":\"Infers indirect control transfer from a mnemonic pair with no adjacency or control-flow evidence.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"The sign, ranking, rounded magnitudes (+0.0087 to +0.0204) and frequencies match the evidence. It correctly states that all 20 listed features push toward class 1. \\\"No n-gram pushes toward benign\\\" is limited to the top features, and the text acknowledges missing function context, but it does not explicitly say that omitted features and the baseline are unknown. Interpretive overreach is scored under technical accuracy, not faithfulness.\",\"discrepancies\":[]},\"evidence_limitations\":[\"Only the top 20 n-grams are provided; omitted features, baseline and full attributions are null.\",\"The target class is a configured assumption that needs upstream verification.\",\"The feature value semantics are not established, so \\\"frequency\\\" is an assumption.\",\"There are no occurrences or function context, so adjacency, control flow and function purpose cannot be verified.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"Numbers and SHAP direction are accurately reported, and the follow-up actions are practical. Several crypto and malware-family interpretations of generic mnemonic bigrams overreach, benign alternatives are not discussed, and the high-confidence framing is stronger than the evidence supports.\"}"
+    },
+    {
+      "number": 2,
+      "timestamp": "2026-10-06T12:39:33.950516+00:00",
+      "error": null,
+      "request_sha256": "cb7ea91956f0ae299246d57239a3bbcad538cfadb99726c3e4c0c8cc40ebdce2",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkzrB8kFiesRA2DJtiWx",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I need to verify the claim that all 20 top n-grams show positive SHAP contributions toward cryptojacking classification, checking the exact wording against the actual feature values and confidence level before confirming it's accurate.\n\nThe second sentence claiming \"no n-gram pushes toward benign\" overreaches since it only covers the top-20 subset, not the full feature set, so I'll flag it as unsupported certainty — similarly, the \"toward cryptojacking\" framing assumes class 1 maps to that label without explicit confirmation. I'm also noting that treating raw feature values as \"frequencies\" or percentages (like \"very common 5.8%\") isn't established by the evidence, so that's another point to flag.\n\nBeyond that, several interpretive leaps need flagging: calling ROL/ADD patterns \"characteristic of ARX-style hash and cipher rounds\" or a \"strong crypto-computation indicator\" overreaches since mnemonics alone can't establish specific algorithms, and claims about \"typical of this malware family,\" \"optimized mining kernels,\" or unusual prologue/epilogue structures are speculative additions not grounded in the actual evidence.\n\nI'm also noting adjacency assumptions baked into phrases like \"immediately before a rotate\" when the underlying n-grams don't require true adjacency, alongside some milder hedges that read as reasonably accurate. Finally, there's an internal tension between labeling the result \"high-confidence\" at 0.85 and simultaneously acknowledging the crypto evidence is circumstantial and unproven — that inconsistency, plus the unexplained gap between the 0.85 confidence score and the 1.0 probability, deserves a flag before I check whether the SHAP signs and magnitudes genuinely match the underlying feature correlations.\n\nI'm mapping the indices for each quoted pair to confirm they match their claimed positions, and checking that the key_indicators entry about high-frequency byte-level processing is correctly indexed at 4. The recommended_action phrase about treating this as likely cryptojacking malware seems more like a recommendation than a factual claim, so I'll note it separately rather than flag it as a faithfulness issue.\n\nNow I'm pinning down exact quotes: the ARX-style hash/cipher rounds language for the rotate-then-add pattern, the code layout contribution language for the second evidence item, the rotation-based mixing language tied to the value-load-before-rotate pattern, and the \"very common (5.8%)\" phrasing for the byte-loading frequency note, plus the push-then-return stub/control-transfer description.\n\nI'm settling on scores — technical accuracy around 3, coherence and relevance at 4, actionable guidance at 4 since the recommendations are concrete but the opening claim of \"likely cryptojacking malware\" slightly overreaches given the conditional framing elsewhere. I'm finalizing the evidence limitations and assembling everything into the single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_0ae664a4aa83dcc1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, class and SHAP values match the evidence, and the explanation concedes that the evidence is circumstantial. It still overreaches by calling ROL ADD a 'strong crypto-computation indicator', assuming adjacency, citing a 'malware family', treating feature values as percentages, and asserting that no n-gram supports benign.\",\"coherence\":\"Observations, interpretation and actions are clearly organized and the caveats are consistent. Minor tension between the 'high-confidence' tier, confidence 0.85 and 'Treat as likely cryptojacking malware' versus the stated 'circumstantial' evidence, plus some repetition between the summary and per-feature table.\",\"cybersecurity_relevance\":\"Directly ties the sample's n-grams to hashing, SIMD and big-integer patterns relevant to mining. It also says that generic stack and control-flow n-grams are not mining-specific. It does not discuss benign alternatives such as legitimate crypto, compression or media code that use the same instructions.\",\"actionable_utility\":\"Recommends disassembly, constant and scratchpad checks, sandbox network and CPU observation, IOC extraction and quarantine pending confirmation. These are concrete and mostly proportionate, and they are framed as checks to run. The opening 'Treat as likely cryptojacking malware' is stronger than the evidence supports, and benign-alternative checks are missing.\"},\"unsupported_claims\":[{\"quote\":\"No n-gram pushes toward benign.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions is null; /evidence/scope_notes[1] says omitted features and the baseline are unknown\",\"reason\":\"Only a positive top-20 subset is supplied, so it cannot establish that no omitted n-gram supports the benign class.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"is characteristic of ARX-style hash and cipher rounds and is a strong crypto-computation indicator\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/occurrences and /evidence/function_context are empty\",\"reason\":\"A mnemonic pair without function context does not establish ARX or hash code. Calling it a 'strong' indicator overstates what the evidence shows.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"its contribution suggests a code layout typical of this malware family\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"No family information appears anywhere in /evidence\",\"reason\":\"No malware-family evidence is supplied, and a SHAP value does not indicate a family code layout.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A value load immediately before a rotate supports the presence of rotation-based mixing in hashing routines.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/evidence/occurrences is empty; /rules say graph-aware n-grams need not be adjacent\",\"reason\":\"Adjacency or immediate ordering is inferred without extraction evidence, and the presence of hashing routines is asserted without context.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Very common (5.8%).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics: 'Not established by this artifact; do not treat as raw counts without upstream confirmation'\",\"reason\":\"The feature value 0.058 is presented as an instruction frequency or percentage although its semantics are unconfirmed.\",\"category\":\"other\"},{\"quote\":\"Unusual push-then-return sequence that can indicate a stub or indirect control transfer.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"No control-flow or function context is supplied\",\"reason\":\"It infers a push immediately followed by a return, and a possible stub or indirect transfer, from the mnemonic pair alone.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, rounded magnitudes and feature names match the supplied top-20 list, and all are positive for configured class 1. However, the explanation extends the top-k result to a global claim about benign-pushing features.\",\"discrepancies\":[{\"quote\":\"No n-gram pushes toward benign.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only 20 features are supplied (full_attributions is null), so an absence of benign-pushing features cannot be concluded for the full feature set.\"}]},\"evidence_limitations\":[\"Only the top-20 positive SHAP features are supplied; full attributions and the SHAP baseline are null.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are unconfirmed, so 'frequency' and percentage readings are uncertain.\",\"There are no occurrences or function context, so adjacency, control flow and algorithm identity cannot be verified.\",\"The RF probability of 1.0 is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation reports the RF output and SHAP signs and magnitudes correctly, and is well organized, relevant and has a practical investigation plan. Its quality is limited by several mnemonic-based overreaches (crypto strength, adjacency, malware family, frequency percentages) and by an overgeneralized 'No n-gram pushes toward benign' claim that makes SHAP faithfulness false.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7271,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4368,
+          "output_tokens_details": {
+            "thinking_tokens": 2414
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7271,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4368,
+        "output_tokens_details": {
+          "thinking_tokens": 2414
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_0ae664a4aa83dcc1\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, class and SHAP values match the evidence, and the explanation concedes that the evidence is circumstantial. It still overreaches by calling ROL ADD a 'strong crypto-computation indicator', assuming adjacency, citing a 'malware family', treating feature values as percentages, and asserting that no n-gram supports benign.\",\"coherence\":\"Observations, interpretation and actions are clearly organized and the caveats are consistent. Minor tension between the 'high-confidence' tier, confidence 0.85 and 'Treat as likely cryptojacking malware' versus the stated 'circumstantial' evidence, plus some repetition between the summary and per-feature table.\",\"cybersecurity_relevance\":\"Directly ties the sample's n-grams to hashing, SIMD and big-integer patterns relevant to mining. It also says that generic stack and control-flow n-grams are not mining-specific. It does not discuss benign alternatives such as legitimate crypto, compression or media code that use the same instructions.\",\"actionable_utility\":\"Recommends disassembly, constant and scratchpad checks, sandbox network and CPU observation, IOC extraction and quarantine pending confirmation. These are concrete and mostly proportionate, and they are framed as checks to run. The opening 'Treat as likely cryptojacking malware' is stronger than the evidence supports, and benign-alternative checks are missing.\"},\"unsupported_claims\":[{\"quote\":\"No n-gram pushes toward benign.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions is null; /evidence/scope_notes[1] says omitted features and the baseline are unknown\",\"reason\":\"Only a positive top-20 subset is supplied, so it cannot establish that no omitted n-gram supports the benign class.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"is characteristic of ARX-style hash and cipher rounds and is a strong crypto-computation indicator\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/occurrences and /evidence/function_context are empty\",\"reason\":\"A mnemonic pair without function context does not establish ARX or hash code. Calling it a 'strong' indicator overstates what the evidence shows.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"its contribution suggests a code layout typical of this malware family\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/2/assessment\",\"evidence_reference\":\"No family information appears anywhere in /evidence\",\"reason\":\"No malware-family evidence is supplied, and a SHAP value does not indicate a family code layout.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"A value load immediately before a rotate supports the presence of rotation-based mixing in hashing routines.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"/evidence/occurrences is empty; /rules say graph-aware n-grams need not be adjacent\",\"reason\":\"Adjacency or immediate ordering is inferred without extraction evidence, and the presence of hashing routines is asserted without context.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Very common (5.8%).\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics: 'Not established by this artifact; do not treat as raw counts without upstream confirmation'\",\"reason\":\"The feature value 0.058 is presented as an instruction frequency or percentage although its semantics are unconfirmed.\",\"category\":\"other\"},{\"quote\":\"Unusual push-then-return sequence that can indicate a stub or indirect control transfer.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/5/assessment\",\"evidence_reference\":\"No control-flow or function context is supplied\",\"reason\":\"It infers a push immediately followed by a return, and a possible stub or indirect transfer, from the mnemonic pair alone.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, rounded magnitudes and feature names match the supplied top-20 list, and all are positive for configured class 1. However, the explanation extends the top-k result to a global claim about benign-pushing features.\",\"discrepancies\":[{\"quote\":\"No n-gram pushes toward benign.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only 20 features are supplied (full_attributions is null), so an absence of benign-pushing features cannot be concluded for the full feature set.\"}]},\"evidence_limitations\":[\"Only the top-20 positive SHAP features are supplied; full attributions and the SHAP baseline are null.\",\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature value semantics are unconfirmed, so 'frequency' and percentage readings are uncertain.\",\"There are no occurrences or function context, so adjacency, control flow and algorithm identity cannot be verified.\",\"The RF probability of 1.0 is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation reports the RF output and SHAP signs and magnitudes correctly, and is well organized, relevant and has a practical investigation plan. Its quality is limited by several mnemonic-based overreaches (crypto strength, adjacency, malware family, frequency percentages) and by an overgeneralized 'No n-gram pushes toward benign' claim that makes SHAP faithfulness false.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_0ae664a4aa83dcc1",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, class and SHAP values match the evidence, and the explanation concedes that the evidence is circumstantial. It still overreaches by calling ROL ADD a 'strong crypto-computation indicator', assuming adjacency, citing a 'malware family', treating feature values as percentages, and asserting that no n-gram supports benign.",
+      "coherence": "Observations, interpretation and actions are clearly organized and the caveats are consistent. Minor tension between the 'high-confidence' tier, confidence 0.85 and 'Treat as likely cryptojacking malware' versus the stated 'circumstantial' evidence, plus some repetition between the summary and per-feature table.",
+      "cybersecurity_relevance": "Directly ties the sample's n-grams to hashing, SIMD and big-integer patterns relevant to mining. It also says that generic stack and control-flow n-grams are not mining-specific. It does not discuss benign alternatives such as legitimate crypto, compression or media code that use the same instructions.",
+      "actionable_utility": "Recommends disassembly, constant and scratchpad checks, sandbox network and CPU observation, IOC extraction and quarantine pending confirmation. These are concrete and mostly proportionate, and they are framed as checks to run. The opening 'Treat as likely cryptojacking malware' is stronger than the evidence supports, and benign-alternative checks are missing."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "No n-gram pushes toward benign.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/full_attributions is null; /evidence/scope_notes[1] says omitted features and the baseline are unknown",
+        "reason": "Only a positive top-20 subset is supplied, so it cannot establish that no omitted n-gram supports the benign class.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "is characteristic of ARX-style hash and cipher rounds and is a strong crypto-computation indicator",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+        "evidence_reference": "/evidence/occurrences and /evidence/function_context are empty",
+        "reason": "A mnemonic pair without function context does not establish ARX or hash code. Calling it a 'strong' indicator overstates what the evidence shows.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "its contribution suggests a code layout typical of this malware family",
+        "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+        "evidence_reference": "No family information appears anywhere in /evidence",
+        "reason": "No malware-family evidence is supplied, and a SHAP value does not indicate a family code layout.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "A value load immediately before a rotate supports the presence of rotation-based mixing in hashing routines.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+        "evidence_reference": "/evidence/occurrences is empty; /rules say graph-aware n-grams need not be adjacent",
+        "reason": "Adjacency or immediate ordering is inferred without extraction evidence, and the presence of hashing routines is asserted without context.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "Very common (5.8%).",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics: 'Not established by this artifact; do not treat as raw counts without upstream confirmation'",
+        "reason": "The feature value 0.058 is presented as an instruction frequency or percentage although its semantics are unconfirmed.",
+        "category": "other"
+      },
+      {
+        "quote": "Unusual push-then-return sequence that can indicate a stub or indirect control transfer.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+        "evidence_reference": "No control-flow or function context is supplied",
+        "reason": "It infers a push immediately followed by a return, and a possible stub or indirect transfer, from the mnemonic pair alone.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "Signs, rounded magnitudes and feature names match the supplied top-20 list, and all are positive for configured class 1. However, the explanation extends the top-k result to a global claim about benign-pushing features.",
+      "discrepancies": [
+        {
+          "quote": "No n-gram pushes toward benign.",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "Only 20 features are supplied (full_attributions is null), so an absence of benign-pushing features cannot be concluded for the full feature set."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "Only the top-20 positive SHAP features are supplied; full attributions and the SHAP baseline are null.",
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "Feature value semantics are unconfirmed, so 'frequency' and percentage readings are uncertain.",
+      "There are no occurrences or function context, so adjacency, control flow and algorithm identity cannot be verified.",
+      "The RF probability of 1.0 is not behavioral proof of cryptojacking."
+    ],
+    "summary": "The explanation reports the RF output and SHAP signs and magnitudes correctly, and is well organized, relevant and has a practical investigation plan. Its quality is limited by several mnemonic-based overreaches (crypto strength, adjacency, malware family, frequency percentages) and by an overgeneralized 'No n-gram pushes toward benign' claim that makes SHAP faithfulness false."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "No n-gram pushes toward benign.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/full_attributions is null; /evidence/scope_notes[1] says omitted features and the baseline are unknown",
+      "reason": "Only a positive top-20 subset is supplied, so it cannot establish that no omitted n-gram supports the benign class.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "is characteristic of ARX-style hash and cipher rounds and is a strong crypto-computation indicator",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+      "evidence_reference": "/evidence/occurrences and /evidence/function_context are empty",
+      "reason": "A mnemonic pair without function context does not establish ARX or hash code. Calling it a 'strong' indicator overstates what the evidence shows.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "its contribution suggests a code layout typical of this malware family",
+      "candidate_path": "/candidate_analysis/evidence_analysis/2/assessment",
+      "evidence_reference": "No family information appears anywhere in /evidence",
+      "reason": "No malware-family evidence is supplied, and a SHAP value does not indicate a family code layout.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "A value load immediately before a rotate supports the presence of rotation-based mixing in hashing routines.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+      "evidence_reference": "/evidence/occurrences is empty; /rules say graph-aware n-grams need not be adjacent",
+      "reason": "Adjacency or immediate ordering is inferred without extraction evidence, and the presence of hashing routines is asserted without context.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "Very common (5.8%).",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics: 'Not established by this artifact; do not treat as raw counts without upstream confirmation'",
+      "reason": "The feature value 0.058 is presented as an instruction frequency or percentage although its semantics are unconfirmed.",
+      "category": "other"
+    },
+    {
+      "quote": "Unusual push-then-return sequence that can indicate a stub or indirect control transfer.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/5/assessment",
+      "evidence_reference": "No control-flow or function context is supplied",
+      "reason": "It infers a push immediately followed by a return, and a possible stub or indirect transfer, from the mnemonic pair alone.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "5493b99616ac9ef5b8391505dc0e07544a74efd78f113331e6d536db39fb985c.elf_analysis.json"
+}

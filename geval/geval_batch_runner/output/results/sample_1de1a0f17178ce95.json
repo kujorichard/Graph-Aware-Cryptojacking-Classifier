@@ -1,0 +1,180 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_1de1a0f17178ce95",
+  "status": "success",
+  "source_sha256": "233c9c13d6246f5715f8e194cbcfcf1425b1b0e34479672ccd0b10d369d57e47",
+  "input_sha256": "eb9d654602a8b83884cf9708877732b2461833afa5e336e16aaaf8b836843f20",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "744f058dc39e0968e145f4c12f66459bc61f6b89b40e9d67a3c6630ceb4e0c93.exe",
+      "source_name": "744f058dc39e0968e145f4c12f66459bc61f6b89b40e9d67a3c6630ceb4e0c93.exe.json",
+      "source_path": "ml/dataset/cryptojacking/744f058dc39e0968e145f4c12f66459bc61f6b89b40e9d67a3c6630ceb4e0c93.exe.json",
+      "split": "test",
+      "batch_number": 0,
+      "row_index_in_batch": 19,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "744f058dc39e0968e145f4c12f66459bc61f6b89b40e9d67a3c6630ceb4e0c93.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:54:07.241292+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:54:07.241328+00:00",
+      "error": null,
+      "request_sha256": "15d3010171b38224ef8caae64426cdbf99c88171eaf09011e357be3424e48328",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm1xYpznFELFTsdWZVX1",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the RF model's confidence score of 0.9999 and summing up the SHAP values across the top 20 n-grams, which are all positive and adding up incrementally as I tally them.\n\nI'm also scrutinizing some weaker claims in the candidate explanation—like characterizing all n-gram frequencies as \"0.000000\" without the value semantics being clearly established, which feels like a mild mischaracterization. I'm also noting some generic interpretations of instruction patterns (PUSH SUB, MOV LEA, ADD POP) as stack frame setup or epilogue code, which seem like plausible but somewhat unsupported assertions rather than confirmed facts.\n\nI'm flagging a more concrete inaccuracy too: the candidate claims \"the conditional-move patterns are the top-ranked features,\" but only CMOVZ MOV actually sits at the top rank—CMP CMOVZ is rank 16 and XOR CMOVNZ is rank 12—so that statement overstates things. There's also an odd tension between the reported zero feature value and a positive SHAP contribution that the candidate seems to gloss over.\n\nThe candidate also treats class 1 as cryptojacking/malware without flagging that this is an assumption needing upstream verification, and doesn't acknowledge the top-k limitation—that omitted features could support a benign reading. On the confidence side, there's a slight inconsistency between calling the tier \"low-confidence\" while also describing the classifier's confidence as high, though this gets explained away, and the recommended action to treat the sample as suspicious seems proportionate overall.\n\nScoring-wise I'm landing around 4 for technical accuracy given minor overclaims like \"relative frequency\" and \"top-ranked,\" similar for coherence given some repetition between the explanation and evidence sections, and 4 for relevance since it does mention benign software and compiler toolchains but skips the top-k caveat. For unsupported claims, I'm noting the odd detail that every n-gram reportedly has the same relative frequency of 0.000, which seems worth flagging as suspicious.\n\nI'm also marking the claim that conditional-move patterns are the \"top-ranked\" features as a SHAP misrepresentation given their actual ranks of 1, 16, and 12, and deciding to skip the weaker claims about stack/frame setup and register zeroing since those are more generic instruction semantics than clear overstatements. On SHAP faithfulness, directions and magnitudes line up correctly, but the \"top-ranked\" framing is a real discrepancy, so I'm leaning toward marking faithfulness as false overall.\n\nI'm noting the relevant evidence paths (explanation and key_indicators/5) before writing out the final JSON as a single line.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_1de1a0f17178ce95\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability (0.9999), the 20 positive SHAP values, the +0.0063 to +0.0169 range and the ~+0.18 sum all match the evidence. Claims about mnemonics are mostly hedged and generic. Minor errors: the 0.0 values are called 'relative frequency' although the semantics are unestablished, and the CMOV n-grams are called 'the top-ranked features' although only CMOVZ MOV is rank 1.\",\"coherence\":\"The explanation, per-n-gram assessments, low-confidence tier, 'inconclusive' verdict and action plan are consistent. There is some repetition between the explanation, evidence_analysis and key_indicators, and mild tension between 'treat as suspicious' and the low-confidence tier.\",\"cybersecurity_relevance\":\"It ties the evidence to cryptojacking questions (hash/bit-mixing, mining indicators), notes that the n-grams are common in benign code, and says nothing here is diagnostic. It does not mention that omitted features, the SHAP baseline and the target-class mapping are unverified.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: locate the XOR SHL/XOR XOR/CMOV patterns, check for packing, run a sandbox, and capture network telemetry for stratum/pool traffic, wallets and CPU use. The indicators are framed as things to look for, not as observed. It is not explicitly prioritized and does not say how to resolve the unclear feature-value semantics.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a reported relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The evidence gives value 0.0 but states the semantics are not established and must not be treated as counts. Calling it a 'relative frequency' asserts an unestablished meaning.\",\"category\":\"other\"},{\"quote\":\"The conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) are the top-ranked features\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Only CMOVZ MOV is rank 1. XOR CMOVNZ is rank 12 and CMP CMOVZ is rank 16, so the group is not 'the top-ranked features'.\",\"category\":\"shap_misrepresentation\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs and magnitudes (all positive for assumed target class 1, range, ~+0.18 sum, per-feature values) are reported accurately. One statement misdescribes the ranking of the CMOV features.\",\"discrepancies\":[{\"quote\":\"The conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) are the top-ranked features\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only CMOVZ MOV is top-ranked. CMP CMOVZ is 16th and XOR CMOVNZ is 12th in the supplied list.\"}]},\"evidence_limitations\":[\"Target class 1 is a configured assumption that needs upstream verification, and the candidate treats it as malware/cryptojacking without that caveat.\",\"Feature value semantics are unestablished, and all values are 0.0.\",\"No occurrences, function context, SHAP baseline or full attributions are supplied. Only the top-20 subset is available, so omitted features cannot be assessed.\",\"Adjacency and control flow cannot be inferred from the n-grams.\"],\"summary\":\"The explanation is mostly accurate and appropriately cautious. It correctly says the evidence alone cannot show cryptojacking, and it proposes feasible verification steps. Minor flaws are the 'relative frequency' wording and the incorrect claim that the CMOV n-grams are the top-ranked features.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6772,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3523,
+          "output_tokens_details": {
+            "thinking_tokens": 2117
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6772,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3523,
+        "output_tokens_details": {
+          "thinking_tokens": 2117
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_1de1a0f17178ce95\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability (0.9999), the 20 positive SHAP values, the +0.0063 to +0.0169 range and the ~+0.18 sum all match the evidence. Claims about mnemonics are mostly hedged and generic. Minor errors: the 0.0 values are called 'relative frequency' although the semantics are unestablished, and the CMOV n-grams are called 'the top-ranked features' although only CMOVZ MOV is rank 1.\",\"coherence\":\"The explanation, per-n-gram assessments, low-confidence tier, 'inconclusive' verdict and action plan are consistent. There is some repetition between the explanation, evidence_analysis and key_indicators, and mild tension between 'treat as suspicious' and the low-confidence tier.\",\"cybersecurity_relevance\":\"It ties the evidence to cryptojacking questions (hash/bit-mixing, mining indicators), notes that the n-grams are common in benign code, and says nothing here is diagnostic. It does not mention that omitted features, the SHAP baseline and the target-class mapping are unverified.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: locate the XOR SHL/XOR XOR/CMOV patterns, check for packing, run a sandbox, and capture network telemetry for stratum/pool traffic, wallets and CPU use. The indicators are framed as things to look for, not as observed. It is not explicitly prioritized and does not say how to resolve the unclear feature-value semantics.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a reported relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The evidence gives value 0.0 but states the semantics are not established and must not be treated as counts. Calling it a 'relative frequency' asserts an unestablished meaning.\",\"category\":\"other\"},{\"quote\":\"The conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) are the top-ranked features\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Only CMOVZ MOV is rank 1. XOR CMOVNZ is rank 12 and CMP CMOVZ is rank 16, so the group is not 'the top-ranked features'.\",\"category\":\"shap_misrepresentation\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs and magnitudes (all positive for assumed target class 1, range, ~+0.18 sum, per-feature values) are reported accurately. One statement misdescribes the ranking of the CMOV features.\",\"discrepancies\":[{\"quote\":\"The conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) are the top-ranked features\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Only CMOVZ MOV is top-ranked. CMP CMOVZ is 16th and XOR CMOVNZ is 12th in the supplied list.\"}]},\"evidence_limitations\":[\"Target class 1 is a configured assumption that needs upstream verification, and the candidate treats it as malware/cryptojacking without that caveat.\",\"Feature value semantics are unestablished, and all values are 0.0.\",\"No occurrences, function context, SHAP baseline or full attributions are supplied. Only the top-20 subset is available, so omitted features cannot be assessed.\",\"Adjacency and control flow cannot be inferred from the n-grams.\"],\"summary\":\"The explanation is mostly accurate and appropriately cautious. It correctly says the evidence alone cannot show cryptojacking, and it proposes feasible verification steps. Minor flaws are the 'relative frequency' wording and the incorrect claim that the CMOV n-grams are the top-ranked features.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_1de1a0f17178ce95",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability (0.9999), the 20 positive SHAP values, the +0.0063 to +0.0169 range and the ~+0.18 sum all match the evidence. Claims about mnemonics are mostly hedged and generic. Minor errors: the 0.0 values are called 'relative frequency' although the semantics are unestablished, and the CMOV n-grams are called 'the top-ranked features' although only CMOVZ MOV is rank 1.",
+      "coherence": "The explanation, per-n-gram assessments, low-confidence tier, 'inconclusive' verdict and action plan are consistent. There is some repetition between the explanation, evidence_analysis and key_indicators, and mild tension between 'treat as suspicious' and the low-confidence tier.",
+      "cybersecurity_relevance": "It ties the evidence to cryptojacking questions (hash/bit-mixing, mining indicators), notes that the n-grams are common in benign code, and says nothing here is diagnostic. It does not mention that omitted features, the SHAP baseline and the target-class mapping are unverified.",
+      "actionable_utility": "The follow-up is concrete and proportionate: locate the XOR SHL/XOR XOR/CMOV patterns, check for packing, run a sandbox, and capture network telemetry for stratum/pool traffic, wallets and CPU use. The indicators are framed as things to look for, not as observed. It is not explicitly prioritized and does not say how to resolve the unclear feature-value semantics."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Every n-gram has a reported relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The evidence gives value 0.0 but states the semantics are not established and must not be treated as counts. Calling it a 'relative frequency' asserts an unestablished meaning.",
+        "category": "other"
+      },
+      {
+        "quote": "The conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) are the top-ranked features",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "Only CMOVZ MOV is rank 1. XOR CMOVNZ is rank 12 and CMP CMOVZ is rank 16, so the group is not 'the top-ranked features'.",
+        "category": "shap_misrepresentation"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "SHAP signs and magnitudes (all positive for assumed target class 1, range, ~+0.18 sum, per-feature values) are reported accurately. One statement misdescribes the ranking of the CMOV features.",
+      "discrepancies": [
+        {
+          "quote": "The conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) are the top-ranked features",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "Only CMOVZ MOV is top-ranked. CMP CMOVZ is 16th and XOR CMOVNZ is 12th in the supplied list."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "Target class 1 is a configured assumption that needs upstream verification, and the candidate treats it as malware/cryptojacking without that caveat.",
+      "Feature value semantics are unestablished, and all values are 0.0.",
+      "No occurrences, function context, SHAP baseline or full attributions are supplied. Only the top-20 subset is available, so omitted features cannot be assessed.",
+      "Adjacency and control flow cannot be inferred from the n-grams."
+    ],
+    "summary": "The explanation is mostly accurate and appropriately cautious. It correctly says the evidence alone cannot show cryptojacking, and it proposes feasible verification steps. Minor flaws are the 'relative frequency' wording and the incorrect claim that the CMOV n-grams are the top-ranked features."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Every n-gram has a reported relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The evidence gives value 0.0 but states the semantics are not established and must not be treated as counts. Calling it a 'relative frequency' asserts an unestablished meaning.",
+      "category": "other"
+    },
+    {
+      "quote": "The conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) are the top-ranked features",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "Only CMOVZ MOV is rank 1. XOR CMOVNZ is rank 12 and CMP CMOVZ is rank 16, so the group is not 'the top-ranked features'.",
+      "category": "shap_misrepresentation"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "744f058dc39e0968e145f4c12f66459bc61f6b89b40e9d67a3c6630ceb4e0c93.exe_analysis.json"
+}

@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_eeace79aef4e2799",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.925,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "PXOR MOVAPS",
+        "value": 7.040201126073953e-06,
+        "shap_value": 0.01656329741495727
+      },
+      {
+        "ngram": "PXOR MOVUPS",
+        "value": 7.744220965832938e-06,
+        "shap_value": 0.011455000727362991
+      },
+      {
+        "ngram": "ADD ROR",
+        "value": 0.000614609569311142,
+        "shap_value": 0.010971269319445537
+      },
+      {
+        "ngram": "ROL ADD",
+        "value": 0.00030343266553245485,
+        "shap_value": 0.010815363801612276
+      },
+      {
+        "ngram": "BSWAP LEA",
+        "value": 1.619246177142486e-05,
+        "shap_value": 0.008952040987004773
+      },
+      {
+        "ngram": "ADC SUB",
+        "value": 1.196834182337625e-05,
+        "shap_value": 0.008098849824036476
+      },
+      {
+        "ngram": "PAND PXOR",
+        "value": 0.00020768592366948724,
+        "shap_value": 0.008059748228437255
+      },
+      {
+        "ngram": "ADD ROL",
+        "value": 0.0005646240897476673,
+        "shap_value": 0.007748662343794434
+      },
+      {
+        "ngram": "ROL MOV",
+        "value": 0.00014010000450070947,
+        "shap_value": 0.00750051456677076
+      },
+      {
+        "ngram": "XOR ROL",
+        "value": 0.0006343221175484359,
+        "shap_value": 0.007397476493798424
+      },
+      {
+        "ngram": "SHRD XOR",
+        "value": 0.0004984462284483016,
+        "shap_value": 0.006966364447203465
+      },
+      {
+        "ngram": "ADD MOVQ",
+        "value": 1.7600503269932233e-05,
+        "shap_value": 0.006879298180387783
+      },
+      {
+        "ngram": "SHL NEG",
+        "value": 1.7600503269932233e-05,
+        "shap_value": 0.006574640910916879
+      },
+      {
+        "ngram": "ROL MOVZX",
+        "value": 1.9008542949450202e-05,
+        "shap_value": 0.006572789647693544
+      },
+      {
+        "ngram": "MOV ROL",
+        "value": 8.729848923394457e-05,
+        "shap_value": 0.006543910078484682
+      },
+      {
+        "ngram": "SHR ADC",
+        "value": 2.6048743166029453e-05,
+        "shap_value": 0.006484900758722657
+      },
+      {
+        "ngram": "PADDQ MOVDQA",
+        "value": 7.040201126073953e-06,
+        "shap_value": 0.006366418531095243
+      },
+      {
+        "ngram": "MOV ADC",
+        "value": 0.0004984462284483016,
+        "shap_value": 0.006169999131053073
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "value": 0.0011820497456938028,
+        "shap_value": 0.005992197632411741
+      },
+      {
+        "ngram": "SUB ADC",
+        "value": 9.856281394604594e-06,
+        "shap_value": 0.005932854830176463
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "high-confidence",
+    "explanation": "The Random Forest assigns a 0.925 malware probability, and all 20 top SHAP features push toward cryptojacking. No benign-leaning features appear in the evidence. The n-grams fall into two groups typical of hashing and proof-of-work code. The first group is rotate/add/xor sequences: ADD ROR (+0.010971), ROL ADD (+0.010815), ADD ROL (+0.007749), ROL MOV (+0.007501), XOR ROL (+0.007397), MOV ROL (+0.006544) and ROL MOVZX (+0.006573). These resemble the mixing rounds of ARX-style hash and cipher primitives. ADD ROR and XOR ROL are among the more frequent features (about 0.0006 each), so they recur throughout the binary rather than appearing once. The second group is SIMD and wide-integer arithmetic: PXOR MOVAPS (+0.016563, the top feature), PXOR MOVUPS (+0.011455), PAND PXOR (+0.008060), PXOR PXOR (+0.005992), PADDQ MOVDQA (+0.006366) and ADD MOVQ (+0.006879). These suggest vectorized XOR and add operations on state buffers. Multi-precision carry chains (ADC SUB, SUB ADC, SHR ADC, MOV ADC, SHRD XOR) and BSWAP LEA (byte-order conversion) also appear, consistent with big-number arithmetic and endianness handling in hashing or key-derivation routines. The evidence includes no function names, so attribution is based on the instruction patterns alone. The combination of these patterns, the model's high probability and the uniform direction of SHAP contributions make a strong case for cryptojacking. Similar instruction mixes can occur in legitimate cryptographic libraries, which limits certainty to some degree.",
+    "evidence_analysis": [
+      {
+        "ngram": "PXOR MOVAPS",
+        "shap_contribution": 0.016563,
+        "assessment": "Strongest feature. Aligned SIMD XOR and move on state blocks, typical of vectorized hash or cipher inner loops. It is rare (0.000007), so it is a distinctive marker."
+      },
+      {
+        "ngram": "PXOR MOVUPS",
+        "shap_contribution": 0.011455,
+        "assessment": "Unaligned SIMD XOR and store or load, consistent with vectorized mixing of buffers in compute-heavy hashing."
+      },
+      {
+        "ngram": "ADD ROR",
+        "shap_contribution": 0.010971,
+        "assessment": "Add followed by rotate-right is a core ARX round pattern in hash functions. It is relatively frequent (0.000615), which suggests repeated round operations."
+      },
+      {
+        "ngram": "ROL ADD",
+        "shap_contribution": 0.010815,
+        "assessment": "Rotate-left then add is another ARX round pattern common in hash and stream-cipher primitives."
+      },
+      {
+        "ngram": "BSWAP LEA",
+        "shap_contribution": 0.008952,
+        "assessment": "Byte swapping followed by address computation suggests endianness conversion of hash input or output words."
+      },
+      {
+        "ngram": "ADC SUB",
+        "shap_contribution": 0.008099,
+        "assessment": "Carry-propagating arithmetic suggests multi-precision or big-number math used in hashing or PoW."
+      },
+      {
+        "ngram": "PAND PXOR",
+        "shap_contribution": 0.00806,
+        "assessment": "SIMD AND and XOR masking and mixing, consistent with vectorized bitwise logic in hash or cipher rounds."
+      },
+      {
+        "ngram": "ADD ROL",
+        "shap_contribution": 0.007749,
+        "assessment": "Add and rotate-left again reflects ARX-style round structure, reinforcing the hashing hypothesis."
+      },
+      {
+        "ngram": "ROL MOV",
+        "shap_contribution": 0.007501,
+        "assessment": "Rotation followed by a move, consistent with rotation steps in unrolled hash rounds."
+      },
+      {
+        "ngram": "XOR ROL",
+        "shap_contribution": 0.007397,
+        "assessment": "XOR then rotate is a classic mixing step in cryptographic primitives. Its high frequency (0.000634) indicates repeated use."
+      },
+      {
+        "ngram": "SHRD XOR",
+        "shap_contribution": 0.006966,
+        "assessment": "Double-precision shift and XOR suggest wide-word bit manipulation as found in some hash and PRNG routines."
+      },
+      {
+        "ngram": "ADD MOVQ",
+        "shap_contribution": 0.006879,
+        "assessment": "Moving between general-purpose and XMM registers is consistent with mixed scalar and SIMD hash computation."
+      },
+      {
+        "ngram": "SHL NEG",
+        "shap_contribution": 0.006575,
+        "assessment": "Shift and negate are bit-manipulation and mask-generation idioms that appear in crypto and big-number code."
+      },
+      {
+        "ngram": "ROL MOVZX",
+        "shap_contribution": 0.006573,
+        "assessment": "Rotation followed by zero-extended byte extraction, consistent with table-lookup or byte-wise processing in cipher or hash code."
+      },
+      {
+        "ngram": "MOV ROL",
+        "shap_contribution": 0.006544,
+        "assessment": "Loading data and rotating it, consistent with word-oriented hash round operations."
+      },
+      {
+        "ngram": "SHR ADC",
+        "shap_contribution": 0.006485,
+        "assessment": "Shift-right feeding a carry add suggests multi-word arithmetic."
+      },
+      {
+        "ngram": "PADDQ MOVDQA",
+        "shap_contribution": 0.006366,
+        "assessment": "SIMD 64-bit adds with aligned moves, consistent with vectorized arithmetic on hash state."
+      },
+      {
+        "ngram": "MOV ADC",
+        "shap_contribution": 0.00617,
+        "assessment": "Carry-chain arithmetic at moderate frequency (0.000498), consistent with big-integer operations."
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "shap_contribution": 0.005992,
+        "assessment": "Consecutive SIMD XORs, frequent (0.001182), indicate dense vectorized XOR mixing typical of hashing kernels."
+      },
+      {
+        "ngram": "SUB ADC",
+        "shap_contribution": 0.005933,
+        "assessment": "Borrow/carry arithmetic pairing, reinforcing the multi-precision arithmetic signal."
+      }
+    ],
+    "confidence_score": 0.88,
+    "key_indicators": [
+      "Frequent rotate/add/xor (ARX) sequences: ADD ROR, ROL ADD, ADD ROL, XOR ROL",
+      "Vectorized SIMD XOR/AND patterns: PXOR MOVAPS, PXOR MOVUPS, PAND PXOR, PXOR PXOR",
+      "Multi-precision carry-chain arithmetic: ADC SUB, SUB ADC, SHR ADC, MOV ADC, SHRD XOR",
+      "Endianness handling via BSWAP LEA",
+      "All 20 top SHAP features point toward cryptojacking",
+      "Random Forest malware probability of 0.925"
+    ],
+    "recommended_action": "Treat as a likely cryptominer. Disassemble the functions containing the ARX and SIMD sequences to identify the hash algorithm (e.g., RandomX, CryptoNight or similar). Run the sample in a sandbox and look for mining-pool connections, Stratum-style traffic, persistent high CPU use and configuration strings such as wallet addresses. Extract IOCs, then block and hunt for them across the environment. Because these instruction patterns also occur in legitimate crypto libraries, confirm with behavioral or network evidence before final attribution."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

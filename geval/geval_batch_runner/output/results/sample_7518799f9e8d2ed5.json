@@ -1,0 +1,217 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_7518799f9e8d2ed5",
+  "status": "success",
+  "source_sha256": "b5de692d42f48f98ecdcc9c7d16b251c608a7fa42e3f6ec52d9890e563078e38",
+  "input_sha256": "9eefdccd58d4d1518b72b07471715dd931fa2d88a2ec7ae210329d5dd72ad27b",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "661c4da0df6414e3cf7855d47a142cc9858c1174cc992f29423e48ce420585e0.exe",
+      "source_name": "661c4da0df6414e3cf7855d47a142cc9858c1174cc992f29423e48ce420585e0.exe.json",
+      "source_path": "ml/dataset/cryptojacking/661c4da0df6414e3cf7855d47a142cc9858c1174cc992f29423e48ce420585e0.exe.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 4,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "661c4da0df6414e3cf7855d47a142cc9858c1174cc992f29423e48ce420585e0.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:47:20.868981+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:47:20.869023+00:00",
+      "error": null,
+      "request_sha256": "1b3976843ee108baf7fa8851542e685c42bf2c439daf115238224ae58b9e66e4",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm1SbbMBC8Ewg8NYWoCM",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking that all 20 listed n-grams do push toward the cryptojacking/malware class based on positive SHAP values, assuming the target class is configured correctly—seems fine with a minor caveat there. Now I'm noting that eight of the 20 n-grams actually have a frequency of zero, which raises a question about how meaningful those contributions really are.\n\nI count the zero-frequency n-grams and confirm there are exactly eight, matching the claim, and the SHAP contribution range of +0.0068 to +0.011137 also checks out numerically. However, I'm flagging that interpreting zero frequency as \"absence in the binary\" is an assumption not strictly established—feature value semantics aren't confirmed, so treating 0.0 as proof of absence is a bit of an overreach, as is the claim that missing XOR-based bigrams argues against a XOR-heavy hashing routine.\n\nI continue checking the remaining values: the low-frequency MOV LEAVE figures (0.001845, 0.003690) are correct, and MOV PUSH at 0.053506 does appear to be the most frequent pattern among the listed features, though calling it \"most frequent\" overall is an overreach since unlisted features aren't visible. I also note the candidate assumes adjacency for ADD PUSH and similar bigrams, when graph-aware n-grams don't require strict adjacency—another minor inferential leap, alongside the generic but reasonable claims about call-heavy code and prologue/epilogue patterns being ubiquitous in compiled binaries.\n\nThe SHAP values check out numerically (0.0068 matches 0.006799819), and the tier/confidence labeling (low-confidence, 0.35, probability 0.68 as moderate) seems reasonable. I notice the candidate lists all 20 n-grams as pushing toward cryptojacking without acknowledging that top-k feature lists can't rule out benign classification, nor does it mention the SHAP baseline value or prioritize its recommendations for examining imports, strings, and sandbox behavior. There's also a shaky causal claim about SHAP contributions \"coming from absence\" of certain features, which conflates correlation with causation.\n\nI'm scoring this: technical accuracy 4, coherence 4 (some repetition between the explanation and evidence sections), relevance 4, actionability 4. I should note the specific paths involved — explanation and evidence_analysis entries — and the n-gram indices referenced (XOR XOR at index 14, MOV LEAVE at 4, MOV PUSH at 6, ADD PUSH at 0, CALL CALL at 13, PUSH CALL at 18) so the feedback can point to exact locations needing revision.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_7518799f9e8d2ed5\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, n-gram values, SHAP values and the zero-valued count and range are reported correctly, and the cautious conclusion fits the evidence. A few interpretations overreach: absence is asserted despite unconfirmed feature-value semantics, adjacency is assumed, and absent XOR bigrams are said to argue against hashing.\",\"coherence\":\"The tier, confidence and recommendation agree with the low-confidence, inconclusive reading. The explanation and per-feature assessments are somewhat repetitive, and 'benign compiler output' is stated more firmly than the evidence supports.\",\"cybersecurity_relevance\":\"It ties the sample's actual n-grams to the cryptojacking question and notes the missing API, function and crypto context. It also offers generic compiled-code explanations as the benign alternative. It does not mention the unknown omitted features or the unverified SHAP target class.\",\"actionable_utility\":\"The follow-up actions are concrete and proportionate: check imports and strings, look for stratum or pool indicators, find CPU-intensive loops, sandbox CPU and network use, and compare against known miner signatures. They are framed as checks, not observed behavior. They are not prioritized and are somewhat generic.\"},\"unsupported_claims\":[{\"quote\":\"Their SHAP contributions (+0.006800 to +0.011137) come from their absence in this binary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation; occurrences: []\",\"reason\":\"A feature value of 0.0 is read as definite absence in the binary, although the value semantics are unconfirmed and no occurrence data is supplied.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"XOR XOR and XOR CALL are absent, which argues against a heavy XOR-based hashing routine.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"top_features XOR XOR value 0.0, XOR CALL value 0.0; occurrences: []; function_context: []\",\"reason\":\"Zero-valued bigram features without extraction context do not establish absence of XOR-based hashing, since other features could be omitted or encoded differently.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Stack adjustment followed by an argument push, a generic calling-convention pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"rubric rule: graph-aware n-grams need not be adjacent; no occurrences or function context supplied\",\"reason\":\"This treats the bigram as directly adjacent instructions in a calling-convention sequence without extraction evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The most frequent pattern (0.053506), standard argument preparation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"top_features lists only 20 features; full_attributions: null\",\"reason\":\"MOV PUSH is the highest-valued among the listed top-k features only. It cannot be called the most frequent pattern overall when omitted features are unknown.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Consecutive calls are absent, so there is no evidence of this pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"CALL CALL value 0.0; occurrences: []\",\"reason\":\"This assumes adjacent or consecutive calls and definite absence, which the supplied evidence does not establish.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All cited SHAP signs and magnitudes match the supplied values within display tolerance, and the explanation treats them as pushes toward class 1. It does not claim that the listed features prove behavior. It does not say that the top-k subset cannot exclude benign-supporting omitted features or that the target class is only an assumption.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature-value semantics are unconfirmed, so zero values may not mean absence.\",\"Only the top 20 features are shown; the baseline and full attributions are unavailable.\",\"There is no occurrence, function-context, API, string or import evidence.\",\"The RF probability of 0.68 is not behavioral proof.\"],\"summary\":\"This is a largely accurate, appropriately cautious low-confidence explanation with faithful SHAP reporting. Its main weaknesses are a few overreaching absence and adjacency inferences and the missing caveats on omitted features and the target-class assumption. The follow-up checks are useful but not prioritized.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6764,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3206,
+          "output_tokens_details": {
+            "thinking_tokens": 1532
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6764,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3206,
+        "output_tokens_details": {
+          "thinking_tokens": 1532
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_7518799f9e8d2ed5\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The probability, n-gram values, SHAP values and the zero-valued count and range are reported correctly, and the cautious conclusion fits the evidence. A few interpretations overreach: absence is asserted despite unconfirmed feature-value semantics, adjacency is assumed, and absent XOR bigrams are said to argue against hashing.\",\"coherence\":\"The tier, confidence and recommendation agree with the low-confidence, inconclusive reading. The explanation and per-feature assessments are somewhat repetitive, and 'benign compiler output' is stated more firmly than the evidence supports.\",\"cybersecurity_relevance\":\"It ties the sample's actual n-grams to the cryptojacking question and notes the missing API, function and crypto context. It also offers generic compiled-code explanations as the benign alternative. It does not mention the unknown omitted features or the unverified SHAP target class.\",\"actionable_utility\":\"The follow-up actions are concrete and proportionate: check imports and strings, look for stratum or pool indicators, find CPU-intensive loops, sandbox CPU and network use, and compare against known miner signatures. They are framed as checks, not observed behavior. They are not prioritized and are somewhat generic.\"},\"unsupported_claims\":[{\"quote\":\"Their SHAP contributions (+0.006800 to +0.011137) come from their absence in this binary\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation; occurrences: []\",\"reason\":\"A feature value of 0.0 is read as definite absence in the binary, although the value semantics are unconfirmed and no occurrence data is supplied.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"XOR XOR and XOR CALL are absent, which argues against a heavy XOR-based hashing routine.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"top_features XOR XOR value 0.0, XOR CALL value 0.0; occurrences: []; function_context: []\",\"reason\":\"Zero-valued bigram features without extraction context do not establish absence of XOR-based hashing, since other features could be omitted or encoded differently.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Stack adjustment followed by an argument push, a generic calling-convention pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"rubric rule: graph-aware n-grams need not be adjacent; no occurrences or function context supplied\",\"reason\":\"This treats the bigram as directly adjacent instructions in a calling-convention sequence without extraction evidence.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The most frequent pattern (0.053506), standard argument preparation.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"top_features lists only 20 features; full_attributions: null\",\"reason\":\"MOV PUSH is the highest-valued among the listed top-k features only. It cannot be called the most frequent pattern overall when omitted features are unknown.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Consecutive calls are absent, so there is no evidence of this pattern.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/13/assessment\",\"evidence_reference\":\"CALL CALL value 0.0; occurrences: []\",\"reason\":\"This assumes adjacent or consecutive calls and definite absence, which the supplied evidence does not establish.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All cited SHAP signs and magnitudes match the supplied values within display tolerance, and the explanation treats them as pushes toward class 1. It does not claim that the listed features prove behavior. It does not say that the top-k subset cannot exclude benign-supporting omitted features or that the target class is only an assumption.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption that needs upstream verification.\",\"Feature-value semantics are unconfirmed, so zero values may not mean absence.\",\"Only the top 20 features are shown; the baseline and full attributions are unavailable.\",\"There is no occurrence, function-context, API, string or import evidence.\",\"The RF probability of 0.68 is not behavioral proof.\"],\"summary\":\"This is a largely accurate, appropriately cautious low-confidence explanation with faithful SHAP reporting. Its main weaknesses are a few overreaching absence and adjacency inferences and the missing caveats on omitted features and the target-class assumption. The follow-up checks are useful but not prioritized.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_7518799f9e8d2ed5",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The probability, n-gram values, SHAP values and the zero-valued count and range are reported correctly, and the cautious conclusion fits the evidence. A few interpretations overreach: absence is asserted despite unconfirmed feature-value semantics, adjacency is assumed, and absent XOR bigrams are said to argue against hashing.",
+      "coherence": "The tier, confidence and recommendation agree with the low-confidence, inconclusive reading. The explanation and per-feature assessments are somewhat repetitive, and 'benign compiler output' is stated more firmly than the evidence supports.",
+      "cybersecurity_relevance": "It ties the sample's actual n-grams to the cryptojacking question and notes the missing API, function and crypto context. It also offers generic compiled-code explanations as the benign alternative. It does not mention the unknown omitted features or the unverified SHAP target class.",
+      "actionable_utility": "The follow-up actions are concrete and proportionate: check imports and strings, look for stratum or pool indicators, find CPU-intensive loops, sandbox CPU and network use, and compare against known miner signatures. They are framed as checks, not observed behavior. They are not prioritized and are somewhat generic."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Their SHAP contributions (+0.006800 to +0.011137) come from their absence in this binary",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation; occurrences: []",
+        "reason": "A feature value of 0.0 is read as definite absence in the binary, although the value semantics are unconfirmed and no occurrence data is supplied.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "XOR XOR and XOR CALL are absent, which argues against a heavy XOR-based hashing routine.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "top_features XOR XOR value 0.0, XOR CALL value 0.0; occurrences: []; function_context: []",
+        "reason": "Zero-valued bigram features without extraction context do not establish absence of XOR-based hashing, since other features could be omitted or encoded differently.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Stack adjustment followed by an argument push, a generic calling-convention pattern.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "rubric rule: graph-aware n-grams need not be adjacent; no occurrences or function context supplied",
+        "reason": "This treats the bigram as directly adjacent instructions in a calling-convention sequence without extraction evidence.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "The most frequent pattern (0.053506), standard argument preparation.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+        "evidence_reference": "top_features lists only 20 features; full_attributions: null",
+        "reason": "MOV PUSH is the highest-valued among the listed top-k features only. It cannot be called the most frequent pattern overall when omitted features are unknown.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Consecutive calls are absent, so there is no evidence of this pattern.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+        "evidence_reference": "CALL CALL value 0.0; occurrences: []",
+        "reason": "This assumes adjacent or consecutive calls and definite absence, which the supplied evidence does not establish.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All cited SHAP signs and magnitudes match the supplied values within display tolerance, and the explanation treats them as pushes toward class 1. It does not claim that the listed features prove behavior. It does not say that the top-k subset cannot exclude benign-supporting omitted features or that the target class is only an assumption.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption that needs upstream verification.",
+      "Feature-value semantics are unconfirmed, so zero values may not mean absence.",
+      "Only the top 20 features are shown; the baseline and full attributions are unavailable.",
+      "There is no occurrence, function-context, API, string or import evidence.",
+      "The RF probability of 0.68 is not behavioral proof."
+    ],
+    "summary": "This is a largely accurate, appropriately cautious low-confidence explanation with faithful SHAP reporting. Its main weaknesses are a few overreaching absence and adjacency inferences and the missing caveats on omitted features and the target-class assumption. The follow-up checks are useful but not prioritized."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Their SHAP contributions (+0.006800 to +0.011137) come from their absence in this binary",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "feature_value_semantics: Not established by this artifact; do not treat as raw counts without upstream confirmation; occurrences: []",
+      "reason": "A feature value of 0.0 is read as definite absence in the binary, although the value semantics are unconfirmed and no occurrence data is supplied.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "XOR XOR and XOR CALL are absent, which argues against a heavy XOR-based hashing routine.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "top_features XOR XOR value 0.0, XOR CALL value 0.0; occurrences: []; function_context: []",
+      "reason": "Zero-valued bigram features without extraction context do not establish absence of XOR-based hashing, since other features could be omitted or encoded differently.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Stack adjustment followed by an argument push, a generic calling-convention pattern.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "rubric rule: graph-aware n-grams need not be adjacent; no occurrences or function context supplied",
+      "reason": "This treats the bigram as directly adjacent instructions in a calling-convention sequence without extraction evidence.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The most frequent pattern (0.053506), standard argument preparation.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+      "evidence_reference": "top_features lists only 20 features; full_attributions: null",
+      "reason": "MOV PUSH is the highest-valued among the listed top-k features only. It cannot be called the most frequent pattern overall when omitted features are unknown.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Consecutive calls are absent, so there is no evidence of this pattern.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/13/assessment",
+      "evidence_reference": "CALL CALL value 0.0; occurrences: []",
+      "reason": "This assumes adjacent or consecutive calls and definite absence, which the supplied evidence does not establish.",
+      "category": "unsupported_behavior"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "661c4da0df6414e3cf7855d47a142cc9858c1174cc992f29423e48ce420585e0.exe_analysis.json"
+}

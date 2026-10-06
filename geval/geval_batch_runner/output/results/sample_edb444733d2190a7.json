@@ -1,0 +1,230 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_edb444733d2190a7",
+  "status": "success",
+  "source_sha256": "67aa073bd2b8cb81b403589b88d101da65b449eb77942401ff581c8a6bae30ce",
+  "input_sha256": "bd47af17e1e923b78c3a58cfc51972479b35d3dacdd859a0d0733c21d75b307f",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "40995019652863343f9ad35ce8f3519e84526fd8013fb85e48cc11675e2fb567.exe",
+      "source_name": "40995019652863343f9ad35ce8f3519e84526fd8013fb85e48cc11675e2fb567.exe.json",
+      "source_path": "ml/dataset/cryptojacking/40995019652863343f9ad35ce8f3519e84526fd8013fb85e48cc11675e2fb567.exe.json",
+      "split": "test",
+      "batch_number": 3,
+      "row_index_in_batch": 80,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "40995019652863343f9ad35ce8f3519e84526fd8013fb85e48cc11675e2fb567.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:30:31.630896+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:30:31.630925+00:00",
+      "error": null,
+      "request_sha256": "eb0ef0ff2386dfc89d2c697f49e050c50e8aba44f106e5faa521fb81e88480c2",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkzADw3WrVp6gFgSQKHZ",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the evidence here: the RF prediction with probability 0.79 and the top 20 SHAP values all positive, ranging from 0.0076 to 0.0153, which matches the candidate's claim. I'm treating class 1 as malware/cryptojacking as a reasonable assumption and verifying that all 20 top n-grams are accounted for correctly.\n\nThe frequency ranges check out against the actual feature values, but I'm noting that the candidate's language implying specific occurrence counts (like \"the single low-frequency occurrence\" for POP XCHG) isn't actually supported by the data—frequencies don't translate directly to counts. The claim about SHAP contributions being evenly spread with no dominant indicator only holds within the top-k subset, since the full attribution picture isn't available, so that's a mild overreach. The generic characterization of the n-grams as ordinary compiler output (function prologues, epilogues, thunk-like CALL RET patterns) seems reasonable and non-specific enough to be defensible.\n\nI'm also flagging that several interpretations assume adjacency between opcodes (like \"a call immediately followed by a return\" or \"standard argument push before function call\") when graph-aware n-grams don't necessarily require that strict adjacency—this is an unsupported inferential leap repeated across multiple n-gram interpretations. Similarly, specific semantic claims like \"passing the address of a local or buffer as an argument,\" \"register shuffling between routines,\" and \"pointer or offset arithmetic before an argument push\" are asserted with more confidence than the raw opcode sequences can justify, even though they're phrased as plausible interpretations rather than certainties.\n\nI'm noting the hedge \"equally consistent with packers, obfuscation, or benign compiler output\" is a good caveat, and the recommended actions (monitoring CPU/network, comparing against known signatures) are proportionate and conditional. But the response doesn't address unknowns like the SHAP target-class assumption, the actual semantic meaning of the feature values (treated as frequencies), or that the top-k features shown aren't the complete feature set—these are meaningful gaps. Weighing the accurate low-level opcode numbers against the overreaching behavioral assertions, I'd land on a middling technical accuracy score, maybe a 3, since the interpretive leaps are frequent even if individually hedged.\n\nI'm scoring coherence and relevance higher (around 4) given the consistent low-confidence framing, though there's some redundancy between the explanation and evidence sections. On SHAP faithfulness, directions and magnitudes seem right, so I'd call it faithful overall, but flag the \"no single dominant indicator\"/\"evenly spread\" claim as only partially verifiable and worth a note rather than a full discrepancy.\n\nFor unsupported claims, I'm pulling together specific paths and the opcode index mapping (CDQ/MOV, POP/LEA, POP/XOR, and so on through POP/XCHG and LEA/MOVSD.REP) so I can cite exact evidence_analysis entries, along with the exact quoted phrase about the single low-frequency occurrence being insufficient to draw conclusions from.\n\nI'm categorizing several more unsupported claims: the CALL/RET thunk-or-wrapper suggestion as an adjacency-based inference, the LEA/MOVSD.REP buffer-copying claim, the PUSH/CALL \"heavy call-driven\" generic statement, and the broader explanation calling these patterns \"ordinary function prologues, epilogues, and argument setup\" — plus the evenly-spread SHAP claim, which I'm tagging as unsupported_certainty since it's really only true within the top-k features shown. I'll keep the list limited and format the final output as a single-line JSON object.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_edb444733d2190a7\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability 0.79, the +0.0076 to +0.0153 SHAP range, the rare-feature values and the instruction definitions are correct. However, several n-gram readings assume adjacency or intent that the artifact does not establish, such as 'A call immediately followed by a return' and 'single low-frequency occurrence'. Most of the generic readings are hedged, but a few are asserted.\",\"coherence\":\"Tier 'low-confidence', confidence 0.45, the explanation, the per-n-gram notes and the recommended action all agree. Some repetition between the summary and the evidence_analysis keeps it from a 5.\",\"cybersecurity_relevance\":\"Ties the sample's n-grams to mining-specific questions, notes the absence of API or function context, and names benign compiler output, packers and obfuscation as alternatives. It does not flag the unconfirmed SHAP target class or the unestablished feature-value semantics.\",\"actionable_utility\":\"The recommended action is conditional and proportionate: look for hashing loops, check packing around the PUSH RET and POP XCHG sites, sandbox the sample and watch CPU use and network connections. It invents no indicators. It could be better prioritized and tied more tightly to specific evidence gaps.\"},\"unsupported_claims\":[{\"quote\":\"the single low-frequency occurrence is insufficient to draw conclusions\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/12/assessment\",\"evidence_reference\":\"feature_value_semantics: 'Not established by this artifact; do not treat as raw counts'; occurrences: []\",\"reason\":\"Implies a single occurrence, but the feature value is not a verified count and no occurrence data was supplied.\",\"category\":\"other\"},{\"quote\":\"A call immediately followed by a return suggests thunk or wrapper functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"occurrences: []; function_context: []\",\"reason\":\"Assumes literal adjacency and a function structure. No extraction or context supports either, and n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It indicates address setup before a repeated dword block copy, consistent with buffer or struct copying.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"occurrences: []; function_context: []\",\"reason\":\"Asserts a specific behavior ('indicates') from the mnemonic pair alone, with no context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It shows heavy call-driven code structure but nothing mining-specific.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"PUSH CALL value 0.044228; no function context\",\"reason\":\"Infers overall code structure from a single feature value that has no established count semantics.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"They reflect ordinary function prologues, epilogues, and argument setup found in almost any compiled binary.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"occurrences: []; function_context: []\",\"reason\":\"States the function roles of these sequences as fact, although no per-function context or instruction sequence was provided.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The SHAP contributions are also evenly spread, with no single dominant indicator.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"full_attributions: null; scope_notes: omitted features unknown\",\"reason\":\"Only the top-20 subset is available, so evenness across all features cannot be established. It holds only within the displayed subset.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Direction (all positive for class 1), range, and per-feature magnitudes match the supplied SHAP values within rounding. The candidate does not claim causal proof, and it treats the signal as a modest lean. The 'evenly spread' remark is accurate only for the displayed top-20.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No occurrences, function context or API references were supplied, so adjacency and behavior cannot be verified.\",\"Feature value semantics are not established, so 'frequency' and 'occurrence' readings are uncertain.\",\"The SHAP target class is a configured assumption, the baseline is null and full attributions are unavailable.\",\"Only a top-20 positive subset is shown, so omitted features cannot be assessed.\"],\"summary\":\"Numbers and SHAP direction are faithfully reported, and the hedged, low-confidence framing with proportionate follow-up is good. Technical accuracy is reduced by several adjacency, function-role and count-style inferences that go beyond the artifact.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6794,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3813,
+          "output_tokens_details": {
+            "thinking_tokens": 2134
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6794,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3813,
+        "output_tokens_details": {
+          "thinking_tokens": 2134
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_edb444733d2190a7\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability 0.79, the +0.0076 to +0.0153 SHAP range, the rare-feature values and the instruction definitions are correct. However, several n-gram readings assume adjacency or intent that the artifact does not establish, such as 'A call immediately followed by a return' and 'single low-frequency occurrence'. Most of the generic readings are hedged, but a few are asserted.\",\"coherence\":\"Tier 'low-confidence', confidence 0.45, the explanation, the per-n-gram notes and the recommended action all agree. Some repetition between the summary and the evidence_analysis keeps it from a 5.\",\"cybersecurity_relevance\":\"Ties the sample's n-grams to mining-specific questions, notes the absence of API or function context, and names benign compiler output, packers and obfuscation as alternatives. It does not flag the unconfirmed SHAP target class or the unestablished feature-value semantics.\",\"actionable_utility\":\"The recommended action is conditional and proportionate: look for hashing loops, check packing around the PUSH RET and POP XCHG sites, sandbox the sample and watch CPU use and network connections. It invents no indicators. It could be better prioritized and tied more tightly to specific evidence gaps.\"},\"unsupported_claims\":[{\"quote\":\"the single low-frequency occurrence is insufficient to draw conclusions\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/12/assessment\",\"evidence_reference\":\"feature_value_semantics: 'Not established by this artifact; do not treat as raw counts'; occurrences: []\",\"reason\":\"Implies a single occurrence, but the feature value is not a verified count and no occurrence data was supplied.\",\"category\":\"other\"},{\"quote\":\"A call immediately followed by a return suggests thunk or wrapper functions.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/7/assessment\",\"evidence_reference\":\"occurrences: []; function_context: []\",\"reason\":\"Assumes literal adjacency and a function structure. No extraction or context supports either, and n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It indicates address setup before a repeated dword block copy, consistent with buffer or struct copying.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/19/assessment\",\"evidence_reference\":\"occurrences: []; function_context: []\",\"reason\":\"Asserts a specific behavior ('indicates') from the mnemonic pair alone, with no context.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"It shows heavy call-driven code structure but nothing mining-specific.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"PUSH CALL value 0.044228; no function context\",\"reason\":\"Infers overall code structure from a single feature value that has no established count semantics.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"They reflect ordinary function prologues, epilogues, and argument setup found in almost any compiled binary.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"occurrences: []; function_context: []\",\"reason\":\"States the function roles of these sequences as fact, although no per-function context or instruction sequence was provided.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The SHAP contributions are also evenly spread, with no single dominant indicator.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"full_attributions: null; scope_notes: omitted features unknown\",\"reason\":\"Only the top-20 subset is available, so evenness across all features cannot be established. It holds only within the displayed subset.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Direction (all positive for class 1), range, and per-feature magnitudes match the supplied SHAP values within rounding. The candidate does not claim causal proof, and it treats the signal as a modest lean. The 'evenly spread' remark is accurate only for the displayed top-20.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No occurrences, function context or API references were supplied, so adjacency and behavior cannot be verified.\",\"Feature value semantics are not established, so 'frequency' and 'occurrence' readings are uncertain.\",\"The SHAP target class is a configured assumption, the baseline is null and full attributions are unavailable.\",\"Only a top-20 positive subset is shown, so omitted features cannot be assessed.\"],\"summary\":\"Numbers and SHAP direction are faithfully reported, and the hedged, low-confidence framing with proportionate follow-up is good. Technical accuracy is reduced by several adjacency, function-role and count-style inferences that go beyond the artifact.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_edb444733d2190a7",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability 0.79, the +0.0076 to +0.0153 SHAP range, the rare-feature values and the instruction definitions are correct. However, several n-gram readings assume adjacency or intent that the artifact does not establish, such as 'A call immediately followed by a return' and 'single low-frequency occurrence'. Most of the generic readings are hedged, but a few are asserted.",
+      "coherence": "Tier 'low-confidence', confidence 0.45, the explanation, the per-n-gram notes and the recommended action all agree. Some repetition between the summary and the evidence_analysis keeps it from a 5.",
+      "cybersecurity_relevance": "Ties the sample's n-grams to mining-specific questions, notes the absence of API or function context, and names benign compiler output, packers and obfuscation as alternatives. It does not flag the unconfirmed SHAP target class or the unestablished feature-value semantics.",
+      "actionable_utility": "The recommended action is conditional and proportionate: look for hashing loops, check packing around the PUSH RET and POP XCHG sites, sandbox the sample and watch CPU use and network connections. It invents no indicators. It could be better prioritized and tied more tightly to specific evidence gaps."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "the single low-frequency occurrence is insufficient to draw conclusions",
+        "candidate_path": "/candidate_analysis/evidence_analysis/12/assessment",
+        "evidence_reference": "feature_value_semantics: 'Not established by this artifact; do not treat as raw counts'; occurrences: []",
+        "reason": "Implies a single occurrence, but the feature value is not a verified count and no occurrence data was supplied.",
+        "category": "other"
+      },
+      {
+        "quote": "A call immediately followed by a return suggests thunk or wrapper functions.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+        "evidence_reference": "occurrences: []; function_context: []",
+        "reason": "Assumes literal adjacency and a function structure. No extraction or context supports either, and n-grams need not be adjacent.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "It indicates address setup before a repeated dword block copy, consistent with buffer or struct copying.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+        "evidence_reference": "occurrences: []; function_context: []",
+        "reason": "Asserts a specific behavior ('indicates') from the mnemonic pair alone, with no context.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "It shows heavy call-driven code structure but nothing mining-specific.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+        "evidence_reference": "PUSH CALL value 0.044228; no function context",
+        "reason": "Infers overall code structure from a single feature value that has no established count semantics.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "They reflect ordinary function prologues, epilogues, and argument setup found in almost any compiled binary.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "occurrences: []; function_context: []",
+        "reason": "States the function roles of these sequences as fact, although no per-function context or instruction sequence was provided.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "The SHAP contributions are also evenly spread, with no single dominant indicator.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "full_attributions: null; scope_notes: omitted features unknown",
+        "reason": "Only the top-20 subset is available, so evenness across all features cannot be established. It holds only within the displayed subset.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "Direction (all positive for class 1), range, and per-feature magnitudes match the supplied SHAP values within rounding. The candidate does not claim causal proof, and it treats the signal as a modest lean. The 'evenly spread' remark is accurate only for the displayed top-20.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No occurrences, function context or API references were supplied, so adjacency and behavior cannot be verified.",
+      "Feature value semantics are not established, so 'frequency' and 'occurrence' readings are uncertain.",
+      "The SHAP target class is a configured assumption, the baseline is null and full attributions are unavailable.",
+      "Only a top-20 positive subset is shown, so omitted features cannot be assessed."
+    ],
+    "summary": "Numbers and SHAP direction are faithfully reported, and the hedged, low-confidence framing with proportionate follow-up is good. Technical accuracy is reduced by several adjacency, function-role and count-style inferences that go beyond the artifact."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "the single low-frequency occurrence is insufficient to draw conclusions",
+      "candidate_path": "/candidate_analysis/evidence_analysis/12/assessment",
+      "evidence_reference": "feature_value_semantics: 'Not established by this artifact; do not treat as raw counts'; occurrences: []",
+      "reason": "Implies a single occurrence, but the feature value is not a verified count and no occurrence data was supplied.",
+      "category": "other"
+    },
+    {
+      "quote": "A call immediately followed by a return suggests thunk or wrapper functions.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/7/assessment",
+      "evidence_reference": "occurrences: []; function_context: []",
+      "reason": "Assumes literal adjacency and a function structure. No extraction or context supports either, and n-grams need not be adjacent.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "It indicates address setup before a repeated dword block copy, consistent with buffer or struct copying.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/19/assessment",
+      "evidence_reference": "occurrences: []; function_context: []",
+      "reason": "Asserts a specific behavior ('indicates') from the mnemonic pair alone, with no context.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "It shows heavy call-driven code structure but nothing mining-specific.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+      "evidence_reference": "PUSH CALL value 0.044228; no function context",
+      "reason": "Infers overall code structure from a single feature value that has no established count semantics.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "They reflect ordinary function prologues, epilogues, and argument setup found in almost any compiled binary.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "occurrences: []; function_context: []",
+      "reason": "States the function roles of these sequences as fact, although no per-function context or instruction sequence was provided.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "The SHAP contributions are also evenly spread, with no single dominant indicator.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "full_attributions: null; scope_notes: omitted features unknown",
+      "reason": "Only the top-20 subset is available, so evenness across all features cannot be established. It holds only within the displayed subset.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "40995019652863343f9ad35ce8f3519e84526fd8013fb85e48cc11675e2fb567.exe_analysis.json"
+}

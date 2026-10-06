@@ -1,0 +1,203 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_c1b6ef987005bb5e",
+  "status": "success",
+  "source_sha256": "a15ef9d0619ce8b3775983e37a158724a3054c85eaac1d5e51682fd187af22e6",
+  "input_sha256": "ad05760f31fad427e6278c487876dc7ac9c55718cc7107b49ec617ba09dd7913",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "4de6e6c9c7bc0be888edd0b0cca866cbee745d6df2c0f34d762055cef879a0cc.exe",
+      "source_name": "4de6e6c9c7bc0be888edd0b0cca866cbee745d6df2c0f34d762055cef879a0cc.exe.json",
+      "source_path": "ml/dataset/cryptojacking/4de6e6c9c7bc0be888edd0b0cca866cbee745d6df2c0f34d762055cef879a0cc.exe.json",
+      "split": "test",
+      "batch_number": 3,
+      "row_index_in_batch": 38,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "4de6e6c9c7bc0be888edd0b0cca866cbee745d6df2c0f34d762055cef879a0cc.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:35:53.906396+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:35:53.906426+00:00",
+      "error": null,
+      "request_sha256": "665f7ebad9812ec52131b6e48f462600452358665755e42ce3a86e1f2ca0d7be",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkzZxH92STqiU5KsRwe7",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm weighing the evidence carefully: the Random Forest gives a 0.955 probability for class 1, with all top 20 SHAP features positive, though I need to be cautious since the actual semantic meaning of class 1 and the feature values aren't explicitly confirmed.\n\nSeveral claims seem like overreaches: saying n-grams push \"toward cryptojacking\" assumes class 1 equals cryptojacking without direct evidence, and claiming \"no single feature dominates\" only holds within the visible top 20, not globally. The generalization that certain opcode patterns \"appear in nearly all x86 binaries\" is unsupported, and inferring things like 64-bit arithmetic emulation or multi-precision operations from opcodes like SHRD/MOV or SHL/NEG is speculative without architectural confirmation. The SSE vector operation and block memory copy interpretations seem more defensible since they're based on known instruction semantics.\n\nInterpreting low feature values as \"sparse signals\" or raw \"frequencies\" goes beyond what the evidence actually supports, since the feature semantics aren't established — though the specific numeric claims (like 0.002778 being the highest value, or most values falling below 0.0005) check out against the data. Labeling instruction pairs like POP/XOR as \"register zeroing in epilogues\" is questionable and likely an unsupported stretch, whereas calling PUSH/POP sequences part of standard prologue/epilogue behavior is reasonably grounded.\n\nThe rest of the pattern descriptions hold up reasonably well: SHRD as a double-precision shift, PXOR/PXOR as typical SSE register zeroing, MOVZX/PUSH as a zero-extended load being pushed, and CALL/PUSH reflecting standard calling convention are all accurate characterizations. Claims about ROL/ADD being \"mining-relevant\" or tied to ARX-style constructions are appropriately hedged as circumstantial rather than stated as fact, and the overall framing that most top features are generic compiler-generated patterns rather than meaningful signals seems like a fair, appropriately cautious conclusion.\n\nI also note the evidence genuinely lacks function names, API references, or constants, which matches an empty function context. The confidence score of 0.45 fits a low-confidence tier, and the recommendation to escalate only under specific conditions while treating the finding as suspicious-but-unconfirmed seems well-calibrated. One minor concern is the candidate's repeated phrasing like \"rotate followed by,\" which implies adjacency between instructions that graph-aware n-grams don't actually require—a small but worth-flagging inference issue.\n\nChecking SHAP faithfulness, the signs and rounded magnitudes line up correctly with the evidence analysis order, and the claim that \"no single feature dominates\" holds within the top-k shown, though I should caveat that omitted negative features could technically have larger magnitudes than the top positive one. Overall this looks faithful with a minor caveat rather than a clear pass or fail.\n\nFor scoring: technical accuracy around 4 given the minor overreach on 32-bit/frequency claims, coherence 4 given the length and some repetition, relevance 5 since it ties evidence to limits and alternatives well, and actionability 4-5 since the recommendations (disassembler review, imports/strings analysis, sandbox testing, escalation criteria) are reasonably ordered and serve clear purposes even if not explicitly ranked.\n\nI'm flagging several unsupported claims to note: the \"32-bit code\" assertion in the explanation, the interpretation of low frequencies as \"sparse signals\" without established semantics, and the claim that certain patterns \"appear in nearly all x86 binaries\" which overstates certainty without support.\n\nI'll also note the \"no single feature dominates\" claim is only true within the top-20 subset, so it's an unsupported certainty claim that needs its evidence path included. The SHRD evidence and the generic hedged explanation about 64-bit shifts on 32-bit code can stay as-is since they're already appropriately qualified. Now I'm assembling everything into the final single-line JSON output.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_c1b6ef987005bb5e\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability 0.955, the +0.0066 to +0.0109 SHAP range, per-feature SHAP values and the LEA POP value 0.002778 all match the evidence. Hash, crypto and mining readings are hedged as circumstantial. Minor overreaches: the \\\"32-bit code\\\" inference, treating values as \\\"frequencies\\\", and \\\"no single feature dominates\\\" from a top-k subset only.\",\"coherence\":\"The explanation, per-feature assessments, tier (low-confidence), confidence 0.45 and recommendation are consistent: suspicious but unconfirmed. The explanation is somewhat long and repeats the generic-versus-suggestive split.\",\"cybersecurity_relevance\":\"It ties the specific n-grams (ROL/MOVZX/ADD, PXOR, ADC/SHRD) to hash or cipher alternatives and to benign compiler, FPU and epilogue explanations. It states that function names, APIs and constants are absent, and that this prevents linking the patterns to a mining kernel.\",\"actionable_utility\":\"Concrete, proportionate and conditional steps: disassembly of the relevant functions, imports and strings for stratum, pool or wallet indicators, sandbox CPU and network monitoring, and explicit escalation criteria. No fabricated indicators. Prioritization is implicit rather than stated, and benign-alternative checks such as packing or signing are not mentioned.\"},\"unsupported_claims\":[{\"quote\":\"SHRD MOV, ADC SUB, and SHL NEG suggest multi-precision or 64-bit arithmetic emulation on 32-bit code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (no architecture, function context or occurrences)\",\"reason\":\"No evidence establishes 32-bit code or emulation of wider arithmetic. SHL NEG in particular is not a clear multi-precision marker.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The very low frequencies (mostly below 0.0005) also suggest sparse signals.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature value semantics are not established and the values should not be treated as raw counts. Calling them frequencies and inferring sparsity goes beyond that.\",\"category\":\"other\"},{\"quote\":\"These appear in nearly all x86 binaries and are not specific to mining.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/function_context (empty)\",\"reason\":\"The prevalence claim has no supporting corpus or baseline evidence in the artifact. It is stated with more certainty than the evidence allows.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"so no single feature dominates\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions (null); /scope_notes/1\",\"reason\":\"Only a positive top-20 subset is supplied. Omitted features, including any negative ones, are unknown, so dominance cannot be ruled out globally.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All listed n-grams are described as positive toward the class-1 target, which matches the supplied signs. Rounded SHAP values in evidence_analysis match the artifact within tolerance. The range 0.0066-0.0109 is correct, and the magnitudes are described as small and flat among the top 20. The one overreach is the global-sounding \\\"no single feature dominates\\\".\",\"discrepancies\":[]},\"evidence_limitations\":[\"Target class 1 is a configured assumption that needs upstream verification.\",\"Only top-20 positive features are supplied. The SHAP baseline and full attributions are null, so omitted and negative features are unknown.\",\"Feature value semantics are not established, so the values cannot be read as counts or frequencies.\",\"No occurrences, function context, APIs, strings or constants are provided. Adjacency and control flow cannot be confirmed for the graph-aware n-grams.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"This is a largely accurate, well-hedged and relevant explanation with a proportionate investigation plan. SHAP signs and magnitudes are faithfully reported. Minor unsupported inferences are the 32-bit code claim, the frequency and sparsity reading of values, the prevalence claim, and the top-k dominance statement.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7108,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4071,
+          "output_tokens_details": {
+            "thinking_tokens": 2468
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7108,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4071,
+        "output_tokens_details": {
+          "thinking_tokens": 2468
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_c1b6ef987005bb5e\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":5,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability 0.955, the +0.0066 to +0.0109 SHAP range, per-feature SHAP values and the LEA POP value 0.002778 all match the evidence. Hash, crypto and mining readings are hedged as circumstantial. Minor overreaches: the \\\"32-bit code\\\" inference, treating values as \\\"frequencies\\\", and \\\"no single feature dominates\\\" from a top-k subset only.\",\"coherence\":\"The explanation, per-feature assessments, tier (low-confidence), confidence 0.45 and recommendation are consistent: suspicious but unconfirmed. The explanation is somewhat long and repeats the generic-versus-suggestive split.\",\"cybersecurity_relevance\":\"It ties the specific n-grams (ROL/MOVZX/ADD, PXOR, ADC/SHRD) to hash or cipher alternatives and to benign compiler, FPU and epilogue explanations. It states that function names, APIs and constants are absent, and that this prevents linking the patterns to a mining kernel.\",\"actionable_utility\":\"Concrete, proportionate and conditional steps: disassembly of the relevant functions, imports and strings for stratum, pool or wallet indicators, sandbox CPU and network monitoring, and explicit escalation criteria. No fabricated indicators. Prioritization is implicit rather than stated, and benign-alternative checks such as packing or signing are not mentioned.\"},\"unsupported_claims\":[{\"quote\":\"SHRD MOV, ADC SUB, and SHL NEG suggest multi-precision or 64-bit arithmetic emulation on 32-bit code.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features (no architecture, function context or occurrences)\",\"reason\":\"No evidence establishes 32-bit code or emulation of wider arithmetic. SHL NEG in particular is not a clear multi-precision marker.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The very low frequencies (mostly below 0.0005) also suggest sparse signals.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says feature value semantics are not established and the values should not be treated as raw counts. Calling them frequencies and inferring sparsity goes beyond that.\",\"category\":\"other\"},{\"quote\":\"These appear in nearly all x86 binaries and are not specific to mining.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/function_context (empty)\",\"reason\":\"The prevalence claim has no supporting corpus or baseline evidence in the artifact. It is stated with more certainty than the evidence allows.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"so no single feature dominates\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/full_attributions (null); /scope_notes/1\",\"reason\":\"Only a positive top-20 subset is supplied. Omitted features, including any negative ones, are unknown, so dominance cannot be ruled out globally.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All listed n-grams are described as positive toward the class-1 target, which matches the supplied signs. Rounded SHAP values in evidence_analysis match the artifact within tolerance. The range 0.0066-0.0109 is correct, and the magnitudes are described as small and flat among the top 20. The one overreach is the global-sounding \\\"no single feature dominates\\\".\",\"discrepancies\":[]},\"evidence_limitations\":[\"Target class 1 is a configured assumption that needs upstream verification.\",\"Only top-20 positive features are supplied. The SHAP baseline and full attributions are null, so omitted and negative features are unknown.\",\"Feature value semantics are not established, so the values cannot be read as counts or frequencies.\",\"No occurrences, function context, APIs, strings or constants are provided. Adjacency and control flow cannot be confirmed for the graph-aware n-grams.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"This is a largely accurate, well-hedged and relevant explanation with a proportionate investigation plan. SHAP signs and magnitudes are faithfully reported. Minor unsupported inferences are the 32-bit code claim, the frequency and sparsity reading of values, the prevalence claim, and the top-k dominance statement.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_c1b6ef987005bb5e",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 5,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability 0.955, the +0.0066 to +0.0109 SHAP range, per-feature SHAP values and the LEA POP value 0.002778 all match the evidence. Hash, crypto and mining readings are hedged as circumstantial. Minor overreaches: the \"32-bit code\" inference, treating values as \"frequencies\", and \"no single feature dominates\" from a top-k subset only.",
+      "coherence": "The explanation, per-feature assessments, tier (low-confidence), confidence 0.45 and recommendation are consistent: suspicious but unconfirmed. The explanation is somewhat long and repeats the generic-versus-suggestive split.",
+      "cybersecurity_relevance": "It ties the specific n-grams (ROL/MOVZX/ADD, PXOR, ADC/SHRD) to hash or cipher alternatives and to benign compiler, FPU and epilogue explanations. It states that function names, APIs and constants are absent, and that this prevents linking the patterns to a mining kernel.",
+      "actionable_utility": "Concrete, proportionate and conditional steps: disassembly of the relevant functions, imports and strings for stratum, pool or wallet indicators, sandbox CPU and network monitoring, and explicit escalation criteria. No fabricated indicators. Prioritization is implicit rather than stated, and benign-alternative checks such as packing or signing are not mentioned."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "SHRD MOV, ADC SUB, and SHL NEG suggest multi-precision or 64-bit arithmetic emulation on 32-bit code.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features (no architecture, function context or occurrences)",
+        "reason": "No evidence establishes 32-bit code or emulation of wider arithmetic. SHL NEG in particular is not a clear multi-precision marker.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "The very low frequencies (mostly below 0.0005) also suggest sparse signals.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says feature value semantics are not established and the values should not be treated as raw counts. Calling them frequencies and inferring sparsity goes beyond that.",
+        "category": "other"
+      },
+      {
+        "quote": "These appear in nearly all x86 binaries and are not specific to mining.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; /evidence/function_context (empty)",
+        "reason": "The prevalence claim has no supporting corpus or baseline evidence in the artifact. It is stated with more certainty than the evidence allows.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "so no single feature dominates",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/full_attributions (null); /scope_notes/1",
+        "reason": "Only a positive top-20 subset is supplied. Omitted features, including any negative ones, are unknown, so dominance cannot be ruled out globally.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All listed n-grams are described as positive toward the class-1 target, which matches the supplied signs. Rounded SHAP values in evidence_analysis match the artifact within tolerance. The range 0.0066-0.0109 is correct, and the magnitudes are described as small and flat among the top 20. The one overreach is the global-sounding \"no single feature dominates\".",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "Target class 1 is a configured assumption that needs upstream verification.",
+      "Only top-20 positive features are supplied. The SHAP baseline and full attributions are null, so omitted and negative features are unknown.",
+      "Feature value semantics are not established, so the values cannot be read as counts or frequencies.",
+      "No occurrences, function context, APIs, strings or constants are provided. Adjacency and control flow cannot be confirmed for the graph-aware n-grams.",
+      "The RF probability is not behavioral proof of cryptojacking."
+    ],
+    "summary": "This is a largely accurate, well-hedged and relevant explanation with a proportionate investigation plan. SHAP signs and magnitudes are faithfully reported. Minor unsupported inferences are the 32-bit code claim, the frequency and sparsity reading of values, the prevalence claim, and the top-k dominance statement."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "SHRD MOV, ADC SUB, and SHL NEG suggest multi-precision or 64-bit arithmetic emulation on 32-bit code.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features (no architecture, function context or occurrences)",
+      "reason": "No evidence establishes 32-bit code or emulation of wider arithmetic. SHL NEG in particular is not a clear multi-precision marker.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The very low frequencies (mostly below 0.0005) also suggest sparse signals.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says feature value semantics are not established and the values should not be treated as raw counts. Calling them frequencies and inferring sparsity goes beyond that.",
+      "category": "other"
+    },
+    {
+      "quote": "These appear in nearly all x86 binaries and are not specific to mining.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; /evidence/function_context (empty)",
+      "reason": "The prevalence claim has no supporting corpus or baseline evidence in the artifact. It is stated with more certainty than the evidence allows.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "so no single feature dominates",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/full_attributions (null); /scope_notes/1",
+      "reason": "Only a positive top-20 subset is supplied. Omitted features, including any negative ones, are unknown, so dominance cannot be ruled out globally.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "4de6e6c9c7bc0be888edd0b0cca866cbee745d6df2c0f34d762055cef879a0cc.exe_analysis.json"
+}

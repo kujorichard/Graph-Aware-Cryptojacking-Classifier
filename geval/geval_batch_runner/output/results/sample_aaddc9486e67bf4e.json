@@ -1,0 +1,203 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_aaddc9486e67bf4e",
+  "status": "success",
+  "source_sha256": "27a6ed5dc2c41387a605bb877b90d41a6620087f6d8cc0495782390a6cccf26f",
+  "input_sha256": "b218466cedd02027162de1216f9705c5b47cd40f6a21eb199234ca128d6bfff5",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "ea8c4f711e5f158dbc948861a8543b8f27c54d97e90a9cec93db9b8817b6b315.exe",
+      "source_name": "ea8c4f711e5f158dbc948861a8543b8f27c54d97e90a9cec93db9b8817b6b315.exe.json",
+      "source_path": "ml/dataset/cryptojacking/ea8c4f711e5f158dbc948861a8543b8f27c54d97e90a9cec93db9b8817b6b315.exe.json",
+      "split": "test",
+      "batch_number": 2,
+      "row_index_in_batch": 76,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "ea8c4f711e5f158dbc948861a8543b8f27c54d97e90a9cec93db9b8817b6b315.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:59:20.301574+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:59:20.301604+00:00",
+      "error": null,
+      "request_sha256": "1d5dc6d8279d62c6ee8689a30f2f0683cd33daa1e7e2a55abb97cd25a355c9f6",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm6w14M8fw8g8Lpa7mu2",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm checking the prediction details — class 1 with probability 1.0, bigram features, and SHAP values that are mostly zero with uniformly positive signs. I need to be careful here since the actual meaning of these feature values isn't established, so I shouldn't assume they represent raw frequency counts just because a candidate answer framed them that way.\n\nI also want to flag unsupported claims, like asserting all top n-grams point toward cryptojacking (this assumes class 1 maps to malware without stated evidence), or speculative reasoning about how individual features like ADD/POP interact with the model. Some of the generic opcode-sequence interpretations — XOR for register zeroing, CMP/JL for bounds-checking loops — are reasonable as general knowledge, but I should treat the deeper claims about dominance or spread among features as only valid within the observed top-20, since other features are unknown.\n\nI'm also noticing the \"fat binary\" or \"multi-architecture\" explanation for mixed x86/ARM mnemonics is purely speculative and should be flagged, along with the misuse of \"frequency\" language for values that are actually SHAP-derived rather than occurrence counts. I'm double-checking a few of the numeric SHAP values against their rounded forms to confirm accuracy.\n\nNoting bic as bit-clear fits the bitwise pattern grouping (eor, orr, bic, mvn). The mixed-case convention—uppercase for x86, lowercase for ARM—seems like a reasonable inference, though framing it as strict \"x86-style\" convention may be overstated.\n\nThe low-confidence tier with 0.5 score feels appropriately arbitrary and consistent with the inconclusive evidence. Recommended actions—YARA rules, sandboxing, network inspection, CPU monitoring, comparing against known miner samples—are concrete, conditional, and proportional, though prioritization could be sharper (e.g., first clarifying the x86/ARM mix), and it doesn't address verifying the upstream extraction or the SHAP target-class assumptions and feature semantics.\n\nOn SHAP faithfulness: directions and magnitudes seem accurate overall, but the claim that \"ADD POP high SHAP reflects interaction with other features\" is speculative and unsupported mechanistically. I'm also noting that features with a value of 0.0 carrying positive SHAP means absence itself pushes toward the malware class—the candidate mentions the absence but doesn't connect it directly to this push, framing it instead as vague interaction. I'd call it faithful overall but flag the gap in explaining value semantics.\n\nFor technical accuracy, I'm leaning toward 3—the core claims are grounded, but the frequency-equals-absence interpretation is an overreach that gets repeated across the explanation and key indicators sections, plus the hash hypotheses feel loosely labeled. Coherence I'd put at 4 given some repetition but overall consistency, and relevance/actionable both at 4.\n\nNow compiling unsupported claims: the first is the \"essentially absent or extremely rare\" interpretation in the explanation section, which I'll categorize loosely as \"other\" since it doesn't cleanly fit unsupported_behavior or unsupported_certainty. I'm moving to flag a second instance within key_indicators[2].\n\nI'm also noting the \"highest-frequency n-gram\" phrasing treats a value as frequency without real justification, which could be worth merging into the unsupported claims list. Then there's the interaction claim speculating that a high SHAP value reflects feature interaction—it's hedged with \"likely\" but still unsupported given no interaction data was shown; I'll classify it as a low-severity shap_misrepresentation while still marking faithful as true overall, since it doesn't misstate direction or magnitude, just adds speculative mechanism. Finally I'm weighing whether the \"suggests byte-level data manipulation\" inference from the mnemonic is hedged enough to skip or worth including given the rubric's caution about mnemonics alone not establishing behavior.\n\nI'll skip the generic register-zeroing XOR claim, and note separately that the assumption that all 20 top n-grams point toward cryptojacking relies on an unstated class-1 assumption—worth flagging as an evidence limitation rather than a hard violation. Now I'm putting together the final JSON output on a single line.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_aaddc9486e67bf4e\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP values (rounded), signs, ranking and n-gram values all match the evidence, and the hash-mixing links are hedged as 'loosely consistent'. But it repeatedly treats the values as frequencies ('reported frequency of 0.000000... essentially absent'), although feature_value_semantics says not to treat them as raw counts.\",\"coherence\":\"The explanation, per-feature analysis, key indicators and tier (low-confidence, inconclusive, 0.5) are consistent and the limits are clear. There is some repetition across the three sections.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to benign alternatives (checksum, compression, generic compiler idioms) and notes missing function, API and stratum evidence. It also raises the x86/ARM mix as an interpretive problem. It does not question the feature-value semantics or the assumed SHAP target class.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: clarify the x86/ARM mix first, then do hash-loop inspection, network and pool checks, CPU monitoring, YARA and sandbox runs. These are conditional and not presented as observed. It omits verifying upstream extraction, feature-value semantics and the SHAP target class.\"},\"unsupported_claims\":[{\"quote\":\"Most of the x86-style n-grams have a reported frequency of 0.000000, so they are essentially absent or extremely rare in the binary.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says value semantics are not established and must not be treated as raw counts, so absence or rarity in the binary is an unsupported inference.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Most top n-grams have a frequency of 0.000000, so they are essentially absent or very rare in the binary\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The same overreach is repeated as a key indicator. Zero feature values are interpreted as binary prevalence without upstream confirmation.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The highest-frequency n-gram (0.001003)\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Calling the value a 'frequency' assumes semantics the artifact explicitly does not establish.\",\"category\":\"other\"},{\"quote\":\"Its high SHAP value likely reflects how it interacts with other features in the model, not any mining behavior.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/full_attributions\",\"reason\":\"No interaction values, full attributions or baseline are supplied, so this mechanism for the SHAP value is speculation, though hedged with 'likely'.\",\"category\":\"shap_misrepresentation\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are reported with correct sign (positive for the configured target class 1), correct rank order and correct rounded magnitude. The 'no single feature dominates' claim is limited to the top-k. The only SHAP-related overreach is the speculative interaction explanation for ADD POP, which does not misstate direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption, so 'push toward cryptojacking' depends on class 1 meaning malware or cryptojacking.\",\"The meaning of the n-gram values is not established (not necessarily raw counts or frequencies).\",\"The baseline and full attributions are null, so omitted features cannot be assessed.\",\"There are no occurrences or function context, so adjacency, control flow, loops and API use cannot be verified.\",\"The RF probability of 1.0 is a model output, not behavioral proof.\"],\"summary\":\"The explanation reports the RF output and SHAP values accurately and appropriately concludes that the evidence is inconclusive and needs corroboration. Its main flaw is treating the n-gram values as frequencies and inferring absence or rarity in the binary, which the artifact says not to do. Its recommended follow-up is practical, though it does not include verifying upstream feature semantics or the SHAP target class.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7075,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 4323,
+          "output_tokens_details": {
+            "thinking_tokens": 2780
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7075,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 4323,
+        "output_tokens_details": {
+          "thinking_tokens": 2780
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_aaddc9486e67bf4e\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability, SHAP values (rounded), signs, ranking and n-gram values all match the evidence, and the hash-mixing links are hedged as 'loosely consistent'. But it repeatedly treats the values as frequencies ('reported frequency of 0.000000... essentially absent'), although feature_value_semantics says not to treat them as raw counts.\",\"coherence\":\"The explanation, per-feature analysis, key indicators and tier (low-confidence, inconclusive, 0.5) are consistent and the limits are clear. There is some repetition across the three sections.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to benign alternatives (checksum, compression, generic compiler idioms) and notes missing function, API and stratum evidence. It also raises the x86/ARM mix as an interpretive problem. It does not question the feature-value semantics or the assumed SHAP target class.\",\"actionable_utility\":\"The follow-up is concrete and proportionate: clarify the x86/ARM mix first, then do hash-loop inspection, network and pool checks, CPU monitoring, YARA and sandbox runs. These are conditional and not presented as observed. It omits verifying upstream extraction, feature-value semantics and the SHAP target class.\"},\"unsupported_claims\":[{\"quote\":\"Most of the x86-style n-grams have a reported frequency of 0.000000, so they are essentially absent or extremely rare in the binary.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says value semantics are not established and must not be treated as raw counts, so absence or rarity in the binary is an unsupported inference.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"Most top n-grams have a frequency of 0.000000, so they are essentially absent or very rare in the binary\",\"candidate_path\":\"/candidate_analysis/key_indicators/2\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The same overreach is repeated as a key indicator. Zero feature values are interpreted as binary prevalence without upstream confirmation.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"The highest-frequency n-gram (0.001003)\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/6/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Calling the value a 'frequency' assumes semantics the artifact explicitly does not establish.\",\"category\":\"other\"},{\"quote\":\"Its high SHAP value likely reflects how it interacts with other features in the model, not any mining behavior.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/full_attributions\",\"reason\":\"No interaction values, full attributions or baseline are supplied, so this mechanism for the SHAP value is speculation, though hedged with 'likely'.\",\"category\":\"shap_misrepresentation\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 SHAP values are reported with correct sign (positive for the configured target class 1), correct rank order and correct rounded magnitude. The 'no single feature dominates' claim is limited to the top-k. The only SHAP-related overreach is the speculative interaction explanation for ADD POP, which does not misstate direction or magnitude.\",\"discrepancies\":[]},\"evidence_limitations\":[\"The SHAP target class is a configured assumption, so 'push toward cryptojacking' depends on class 1 meaning malware or cryptojacking.\",\"The meaning of the n-gram values is not established (not necessarily raw counts or frequencies).\",\"The baseline and full attributions are null, so omitted features cannot be assessed.\",\"There are no occurrences or function context, so adjacency, control flow, loops and API use cannot be verified.\",\"The RF probability of 1.0 is a model output, not behavioral proof.\"],\"summary\":\"The explanation reports the RF output and SHAP values accurately and appropriately concludes that the evidence is inconclusive and needs corroboration. Its main flaw is treating the n-gram values as frequencies and inferring absence or rarity in the binary, which the artifact says not to do. Its recommended follow-up is practical, though it does not include verifying upstream feature semantics or the SHAP target class.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_aaddc9486e67bf4e",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "RF probability, SHAP values (rounded), signs, ranking and n-gram values all match the evidence, and the hash-mixing links are hedged as 'loosely consistent'. But it repeatedly treats the values as frequencies ('reported frequency of 0.000000... essentially absent'), although feature_value_semantics says not to treat them as raw counts.",
+      "coherence": "The explanation, per-feature analysis, key indicators and tier (low-confidence, inconclusive, 0.5) are consistent and the limits are clear. There is some repetition across the three sections.",
+      "cybersecurity_relevance": "It ties the sample's n-grams to benign alternatives (checksum, compression, generic compiler idioms) and notes missing function, API and stratum evidence. It also raises the x86/ARM mix as an interpretive problem. It does not question the feature-value semantics or the assumed SHAP target class.",
+      "actionable_utility": "The follow-up is concrete and proportionate: clarify the x86/ARM mix first, then do hash-loop inspection, network and pool checks, CPU monitoring, YARA and sandbox runs. These are conditional and not presented as observed. It omits verifying upstream extraction, feature-value semantics and the SHAP target class."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Most of the x86-style n-grams have a reported frequency of 0.000000, so they are essentially absent or extremely rare in the binary.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says value semantics are not established and must not be treated as raw counts, so absence or rarity in the binary is an unsupported inference.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "Most top n-grams have a frequency of 0.000000, so they are essentially absent or very rare in the binary",
+        "candidate_path": "/candidate_analysis/key_indicators/2",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The same overreach is repeated as a key indicator. Zero feature values are interpreted as binary prevalence without upstream confirmation.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "The highest-frequency n-gram (0.001003)",
+        "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "Calling the value a 'frequency' assumes semantics the artifact explicitly does not establish.",
+        "category": "other"
+      },
+      {
+        "quote": "Its high SHAP value likely reflects how it interacts with other features in the model, not any mining behavior.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "/evidence/full_attributions",
+        "reason": "No interaction values, full attributions or baseline are supplied, so this mechanism for the SHAP value is speculation, though hedged with 'likely'.",
+        "category": "shap_misrepresentation"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "All 20 SHAP values are reported with correct sign (positive for the configured target class 1), correct rank order and correct rounded magnitude. The 'no single feature dominates' claim is limited to the top-k. The only SHAP-related overreach is the speculative interaction explanation for ADD POP, which does not misstate direction or magnitude.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "The SHAP target class is a configured assumption, so 'push toward cryptojacking' depends on class 1 meaning malware or cryptojacking.",
+      "The meaning of the n-gram values is not established (not necessarily raw counts or frequencies).",
+      "The baseline and full attributions are null, so omitted features cannot be assessed.",
+      "There are no occurrences or function context, so adjacency, control flow, loops and API use cannot be verified.",
+      "The RF probability of 1.0 is a model output, not behavioral proof."
+    ],
+    "summary": "The explanation reports the RF output and SHAP values accurately and appropriately concludes that the evidence is inconclusive and needs corroboration. Its main flaw is treating the n-gram values as frequencies and inferring absence or rarity in the binary, which the artifact says not to do. Its recommended follow-up is practical, though it does not include verifying upstream feature semantics or the SHAP target class."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Most of the x86-style n-grams have a reported frequency of 0.000000, so they are essentially absent or extremely rare in the binary.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says value semantics are not established and must not be treated as raw counts, so absence or rarity in the binary is an unsupported inference.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "Most top n-grams have a frequency of 0.000000, so they are essentially absent or very rare in the binary",
+      "candidate_path": "/candidate_analysis/key_indicators/2",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The same overreach is repeated as a key indicator. Zero feature values are interpreted as binary prevalence without upstream confirmation.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "The highest-frequency n-gram (0.001003)",
+      "candidate_path": "/candidate_analysis/evidence_analysis/6/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "Calling the value a 'frequency' assumes semantics the artifact explicitly does not establish.",
+      "category": "other"
+    },
+    {
+      "quote": "Its high SHAP value likely reflects how it interacts with other features in the model, not any mining behavior.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "/evidence/full_attributions",
+      "reason": "No interaction values, full attributions or baseline are supplied, so this mechanism for the SHAP value is speculation, though hedged with 'likely'.",
+      "category": "shap_misrepresentation"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "ea8c4f711e5f158dbc948861a8543b8f27c54d97e90a9cec93db9b8817b6b315.exe_analysis.json"
+}

@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_327e8b49df488873",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 1.0,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "CALL RET",
+        "value": 0.0021443888545036316,
+        "shap_value": 0.017691829042207733
+      },
+      {
+        "ngram": "PUSH RET",
+        "value": 0.0021443888545036316,
+        "shap_value": 0.015819427149369243
+      },
+      {
+        "ngram": "CDQ MOV",
+        "value": 0.001429592608474195,
+        "shap_value": 0.014996059550215601
+      },
+      {
+        "ngram": "CALL PUSH",
+        "value": 0.04932094365358353,
+        "shap_value": 0.01466777312712567
+      },
+      {
+        "ngram": "MOV RET",
+        "value": 0.0007147963042370975,
+        "shap_value": 0.014536654939470551
+      },
+      {
+        "ngram": "SUB PUSH",
+        "value": 0.01143674086779356,
+        "shap_value": 0.013903005067564264
+      },
+      {
+        "ngram": "ADD PUSH",
+        "value": 0.01143674086779356,
+        "shap_value": 0.013881327051207454
+      },
+      {
+        "ngram": "MOVZX PUSH",
+        "value": 0.001429592608474195,
+        "shap_value": 0.012442470082889203
+      },
+      {
+        "ngram": "MOV PUSH",
+        "value": 0.040743388235569,
+        "shap_value": 0.012261128858850256
+      },
+      {
+        "ngram": "XOR PUSH",
+        "value": 0.034310221672058105,
+        "shap_value": 0.012000761842247987
+      },
+      {
+        "ngram": "POP CALL",
+        "value": 0.00571837043389678,
+        "shap_value": 0.011230030871821499
+      },
+      {
+        "ngram": "POP XCHG",
+        "value": 0.0007147963042370975,
+        "shap_value": 0.010705450174004642
+      },
+      {
+        "ngram": "MOV LEAVE",
+        "value": 0.006433166563510895,
+        "shap_value": 0.010315811636286632
+      },
+      {
+        "ngram": "POP PUSH",
+        "value": 0.021443888545036316,
+        "shap_value": 0.010303805540798853
+      },
+      {
+        "ngram": "LEA PUSH",
+        "value": 0.04503216594457626,
+        "shap_value": 0.010272198613874755
+      },
+      {
+        "ngram": "INC PUSH",
+        "value": 0.001429592608474195,
+        "shap_value": 0.009931761492018706
+      },
+      {
+        "ngram": "PUSH CALL",
+        "value": 0.07719799876213074,
+        "shap_value": 0.009339524813496456
+      },
+      {
+        "ngram": "LEA IDIV",
+        "value": 0.0021443888545036316,
+        "shap_value": 0.008817323209548363
+      },
+      {
+        "ngram": "SUB SBB",
+        "value": 0.001429592608474195,
+        "shap_value": 0.00874043409173256
+      },
+      {
+        "ngram": "XOR CDQ",
+        "value": 0.0007147963042370975,
+        "shap_value": 0.008661894156044616
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest assigns a malware probability of 1.0000, and all 20 top n-grams push toward cryptojacking, with SHAP values from +0.0087 to +0.0177. However, the n-grams are almost entirely generic x86 control-flow and stack-management patterns: CALL RET, PUSH RET, CALL PUSH, PUSH CALL, MOV PUSH, LEA PUSH, XOR PUSH, SUB PUSH, ADD PUSH, POP PUSH, POP CALL, MOV LEAVE and MOV RET. They are typical of compiler-generated function prologues, epilogues and argument passing, and are common in benign software. The evidence contains no mining-specific signatures, such as dense bitwise rotate/shift/XOR sequences, SIMD or vector instructions, or tight arithmetic loops. No function names or locations are listed, so none of these patterns can be tied to a particular routine. A few n-grams (CDQ MOV, LEA IDIV, XOR CDQ, SUB SBB) involve signed division and multi-precision arithmetic. These are compatible with numeric computation but are not specific to cryptojacking. The SHAP contributions are also small and spread evenly, with no single dominant indicator. The model's strong malware output suggests the binary is anomalous, but the evidence supports only a low-confidence cryptojacking classification, because the patterns could come from a malicious sample's call-heavy code structure or from ordinary compiled code.",
+    "evidence_analysis": [
+      {
+        "ngram": "CALL RET",
+        "shap_contribution": 0.017692,
+        "assessment": "The strongest contributor, but it is a generic pattern of a call followed by a return, such as thin wrapper or stub functions. At frequency 0.002144 it is not specific to mining."
+      },
+      {
+        "ngram": "PUSH RET",
+        "shap_contribution": 0.015819,
+        "assessment": "A push immediately followed by a return is unusual in normal code and can indicate an indirect jump or return-address manipulation. With no function context, this is only a weak structural anomaly."
+      },
+      {
+        "ngram": "CDQ MOV",
+        "shap_contribution": 0.014996,
+        "assessment": "Sign extension of EAX into EDX before a move, usually preparing for signed division. It indicates integer arithmetic but is not mining-specific."
+      },
+      {
+        "ngram": "CALL PUSH",
+        "shap_contribution": 0.014668,
+        "assessment": "A common call-then-argument-setup sequence at high frequency (0.049321). It reflects call-heavy code structure and is non-specific."
+      },
+      {
+        "ngram": "MOV RET",
+        "shap_contribution": 0.014537,
+        "assessment": "A return-value load followed by a return, which is a standard function epilogue. It is benign by itself."
+      },
+      {
+        "ngram": "SUB PUSH",
+        "shap_contribution": 0.013903,
+        "assessment": "Stack or register adjustment followed by a push, typical of function setup. It is generic compiler output."
+      },
+      {
+        "ngram": "ADD PUSH",
+        "shap_contribution": 0.013881,
+        "assessment": "Arithmetic followed by an argument push. It is a routine pattern with no cryptojacking specificity."
+      },
+      {
+        "ngram": "MOVZX PUSH",
+        "shap_contribution": 0.012442,
+        "assessment": "A zero-extended byte or word value pushed as an argument. It suggests byte-level data handling but is common in ordinary code."
+      },
+      {
+        "ngram": "MOV PUSH",
+        "shap_contribution": 0.012261,
+        "assessment": "A very common argument-staging pattern (frequency 0.040743). It adds to the overall call-heavy profile and is non-specific."
+      },
+      {
+        "ngram": "XOR PUSH",
+        "shap_contribution": 0.012001,
+        "assessment": "Usually zeroing a register before pushing it (for example, a null argument). XOR is also used in hashing, but this pairing is more likely an idiom than a compute kernel."
+      },
+      {
+        "ngram": "POP CALL",
+        "shap_contribution": 0.01123,
+        "assessment": "A pop followed by a call. It can indicate position-independent code or call-through-register patterns, but it is also routine and inconclusive here."
+      },
+      {
+        "ngram": "POP XCHG",
+        "shap_contribution": 0.010705,
+        "assessment": "An uncommon pairing at low frequency (0.000715). It may reflect hand-written or obfuscated code, but the evidence alone is insufficient to say so."
+      },
+      {
+        "ngram": "MOV LEAVE",
+        "shap_contribution": 0.010316,
+        "assessment": "A standard frame-teardown epilogue. It is benign in isolation."
+      },
+      {
+        "ngram": "POP PUSH",
+        "shap_contribution": 0.010304,
+        "assessment": "Register save and restore or stack shuffling. It is generic."
+      },
+      {
+        "ngram": "LEA PUSH",
+        "shap_contribution": 0.010272,
+        "assessment": "Pushing a computed address as an argument, common at frequency 0.045032. It is generic call-setup code."
+      },
+      {
+        "ngram": "INC PUSH",
+        "shap_contribution": 0.009932,
+        "assessment": "A counter increment followed by a push. It might occur in a loop but is non-specific."
+      },
+      {
+        "ngram": "PUSH CALL",
+        "shap_contribution": 0.00934,
+        "assessment": "The most frequent n-gram (0.077198), the classic argument-push-then-call pattern. It shows a call-dense, stack-based calling convention and nothing about mining."
+      },
+      {
+        "ngram": "LEA IDIV",
+        "shap_contribution": 0.008817,
+        "assessment": "An address or arithmetic computation feeding a signed divide. It suggests modulo or division arithmetic, which is only weakly suggestive of computational work."
+      },
+      {
+        "ngram": "SUB SBB",
+        "shap_contribution": 0.00874,
+        "assessment": "A subtract with borrow, indicating multi-word (64-bit-on-32-bit) arithmetic. It is a mild hint of numeric processing but not diagnostic."
+      },
+      {
+        "ngram": "XOR CDQ",
+        "shap_contribution": 0.008662,
+        "assessment": "Zeroing a register and then sign-extending, a precursor to a division. It is consistent with arithmetic routines and not specific to mining."
+      }
+    ],
+    "confidence_score": 0.4,
+    "key_indicators": [
+      "The Random Forest malware probability is 1.0000 and all top-20 n-grams have positive SHAP toward cryptojacking",
+      "Call-dense stack patterns dominate: PUSH CALL, CALL PUSH, MOV PUSH, LEA PUSH, XOR PUSH",
+      "Unusual control-flow n-grams are present: PUSH RET and POP XCHG",
+      "Division and multi-precision arithmetic patterns: CDQ MOV, LEA IDIV, XOR CDQ, SUB SBB",
+      "No mining-specific instruction patterns (rotate/shift-heavy hash loops, SIMD) appear in the evidence",
+      "No function-level context is provided, so the n-grams cannot be tied to a specific routine"
+    ],
+    "recommended_action": "Treat the sample as suspicious given the model's malware output, but do not conclude cryptojacking from these n-grams alone. Run dynamic analysis in a sandbox, checking for sustained high CPU usage, network connections to mining pools, and persistence behavior. Statically, locate the functions containing PUSH RET, POP XCHG and the IDIV/SBB arithmetic sequences, and look for hashing or mining-style compute loops. Check for packing or obfuscation, since the unusual control-flow n-grams may indicate it."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

@@ -1,0 +1,231 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_b42b30542a55908a",
+  "status": "success",
+  "source_sha256": "3753c342443bb3494067f7953f0b1b66f56dbaa4369bf3668afc1747b2a965d9",
+  "input_sha256": "e8bfae9b19618c1c8c99fcee52c8d2ba7797c574755f5e4673322ac46ed4a26b",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "7a0da8cd91959b6ca4f433a9a334d4d6f3b397f31ff340d8eab6ccd2e8d2dcd6.exe",
+      "source_name": "7a0da8cd91959b6ca4f433a9a334d4d6f3b397f31ff340d8eab6ccd2e8d2dcd6.exe.json",
+      "source_path": "ml/dataset/cryptojacking/7a0da8cd91959b6ca4f433a9a334d4d6f3b397f31ff340d8eab6ccd2e8d2dcd6.exe.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 41,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "7a0da8cd91959b6ca4f433a9a334d4d6f3b397f31ff340d8eab6ccd2e8d2dcd6.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:55:51.766080+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:55:51.766108+00:00",
+      "error": null,
+      "request_sha256": "2b43b39fac7d11327cb811dd9009f6e8e683297989e4db217c0f871adb32cb1b",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm26Fgqpaxvtt5HSgCGJ",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm weighing the evidence: the Random Forest predicts class 1 with probability 1.0, and all 20 top n-gram features have positive SHAP values pushing toward that classification, though the exact semantics of class 1 (malware) rest on an assumed label mapping since no function context or occurrences were found.\n\nChecking the actual SHAP values, the top features range from roughly 0.0055 to 0.0145, with the highest being about 2.6x the lowest — so the claim that the signal is \"fairly evenly spread\" rather than dominated by one feature holds up reasonably well. Looking at the specific n-grams (PXOR MOVAPS, SHRD XOR, PAND PXOR, MOVAPD DIVSD, etc.), I'm questioning how far to stretch the narrative — calling these \"vectorized XOR/AND/add operations on 128-bit blocks as in optimized mining kernels\" feels like overreach, and labeling SHRD a \"double-precision shift\" is technically accurate but potentially misleading phrasing since it's really a double-width shift instruction. I also want to flag that several of the strongest features appear at low frequencies, suggesting the model may be keying on rare, specific instruction patterns rather than broad structural signal.\n\nThe adjacency inference around CALL/RET as a \"thunk or stub\" is unsupported given these are n-gram statistics rather than confirmed adjacency, and similarly the \"specialized code region\" claim from low frequency alone isn't justified. The overall narrative tying these together into \"cryptographic hashing kernels\" is hedged at the end as \"strong inference rather than proof,\" which is appropriate, but the confidence tier of \"high-confidence\" with a 0.9 score essentially just restates the model's 1.0 probability output rather than adding independent justification. The recommendation to \"treat as likely cryptojacking malware\" before verification steps like sandboxing, disassembly, and checking for RandomX/CryptoNight pool addresses is reasonable as a next step, but stating it as a conclusion rather than a hypothesis to test is overreach.\n\nOn SHAP faithfulness, the signs and values are represented accurately, though the \"frequencies\" interpretation and claims about evidence being \"consistent across several instruction families\" go a bit beyond what the SHAP values alone support. Still, I'd call this faithful overall since there's no outright misrepresentation of the actual values.\n\nFor scoring, I'm landing on technical accuracy around 3 given the overreach in interpretation despite correct underlying evidence, coherence around 4 since the reasoning is clear but has some tension between \"strong inference\" and the confident \"high-confidence\" tier, and relevance at 4.\n\nNow I'm flagging the specific unsupported claims and pinpointing their JSON locations - the explanation field, several evidence_analysis assessment entries, the confidence_score, and the tier label. I'm pulling exact quotes like the \"rare, specific instruction combinations\" line, the \"very rare adjacency of call and return\" claim, the PXOR/MOVAPS frequency assertion, and the SIMD/cryptographic hashing kernel comparison, along with the 0.9 confidence score and \"high-confidence\" tier as cases of unsupported certainty.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_b42b30542a55908a\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, the n-gram names and the SHAP signs and magnitudes match the evidence, and the general instruction semantics are correct. However, it treats the feature values as 'frequencies' and reads them as rarity, infers adjacency for CALL RET, and says the mix 'match[es] cryptographic hashing kernels' and mining kernels. The tier and confidence are also overstated. The conclusion is hedged at the end but still overreaches.\",\"coherence\":\"The explanation is organized into three families, with per-feature assessments, indicators and actions that line up. Minor tension: the 'high-confidence' tier, 0.9 confidence and 'Treat as likely cryptojacking malware' sit beside the closing 'strong inference rather than proof'. There is also some repetition between the summary and the per-feature notes.\",\"cybersecurity_relevance\":\"It ties the specific ARX/SIMD/bit-manipulation n-grams to hashing and PoW questions. It states that legitimate cryptographic software cannot be excluded and that no function or API evidence was provided. It does not discuss other benign alternatives, such as compression, media or numeric libraries, for the SSE2 and floating-point features.\",\"actionable_utility\":\"The actions are concrete and mostly proportionate: sandbox for CPU use and pool connections, disassemble the flagged sequences, inspect PUSH RET and CALL RET locations, extract pool and wallet configuration, and check persistence. They are framed as verification, which is good. The 'Treat as likely cryptojacking malware' framing precedes verification, and the actions are not prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Several of the strongest features have very low frequencies, so the model is keying on rare, specific instruction combinations.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the feature values are not established as counts or frequencies, so rarity cannot be inferred from them.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Very low frequency suggests a specialized code region.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics; /evidence/occurrences (empty)\",\"reason\":\"The value semantics are unconfirmed and no occurrence or location context was supplied, so no specialized code region can be inferred.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Very rare adjacency of call and return.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/occurrences (empty); /evidence/function_context (empty)\",\"reason\":\"The n-gram may be graph-aware and non-adjacent, and there is no extraction evidence for adjacency or rarity.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"These suggest vectorized XOR/AND/add operations on 128-bit blocks, as in optimized mining kernels.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Mnemonic pairs alone do not establish the operand widths, data blocks or mining kernels. No code context was supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Taken together, the rotate/shift/XOR arithmetic and SIMD logic mix match cryptographic hashing kernels and agree with the model's maximal malware probability.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/rf_probability_class_1\",\"reason\":\"Only 2-gram mnemonic associations are available, so a match to hashing kernels is not verified. RF probability is not behavioral proof, and the same patterns occur in other code.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"high-confidence\",\"candidate_path\":\"/candidate_analysis/tier\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /scope_notes\",\"reason\":\"The tier and the 0.9 confidence_score rest on the RF probability alone. The evidence has no behavioral, API or function context, and omitted features, the baseline and the target-class source are unverified.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Every cited n-gram has the correct positive SHAP value within the display tolerance. The stated range (+0.0055 to +0.0145) and the ranking of PXOR MOVAPS as top feature are correct. The claims are limited to the top 20, and the explanation does not say that omitted features contribute nothing.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No occurrences, function context, API or string evidence, so no sample-specific behavior can be verified.\",\"Feature value semantics are unconfirmed, so the values may not be counts or frequencies.\",\"The SHAP baseline and full attributions are missing, so omitted features cannot be assessed.\",\"The target class 1 is a configured assumption that needs upstream verification.\",\"RF probability 1.0 is not behavioral proof or calibrated confidence.\"],\"summary\":\"The explanation reports the RF output and the SHAP signs and magnitudes accurately and recommends reasonable verification steps. It overreaches by reading the feature values as frequencies and rarity, inferring CALL RET adjacency, asserting a match to hashing and mining kernels, and assigning a high-confidence tier and 0.9 score from the RF probability. SHAP representation is faithful.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7288,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3703,
+          "output_tokens_details": {
+            "thinking_tokens": 1758
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7288,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3703,
+        "output_tokens_details": {
+          "thinking_tokens": 1758
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_b42b30542a55908a\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability, the n-gram names and the SHAP signs and magnitudes match the evidence, and the general instruction semantics are correct. However, it treats the feature values as 'frequencies' and reads them as rarity, infers adjacency for CALL RET, and says the mix 'match[es] cryptographic hashing kernels' and mining kernels. The tier and confidence are also overstated. The conclusion is hedged at the end but still overreaches.\",\"coherence\":\"The explanation is organized into three families, with per-feature assessments, indicators and actions that line up. Minor tension: the 'high-confidence' tier, 0.9 confidence and 'Treat as likely cryptojacking malware' sit beside the closing 'strong inference rather than proof'. There is also some repetition between the summary and the per-feature notes.\",\"cybersecurity_relevance\":\"It ties the specific ARX/SIMD/bit-manipulation n-grams to hashing and PoW questions. It states that legitimate cryptographic software cannot be excluded and that no function or API evidence was provided. It does not discuss other benign alternatives, such as compression, media or numeric libraries, for the SSE2 and floating-point features.\",\"actionable_utility\":\"The actions are concrete and mostly proportionate: sandbox for CPU use and pool connections, disassemble the flagged sequences, inspect PUSH RET and CALL RET locations, extract pool and wallet configuration, and check persistence. They are framed as verification, which is good. The 'Treat as likely cryptojacking malware' framing precedes verification, and the actions are not prioritized.\"},\"unsupported_claims\":[{\"quote\":\"Several of the strongest features have very low frequencies, so the model is keying on rare, specific instruction combinations.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact says the feature values are not established as counts or frequencies, so rarity cannot be inferred from them.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Very low frequency suggests a specialized code region.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"/evidence/feature_value_semantics; /evidence/occurrences (empty)\",\"reason\":\"The value semantics are unconfirmed and no occurrence or location context was supplied, so no specialized code region can be inferred.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Very rare adjacency of call and return.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/occurrences (empty); /evidence/function_context (empty)\",\"reason\":\"The n-gram may be graph-aware and non-adjacent, and there is no extraction evidence for adjacency or rarity.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"These suggest vectorized XOR/AND/add operations on 128-bit blocks, as in optimized mining kernels.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Mnemonic pairs alone do not establish the operand widths, data blocks or mining kernels. No code context was supplied.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Taken together, the rotate/shift/XOR arithmetic and SIMD logic mix match cryptographic hashing kernels and agree with the model's maximal malware probability.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/top_features; /evidence/rf_probability_class_1\",\"reason\":\"Only 2-gram mnemonic associations are available, so a match to hashing kernels is not verified. RF probability is not behavioral proof, and the same patterns occur in other code.\",\"category\":\"unsupported_certainty\"},{\"quote\":\"high-confidence\",\"candidate_path\":\"/candidate_analysis/tier\",\"evidence_reference\":\"/evidence/rf_probability_class_1; /scope_notes\",\"reason\":\"The tier and the 0.9 confidence_score rest on the RF probability alone. The evidence has no behavioral, API or function context, and omitted features, the baseline and the target-class source are unverified.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"Every cited n-gram has the correct positive SHAP value within the display tolerance. The stated range (+0.0055 to +0.0145) and the ranking of PXOR MOVAPS as top feature are correct. The claims are limited to the top 20, and the explanation does not say that omitted features contribute nothing.\",\"discrepancies\":[]},\"evidence_limitations\":[\"No occurrences, function context, API or string evidence, so no sample-specific behavior can be verified.\",\"Feature value semantics are unconfirmed, so the values may not be counts or frequencies.\",\"The SHAP baseline and full attributions are missing, so omitted features cannot be assessed.\",\"The target class 1 is a configured assumption that needs upstream verification.\",\"RF probability 1.0 is not behavioral proof or calibrated confidence.\"],\"summary\":\"The explanation reports the RF output and the SHAP signs and magnitudes accurately and recommends reasonable verification steps. It overreaches by reading the feature values as frequencies and rarity, inferring CALL RET adjacency, asserting a match to hashing and mining kernels, and assigning a high-confidence tier and 0.9 score from the RF probability. SHAP representation is faithful.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_b42b30542a55908a",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability, the n-gram names and the SHAP signs and magnitudes match the evidence, and the general instruction semantics are correct. However, it treats the feature values as 'frequencies' and reads them as rarity, infers adjacency for CALL RET, and says the mix 'match[es] cryptographic hashing kernels' and mining kernels. The tier and confidence are also overstated. The conclusion is hedged at the end but still overreaches.",
+      "coherence": "The explanation is organized into three families, with per-feature assessments, indicators and actions that line up. Minor tension: the 'high-confidence' tier, 0.9 confidence and 'Treat as likely cryptojacking malware' sit beside the closing 'strong inference rather than proof'. There is also some repetition between the summary and the per-feature notes.",
+      "cybersecurity_relevance": "It ties the specific ARX/SIMD/bit-manipulation n-grams to hashing and PoW questions. It states that legitimate cryptographic software cannot be excluded and that no function or API evidence was provided. It does not discuss other benign alternatives, such as compression, media or numeric libraries, for the SSE2 and floating-point features.",
+      "actionable_utility": "The actions are concrete and mostly proportionate: sandbox for CPU use and pool connections, disassemble the flagged sequences, inspect PUSH RET and CALL RET locations, extract pool and wallet configuration, and check persistence. They are framed as verification, which is good. The 'Treat as likely cryptojacking malware' framing precedes verification, and the actions are not prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Several of the strongest features have very low frequencies, so the model is keying on rare, specific instruction combinations.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact says the feature values are not established as counts or frequencies, so rarity cannot be inferred from them.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Very low frequency suggests a specialized code region.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "/evidence/feature_value_semantics; /evidence/occurrences (empty)",
+        "reason": "The value semantics are unconfirmed and no occurrence or location context was supplied, so no specialized code region can be inferred.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Very rare adjacency of call and return.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+        "evidence_reference": "/evidence/occurrences (empty); /evidence/function_context (empty)",
+        "reason": "The n-gram may be graph-aware and non-adjacent, and there is no extraction evidence for adjacency or rarity.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "These suggest vectorized XOR/AND/add operations on 128-bit blocks, as in optimized mining kernels.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "Mnemonic pairs alone do not establish the operand widths, data blocks or mining kernels. No code context was supplied.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Taken together, the rotate/shift/XOR arithmetic and SIMD logic mix match cryptographic hashing kernels and agree with the model's maximal malware probability.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/top_features; /evidence/rf_probability_class_1",
+        "reason": "Only 2-gram mnemonic associations are available, so a match to hashing kernels is not verified. RF probability is not behavioral proof, and the same patterns occur in other code.",
+        "category": "unsupported_certainty"
+      },
+      {
+        "quote": "high-confidence",
+        "candidate_path": "/candidate_analysis/tier",
+        "evidence_reference": "/evidence/rf_probability_class_1; /scope_notes",
+        "reason": "The tier and the 0.9 confidence_score rest on the RF probability alone. The evidence has no behavioral, API or function context, and omitted features, the baseline and the target-class source are unverified.",
+        "category": "unsupported_certainty"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": true,
+      "reason": "Every cited n-gram has the correct positive SHAP value within the display tolerance. The stated range (+0.0055 to +0.0145) and the ranking of PXOR MOVAPS as top feature are correct. The claims are limited to the top 20, and the explanation does not say that omitted features contribute nothing.",
+      "discrepancies": []
+    },
+    "evidence_limitations": [
+      "No occurrences, function context, API or string evidence, so no sample-specific behavior can be verified.",
+      "Feature value semantics are unconfirmed, so the values may not be counts or frequencies.",
+      "The SHAP baseline and full attributions are missing, so omitted features cannot be assessed.",
+      "The target class 1 is a configured assumption that needs upstream verification.",
+      "RF probability 1.0 is not behavioral proof or calibrated confidence."
+    ],
+    "summary": "The explanation reports the RF output and the SHAP signs and magnitudes accurately and recommends reasonable verification steps. It overreaches by reading the feature values as frequencies and rarity, inferring CALL RET adjacency, asserting a match to hashing and mining kernels, and assigning a high-confidence tier and 0.9 score from the RF probability. SHAP representation is faithful."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Several of the strongest features have very low frequencies, so the model is keying on rare, specific instruction combinations.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact says the feature values are not established as counts or frequencies, so rarity cannot be inferred from them.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Very low frequency suggests a specialized code region.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "/evidence/feature_value_semantics; /evidence/occurrences (empty)",
+      "reason": "The value semantics are unconfirmed and no occurrence or location context was supplied, so no specialized code region can be inferred.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Very rare adjacency of call and return.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+      "evidence_reference": "/evidence/occurrences (empty); /evidence/function_context (empty)",
+      "reason": "The n-gram may be graph-aware and non-adjacent, and there is no extraction evidence for adjacency or rarity.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "These suggest vectorized XOR/AND/add operations on 128-bit blocks, as in optimized mining kernels.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "Mnemonic pairs alone do not establish the operand widths, data blocks or mining kernels. No code context was supplied.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Taken together, the rotate/shift/XOR arithmetic and SIMD logic mix match cryptographic hashing kernels and agree with the model's maximal malware probability.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/top_features; /evidence/rf_probability_class_1",
+      "reason": "Only 2-gram mnemonic associations are available, so a match to hashing kernels is not verified. RF probability is not behavioral proof, and the same patterns occur in other code.",
+      "category": "unsupported_certainty"
+    },
+    {
+      "quote": "high-confidence",
+      "candidate_path": "/candidate_analysis/tier",
+      "evidence_reference": "/evidence/rf_probability_class_1; /scope_notes",
+      "reason": "The tier and the 0.9 confidence_score rest on the RF probability alone. The evidence has no behavioral, API or function context, and omitted features, the baseline and the target-class source are unverified.",
+      "category": "unsupported_certainty"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": true,
+  "source_file": "7a0da8cd91959b6ca4f433a9a334d4d6f3b397f31ff340d8eab6ccd2e8d2dcd6.exe_analysis.json"
+}

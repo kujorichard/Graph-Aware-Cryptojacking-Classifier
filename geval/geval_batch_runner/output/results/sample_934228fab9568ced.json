@@ -1,0 +1,223 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_934228fab9568ced",
+  "status": "success",
+  "source_sha256": "c4d8ecd45fb45cf56289910d8cd7484c657cc8a292306bd22682b96316d18fa0",
+  "input_sha256": "f944f9206725e4b9afb41d0a0e2e158fc3ffc190468fdddac658a3c936403c93",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "346ffdd37a74f5ff26a5b8ab2c3b2b497fd887cc525031b510fdc319093b67d8.exe",
+      "source_name": "346ffdd37a74f5ff26a5b8ab2c3b2b497fd887cc525031b510fdc319093b67d8.exe.json",
+      "source_path": "ml/dataset/cryptojacking/346ffdd37a74f5ff26a5b8ab2c3b2b497fd887cc525031b510fdc319093b67d8.exe.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 70,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "346ffdd37a74f5ff26a5b8ab2c3b2b497fd887cc525031b510fdc319093b67d8.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:25:01.822826+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:25:01.822853+00:00",
+      "error": null,
+      "request_sha256": "fe0ccf2a6fb9687ab3c5a0d47aebce34c5f4917d41b9711a99110f2954365692",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011CfkyjtTMtraZ2AJWnMgLe",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_934228fab9568ced\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Numbers, signs and ranges are largely correct (0.82, 19 of 20 positive, SHAP about +0.005 to +0.010). But several interpretations overreach: describing feature values as \\\"frequencies\\\", treating \\\"ROL ADD\\\"/\\\"ADD ROL\\\" as proof of \\\"repeated add-rotate mixing\\\" and a \\\"hash-like compute loop\\\", and \\\"SHRD ... double-precision shift\\\" (SHRD is a double-word shift). The \\\"Most ... below 0.0003\\\" claim is also imprecise.\",\"coherence\":\"The explanation is well organized and consistent: the tier is low-confidence, the hedging is repeated, and the recommendations follow from the evidence. Minor repetition between the summary, per-feature analysis and key indicators, plus internal tension in calling n-grams \\\"frequent\\\" while they are tiny values.\",\"cybersecurity_relevance\":\"It links sample n-grams (SIMD XOR, ROL/ADD, SYSCALL) to mining and hashing, and names benign alternatives (crypto, compression, checksum libraries, runtime code). It also notes the lack of function-level attribution. Some features are over-read as mining-adjacent.\",\"actionable_utility\":\"Sandbox CPU and network monitoring, locating the functions that contain the ROL/ADD and PXOR sequences, checking MOV SYSCALL context, and searching imports, strings and config for wallets or pools are concrete, feasible and tied to evidence gaps. They are mostly conditional and proportionate, though not clearly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"The most credible signals are the frequent SIMD and rotate patterns.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Feature values are explicitly not established as frequencies or counts, and the values are about 0.001–0.002, so \\\"frequent\\\" is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Together the two indicate repeated add-rotate mixing, supporting a hash-like compute loop.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/occurrences, /evidence/function_context\",\"reason\":\"No occurrence, adjacency, repetition or loop context is supplied. Mnemonic n-grams alone do not establish repeated mixing or a loop.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"High frequency of SSE bitwise patterns (PXOR MOVDQA, PXOR PXOR, PXOR MOVDQU, MOVDQA PAND)\",\"candidate_path\":\"/candidate_analysis/key_indicators/0\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"PXOR MOVDQU (0.000256) and MOVDQA PAND (0.000207) are not high. The values' semantics as frequencies are not established.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"This is a classic ARX hash and cipher round pattern, such as in SHA, Blake, or ChaCha-style mixing\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4\",\"reason\":\"A two-instruction ROL/ADD n-gram does not establish a specific algorithm family. Naming SHA, Blake and ChaCha overreaches.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Rare double-precision shift, typical of multi-word or 128-bit arithmetic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/14/assessment\",\"evidence_reference\":\"/evidence/top_features/14\",\"reason\":\"The semantic label is slightly off (SHRD is a double-word shift, not double-precision), and the multi-word or 128-bit inference is not supported by context.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, the 19-of-20 count, the single negative feature and the magnitudes are reported accurately, and the limits on decisiveness are stated. However, rare or low-value features are described as \\\"frequent\\\" and \\\"high frequency\\\", which misstates what the feature values mean, and the SHAP-ranked patterns are over-read as a hash loop.\",\"discrepancies\":[{\"quote\":\"High frequency of SSE bitwise patterns (PXOR MOVDQA, PXOR PXOR, PXOR MOVDQU, MOVDQA PAND)\",\"candidate_path\":\"/candidate_analysis/key_indicators/0\",\"reason\":\"The values for PXOR MOVDQU (0.000256) and MOVDQA PAND (0.000207) are not high, and their semantics as frequencies are unestablished.\"},{\"quote\":\"The most credible signals are the frequent SIMD and rotate patterns.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"This treats the feature values as frequencies and ranks credibility by them, although SHAP magnitudes for these are not larger than for rare features like MOVZX PUSH.\"}]},\"evidence_limitations\":[\"The target class is a configured assumption (verify upstream extraction).\",\"Feature value semantics are not established, so they should not be read as raw counts or frequencies.\",\"Occurrences, function context, SHAP baseline and full attributions are absent. Omitted features are unknown.\",\"N-gram adjacency and control flow cannot be inferred. There is no behavioral, network or string evidence.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation is clear, hedged, relevant and offers practical follow-up, with accurate numbers and signs. But it repeatedly treats unconfirmed feature values as frequencies and over-reads two-instruction n-grams as hash loops and specific algorithms, so SHAP faithfulness is marked false.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7381,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 2059,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7381,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 2059,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_934228fab9568ced\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Numbers, signs and ranges are largely correct (0.82, 19 of 20 positive, SHAP about +0.005 to +0.010). But several interpretations overreach: describing feature values as \\\"frequencies\\\", treating \\\"ROL ADD\\\"/\\\"ADD ROL\\\" as proof of \\\"repeated add-rotate mixing\\\" and a \\\"hash-like compute loop\\\", and \\\"SHRD ... double-precision shift\\\" (SHRD is a double-word shift). The \\\"Most ... below 0.0003\\\" claim is also imprecise.\",\"coherence\":\"The explanation is well organized and consistent: the tier is low-confidence, the hedging is repeated, and the recommendations follow from the evidence. Minor repetition between the summary, per-feature analysis and key indicators, plus internal tension in calling n-grams \\\"frequent\\\" while they are tiny values.\",\"cybersecurity_relevance\":\"It links sample n-grams (SIMD XOR, ROL/ADD, SYSCALL) to mining and hashing, and names benign alternatives (crypto, compression, checksum libraries, runtime code). It also notes the lack of function-level attribution. Some features are over-read as mining-adjacent.\",\"actionable_utility\":\"Sandbox CPU and network monitoring, locating the functions that contain the ROL/ADD and PXOR sequences, checking MOV SYSCALL context, and searching imports, strings and config for wallets or pools are concrete, feasible and tied to evidence gaps. They are mostly conditional and proportionate, though not clearly prioritized.\"},\"unsupported_claims\":[{\"quote\":\"The most credible signals are the frequent SIMD and rotate patterns.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Feature values are explicitly not established as frequencies or counts, and the values are about 0.001–0.002, so \\\"frequent\\\" is unsupported.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Together the two indicate repeated add-rotate mixing, supporting a hash-like compute loop.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/10/assessment\",\"evidence_reference\":\"/evidence/occurrences, /evidence/function_context\",\"reason\":\"No occurrence, adjacency, repetition or loop context is supplied. Mnemonic n-grams alone do not establish repeated mixing or a loop.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"High frequency of SSE bitwise patterns (PXOR MOVDQA, PXOR PXOR, PXOR MOVDQU, MOVDQA PAND)\",\"candidate_path\":\"/candidate_analysis/key_indicators/0\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"PXOR MOVDQU (0.000256) and MOVDQA PAND (0.000207) are not high. The values' semantics as frequencies are not established.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"This is a classic ARX hash and cipher round pattern, such as in SHA, Blake, or ChaCha-style mixing\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/4/assessment\",\"evidence_reference\":\"/evidence/top_features/4\",\"reason\":\"A two-instruction ROL/ADD n-gram does not establish a specific algorithm family. Naming SHA, Blake and ChaCha overreaches.\",\"category\":\"unsupported_crypto\"},{\"quote\":\"Rare double-precision shift, typical of multi-word or 128-bit arithmetic.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/14/assessment\",\"evidence_reference\":\"/evidence/top_features/14\",\"reason\":\"The semantic label is slightly off (SHRD is a double-word shift, not double-precision), and the multi-word or 128-bit inference is not supported by context.\",\"category\":\"other\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Signs, the 19-of-20 count, the single negative feature and the magnitudes are reported accurately, and the limits on decisiveness are stated. However, rare or low-value features are described as \\\"frequent\\\" and \\\"high frequency\\\", which misstates what the feature values mean, and the SHAP-ranked patterns are over-read as a hash loop.\",\"discrepancies\":[{\"quote\":\"High frequency of SSE bitwise patterns (PXOR MOVDQA, PXOR PXOR, PXOR MOVDQU, MOVDQA PAND)\",\"candidate_path\":\"/candidate_analysis/key_indicators/0\",\"reason\":\"The values for PXOR MOVDQU (0.000256) and MOVDQA PAND (0.000207) are not high, and their semantics as frequencies are unestablished.\"},{\"quote\":\"The most credible signals are the frequent SIMD and rotate patterns.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"This treats the feature values as frequencies and ranks credibility by them, although SHAP magnitudes for these are not larger than for rare features like MOVZX PUSH.\"}]},\"evidence_limitations\":[\"The target class is a configured assumption (verify upstream extraction).\",\"Feature value semantics are not established, so they should not be read as raw counts or frequencies.\",\"Occurrences, function context, SHAP baseline and full attributions are absent. Omitted features are unknown.\",\"N-gram adjacency and control flow cannot be inferred. There is no behavioral, network or string evidence.\",\"The RF probability is not behavioral proof.\"],\"summary\":\"The explanation is clear, hedged, relevant and offers practical follow-up, with accurate numbers and signs. But it repeatedly treats unconfirmed feature values as frequencies and over-reads two-instruction n-grams as hash loops and specific algorithms, so SHAP faithfulness is marked false.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_934228fab9568ced",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Numbers, signs and ranges are largely correct (0.82, 19 of 20 positive, SHAP about +0.005 to +0.010). But several interpretations overreach: describing feature values as \"frequencies\", treating \"ROL ADD\"/\"ADD ROL\" as proof of \"repeated add-rotate mixing\" and a \"hash-like compute loop\", and \"SHRD ... double-precision shift\" (SHRD is a double-word shift). The \"Most ... below 0.0003\" claim is also imprecise.",
+      "coherence": "The explanation is well organized and consistent: the tier is low-confidence, the hedging is repeated, and the recommendations follow from the evidence. Minor repetition between the summary, per-feature analysis and key indicators, plus internal tension in calling n-grams \"frequent\" while they are tiny values.",
+      "cybersecurity_relevance": "It links sample n-grams (SIMD XOR, ROL/ADD, SYSCALL) to mining and hashing, and names benign alternatives (crypto, compression, checksum libraries, runtime code). It also notes the lack of function-level attribution. Some features are over-read as mining-adjacent.",
+      "actionable_utility": "Sandbox CPU and network monitoring, locating the functions that contain the ROL/ADD and PXOR sequences, checking MOV SYSCALL context, and searching imports, strings and config for wallets or pools are concrete, feasible and tied to evidence gaps. They are mostly conditional and proportionate, though not clearly prioritized."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "The most credible signals are the frequent SIMD and rotate patterns.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "Feature values are explicitly not established as frequencies or counts, and the values are about 0.001–0.002, so \"frequent\" is unsupported.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "Together the two indicate repeated add-rotate mixing, supporting a hash-like compute loop.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+        "evidence_reference": "/evidence/occurrences, /evidence/function_context",
+        "reason": "No occurrence, adjacency, repetition or loop context is supplied. Mnemonic n-grams alone do not establish repeated mixing or a loop.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "High frequency of SSE bitwise patterns (PXOR MOVDQA, PXOR PXOR, PXOR MOVDQU, MOVDQA PAND)",
+        "candidate_path": "/candidate_analysis/key_indicators/0",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "PXOR MOVDQU (0.000256) and MOVDQA PAND (0.000207) are not high. The values' semantics as frequencies are not established.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "This is a classic ARX hash and cipher round pattern, such as in SHA, Blake, or ChaCha-style mixing",
+        "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+        "evidence_reference": "/evidence/top_features/4",
+        "reason": "A two-instruction ROL/ADD n-gram does not establish a specific algorithm family. Naming SHA, Blake and ChaCha overreaches.",
+        "category": "unsupported_crypto"
+      },
+      {
+        "quote": "Rare double-precision shift, typical of multi-word or 128-bit arithmetic.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/14/assessment",
+        "evidence_reference": "/evidence/top_features/14",
+        "reason": "The semantic label is slightly off (SHRD is a double-word shift, not double-precision), and the multi-word or 128-bit inference is not supported by context.",
+        "category": "other"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "Signs, the 19-of-20 count, the single negative feature and the magnitudes are reported accurately, and the limits on decisiveness are stated. However, rare or low-value features are described as \"frequent\" and \"high frequency\", which misstates what the feature values mean, and the SHAP-ranked patterns are over-read as a hash loop.",
+      "discrepancies": [
+        {
+          "quote": "High frequency of SSE bitwise patterns (PXOR MOVDQA, PXOR PXOR, PXOR MOVDQU, MOVDQA PAND)",
+          "candidate_path": "/candidate_analysis/key_indicators/0",
+          "reason": "The values for PXOR MOVDQU (0.000256) and MOVDQA PAND (0.000207) are not high, and their semantics as frequencies are unestablished."
+        },
+        {
+          "quote": "The most credible signals are the frequent SIMD and rotate patterns.",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "This treats the feature values as frequencies and ranks credibility by them, although SHAP magnitudes for these are not larger than for rare features like MOVZX PUSH."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "The target class is a configured assumption (verify upstream extraction).",
+      "Feature value semantics are not established, so they should not be read as raw counts or frequencies.",
+      "Occurrences, function context, SHAP baseline and full attributions are absent. Omitted features are unknown.",
+      "N-gram adjacency and control flow cannot be inferred. There is no behavioral, network or string evidence.",
+      "The RF probability is not behavioral proof."
+    ],
+    "summary": "The explanation is clear, hedged, relevant and offers practical follow-up, with accurate numbers and signs. But it repeatedly treats unconfirmed feature values as frequencies and over-reads two-instruction n-grams as hash loops and specific algorithms, so SHAP faithfulness is marked false."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "The most credible signals are the frequent SIMD and rotate patterns.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "Feature values are explicitly not established as frequencies or counts, and the values are about 0.001–0.002, so \"frequent\" is unsupported.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "Together the two indicate repeated add-rotate mixing, supporting a hash-like compute loop.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/10/assessment",
+      "evidence_reference": "/evidence/occurrences, /evidence/function_context",
+      "reason": "No occurrence, adjacency, repetition or loop context is supplied. Mnemonic n-grams alone do not establish repeated mixing or a loop.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "High frequency of SSE bitwise patterns (PXOR MOVDQA, PXOR PXOR, PXOR MOVDQU, MOVDQA PAND)",
+      "candidate_path": "/candidate_analysis/key_indicators/0",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "PXOR MOVDQU (0.000256) and MOVDQA PAND (0.000207) are not high. The values' semantics as frequencies are not established.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "This is a classic ARX hash and cipher round pattern, such as in SHA, Blake, or ChaCha-style mixing",
+      "candidate_path": "/candidate_analysis/evidence_analysis/4/assessment",
+      "evidence_reference": "/evidence/top_features/4",
+      "reason": "A two-instruction ROL/ADD n-gram does not establish a specific algorithm family. Naming SHA, Blake and ChaCha overreaches.",
+      "category": "unsupported_crypto"
+    },
+    {
+      "quote": "Rare double-precision shift, typical of multi-word or 128-bit arithmetic.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/14/assessment",
+      "evidence_reference": "/evidence/top_features/14",
+      "reason": "The semantic label is slightly off (SHRD is a double-word shift, not double-precision), and the multi-word or 128-bit inference is not supported by context.",
+      "category": "other"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "346ffdd37a74f5ff26a5b8ab2c3b2b497fd887cc525031b510fdc319093b67d8.exe_analysis.json"
+}

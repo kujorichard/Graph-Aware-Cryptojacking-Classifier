@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_f7bfdb7683dde00b",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.67,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "ROR MOV",
+        "value": 0.0008540093549527228,
+        "shap_value": 0.008916256808207134
+      },
+      {
+        "ngram": "PSRLDQ XORPS",
+        "value": 0.0006742178811691701,
+        "shap_value": 0.008397580798122277
+      },
+      {
+        "ngram": "VSUBSD VSUBSD",
+        "value": 4.494786116993055e-05,
+        "shap_value": 0.007853767245698697
+      },
+      {
+        "ngram": "BSF MOV",
+        "value": 8.98957223398611e-05,
+        "shap_value": 0.007699969274658652
+      },
+      {
+        "ngram": "PCMPEQB PMOVMSKB",
+        "value": 0.00013484357623383403,
+        "shap_value": 0.007113844585498926
+      },
+      {
+        "ngram": "AND SUB",
+        "value": 0.0013933837180957198,
+        "shap_value": 0.007097423967126206
+      },
+      {
+        "ngram": "XORPS PCMPEQB",
+        "value": 0.00013484357623383403,
+        "shap_value": 0.006727811238127065
+      },
+      {
+        "ngram": "BSF SUB",
+        "value": 8.98957223398611e-05,
+        "shap_value": 0.006637510641757227
+      },
+      {
+        "ngram": "XOR NOP",
+        "value": 4.494786116993055e-05,
+        "shap_value": 0.006234346149315623
+      },
+      {
+        "ngram": "DEC JZ",
+        "value": 4.494786116993055e-05,
+        "shap_value": 0.006113480844765833
+      },
+      {
+        "ngram": "ADD MOVQ",
+        "value": 4.494786116993055e-05,
+        "shap_value": 0.00602850677855722
+      },
+      {
+        "ngram": "LEA POP",
+        "value": 8.98957223398611e-05,
+        "shap_value": 0.005908136297526225
+      },
+      {
+        "ngram": "VMOVSD VFMADD213SD",
+        "value": 0.0001797914446797222,
+        "shap_value": 0.0058785637122477615
+      },
+      {
+        "ngram": "AND SAR",
+        "value": 0.0022473931312561035,
+        "shap_value": 0.005729866161574737
+      },
+      {
+        "ngram": "VMULSD VFMADD213SD",
+        "value": 0.00022473929857369512,
+        "shap_value": 0.005654311550763342
+      },
+      {
+        "ngram": "MOVAPD DIVSD",
+        "value": 4.494786116993055e-05,
+        "shap_value": 0.005603804173669805
+      },
+      {
+        "ngram": "AND ROR",
+        "value": 0.0012585400836542249,
+        "shap_value": 0.005394686545165131
+      },
+      {
+        "ngram": "MOV XCHG",
+        "value": 0.0006292700418271124,
+        "shap_value": 0.005161062481803329
+      },
+      {
+        "ngram": "MULSD MOVAPD",
+        "value": 0.00013484357623383403,
+        "shap_value": 0.005112370677011821
+      },
+      {
+        "ngram": "PUNPCKLBW PSHUFD",
+        "value": 4.494786116993055e-05,
+        "shap_value": 0.005111762387730031
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "low-confidence",
+    "explanation": "The Random Forest labels this binary MALWARE with probability 0.67, which is only moderately above the decision boundary. All 20 top n-grams push toward cryptojacking, but the contributions are small and nearly flat (+0.0051 to +0.0089), so no single feature dominates. Most of the n-grams are also very rare, with relative frequencies from 0.000045 to 0.002247. The evidence has three themes. (1) Bit-manipulation and integer patterns (ROR MOV at +0.008916, AND ROR at +0.005395, AND SUB at +0.007097, AND SAR at +0.005730, MOV XCHG at +0.005161) could resemble hash or cipher mixing, but they are low-frequency and common in general compiled code. (2) SSE byte-scan patterns (PCMPEQB PMOVMSKB, XORPS PCMPEQB, BSF MOV, BSF SUB, PSRLDQ XORPS) look like vectorized string or memory scanning, and this is not specific to mining. (3) Scalar double-precision and FMA patterns (VSUBSD VSUBSD, VMOVSD VFMADD213SD, VMULSD VFMADD213SD, MOVAPD DIVSD, MULSD MOVAPD) suggest floating-point math, which is typical of compiler runtime or math library code and not a proof of mining. The evidence lists no function names or call context, so none of these patterns can be tied to a mining loop, a stratum-style workload, or a sustained compute kernel. The patterns are consistent with cryptojacking code but equally consistent with benign code, so the case is inconclusive. The confidence_score is my estimated likelihood of cryptojacking, not certainty in the tier.",
+    "evidence_analysis": [
+      {
+        "ngram": "ROR MOV",
+        "shap_contribution": 0.008916,
+        "assessment": "Rotate followed by move is a building block of hash and cipher rounds, so it is the strongest single hint toward mining-style mixing. At a frequency of only 0.000854 it is not a sustained hashing kernel, and rotates also occur in ordinary runtime code."
+      },
+      {
+        "ngram": "PSRLDQ XORPS",
+        "shap_contribution": 0.008398,
+        "assessment": "An SSE byte shift followed by an XOR is used in vectorized data mixing and register clearing. It is weakly consistent with crypto-style vector work but generic, and its frequency is low."
+      },
+      {
+        "ngram": "VSUBSD VSUBSD",
+        "shap_contribution": 0.007854,
+        "assessment": "Consecutive AVX scalar double subtractions indicate floating-point numeric code. Integer-heavy miners do not typically rely on this, so it is likely incidental math or library code. The frequency is extremely low (0.000045)."
+      },
+      {
+        "ngram": "BSF MOV",
+        "shap_contribution": 0.0077,
+        "assessment": "Bit-scan-forward is commonly used to find the first matching byte after a vector compare, as in optimized string or memory routines. It is not specific to mining."
+      },
+      {
+        "ngram": "PCMPEQB PMOVMSKB",
+        "shap_contribution": 0.007114,
+        "assessment": "This is a classic SSE2 idiom for byte comparison and mask extraction, used in strlen, memchr and similar routines. It is characteristic of generic library code and weak evidence for cryptojacking."
+      },
+      {
+        "ngram": "AND SUB",
+        "shap_contribution": 0.007097,
+        "assessment": "A common integer masking and arithmetic pair at a relatively high frequency (0.001393). It points to ordinary alignment or index arithmetic and has little discriminative value for mining."
+      },
+      {
+        "ngram": "XORPS PCMPEQB",
+        "shap_contribution": 0.006728,
+        "assessment": "Register zeroing followed by a byte compare is part of the vectorized scan idiom seen with PCMPEQB PMOVMSKB and BSF. It most likely belongs to the same string or memory routine and not to a miner."
+      },
+      {
+        "ngram": "BSF SUB",
+        "shap_contribution": 0.006638,
+        "assessment": "This is another bit-scan idiom that computes an offset or length after a vector match. It is likely tied to the same scanning routines and is not indicative of mining."
+      },
+      {
+        "ngram": "XOR NOP",
+        "shap_contribution": 0.006234,
+        "assessment": "XOR followed by NOP is likely register zeroing before padding or alignment. It carries no meaningful cryptojacking signal despite the SHAP weight."
+      },
+      {
+        "ngram": "DEC JZ",
+        "shap_contribution": 0.006113,
+        "assessment": "A counter decrement with a conditional exit is a generic loop-control pattern. It could belong to a hashing loop but is equally common everywhere."
+      },
+      {
+        "ngram": "ADD MOVQ",
+        "shap_contribution": 0.006029,
+        "assessment": "An integer add followed by a transfer between general-purpose and XMM registers is a generic data movement pattern. It is not specific to mining."
+      },
+      {
+        "ngram": "LEA POP",
+        "shap_contribution": 0.005908,
+        "assessment": "An address computation followed by a stack pop is typical of function epilogues. This is a compiler artifact with no cryptojacking significance."
+      },
+      {
+        "ngram": "VMOVSD VFMADD213SD",
+        "shap_contribution": 0.005879,
+        "assessment": "An AVX scalar load followed by a fused multiply-add indicates floating-point polynomial or math-library evaluation. Floating-point FMA is not typical of integer hashing miners, so this is weak or incidental evidence."
+      },
+      {
+        "ngram": "AND SAR",
+        "shap_contribution": 0.00573,
+        "assessment": "A mask-and-shift pair at a relatively high frequency (0.002247). It reflects common bit-field or arithmetic handling and is not discriminative for mining."
+      },
+      {
+        "ngram": "VMULSD VFMADD213SD",
+        "shap_contribution": 0.005654,
+        "assessment": "A scalar multiply followed by an FMA is a floating-point math pattern, consistent with numeric library routines. It does not indicate a mining kernel."
+      },
+      {
+        "ngram": "MOVAPD DIVSD",
+        "shap_contribution": 0.005604,
+        "assessment": "A packed-double move followed by a scalar double division is generic floating-point computation at a very low frequency. It has no clear link to cryptojacking."
+      },
+      {
+        "ngram": "AND ROR",
+        "shap_contribution": 0.005395,
+        "assessment": "A mask followed by a rotate is mildly suggestive of hash-style bit mixing and appears alongside ROR MOV. At a frequency of 0.001259 it is still not conclusive and also appears in benign hashing or checksum code."
+      },
+      {
+        "ngram": "MOV XCHG",
+        "shap_contribution": 0.005161,
+        "assessment": "An exchange after a move is typical of swap or synchronization-style operations. It is ambiguous and not indicative of mining by itself."
+      },
+      {
+        "ngram": "MULSD MOVAPD",
+        "shap_contribution": 0.005112,
+        "assessment": "A scalar double multiply followed by a register move is ordinary floating-point code. It adds little cryptojacking signal."
+      },
+      {
+        "ngram": "PUNPCKLBW PSHUFD",
+        "shap_contribution": 0.005112,
+        "assessment": "SSE byte unpacking and shuffling are used in vectorized data reformatting. They can occur in crypto or hash implementations but are also common in memory and string routines. The frequency is very low."
+      }
+    ],
+    "confidence_score": 0.35,
+    "key_indicators": [
+      "Model probability of 0.67 is only moderately above the threshold",
+      "All top-20 SHAP values are small and uniform (+0.005 to +0.009), with no dominant feature",
+      "Rotate and bitmask n-grams (ROR MOV, AND ROR) are weakly hash-like but low-frequency",
+      "SSE compare/mask/bit-scan idioms (PCMPEQB PMOVMSKB, BSF MOV, BSF SUB) match generic string and memory scanning routines",
+      "Scalar double and FMA n-grams point to floating-point math, not integer-heavy mining kernels",
+      "No function-level or contextual evidence ties any n-gram to a mining loop"
+    ],
+    "recommended_action": "Treat as inconclusive and do not label as cryptojacking on this evidence alone. Verify the binary's provenance, signature and hash against known-good sources. Then inspect the functions containing ROR MOV and AND ROR for sustained hash-round loops, and check whether the SSE and FMA code sits in library routines. Use dynamic analysis or sandboxing to confirm whether there is sustained CPU load or mining-pool network behavior before escalating."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

@@ -1,0 +1,223 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_011401ea285ee25f",
+  "status": "success",
+  "source_sha256": "67bebcb1abfcf7311f886b0cfc2fa1406204a40f0e8187394c6f0829ad8ee11b",
+  "input_sha256": "9401d41f479d7ede4632fecdb0628e2019baed1e3526de5aa751a99918d3e82d",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "39899e500bdfd7374f1e70fbfac44d6426e7b4eb4970c3ff49a3515f76e13728.exe",
+      "source_name": "39899e500bdfd7374f1e70fbfac44d6426e7b4eb4970c3ff49a3515f76e13728.exe.json",
+      "source_path": "ml/dataset/cryptojacking/39899e500bdfd7374f1e70fbfac44d6426e7b4eb4970c3ff49a3515f76e13728.exe.json",
+      "split": "test",
+      "batch_number": 3,
+      "row_index_in_batch": 7,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "39899e500bdfd7374f1e70fbfac44d6426e7b4eb4970c3ff49a3515f76e13728.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T12:28:00.640990+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T12:28:00.641017+00:00",
+      "error": null,
+      "request_sha256": "afe722f4b3c7f1aaf6338b6fc7cb35fb454748034e6fb72d5b4e86b891b15ee5",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfkyy5Vk1FrbKQNHp9giu",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_011401ea285ee25f\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP values, frequencies and the range +0.0087 to +0.0176 match the evidence, and the explanation correctly says generic n-grams are non-diagnostic. But it asserts adjacency and control-flow meaning, e.g. \\\"It marks a call immediately followed by a return, as in a thin wrapper or tail-call function\\\", although n-grams may be non-adjacent and no context is provided. \\\"SHAP contributions are spread evenly\\\" is also overstated from the top-20 only.\",\"coherence\":\"Well organized: it moves from classifier output to generic patterns, then weak signals, to a hedged conclusion. Minor inconsistency: the tier is \\\"low-confidence\\\" and confidence_score is 0.55, yet the text says the result \\\"leans suspicious\\\" and the \\\"model's confidence supports suspicion\\\". The PUSH RET entry also leans on obfuscation/control-flow speculation.\",\"cybersecurity_relevance\":\"Links to sample n-grams and cryptojacking investigation (hashing/mining routines, big-number math, obfuscation) and notes the lack of function context. It touches the benign alternative of ordinary compiled code but does not explicitly discuss legitimate numeric software or other malware families.\",\"actionable_utility\":\"Concrete and proportionate: disassemble, locate the functions with the listed n-grams, check for mining loops/indirect control flow, then sandbox for CPU load and network activity. It is conditional and does not fabricate indicators. It could be more prioritized, for example by naming specific mining-related artifacts such as pool/stratum strings.\"},\"unsupported_claims\":[{\"quote\":\"It marks a call immediately followed by a return, as in a thin wrapper or tail-call function.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"evidence.top_features[0]; scope_notes; occurrences=[]; function_context=[]\",\"reason\":\"Asserts adjacency and a specific code structure, but the evidence has no extraction context. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"An unusual sequence, since a PUSH directly before RET can indicate a computed or indirect control transfer.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"evidence.top_features[1]; occurrences=[]\",\"reason\":\"Assumes direct adjacency and suggests control-transfer semantics without instruction context. It is hedged with \\\"can\\\", but the adjacency is asserted.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The SHAP contributions are spread evenly with no dominant feature, which suggests the model is responding to an overall statistical profile rather than a distinct mining signature.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence.full_attributions=null; shap_baseline=null; scope_notes\",\"reason\":\"Only the top-20 SHAP values are available, so even distribution across all features and the absence of a dominant feature cannot be established. Inferring model behavior from this subset overreaches.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"The high-frequency patterns (PUSH CALL 0.0779, CALL PUSH 0.0512, LEA PUSH 0.0455, MOV PUSH 0.0411, XOR PUSH 0.0346) suggest a call-heavy, stack-argument-passing style\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence.feature_value_semantics\",\"reason\":\"The feature values are explicitly not established as raw counts or frequencies, yet the candidate treats them as frequencies and infers code style from them.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs and values are reported correctly, but the candidate generalizes to an even spread and an overall statistical profile from only the top-20 subset, with no baseline or full attributions.\",\"discrepancies\":[{\"quote\":\"The SHAP contributions are spread evenly with no dominant feature, which suggests the model is responding to an overall statistical profile\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Cannot be established from top-k SHAP values; omitted features and baseline are unknown.\"},{\"quote\":\"Strongest contributor.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"reason\":\"This is true only within the supplied top-20 list; the candidate does not qualify it as a top-k claim.\"}]},\"evidence_limitations\":[\"No occurrences or function_context, so adjacency, location and control flow are unknown.\",\"Feature value semantics are not established; the values may not be raw counts or frequencies.\",\"No SHAP baseline or full attributions, so omitted features are unknown.\",\"SHAP target class is a configured assumption that needs upstream verification.\",\"RF probability of 1.0 is not behavioral proof.\"],\"summary\":\"The explanation correctly reports the RF probability, SHAP signs and values and stays appropriately cautious about the generic n-grams. It overreaches in places: it assumes adjacency and control-flow semantics, treats feature values as frequencies, and generalizes the SHAP distribution beyond the top-20 subset. Its follow-up recommendations are sound and proportionate.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 7207,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 1889,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 7207,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1889,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_011401ea285ee25f\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"Probability, SHAP values, frequencies and the range +0.0087 to +0.0176 match the evidence, and the explanation correctly says generic n-grams are non-diagnostic. But it asserts adjacency and control-flow meaning, e.g. \\\"It marks a call immediately followed by a return, as in a thin wrapper or tail-call function\\\", although n-grams may be non-adjacent and no context is provided. \\\"SHAP contributions are spread evenly\\\" is also overstated from the top-20 only.\",\"coherence\":\"Well organized: it moves from classifier output to generic patterns, then weak signals, to a hedged conclusion. Minor inconsistency: the tier is \\\"low-confidence\\\" and confidence_score is 0.55, yet the text says the result \\\"leans suspicious\\\" and the \\\"model's confidence supports suspicion\\\". The PUSH RET entry also leans on obfuscation/control-flow speculation.\",\"cybersecurity_relevance\":\"Links to sample n-grams and cryptojacking investigation (hashing/mining routines, big-number math, obfuscation) and notes the lack of function context. It touches the benign alternative of ordinary compiled code but does not explicitly discuss legitimate numeric software or other malware families.\",\"actionable_utility\":\"Concrete and proportionate: disassemble, locate the functions with the listed n-grams, check for mining loops/indirect control flow, then sandbox for CPU load and network activity. It is conditional and does not fabricate indicators. It could be more prioritized, for example by naming specific mining-related artifacts such as pool/stratum strings.\"},\"unsupported_claims\":[{\"quote\":\"It marks a call immediately followed by a return, as in a thin wrapper or tail-call function.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"evidence_reference\":\"evidence.top_features[0]; scope_notes; occurrences=[]; function_context=[]\",\"reason\":\"Asserts adjacency and a specific code structure, but the evidence has no extraction context. Graph-aware n-grams need not be adjacent.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"An unusual sequence, since a PUSH directly before RET can indicate a computed or indirect control transfer.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"evidence.top_features[1]; occurrences=[]\",\"reason\":\"Assumes direct adjacency and suggests control-transfer semantics without instruction context. It is hedged with \\\"can\\\", but the adjacency is asserted.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"The SHAP contributions are spread evenly with no dominant feature, which suggests the model is responding to an overall statistical profile rather than a distinct mining signature.\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence.full_attributions=null; shap_baseline=null; scope_notes\",\"reason\":\"Only the top-20 SHAP values are available, so even distribution across all features and the absence of a dominant feature cannot be established. Inferring model behavior from this subset overreaches.\",\"category\":\"shap_misrepresentation\"},{\"quote\":\"The high-frequency patterns (PUSH CALL 0.0779, CALL PUSH 0.0512, LEA PUSH 0.0455, MOV PUSH 0.0411, XOR PUSH 0.0346) suggest a call-heavy, stack-argument-passing style\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"evidence.feature_value_semantics\",\"reason\":\"The feature values are explicitly not established as raw counts or frequencies, yet the candidate treats them as frequencies and infers code style from them.\",\"category\":\"unsupported_behavior\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"SHAP signs and values are reported correctly, but the candidate generalizes to an even spread and an overall statistical profile from only the top-20 subset, with no baseline or full attributions.\",\"discrepancies\":[{\"quote\":\"The SHAP contributions are spread evenly with no dominant feature, which suggests the model is responding to an overall statistical profile\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"Cannot be established from top-k SHAP values; omitted features and baseline are unknown.\"},{\"quote\":\"Strongest contributor.\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/0/assessment\",\"reason\":\"This is true only within the supplied top-20 list; the candidate does not qualify it as a top-k claim.\"}]},\"evidence_limitations\":[\"No occurrences or function_context, so adjacency, location and control flow are unknown.\",\"Feature value semantics are not established; the values may not be raw counts or frequencies.\",\"No SHAP baseline or full attributions, so omitted features are unknown.\",\"SHAP target class is a configured assumption that needs upstream verification.\",\"RF probability of 1.0 is not behavioral proof.\"],\"summary\":\"The explanation correctly reports the RF probability, SHAP signs and values and stays appropriately cautious about the generic n-grams. It overreaches in places: it assumes adjacency and control-flow semantics, treats feature values as frequencies, and generalizes the SHAP distribution beyond the top-20 subset. Its follow-up recommendations are sound and proportionate.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_011401ea285ee25f",
+    "scores": {
+      "technical_accuracy": 3,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "Probability, SHAP values, frequencies and the range +0.0087 to +0.0176 match the evidence, and the explanation correctly says generic n-grams are non-diagnostic. But it asserts adjacency and control-flow meaning, e.g. \"It marks a call immediately followed by a return, as in a thin wrapper or tail-call function\", although n-grams may be non-adjacent and no context is provided. \"SHAP contributions are spread evenly\" is also overstated from the top-20 only.",
+      "coherence": "Well organized: it moves from classifier output to generic patterns, then weak signals, to a hedged conclusion. Minor inconsistency: the tier is \"low-confidence\" and confidence_score is 0.55, yet the text says the result \"leans suspicious\" and the \"model's confidence supports suspicion\". The PUSH RET entry also leans on obfuscation/control-flow speculation.",
+      "cybersecurity_relevance": "Links to sample n-grams and cryptojacking investigation (hashing/mining routines, big-number math, obfuscation) and notes the lack of function context. It touches the benign alternative of ordinary compiled code but does not explicitly discuss legitimate numeric software or other malware families.",
+      "actionable_utility": "Concrete and proportionate: disassemble, locate the functions with the listed n-grams, check for mining loops/indirect control flow, then sandbox for CPU load and network activity. It is conditional and does not fabricate indicators. It could be more prioritized, for example by naming specific mining-related artifacts such as pool/stratum strings."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "It marks a call immediately followed by a return, as in a thin wrapper or tail-call function.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+        "evidence_reference": "evidence.top_features[0]; scope_notes; occurrences=[]; function_context=[]",
+        "reason": "Asserts adjacency and a specific code structure, but the evidence has no extraction context. Graph-aware n-grams need not be adjacent.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "An unusual sequence, since a PUSH directly before RET can indicate a computed or indirect control transfer.",
+        "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+        "evidence_reference": "evidence.top_features[1]; occurrences=[]",
+        "reason": "Assumes direct adjacency and suggests control-transfer semantics without instruction context. It is hedged with \"can\", but the adjacency is asserted.",
+        "category": "unsupported_behavior"
+      },
+      {
+        "quote": "The SHAP contributions are spread evenly with no dominant feature, which suggests the model is responding to an overall statistical profile rather than a distinct mining signature.",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "evidence.full_attributions=null; shap_baseline=null; scope_notes",
+        "reason": "Only the top-20 SHAP values are available, so even distribution across all features and the absence of a dominant feature cannot be established. Inferring model behavior from this subset overreaches.",
+        "category": "shap_misrepresentation"
+      },
+      {
+        "quote": "The high-frequency patterns (PUSH CALL 0.0779, CALL PUSH 0.0512, LEA PUSH 0.0455, MOV PUSH 0.0411, XOR PUSH 0.0346) suggest a call-heavy, stack-argument-passing style",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "evidence.feature_value_semantics",
+        "reason": "The feature values are explicitly not established as raw counts or frequencies, yet the candidate treats them as frequencies and infers code style from them.",
+        "category": "unsupported_behavior"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "SHAP signs and values are reported correctly, but the candidate generalizes to an even spread and an overall statistical profile from only the top-20 subset, with no baseline or full attributions.",
+      "discrepancies": [
+        {
+          "quote": "The SHAP contributions are spread evenly with no dominant feature, which suggests the model is responding to an overall statistical profile",
+          "candidate_path": "/candidate_analysis/explanation",
+          "reason": "Cannot be established from top-k SHAP values; omitted features and baseline are unknown."
+        },
+        {
+          "quote": "Strongest contributor.",
+          "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+          "reason": "This is true only within the supplied top-20 list; the candidate does not qualify it as a top-k claim."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "No occurrences or function_context, so adjacency, location and control flow are unknown.",
+      "Feature value semantics are not established; the values may not be raw counts or frequencies.",
+      "No SHAP baseline or full attributions, so omitted features are unknown.",
+      "SHAP target class is a configured assumption that needs upstream verification.",
+      "RF probability of 1.0 is not behavioral proof."
+    ],
+    "summary": "The explanation correctly reports the RF probability, SHAP signs and values and stays appropriately cautious about the generic n-grams. It overreaches in places: it assumes adjacency and control-flow semantics, treats feature values as frequencies, and generalizes the SHAP distribution beyond the top-20 subset. Its follow-up recommendations are sound and proportionate."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "It marks a call immediately followed by a return, as in a thin wrapper or tail-call function.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "evidence_reference": "evidence.top_features[0]; scope_notes; occurrences=[]; function_context=[]",
+      "reason": "Asserts adjacency and a specific code structure, but the evidence has no extraction context. Graph-aware n-grams need not be adjacent.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "An unusual sequence, since a PUSH directly before RET can indicate a computed or indirect control transfer.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/1/assessment",
+      "evidence_reference": "evidence.top_features[1]; occurrences=[]",
+      "reason": "Assumes direct adjacency and suggests control-transfer semantics without instruction context. It is hedged with \"can\", but the adjacency is asserted.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The SHAP contributions are spread evenly with no dominant feature, which suggests the model is responding to an overall statistical profile rather than a distinct mining signature.",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "evidence.full_attributions=null; shap_baseline=null; scope_notes",
+      "reason": "Only the top-20 SHAP values are available, so even distribution across all features and the absence of a dominant feature cannot be established. Inferring model behavior from this subset overreaches.",
+      "category": "shap_misrepresentation"
+    },
+    {
+      "quote": "The high-frequency patterns (PUSH CALL 0.0779, CALL PUSH 0.0512, LEA PUSH 0.0455, MOV PUSH 0.0411, XOR PUSH 0.0346) suggest a call-heavy, stack-argument-passing style",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "evidence.feature_value_semantics",
+      "reason": "The feature values are explicitly not established as raw counts or frequencies, yet the candidate treats them as frequencies and infers code style from them.",
+      "category": "unsupported_behavior"
+    },
+    {
+      "quote": "The SHAP contributions are spread evenly with no dominant feature, which suggests the model is responding to an overall statistical profile",
+      "candidate_path": "/candidate_analysis/explanation",
+      "reason": "Cannot be established from top-k SHAP values; omitted features and baseline are unknown.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    },
+    {
+      "quote": "Strongest contributor.",
+      "candidate_path": "/candidate_analysis/evidence_analysis/0/assessment",
+      "reason": "This is true only within the supplied top-20 list; the candidate does not qualify it as a top-k claim.",
+      "category": "shap_misrepresentation",
+      "evidence_reference": "/evidence/top_features"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "39899e500bdfd7374f1e70fbfac44d6426e7b4eb4970c3ff49a3515f76e13728.exe_analysis.json"
+}

@@ -1,0 +1,238 @@
+{
+  "sample_id": "sample_2d0f9c36fc7c3281",
+  "evidence": {
+    "rf_prediction": 1,
+    "rf_probability_class_1": 0.925,
+    "ngram_size": 2,
+    "shap_target_class": 1,
+    "shap_target_class_source": "Configured assumption: verify upstream extraction",
+    "top_features": [
+      {
+        "ngram": "PXOR MOVAPS",
+        "value": 6.868132004456129e-06,
+        "shap_value": 0.013382639389456065
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "value": 0.0004979395889677107,
+        "shap_value": 0.009344537540812112
+      },
+      {
+        "ngram": "PUSH RET",
+        "value": 3.4340660022280645e-06,
+        "shap_value": 0.00889357894415401
+      },
+      {
+        "ngram": "SUB ADC",
+        "value": 1.201923078042455e-05,
+        "shap_value": 0.007679841175744147
+      },
+      {
+        "ngram": "PXOR MOVUPS",
+        "value": 3.4340660022280645e-06,
+        "shap_value": 0.007285464118761983
+      },
+      {
+        "ngram": "SHRD XOR",
+        "value": 1.3736264008912258e-05,
+        "shap_value": 0.006992692690350878
+      },
+      {
+        "ngram": "TEST JGE",
+        "value": 0.0003571428533177823,
+        "shap_value": 0.0067031917473472395
+      },
+      {
+        "ngram": "MOV SYSCALL",
+        "value": 2.7472528017824516e-05,
+        "shap_value": 0.0065903744411484584
+      },
+      {
+        "ngram": "VPXOR VMOVDQU",
+        "value": 0.00019745879399124533,
+        "shap_value": 0.005952171295601381
+      },
+      {
+        "ngram": "ROL ADD",
+        "value": 0.0005116758402436972,
+        "shap_value": 0.00593057215728306
+      },
+      {
+        "ngram": "CALL PUSH",
+        "value": 1.7170330011140322e-06,
+        "shap_value": 0.005920460742750728
+      },
+      {
+        "ngram": "SHR ADC",
+        "value": 0.00015453297237399966,
+        "shap_value": 0.005708209637645596
+      },
+      {
+        "ngram": "SHRD MOV",
+        "value": 1.201923078042455e-05,
+        "shap_value": 0.005705569199380614
+      },
+      {
+        "ngram": "LEA VMOVDQU",
+        "value": 0.00019745879399124533,
+        "shap_value": 0.0054676091053677735
+      },
+      {
+        "ngram": "MOV ROL",
+        "value": 0.00014938187086954713,
+        "shap_value": 0.0052164728440664805
+      },
+      {
+        "ngram": "XOR ADC",
+        "value": 6.353022035909817e-05,
+        "shap_value": 0.005197777854294773
+      },
+      {
+        "ngram": "CALL RET",
+        "value": 1.7170330465887673e-05,
+        "shap_value": 0.0051527372191427665
+      },
+      {
+        "ngram": "ROL AND",
+        "value": 6.868132186355069e-05,
+        "shap_value": 0.005063622078727528
+      },
+      {
+        "ngram": "CMP SHLD",
+        "value": 8.585165232943837e-06,
+        "shap_value": 0.004973932665370796
+      },
+      {
+        "ngram": "MOVZX ROL",
+        "value": 0.0001219093392137438,
+        "shap_value": 0.00495002431459058
+      }
+    ],
+    "occurrences": [],
+    "function_context": [],
+    "feature_value_semantics": "Not established by this artifact; do not treat as raw counts without upstream confirmation",
+    "shap_baseline": null,
+    "full_attributions": null
+  },
+  "candidate_analysis": {
+    "tier": "high-confidence",
+    "explanation": "The Random Forest assigns 0.9250 probability of malware, and all 20 of the top SHAP features push toward cryptojacking, with none opposing. The evidence falls into three groups consistent with hash or cipher computation, as found in proof-of-work mining. (1) SIMD/vector XOR patterns: PXOR MOVAPS (+0.013383, the strongest feature), PXOR PXOR (+0.009345, frequency 0.000498), PXOR MOVUPS (+0.007285), VPXOR VMOVDQU (+0.005952) and LEA VMOVDQU (+0.005468), both at frequency 0.000197. These indicate bulk XOR and vector-register data movement, typical of memory-hard or vectorized hashing kernels. (2) Rotate, shift and carry-chain arithmetic: ROL ADD (+0.005931, frequency 0.000512), MOV ROL (+0.005216), ROL AND (+0.005064), MOVZX ROL (+0.004950), SHRD XOR (+0.006993), SHRD MOV (+0.005706), CMP SHLD (+0.004974), SUB ADC (+0.007680), SHR ADC (+0.005708) and XOR ADC (+0.005198). Rotations combined with add/xor are the core of ARX-style hash and cipher rounds, and the double-precision shifts and add-with-carry sequences suggest multi-word big-integer arithmetic. (3) Control-flow and system-interaction patterns: MOV SYSCALL (+0.006590), PUSH RET (+0.008894), CALL PUSH (+0.005920), CALL RET (+0.005153) and TEST JGE (+0.006703). These are low-frequency and less specific. PUSH RET and CALL PUSH/RET may indicate unusual control flow such as obfuscation or packing, and a direct syscall may indicate evasion of API monitoring. However, the evidence does not show function names or call targets, so these remain suggestive only. The compute-oriented features are numerous, highly ranked, and mutually consistent, and the model's probability is high. Together they support a high-confidence cryptojacking assessment, with the caveat that general-purpose crypto libraries can produce similar instruction patterns, so mnemonic n-grams alone cannot prove mining.",
+    "evidence_analysis": [
+      {
+        "ngram": "PXOR MOVAPS",
+        "shap_contribution": 0.013383,
+        "assessment": "Strongest contributor. SIMD XOR followed by an aligned vector move is characteristic of vectorized state mixing in hash/cipher kernels used by miners."
+      },
+      {
+        "ngram": "PXOR PXOR",
+        "shap_contribution": 0.009345,
+        "assessment": "Consecutive SIMD XORs at relatively high frequency (0.000498) indicate repeated bulk XOR mixing, consistent with hashing rounds."
+      },
+      {
+        "ngram": "PUSH RET",
+        "shap_contribution": 0.008894,
+        "assessment": "Push followed by return is an atypical control-flow idiom that can indicate obfuscation or packing. Very low frequency, so suggestive only."
+      },
+      {
+        "ngram": "SUB ADC",
+        "shap_contribution": 0.00768,
+        "assessment": "Subtract with add-with-carry suggests multi-precision arithmetic, relevant to big-integer or finite-field computation in crypto routines."
+      },
+      {
+        "ngram": "PXOR MOVUPS",
+        "shap_contribution": 0.007285,
+        "assessment": "SIMD XOR followed by an unaligned vector move; reinforces the vectorized XOR/state-handling pattern."
+      },
+      {
+        "ngram": "SHRD XOR",
+        "shap_contribution": 0.006993,
+        "assessment": "Double-precision shift combined with XOR is typical of wide-word bit mixing in cryptographic primitives."
+      },
+      {
+        "ngram": "TEST JGE",
+        "shap_contribution": 0.006703,
+        "assessment": "Common conditional branch idiom; individually weak, but it contributes to the model's overall pattern, likely as loop or sign-check logic around compute code."
+      },
+      {
+        "ngram": "MOV SYSCALL",
+        "shap_contribution": 0.00659,
+        "assessment": "Direct syscall instruction sequence may indicate bypassing of user-mode API hooks or low-level system interaction. The evidence does not identify which syscall."
+      },
+      {
+        "ngram": "VPXOR VMOVDQU",
+        "shap_contribution": 0.005952,
+        "assessment": "AVX-based XOR with unaligned vector move indicates wide-vector processing, consistent with optimized mining or hashing implementations."
+      },
+      {
+        "ngram": "ROL ADD",
+        "shap_contribution": 0.005931,
+        "assessment": "Rotate then add is the classic ARX round structure used in many hash and stream-cipher algorithms. Relatively high frequency (0.000512)."
+      },
+      {
+        "ngram": "CALL PUSH",
+        "shap_contribution": 0.00592,
+        "assessment": "Call immediately followed by push may reflect unusual call/stack manipulation, possibly obfuscation. Very low frequency, so weak on its own."
+      },
+      {
+        "ngram": "SHR ADC",
+        "shap_contribution": 0.005708,
+        "assessment": "Shift right with add-with-carry points to multi-word arithmetic or bit-manipulation in numeric/crypto routines."
+      },
+      {
+        "ngram": "SHRD MOV",
+        "shap_contribution": 0.005706,
+        "assessment": "Double-precision shift followed by a move supports wide-word shifting in big-integer or hashing code."
+      },
+      {
+        "ngram": "LEA VMOVDQU",
+        "shap_contribution": 0.005468,
+        "assessment": "Address computation followed by an AVX vector load/store, matching the frequency of VPXOR VMOVDQU (0.000197). This suggests an AVX data-processing loop."
+      },
+      {
+        "ngram": "MOV ROL",
+        "shap_contribution": 0.005216,
+        "assessment": "Loading a value then rotating it is consistent with rotation-based mixing in hash or cipher rounds."
+      },
+      {
+        "ngram": "XOR ADC",
+        "shap_contribution": 0.005198,
+        "assessment": "XOR combined with carry-propagating add indicates mixed bitwise and multi-precision arithmetic common in crypto primitives."
+      },
+      {
+        "ngram": "CALL RET",
+        "shap_contribution": 0.005153,
+        "assessment": "Call directly followed by return suggests tiny stub or thunk functions, or unusual control flow. Weak and non-specific alone."
+      },
+      {
+        "ngram": "ROL AND",
+        "shap_contribution": 0.005064,
+        "assessment": "Rotate with masking is consistent with bit-field extraction and boolean-function steps in hash rounds."
+      },
+      {
+        "ngram": "CMP SHLD",
+        "shap_contribution": 0.004974,
+        "assessment": "Comparison followed by double-precision left shift suggests multi-word shifting/normalization, relevant to big-number arithmetic."
+      },
+      {
+        "ngram": "MOVZX ROL",
+        "shap_contribution": 0.00495,
+        "assessment": "Zero-extending a byte or word then rotating is typical in byte-oriented mixing of cipher or hash state."
+      }
+    ],
+    "confidence_score": 0.88,
+    "key_indicators": [
+      "All 20 top SHAP features push toward cryptojacking, with none opposing",
+      "SIMD/AVX XOR and vector-move patterns (PXOR MOVAPS, PXOR PXOR, PXOR MOVUPS, VPXOR VMOVDQU, LEA VMOVDQU)",
+      "ARX-style rotate/add/xor patterns (ROL ADD, MOV ROL, ROL AND, MOVZX ROL)",
+      "Multi-precision carry and double-shift arithmetic (SUB ADC, SHR ADC, XOR ADC, SHRD XOR, SHRD MOV, CMP SHLD)",
+      "Direct syscall (MOV SYSCALL) and unusual call/return idioms (PUSH RET, CALL PUSH, CALL RET), possibly indicating obfuscation or evasion",
+      "Random Forest malware probability of 0.9250"
+    ],
+    "recommended_action": "Treat as likely cryptojacking malware. Quarantine the sample and run it in a sandbox, monitoring CPU usage, network connections to mining pools (stratum traffic) and persistence mechanisms. Statically locate the functions containing the vectorized XOR and rotate/add loops to confirm a mining algorithm, and examine the MOV SYSCALL and PUSH RET sites for evasion or packing. Compare against known miner families and crypto libraries to rule out legitimate cryptographic code."
+  },
+  "scope_notes": [
+    "Only the supplied artifact is available. If original generation used extra context, recover that same context for full input-grounded faithfulness.",
+    "Omitted features and SHAP baseline are unknown; a positive top-k subset is not all features.",
+    "SHAP magnitude display tolerance is 5e-07; signs refer to configured target class 1."
+  ]
+}

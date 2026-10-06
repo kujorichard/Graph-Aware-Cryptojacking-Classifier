@@ -1,0 +1,252 @@
+{
+  "schema_version": 2,
+  "method": "Adapted G-Eval; fixed LLM-drafted steps; integer scores; no token-probability weighting",
+  "sample_id": "sample_5279e83b624beaba",
+  "status": "success",
+  "source_sha256": "82e609baaf548a0b25c04a2c7a718e2dc7bb054e909fdaab0f00effa6eebc3ca",
+  "input_sha256": "3b3121346c16b0dfeda234787cbff39f5ed46c48dda18f15fa216beeaf52d0d7",
+  "protocol_sha256": "396b316821c92a57d824667941bce4531a71c8a0ba8b8106cd3fc45a3a4ed448",
+  "private_metadata": {
+    "sample_metadata": {
+      "binary_name": "920df869a28663cf24be9e115521174b240a2ea249a637d0e432f57b202bceeb.exe",
+      "source_name": "920df869a28663cf24be9e115521174b240a2ea249a637d0e432f57b202bceeb.exe.json",
+      "source_path": "ml/dataset/cryptojacking/920df869a28663cf24be9e115521174b240a2ea249a637d0e432f57b202bceeb.exe.json",
+      "split": "test",
+      "batch_number": 7,
+      "row_index_in_batch": 79,
+      "actual_label": 1,
+      "actual_class": "cryptojacking"
+    },
+    "generator": {
+      "backend": "claude",
+      "model": null
+    },
+    "identity": {
+      "binary_name": "920df869a28663cf24be9e115521174b240a2ea249a637d0e432f57b202bceeb.exe",
+      "ngram_size": 2
+    }
+  },
+  "config": {
+    "model": "claude-sonnet-5-5",
+    "thinking": true,
+    "effort": "high",
+    "max_tokens": 16384,
+    "timeout": 300,
+    "max_attempts": 3,
+    "shap_target_class": 1,
+    "shap_tolerance": 5e-07,
+    "consistency_runs": 3,
+    "retry_delay": 1.0
+  },
+  "timestamp": "2026-10-06T13:06:08.308743+00:00",
+  "attempts": [
+    {
+      "number": 1,
+      "timestamp": "2026-10-06T13:06:08.308774+00:00",
+      "error": {
+        "type": "ValueError",
+        "message": "SHAP faithful flag contradicts discrepancy list"
+      },
+      "request_sha256": "0b6e4c0cdefbb52b408b60fcdc1a68c5c50c5286d017e5e0829f9b944515af8f",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm2shshMRgV6ePusmoWc",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_5279e83b624beaba\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability (0.9999), top-20 SHAP signs, ranges, and per-feature values match the evidence. However, it treats the evidence's \\\"value\\\" 0.0 as \\\"relative frequency\\\", though the artifact says feature_value_semantics are not established. It also asserts \\\"about +0.18 combined\\\" as a toplevel sum that is only a top-k sum, and infers the ADD POP SHAP reflects \\\"the model's learned distribution\\\". Instruction semantics are mostly fair but hedged. Overall it overreaches on a few points.\",\"coherence\":\"Well organized: verdict, evidence weakness, generic vs. suggestive n-grams, and recommendations are consistent with the low-confidence tier. Minor repetition across summary, per-feature analysis, and key indicators, and a slight tension between \\\"suspicious and likely malicious\\\" and \\\"generic malware-like profile\\\".\",\"cybersecurity_relevance\":\"Ties sample n-grams to cryptojacking questions (hash/cipher-style mixing, tight loops, mining pools) while stating non-specificity, missing function context, and generic compiled-code alternatives. Limited discussion of explicit benign alternatives such as crypto libraries or compression, and the evidence limits on feature value semantics are misdescribed.\",\"actionable_utility\":\"Concrete, proportionate steps: recover function locations and actual frequencies, inspect XOR/SHL/CMOV-containing functions for loops, run dynamic analysis for CPU and pool connections, and check strings/config. Purposes are clear and conditional. Lacks prioritization and does not mention verifying SHAP target class or feature value semantics, which are flagged as upstream caveats.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature value semantics are not established and should not be treated as raw counts; calling them relative frequencies is an unsupported interpretation.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Relative frequencies are all 0.000000 and no function locations are given\",\"candidate_path\":\"/candidate_analysis/key_indicators/4\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Same unsupported characterization of the 'value' field as relative frequency.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"its high SHAP value probably reflects the model's learned distribution rather than mining behavior\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/shap_baseline\",\"reason\":\"Speculation about why the model assigns this attribution; no evidence about model training distribution is provided.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 top n-gram names, positive signs, magnitudes (within rounding), and ordering match the evidence; omitted features and baseline are not claimed. Minor issue: the \\\"+0.18 combined\\\" figure is a top-k sum, and the 'Positive toward cryptojacking' framing relies on the configured target-class assumption, which the candidate does not flag.\",\"discrepancies\":[{\"quote\":\"about +0.18 combined\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The sum (about 0.178) is arithmetically fine for the top 20, but presenting it as combined push could mislead since omitted features and baseline are unknown; not a numerical error.\"}]},\"evidence_limitations\":[\"Feature 'value' semantics are not established; all are 0.0.\",\"No occurrences, function context, SHAP baseline, or full attributions are supplied.\",\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"Top-k subset cannot rule out omitted features supporting benign.\",\"RF probability is not behavioral proof.\"],\"summary\":\"Numerically faithful, appropriately cautious low-confidence explanation with practical follow-ups, but it mislabels feature values as relative frequencies despite explicit unestablished semantics and includes some speculative interpretation.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6863,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 1489,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6863,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1489,
+        "output_tokens_details": {
+          "thinking_tokens": 0
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_5279e83b624beaba\",\"scores\":{\"technical_accuracy\":3,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"RF probability (0.9999), top-20 SHAP signs, ranges, and per-feature values match the evidence. However, it treats the evidence's \\\"value\\\" 0.0 as \\\"relative frequency\\\", though the artifact says feature_value_semantics are not established. It also asserts \\\"about +0.18 combined\\\" as a toplevel sum that is only a top-k sum, and infers the ADD POP SHAP reflects \\\"the model's learned distribution\\\". Instruction semantics are mostly fair but hedged. Overall it overreaches on a few points.\",\"coherence\":\"Well organized: verdict, evidence weakness, generic vs. suggestive n-grams, and recommendations are consistent with the low-confidence tier. Minor repetition across summary, per-feature analysis, and key indicators, and a slight tension between \\\"suspicious and likely malicious\\\" and \\\"generic malware-like profile\\\".\",\"cybersecurity_relevance\":\"Ties sample n-grams to cryptojacking questions (hash/cipher-style mixing, tight loops, mining pools) while stating non-specificity, missing function context, and generic compiled-code alternatives. Limited discussion of explicit benign alternatives such as crypto libraries or compression, and the evidence limits on feature value semantics are misdescribed.\",\"actionable_utility\":\"Concrete, proportionate steps: recover function locations and actual frequencies, inspect XOR/SHL/CMOV-containing functions for loops, run dynamic analysis for CPU and pool connections, and check strings/config. Purposes are clear and conditional. Lacks prioritization and does not mention verifying SHAP target class or feature value semantics, which are flagged as upstream caveats.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact states feature value semantics are not established and should not be treated as raw counts; calling them relative frequencies is an unsupported interpretation.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"Relative frequencies are all 0.000000 and no function locations are given\",\"candidate_path\":\"/candidate_analysis/key_indicators/4\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"Same unsupported characterization of the 'value' field as relative frequency.\",\"category\":\"unsupported_behavior\"},{\"quote\":\"its high SHAP value probably reflects the model's learned distribution rather than mining behavior\",\"candidate_path\":\"/candidate_analysis/evidence_analysis/1/assessment\",\"evidence_reference\":\"/evidence/shap_baseline\",\"reason\":\"Speculation about why the model assigns this attribution; no evidence about model training distribution is provided.\",\"category\":\"unsupported_certainty\"}],\"shap_faithfulness\":{\"faithful\":true,\"reason\":\"All 20 top n-gram names, positive signs, magnitudes (within rounding), and ordering match the evidence; omitted features and baseline are not claimed. Minor issue: the \\\"+0.18 combined\\\" figure is a top-k sum, and the 'Positive toward cryptojacking' framing relies on the configured target-class assumption, which the candidate does not flag.\",\"discrepancies\":[{\"quote\":\"about +0.18 combined\",\"candidate_path\":\"/candidate_analysis/explanation\",\"reason\":\"The sum (about 0.178) is arithmetically fine for the top 20, but presenting it as combined push could mislead since omitted features and baseline are unknown; not a numerical error.\"}]},\"evidence_limitations\":[\"Feature 'value' semantics are not established; all are 0.0.\",\"No occurrences, function context, SHAP baseline, or full attributions are supplied.\",\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"Top-k subset cannot rule out omitted features supporting benign.\",\"RF probability is not behavioral proof.\"],\"summary\":\"Numerically faithful, appropriately cautious low-confidence explanation with practical follow-ups, but it mislabels feature values as relative frequencies despite explicit unestablished semantics and includes some speculative interpretation.\"}"
+    },
+    {
+      "number": 2,
+      "timestamp": "2026-10-06T13:06:23.052482+00:00",
+      "error": null,
+      "request_sha256": "efc4d69ee9c14520d9552833d423cc00d228431ef57538018ad3c31a2312ad88",
+      "provider_response": {
+        "model": "claude-sonnet-5-5",
+        "id": "msg_011Cfm2tnsrTrRZkxP4PVDZL",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I need to verify the candidate's numbers are consistent before flagging faithfulness - checking that the RF probability rounds correctly and summing up the SHAP values across the top n-grams to see if they actually add up to the claimed combined contribution.\n\nLooking more closely, I see \"relative frequency of 0.000000\" is an unsupported semantic claim since the feature value meaning hasn't actually been established — calling raw zero values \"relative frequency\" overstates what's known. The target class assumption for SHAP values (toward cryptojacking/malware) is also unverified but the candidate doesn't flag this gap, though other claims like missing function-level locations are accurate.\n\nThe candidate also overstates the ranking of branchless conditional-move patterns — only CMOVZ MOV actually ranks at the top, while CMP CMOVZ and XOR CMOVNZ sit lower, so claiming they all \"rank at the top\" is a minor exaggeration. I also notice the oddity that all n-gram values are 0.0 yet still carry positive SHAP contributions, which the candidate doesn't call out as unusual, though the overall signs and magnitudes do appear faithful to the SHAP output.\n\nSince CMP CMOVZ sits near the bottom at 0.00696, the \"rank at the top\" phrasing does overstate things slightly, so I'll mark faithful false with that single discrepancy and note the target class assumption as a limitation instead. For technical accuracy, the core evidence and the zero value are correct, but the relative frequency framing and rank overstatement are minor issues, so I'm leaning toward a score of 4.\n\nCoherence also seems solid at 4 despite the repetitive low-confidence yet \"likely malicious\" framing. Relevance drops to 4 since it misses the target-class assumption and doesn't fully explore benign alternatives beyond mentioning ordinary compiled code. Actionability lands at 4 too — the suggestions are concrete but prioritization is limited.\n\nNow I'm identifying unsupported claims by path, flagging the \"every n-gram has relative frequency 0.000000\" statement under an \"other\" category, and cross-referencing which key indicator indices correspond to these issues.\n\n",
+            "signature": "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"
+          },
+          {
+            "type": "text",
+            "text": "{\"sample_id\":\"sample_5279e83b624beaba\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.9999), the 20 positive SHAP values, the 0.0063 to 0.0169 range, the ~0.18 sum and the instruction semantics are accurate. Mining, hash and cipher links are hedged as non-specific. Deductions: it labels the 0.0 feature values 'relative frequency' although the artifact says value semantics are not established, and it overstates the SHAP rank of the CMOV patterns.\",\"coherence\":\"The argument is well organized and consistent: a strong RF score, weak n-gram specificity, a low-confidence tier and verification steps. Minor issues are repetition across the explanation, per-n-gram assessments and key indicators, and the tension between 'low-confidence' and 'likely malicious'.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to cryptojacking questions (hash-like mixing, compute loops, mining-pool traffic) and gives benign alternatives (ordinary compiled code, register zeroing). It does not flag that the SHAP target class is an unverified assumption, and it does not note that value 0.0 on every top feature is odd for features with positive attribution.\",\"actionable_utility\":\"The follow-ups are concrete and proportionate: recover function locations and true feature values, inspect the XOR/SHL/CMOV functions for loops, then run dynamic analysis for CPU use and pool connections, and check strings and configuration. They are conditional and do not treat checks as observed behavior. Prioritization and purposes are only partly explicit.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact gives value 0.0 and says its semantics are not established, so it cannot be treated as a relative frequency or count.\",\"category\":\"other\"},{\"quote\":\"Relative frequencies are all 0.000000 and no function locations are given, so no pattern can be tied to a specific routine\",\"candidate_path\":\"/candidate_analysis/key_indicators/4\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"It repeats the unsupported relative-frequency interpretation of the feature values.\",\"category\":\"other\"},{\"quote\":\"Branchless conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) rank at the top\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Only CMOVZ MOV is first. XOR CMOVNZ is 12th and CMP CMOVZ is 16th of 20, so they do not rank at the top.\",\"category\":\"shap_misrepresentation\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Direction, per-feature values, the range and the ~0.18 combined sum are faithful to the supplied top-k SHAP values. One ranking statement overstates the position of two features.\",\"discrepancies\":[{\"quote\":\"Branchless conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) rank at the top\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"reason\":\"CMP CMOVZ (0.006956, 16th) and XOR CMOVNZ (0.007577, 12th) are mid-to-low in the top-20 SHAP ranking.\"}]},\"evidence_limitations\":[\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"Feature value semantics are unestablished, and all top-feature values are 0.0.\",\"There are no occurrences, function context, SHAP baseline or full attributions, and omitted features are unknown.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation is mostly accurate, appropriately cautious and actionable, with SHAP direction and magnitudes correct. Minor flaws are the unsupported 'relative frequency' label and an overstated rank for two CMOV n-grams.\"}"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 6914,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 3256,
+          "output_tokens_details": {
+            "thinking_tokens": 1801
+          },
+          "service_tier": "standard",
+          "inference_geo": "global"
+        },
+        "diagnostics": null
+      },
+      "stop_reason": "end_turn",
+      "usage": {
+        "input_tokens": 6914,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 3256,
+        "output_tokens_details": {
+          "thinking_tokens": 1801
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "final_text": "{\"sample_id\":\"sample_5279e83b624beaba\",\"scores\":{\"technical_accuracy\":4,\"coherence\":4,\"cybersecurity_relevance\":4,\"actionable_utility\":4},\"justifications\":{\"technical_accuracy\":\"The RF probability (0.9999), the 20 positive SHAP values, the 0.0063 to 0.0169 range, the ~0.18 sum and the instruction semantics are accurate. Mining, hash and cipher links are hedged as non-specific. Deductions: it labels the 0.0 feature values 'relative frequency' although the artifact says value semantics are not established, and it overstates the SHAP rank of the CMOV patterns.\",\"coherence\":\"The argument is well organized and consistent: a strong RF score, weak n-gram specificity, a low-confidence tier and verification steps. Minor issues are repetition across the explanation, per-n-gram assessments and key indicators, and the tension between 'low-confidence' and 'likely malicious'.\",\"cybersecurity_relevance\":\"It ties the sample's n-grams to cryptojacking questions (hash-like mixing, compute loops, mining-pool traffic) and gives benign alternatives (ordinary compiled code, register zeroing). It does not flag that the SHAP target class is an unverified assumption, and it does not note that value 0.0 on every top feature is odd for features with positive attribution.\",\"actionable_utility\":\"The follow-ups are concrete and proportionate: recover function locations and true feature values, inspect the XOR/SHL/CMOV functions for loops, then run dynamic analysis for CPU use and pool connections, and check strings and configuration. They are conditional and do not treat checks as observed behavior. Prioritization and purposes are only partly explicit.\"},\"unsupported_claims\":[{\"quote\":\"Every n-gram has a relative frequency of 0.000000\",\"candidate_path\":\"/candidate_analysis/explanation\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"The artifact gives value 0.0 and says its semantics are not established, so it cannot be treated as a relative frequency or count.\",\"category\":\"other\"},{\"quote\":\"Relative frequencies are all 0.000000 and no function locations are given, so no pattern can be tied to a specific routine\",\"candidate_path\":\"/candidate_analysis/key_indicators/4\",\"evidence_reference\":\"/evidence/feature_value_semantics\",\"reason\":\"It repeats the unsupported relative-frequency interpretation of the feature values.\",\"category\":\"other\"},{\"quote\":\"Branchless conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) rank at the top\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"evidence_reference\":\"/evidence/top_features\",\"reason\":\"Only CMOVZ MOV is first. XOR CMOVNZ is 12th and CMP CMOVZ is 16th of 20, so they do not rank at the top.\",\"category\":\"shap_misrepresentation\"}],\"shap_faithfulness\":{\"faithful\":false,\"reason\":\"Direction, per-feature values, the range and the ~0.18 combined sum are faithful to the supplied top-k SHAP values. One ranking statement overstates the position of two features.\",\"discrepancies\":[{\"quote\":\"Branchless conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) rank at the top\",\"candidate_path\":\"/candidate_analysis/key_indicators/3\",\"reason\":\"CMP CMOVZ (0.006956, 16th) and XOR CMOVNZ (0.007577, 12th) are mid-to-low in the top-20 SHAP ranking.\"}]},\"evidence_limitations\":[\"SHAP target class 1 is a configured assumption pending upstream verification.\",\"Feature value semantics are unestablished, and all top-feature values are 0.0.\",\"There are no occurrences, function context, SHAP baseline or full attributions, and omitted features are unknown.\",\"The RF probability is not behavioral proof of cryptojacking.\"],\"summary\":\"The explanation is mostly accurate, appropriately cautious and actionable, with SHAP direction and magnitudes correct. Minor flaws are the unsupported 'relative frequency' label and an overstated rank for two CMOV n-grams.\"}"
+    }
+  ],
+  "evaluation": {
+    "sample_id": "sample_5279e83b624beaba",
+    "scores": {
+      "technical_accuracy": 4,
+      "coherence": 4,
+      "cybersecurity_relevance": 4,
+      "actionable_utility": 4
+    },
+    "justifications": {
+      "technical_accuracy": "The RF probability (0.9999), the 20 positive SHAP values, the 0.0063 to 0.0169 range, the ~0.18 sum and the instruction semantics are accurate. Mining, hash and cipher links are hedged as non-specific. Deductions: it labels the 0.0 feature values 'relative frequency' although the artifact says value semantics are not established, and it overstates the SHAP rank of the CMOV patterns.",
+      "coherence": "The argument is well organized and consistent: a strong RF score, weak n-gram specificity, a low-confidence tier and verification steps. Minor issues are repetition across the explanation, per-n-gram assessments and key indicators, and the tension between 'low-confidence' and 'likely malicious'.",
+      "cybersecurity_relevance": "It ties the sample's n-grams to cryptojacking questions (hash-like mixing, compute loops, mining-pool traffic) and gives benign alternatives (ordinary compiled code, register zeroing). It does not flag that the SHAP target class is an unverified assumption, and it does not note that value 0.0 on every top feature is odd for features with positive attribution.",
+      "actionable_utility": "The follow-ups are concrete and proportionate: recover function locations and true feature values, inspect the XOR/SHL/CMOV functions for loops, then run dynamic analysis for CPU use and pool connections, and check strings and configuration. They are conditional and do not treat checks as observed behavior. Prioritization and purposes are only partly explicit."
+    },
+    "unsupported_claims": [
+      {
+        "quote": "Every n-gram has a relative frequency of 0.000000",
+        "candidate_path": "/candidate_analysis/explanation",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "The artifact gives value 0.0 and says its semantics are not established, so it cannot be treated as a relative frequency or count.",
+        "category": "other"
+      },
+      {
+        "quote": "Relative frequencies are all 0.000000 and no function locations are given, so no pattern can be tied to a specific routine",
+        "candidate_path": "/candidate_analysis/key_indicators/4",
+        "evidence_reference": "/evidence/feature_value_semantics",
+        "reason": "It repeats the unsupported relative-frequency interpretation of the feature values.",
+        "category": "other"
+      },
+      {
+        "quote": "Branchless conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) rank at the top",
+        "candidate_path": "/candidate_analysis/key_indicators/3",
+        "evidence_reference": "/evidence/top_features",
+        "reason": "Only CMOVZ MOV is first. XOR CMOVNZ is 12th and CMP CMOVZ is 16th of 20, so they do not rank at the top.",
+        "category": "shap_misrepresentation"
+      }
+    ],
+    "shap_faithfulness": {
+      "faithful": false,
+      "reason": "Direction, per-feature values, the range and the ~0.18 combined sum are faithful to the supplied top-k SHAP values. One ranking statement overstates the position of two features.",
+      "discrepancies": [
+        {
+          "quote": "Branchless conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) rank at the top",
+          "candidate_path": "/candidate_analysis/key_indicators/3",
+          "reason": "CMP CMOVZ (0.006956, 16th) and XOR CMOVNZ (0.007577, 12th) are mid-to-low in the top-20 SHAP ranking."
+        }
+      ]
+    },
+    "evidence_limitations": [
+      "SHAP target class 1 is a configured assumption pending upstream verification.",
+      "Feature value semantics are unestablished, and all top-feature values are 0.0.",
+      "There are no occurrences, function context, SHAP baseline or full attributions, and omitted features are unknown.",
+      "The RF probability is not behavioral proof of cryptojacking."
+    ],
+    "summary": "The explanation is mostly accurate, appropriately cautious and actionable, with SHAP direction and magnitudes correct. Minor flaws are the unsupported 'relative frequency' label and an overstated rank for two CMOV n-grams."
+  },
+  "numeric_audit": {
+    "checked_assessments": 20,
+    "discrepancies": [],
+    "numeric_match": true,
+    "coverage_note": "Structured values checked; the judge separately assesses prose, signs and magnitude descriptions."
+  },
+  "error": null,
+  "fatal_batch_error": false,
+  "all_unsupported_claims": [
+    {
+      "quote": "Every n-gram has a relative frequency of 0.000000",
+      "candidate_path": "/candidate_analysis/explanation",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "The artifact gives value 0.0 and says its semantics are not established, so it cannot be treated as a relative frequency or count.",
+      "category": "other"
+    },
+    {
+      "quote": "Relative frequencies are all 0.000000 and no function locations are given, so no pattern can be tied to a specific routine",
+      "candidate_path": "/candidate_analysis/key_indicators/4",
+      "evidence_reference": "/evidence/feature_value_semantics",
+      "reason": "It repeats the unsupported relative-frequency interpretation of the feature values.",
+      "category": "other"
+    },
+    {
+      "quote": "Branchless conditional-move patterns (CMOVZ MOV, CMP CMOVZ, XOR CMOVNZ) rank at the top",
+      "candidate_path": "/candidate_analysis/key_indicators/3",
+      "evidence_reference": "/evidence/top_features",
+      "reason": "Only CMOVZ MOV is first. XOR CMOVNZ is 12th and CMP CMOVZ is 16th of 20, so they do not rank at the top.",
+      "category": "shap_misrepresentation"
+    }
+  ],
+  "has_unsupported_claims": true,
+  "faithful_to_shap": false,
+  "source_file": "920df869a28663cf24be9e115521174b240a2ea249a637d0e432f57b202bceeb.exe_analysis.json"
+}
