@@ -1,0 +1,268 @@
+{
+  "sample": {
+    "binary_name": "254a713d3ec2852b6657ecb8840efd2662e048ace42c2b4e0b30c589cdb9f8cb.exe",
+    "source_name": "254a713d3ec2852b6657ecb8840efd2662e048ace42c2b4e0b30c589cdb9f8cb.exe.json",
+    "source_path": "ml/dataset/cryptojacking/254a713d3ec2852b6657ecb8840efd2662e048ace42c2b4e0b30c589cdb9f8cb.exe.json",
+    "split": "test",
+    "batch_number": 5,
+    "row_index_in_batch": 22,
+    "actual_label": 1,
+    "actual_class": "cryptojacking"
+  },
+  "random_forest": {
+    "ngram_size": 2,
+    "malware_probability": 1.0,
+    "predicted_class": 1,
+    "predicted_class_name": "Cryptojacking"
+  },
+  "shap": {
+    "top_feature_limit": 20,
+    "top_features": [
+      {
+        "feature_id": 946,
+        "ngram": "ADD POP",
+        "value": 0.0,
+        "shap_value": 0.013402012587576244
+      },
+      {
+        "feature_id": 3658,
+        "ngram": "POP SUB",
+        "value": 0.0019047618843615055,
+        "shap_value": 0.01229815284114849
+      },
+      {
+        "feature_id": 1743,
+        "ngram": "MOV ADC",
+        "value": 0.030476190149784088,
+        "shap_value": 0.010923389966010836
+      },
+      {
+        "feature_id": 1012,
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.010693290463415656
+      },
+      {
+        "feature_id": 3601,
+        "ngram": "CALL PUSH",
+        "value": 0.003809523768723011,
+        "shap_value": 0.010570067577409128
+      },
+      {
+        "feature_id": 3600,
+        "ngram": "SUB PUSH",
+        "value": 0.003809523768723011,
+        "shap_value": 0.009922269960419016
+      },
+      {
+        "feature_id": 963,
+        "ngram": "ADD ADD",
+        "value": 0.022857142612338066,
+        "shap_value": 0.009475663288248245
+      },
+      {
+        "feature_id": 3625,
+        "ngram": "POP PUSH",
+        "value": 0.02857142873108387,
+        "shap_value": 0.008977931193372379
+      },
+      {
+        "feature_id": 3644,
+        "ngram": "POP CALL",
+        "value": 0.0019047618843615055,
+        "shap_value": 0.008778883993245232
+      },
+      {
+        "feature_id": 3683,
+        "ngram": "INC PUSH",
+        "value": 0.03999999910593033,
+        "shap_value": 0.008656065673453023
+      },
+      {
+        "feature_id": 2558,
+        "ngram": "XOR ADC",
+        "value": 0.003809523768723011,
+        "shap_value": 0.008475413373094104
+      },
+      {
+        "feature_id": 3520,
+        "ngram": "POP MOV",
+        "value": 0.011428571306169033,
+        "shap_value": 0.008034382247415556
+      },
+      {
+        "feature_id": 1045,
+        "ngram": "CALL ADD",
+        "value": 0.0,
+        "shap_value": 0.007819144150469318
+      },
+      {
+        "feature_id": 4213,
+        "ngram": "ADC SUB",
+        "value": 0.0019047618843615055,
+        "shap_value": 0.007704157008859724
+      },
+      {
+        "feature_id": 923,
+        "ngram": "XOR MOV",
+        "value": 0.0,
+        "shap_value": 0.0074207667064518645
+      },
+      {
+        "feature_id": 949,
+        "ngram": "LEA CALL",
+        "value": 0.0,
+        "shap_value": 0.007208847768161518
+      },
+      {
+        "feature_id": 3711,
+        "ngram": "POP ADD",
+        "value": 0.007619047537446022,
+        "shap_value": 0.006849781438334875
+      },
+      {
+        "feature_id": 927,
+        "ngram": "XOR XOR",
+        "value": 0.0,
+        "shap_value": 0.006768497497730451
+      },
+      {
+        "feature_id": 967,
+        "ngram": "AND MOV",
+        "value": 0.0,
+        "shap_value": 0.006738673447198115
+      },
+      {
+        "feature_id": 984,
+        "ngram": "TEST JS",
+        "value": 0.0,
+        "shap_value": 0.006547916033165603
+      }
+    ],
+    "status": "completed"
+  },
+  "llm": {
+    "status": "completed",
+    "analysis": {
+      "tier": "low-confidence",
+      "explanation": "The Random Forest labels this binary MALWARE with probability 1.0000, and all 20 top n-grams push toward cryptojacking, with SHAP contributions from +0.0065 to +0.0134. However, the evidence is weak on its own. Every feature is a generic two-instruction mnemonic pair, no function-level locations or API context are given, and no single n-gram dominates. Eleven of the 20 features have a frequency of 0.000000 (ADD POP, CMOVZ MOV, CALL ADD, XOR MOV, LEA CALL, XOR XOR, AND MOV, TEST JS, plus rounded near-zero cases), so much of the SHAP signal comes from the absence of patterns that benign code typically contains, not from a distinctive code signature. Of the n-grams that are present, MOV ADC (0.030476), ADD ADD (0.022857), XOR ADC (0.003810) and ADC SUB (0.001905) involve carry-propagating arithmetic. That is loosely consistent with multi-precision or hash-like computation, which cryptominers use. But ADC/ADD sequences also appear in ordinary compiler-generated 64-bit arithmetic, and the XOR/rotate/shift patterns typical of mining kernels are not clearly present. The stack and call-frame patterns (POP PUSH, INC PUSH, CALL PUSH, SUB PUSH, POP CALL, POP MOV, POP ADD, POP SUB) are generic prologue/epilogue and calling-convention code, so they are not specific to cryptojacking. The model's strong malware score is a real signal, but the provided evidence cannot confirm cryptomining behavior specifically, so the result is inconclusive and needs further analysis.",
+      "evidence_analysis": [
+        {
+          "ngram": "ADD POP",
+          "shap_contribution": 0.013402,
+          "assessment": "Frequency is 0.0, so the top contribution comes from the absence of this common epilogue pattern. That may indicate unusual or packed/obfuscated code layout, but it is not direct evidence of mining."
+        },
+        {
+          "ngram": "POP SUB",
+          "shap_contribution": 0.012298,
+          "assessment": "Rare (0.001905) stack-restore-then-arithmetic sequence. It is generic and gives only weak support for atypical code structure."
+        },
+        {
+          "ngram": "MOV ADC",
+          "shap_contribution": 0.010923,
+          "assessment": "Relatively frequent (0.030476). Add-with-carry after a move suggests multi-word arithmetic, which fits big-number or hash-style computation, but it is also common in ordinary compiled code."
+        },
+        {
+          "ngram": "CMOVZ MOV",
+          "shap_contribution": 0.010693,
+          "assessment": "Absent (0.0). A conditional-move pattern missing from the binary is not interpretable as a mining indicator by itself."
+        },
+        {
+          "ngram": "CALL PUSH",
+          "shap_contribution": 0.01057,
+          "assessment": "Low frequency (0.003810). This is generic call/argument-setup flow with no specific cryptojacking meaning."
+        },
+        {
+          "ngram": "SUB PUSH",
+          "shap_contribution": 0.009922,
+          "assessment": "Low frequency (0.003810). Stack/frame manipulation is generic and weakly informative."
+        },
+        {
+          "ngram": "ADD ADD",
+          "shap_contribution": 0.009476,
+          "assessment": "Moderately frequent (0.022857). Consecutive additions could reflect accumulation or arithmetic loops, but this is non-specific."
+        },
+        {
+          "ngram": "POP PUSH",
+          "shap_contribution": 0.008978,
+          "assessment": "Fairly frequent (0.028571). Register save/restore shuffling is typical of generic code and may reflect the binary's compiler or packer style."
+        },
+        {
+          "ngram": "POP CALL",
+          "shap_contribution": 0.008779,
+          "assessment": "Rare (0.001905). Control-flow glue with no distinct mining semantics."
+        },
+        {
+          "ngram": "INC PUSH",
+          "shap_contribution": 0.008656,
+          "assessment": "The most frequent listed pattern (0.040000). It suggests counter/loop increments followed by stack operations, which is non-specific, though the frequency explains its strong model influence."
+        },
+        {
+          "ngram": "XOR ADC",
+          "shap_contribution": 0.008475,
+          "assessment": "Low frequency (0.003810). XOR combined with carry arithmetic is somewhat suggestive of hash or crypto-style mixing, but a few occurrences are inconclusive."
+        },
+        {
+          "ngram": "POP MOV",
+          "shap_contribution": 0.008034,
+          "assessment": "Moderate frequency (0.011429). Generic register restore followed by a move, with little discriminative meaning by itself."
+        },
+        {
+          "ngram": "CALL ADD",
+          "shap_contribution": 0.007819,
+          "assessment": "Absent (0.0). A call followed by stack cleanup is missing, which is not directly interpretable as mining behavior."
+        },
+        {
+          "ngram": "ADC SUB",
+          "shap_contribution": 0.007704,
+          "assessment": "Rare (0.001905). Carry arithmetic followed by subtraction is consistent with multi-precision math, but weakly so."
+        },
+        {
+          "ngram": "XOR MOV",
+          "shap_contribution": 0.007421,
+          "assessment": "Absent (0.0). XOR-then-move is common for zeroing registers, so its absence is not a strong indicator."
+        },
+        {
+          "ngram": "LEA CALL",
+          "shap_contribution": 0.007209,
+          "assessment": "Absent (0.0). The model treats the missing address-load-then-call pattern as suspicious, but this is not interpretable as a specific behavior."
+        },
+        {
+          "ngram": "POP ADD",
+          "shap_contribution": 0.00685,
+          "assessment": "Low frequency (0.007619). Generic stack/arithmetic transition with minimal specificity."
+        },
+        {
+          "ngram": "XOR XOR",
+          "shap_contribution": 0.006768,
+          "assessment": "Absent (0.0). Consecutive XORs would be a stronger hashing/crypto indicator if present, so this contribution reflects absence and does not show mining-style mixing."
+        },
+        {
+          "ngram": "AND MOV",
+          "shap_contribution": 0.006739,
+          "assessment": "Absent (0.0). Masking followed by a move is generic, and the contribution reflects absence."
+        },
+        {
+          "ngram": "TEST JS",
+          "shap_contribution": 0.006548,
+          "assessment": "Absent (0.0). A sign-flag test and branch pattern is missing, which has no clear cryptojacking interpretation."
+        }
+      ],
+      "confidence_score": 0.55,
+      "key_indicators": [
+        "Random Forest predicts MALWARE with probability 1.0000, and all top-20 SHAP contributions are positive (+0.0065 to +0.0134)",
+        "Carry-arithmetic n-grams (MOV ADC at 0.030476, XOR ADC, ADC SUB) loosely resemble multi-precision or hash-style computation",
+        "ADD ADD (0.022857) and INC PUSH (0.040000) are the most frequent present patterns, but both are generic",
+        "Many top features have zero frequency, so the signal comes largely from absent patterns",
+        "No function-level locations or distinctive mining-kernel patterns are provided in the evidence"
+      ],
+      "recommended_action": "Treat the sample as suspicious given the model's malware verdict, but do not label it cryptojacking on this evidence alone. Run deeper static and dynamic analysis: inspect the arithmetic-heavy functions containing ADC/XOR sequences, look for tight hash-like loops, check for packing or obfuscation that would explain the missing common patterns, and observe runtime CPU usage and network behavior in a sandbox to confirm or rule out mining activity."
+    },
+    "token_usage": {
+      "input_tokens": 1740,
+      "output_tokens": 3029,
+      "source": "claude"
+    },
+    "result_path": "graph_aware_classifier/llm_results/254a713d3ec2852b6657ecb8840efd2662e048ace42c2b4e0b30c589cdb9f8cb.exe_llm_result.json"
+  }
+}

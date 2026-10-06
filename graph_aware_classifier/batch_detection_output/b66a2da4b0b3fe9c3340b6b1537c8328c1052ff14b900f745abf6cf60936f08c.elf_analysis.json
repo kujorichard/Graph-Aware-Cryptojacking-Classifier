@@ -1,0 +1,269 @@
+{
+  "sample": {
+    "binary_name": "b66a2da4b0b3fe9c3340b6b1537c8328c1052ff14b900f745abf6cf60936f08c.elf",
+    "source_name": "b66a2da4b0b3fe9c3340b6b1537c8328c1052ff14b900f745abf6cf60936f08c.elf.json",
+    "source_path": "ml/dataset/cryptojacking/b66a2da4b0b3fe9c3340b6b1537c8328c1052ff14b900f745abf6cf60936f08c.elf.json",
+    "split": "test",
+    "batch_number": 0,
+    "row_index_in_batch": 87,
+    "actual_label": 1,
+    "actual_class": "cryptojacking"
+  },
+  "random_forest": {
+    "ngram_size": 2,
+    "malware_probability": 0.93,
+    "predicted_class": 1,
+    "predicted_class_name": "Cryptojacking"
+  },
+  "shap": {
+    "top_feature_limit": 20,
+    "top_features": [
+      {
+        "feature_id": 1384,
+        "ngram": "SUB SBB",
+        "value": 0.0016744185704737902,
+        "shap_value": 0.01027689359503985
+      },
+      {
+        "feature_id": 1727,
+        "ngram": "MOV ROL",
+        "value": 0.0005581395234912634,
+        "shap_value": 0.009935833884877626
+      },
+      {
+        "feature_id": 3600,
+        "ngram": "SUB PUSH",
+        "value": 0.0003720930253621191,
+        "shap_value": 0.009753756600190287
+      },
+      {
+        "feature_id": 3648,
+        "ngram": "MOVZX PUSH",
+        "value": 0.0024186046794056892,
+        "shap_value": 0.008878389250896207
+      },
+      {
+        "feature_id": 3604,
+        "ngram": "ADD PUSH",
+        "value": 0.00018604651268105954,
+        "shap_value": 0.008033297704307047
+      },
+      {
+        "feature_id": 1743,
+        "ngram": "MOV ADC",
+        "value": 0.0003720930253621191,
+        "shap_value": 0.006873388787430476
+      },
+      {
+        "feature_id": 3597,
+        "ngram": "CMP PUSH",
+        "value": 0.0005581395234912634,
+        "shap_value": 0.006694147458576032
+      },
+      {
+        "feature_id": 2558,
+        "ngram": "XOR ADC",
+        "value": 0.0003720930253621191,
+        "shap_value": 0.00667388474011848
+      },
+      {
+        "feature_id": 2423,
+        "ngram": "SUB ADC",
+        "value": 0.0011162790469825268,
+        "shap_value": 0.006659371375387507
+      },
+      {
+        "feature_id": 1045,
+        "ngram": "CALL ADD",
+        "value": 0.0,
+        "shap_value": 0.006536734960582406
+      },
+      {
+        "feature_id": 3609,
+        "ngram": "POP TEST",
+        "value": 0.00018604651268105954,
+        "shap_value": 0.006257196196428519
+      },
+      {
+        "feature_id": 1741,
+        "ngram": "ROR ROL",
+        "value": 0.0005581395234912634,
+        "shap_value": 0.006143917796975215
+      },
+      {
+        "feature_id": 1189,
+        "ngram": "ADD OR",
+        "value": 0.0003720930253621191,
+        "shap_value": 0.006109241753953013
+      },
+      {
+        "feature_id": 4213,
+        "ngram": "ADC SUB",
+        "value": 0.00018604651268105954,
+        "shap_value": 0.006041959126896455
+      },
+      {
+        "feature_id": 1012,
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.005818859016699807
+      },
+      {
+        "feature_id": 1739,
+        "ngram": "ROL ROR",
+        "value": 0.0014883721014484763,
+        "shap_value": 0.005670448453910694
+      },
+      {
+        "feature_id": 1728,
+        "ngram": "ROL MOV",
+        "value": 0.00018604651268105954,
+        "shap_value": 0.005565970480795954
+      },
+      {
+        "feature_id": 1731,
+        "ngram": "XOR ROL",
+        "value": 0.0013023256324231625,
+        "shap_value": 0.005385728664344828
+      },
+      {
+        "feature_id": 984,
+        "ngram": "TEST JS",
+        "value": 0.0,
+        "shap_value": 0.005370224531108839
+      },
+      {
+        "feature_id": 946,
+        "ngram": "ADD POP",
+        "value": 0.0005581395234912634,
+        "shap_value": 0.005275829746827477
+      }
+    ],
+    "status": "completed"
+  },
+  "llm": {
+    "status": "completed",
+    "analysis": {
+      "tier": "high-confidence",
+      "explanation": "The Random Forest classifies this binary as malware with probability 0.93, and all 20 top SHAP features push toward cryptojacking, with none pulling the other way. Contributions are spread fairly evenly (+0.0053 to +0.0103), so no single artifact drives the call. Many of the n-grams are the bit-rotation and carry-chain arithmetic typical of hashing and cipher inner loops. Rotation patterns include MOV ROL (+0.009936), ROR ROL (+0.006144), ROL ROR (+0.005670), ROL MOV (+0.005566) and XOR ROL (+0.005386). Multi-precision carry/borrow patterns include SUB SBB (+0.010277, the top feature), MOV ADC (+0.006873), XOR ADC (+0.006674), SUB ADC (+0.006659) and ADC SUB (+0.006042). Together these resemble the mixing and modular-arithmetic steps of proof-of-work hash routines. The remaining features (SUB PUSH, MOVZX PUSH, ADD PUSH, CMP PUSH, POP TEST, ADD OR, ADD POP) look like stack and register-handling glue around such routines, and they add moderate positive weight. Three features (CALL ADD, CMOVZ MOV, TEST JS) have a reported frequency of 0.000000 yet carry positive SHAP, so the model is using their absence or near-absence as a signal. That is statistical rather than behavioral evidence. The evidence has two limits. No function-level locations, API calls or strings were provided, so the code cannot be tied to a specific mining algorithm or to network and pool behavior. Rotate and add-with-carry sequences also occur in legitimate cryptographic libraries. The tier therefore rests on the high model probability and the coherent cluster of hash-like arithmetic n-grams, not on direct proof of mining.",
+      "evidence_analysis": [
+        {
+          "ngram": "SUB SBB",
+          "shap_contribution": 0.010277,
+          "assessment": "Top contributor. Subtract-with-borrow chains are typical of multi-word big-integer arithmetic and are consistent with hash or modular computation. Frequency is 0.001674."
+        },
+        {
+          "ngram": "MOV ROL",
+          "shap_contribution": 0.009936,
+          "assessment": "Loading a value and then rotating it is a core step in ARX-style hash and cipher rounds. Strongly suggestive of hashing kernels."
+        },
+        {
+          "ngram": "SUB PUSH",
+          "shap_contribution": 0.009754,
+          "assessment": "Likely register or stack-frame handling near compute routines. Weak on its own, but the model weights it heavily."
+        },
+        {
+          "ngram": "MOVZX PUSH",
+          "shap_contribution": 0.008878,
+          "assessment": "Zero-extending byte or word loads followed by a push. Fairly common (frequency 0.002419) and consistent with byte-wise data processing, though not specific."
+        },
+        {
+          "ngram": "ADD PUSH",
+          "shap_contribution": 0.008033,
+          "assessment": "Generic arithmetic-then-stack pattern. It contributes through its learned association with the malware class rather than a specific behavior."
+        },
+        {
+          "ngram": "MOV ADC",
+          "shap_contribution": 0.006873,
+          "assessment": "Add-with-carry after a load suggests multi-precision addition, which is consistent with hash or big-number math."
+        },
+        {
+          "ngram": "CMP PUSH",
+          "shap_contribution": 0.006694,
+          "assessment": "Compare followed by a push is general control-flow and stack glue. It is a modest, non-specific contributor."
+        },
+        {
+          "ngram": "XOR ADC",
+          "shap_contribution": 0.006674,
+          "assessment": "Combining XOR mixing with carry-propagating addition is typical of cryptographic round functions."
+        },
+        {
+          "ngram": "SUB ADC",
+          "shap_contribution": 0.006659,
+          "assessment": "Alternating subtract and add-with-carry is characteristic of extended-precision arithmetic. Frequency is 0.001116."
+        },
+        {
+          "ngram": "CALL ADD",
+          "shap_contribution": 0.006537,
+          "assessment": "Reported frequency is 0, so the contribution comes from the feature's absence or near-absence. This is a statistical artifact and gives no direct behavioral insight."
+        },
+        {
+          "ngram": "POP TEST",
+          "shap_contribution": 0.006257,
+          "assessment": "Epilogue or flag-check glue. Not specific to mining, but it carries a positive learned association."
+        },
+        {
+          "ngram": "ROR ROL",
+          "shap_contribution": 0.006144,
+          "assessment": "Opposing rotations in sequence are a hallmark of hash and cipher mixing. Frequency is 0.000558."
+        },
+        {
+          "ngram": "ADD OR",
+          "shap_contribution": 0.006109,
+          "assessment": "Bitwise combination after addition, plausibly part of word-mixing or flag assembly. Weakly indicative."
+        },
+        {
+          "ngram": "ADC SUB",
+          "shap_contribution": 0.006042,
+          "assessment": "Another carry/borrow arithmetic transition, reinforcing the multi-precision or hash-style computation theme."
+        },
+        {
+          "ngram": "CMOVZ MOV",
+          "shap_contribution": 0.005819,
+          "assessment": "Reported frequency is 0. Conditional moves are often used for branch-free constant-time logic, but absence-driven SHAP here is not behavioral evidence."
+        },
+        {
+          "ngram": "ROL ROR",
+          "shap_contribution": 0.00567,
+          "assessment": "Rotation-pair pattern with relatively high frequency (0.001488), consistent with repeated rotate-based mixing in a hashing loop."
+        },
+        {
+          "ngram": "ROL MOV",
+          "shap_contribution": 0.005566,
+          "assessment": "A rotate followed by a move of the result, consistent with round-function state updates."
+        },
+        {
+          "ngram": "XOR ROL",
+          "shap_contribution": 0.005386,
+          "assessment": "XOR followed by rotation is a classic ARX mixing step. Frequency is 0.001302, among the more prevalent crypto-style patterns."
+        },
+        {
+          "ngram": "TEST JS",
+          "shap_contribution": 0.00537,
+          "assessment": "Reported frequency is 0. This is a sign-check branch pattern, and its contribution reflects absence-based model behavior rather than observed code."
+        },
+        {
+          "ngram": "ADD POP",
+          "shap_contribution": 0.005276,
+          "assessment": "Function-epilogue style pattern. Low specificity, with a small positive learned association with the malware class."
+        }
+      ],
+      "confidence_score": 0.78,
+      "key_indicators": [
+        "Model probability 0.93 for the malware class, with all 20 top SHAP features pushing toward cryptojacking",
+        "Rotate-heavy n-grams (MOV ROL, ROR ROL, ROL ROR, ROL MOV, XOR ROL) typical of hash and cipher mixing rounds",
+        "Carry/borrow arithmetic n-grams (SUB SBB, MOV ADC, XOR ADC, SUB ADC, ADC SUB) typical of multi-precision or hash computation",
+        "Top-ranked feature SUB SBB (+0.010277) and rotation features with comparatively high frequency (ROL ROR 0.001488, XOR ROL 0.001302)",
+        "Three zero-frequency features (CALL ADD, CMOVZ MOV, TEST JS) contribute through absence only, which limits interpretability",
+        "No function-level, API or string evidence provided, so mining behavior is inferred rather than directly confirmed"
+      ],
+      "recommended_action": "Treat as likely cryptojacking and escalate for confirmation. Locate the functions containing the rotate and ADC/SBB-dense code and check whether they implement a known proof-of-work hash. Then check for pool connection strings, stratum-style network traffic, persistence, and CPU-intensive runtime behavior in a sandbox. Compare the arithmetic routines against legitimate crypto libraries to rule out a benign hashing or encryption utility. Until confirmed, quarantine the sample and block its hash."
+    },
+    "token_usage": {
+      "input_tokens": 1746,
+      "output_tokens": 3409,
+      "source": "claude"
+    },
+    "result_path": "graph_aware_classifier/llm_results/b66a2da4b0b3fe9c3340b6b1537c8328c1052ff14b900f745abf6cf60936f08c.elf_llm_result.json"
+  }
+}
