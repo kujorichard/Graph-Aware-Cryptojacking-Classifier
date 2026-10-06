@@ -1,0 +1,268 @@
+{
+  "sample": {
+    "binary_name": "ce12f3d1380ed3d7c5ad18d0a6b9ccbaf77a312eaeeb89884cbe720f77e217b9.exe",
+    "source_name": "ce12f3d1380ed3d7c5ad18d0a6b9ccbaf77a312eaeeb89884cbe720f77e217b9.exe.json",
+    "source_path": "ml/dataset/cryptojacking/ce12f3d1380ed3d7c5ad18d0a6b9ccbaf77a312eaeeb89884cbe720f77e217b9.exe.json",
+    "split": "test",
+    "batch_number": 0,
+    "row_index_in_batch": 58,
+    "actual_label": 1,
+    "actual_class": "cryptojacking"
+  },
+  "random_forest": {
+    "ngram_size": 2,
+    "malware_probability": 0.925,
+    "predicted_class": 1,
+    "predicted_class_name": "Cryptojacking"
+  },
+  "shap": {
+    "top_feature_limit": 20,
+    "top_features": [
+      {
+        "feature_id": 1727,
+        "ngram": "MOV ROL",
+        "value": 0.0026868178974837065,
+        "shap_value": 0.010575260112531118
+      },
+      {
+        "feature_id": 3647,
+        "ngram": "CDQ MOV",
+        "value": 0.00016792611859273165,
+        "shap_value": 0.01008288173202472
+      },
+      {
+        "feature_id": 1384,
+        "ngram": "SUB SBB",
+        "value": 0.0003358522371854633,
+        "shap_value": 0.009984598404238426
+      },
+      {
+        "feature_id": 3626,
+        "ngram": "PUSH RET",
+        "value": 0.0003358522371854633,
+        "shap_value": 0.009386731375630957
+      },
+      {
+        "feature_id": 3648,
+        "ngram": "MOVZX PUSH",
+        "value": 0.0006717044743709266,
+        "shap_value": 0.009158792907947117
+      },
+      {
+        "feature_id": 3625,
+        "ngram": "POP PUSH",
+        "value": 0.00016792611859273165,
+        "shap_value": 0.008156515981125188
+      },
+      {
+        "feature_id": 3601,
+        "ngram": "CALL PUSH",
+        "value": 0.0010075566824525595,
+        "shap_value": 0.008131043458127526
+      },
+      {
+        "feature_id": 2423,
+        "ngram": "SUB ADC",
+        "value": 0.0016792610986158252,
+        "shap_value": 0.007131734977880146
+      },
+      {
+        "feature_id": 2487,
+        "ngram": "MOVZX ROL",
+        "value": 0.0006717044743709266,
+        "shap_value": 0.007080912503278291
+      },
+      {
+        "feature_id": 3599,
+        "ngram": "XOR PUSH",
+        "value": 0.0006717044743709266,
+        "shap_value": 0.006679040067682877
+      },
+      {
+        "feature_id": 3604,
+        "ngram": "ADD PUSH",
+        "value": 0.0005037783412262797,
+        "shap_value": 0.006227734104799471
+      },
+      {
+        "feature_id": 946,
+        "ngram": "ADD POP",
+        "value": 0.0010075566824525595,
+        "shap_value": 0.005943156566857833
+      },
+      {
+        "feature_id": 3605,
+        "ngram": "PUSH AND",
+        "value": 0.00016792611859273165,
+        "shap_value": 0.005922916236909141
+      },
+      {
+        "feature_id": 1189,
+        "ngram": "ADD OR",
+        "value": 0.00016792611859273165,
+        "shap_value": 0.005882803987162451
+      },
+      {
+        "feature_id": 1012,
+        "ngram": "CMOVZ MOV",
+        "value": 0.0,
+        "shap_value": 0.0056399581510055774
+      },
+      {
+        "feature_id": 1743,
+        "ngram": "MOV ADC",
+        "value": 0.002015113364905119,
+        "shap_value": 0.005514304393572424
+      },
+      {
+        "feature_id": 1045,
+        "ngram": "CALL ADD",
+        "value": 0.0003358522371854633,
+        "shap_value": 0.005442509591015945
+      },
+      {
+        "feature_id": 1735,
+        "ngram": "ROL ADD",
+        "value": 0.0005037783412262797,
+        "shap_value": 0.005329086399724894
+      },
+      {
+        "feature_id": 3856,
+        "ngram": "MOV SHRD",
+        "value": 0.0005037783412262797,
+        "shap_value": 0.005296037208871258
+      },
+      {
+        "feature_id": 4311,
+        "ngram": "ADD ADC",
+        "value": 0.00016792611859273165,
+        "shap_value": 0.005294926088704005
+      }
+    ],
+    "status": "completed"
+  },
+  "llm": {
+    "status": "completed",
+    "analysis": {
+      "tier": "low-confidence",
+      "explanation": "The Random Forest scores this binary as malware at 0.925, and all 20 top n-grams push toward cryptojacking (individual SHAP +0.005 to +0.011). Two groups of patterns fit cryptographic or hashing code. The first is rotate-heavy code: MOV ROL (rank 1, +0.010575, highest frequency at 0.002687), MOVZX ROL (+0.007081) and ROL ADD (+0.005329). The second is multi-word carry arithmetic: SUB SBB (+0.009985), SUB ADC (+0.007132), MOV ADC (+0.005514), ADD ADC (+0.005295) and MOV SHRD (+0.005296). Rotations and carry chains are typical of hash rounds and big-integer math, which mining algorithms use. A second group of n-grams, PUSH RET (+0.009387), POP PUSH (+0.008157), CALL PUSH, XOR PUSH, ADD PUSH, ADD POP, PUSH AND and CALL ADD, reflects stack-heavy control flow and calling-convention glue. This could point to obfuscation, packing or a stack-based dispatcher, but it is also common in ordinary compiled code. Several of these n-grams are very rare (about 0.000168 to 0.001 relative frequency), and no function-level locations or observed behaviors are attached to any of them. Rotation and ADC/SBB/SHRD sequences also occur in benign crypto, compression and bignum libraries, so they do not by themselves separate a miner from legitimate cryptographic code. CMOVZ MOV has frequency 0.000000 yet contributes +0.005640, so its influence comes from the model's learned absence or presence pattern rather than an observable code feature. The evidence is consistent with cryptojacking and the model's confidence is high, but without function attribution or mining-specific indicators it is not conclusive. I classify it as low-confidence, leaning malicious.",
+      "evidence_analysis": [
+        {
+          "ngram": "MOV ROL",
+          "shap_contribution": 0.010575,
+          "assessment": "The most influential and most frequent n-gram. Loading a value and rotating it is characteristic of hash and cipher round functions, which fits a mining hash routine, though it is also common in benign cryptography."
+        },
+        {
+          "ngram": "CDQ MOV",
+          "shap_contribution": 0.010083,
+          "assessment": "Sign extension of EAX into EDX before a move, typical of signed 32-bit arithmetic and division setup. Weakly indicative on its own, and it may reflect the compiler or an arithmetic helper."
+        },
+        {
+          "ngram": "SUB SBB",
+          "shap_contribution": 0.009985,
+          "assessment": "A subtract-with-borrow chain, which is multi-precision (64-bit or larger) subtraction. It is consistent with bignum or hash arithmetic, but also appears in generic 64-bit emulation on 32-bit code."
+        },
+        {
+          "ngram": "PUSH RET",
+          "shap_contribution": 0.009387,
+          "assessment": "Pushing an address and returning is an indirect control-flow idiom sometimes used in obfuscation or packing. It could also be compiler thunk code, so it is suggestive but not conclusive."
+        },
+        {
+          "ngram": "MOVZX PUSH",
+          "shap_contribution": 0.009159,
+          "assessment": "Zero-extending a byte or word and pushing it, typical of byte-wise data handling before a call. Weak on its own, but it contributes to the overall profile."
+        },
+        {
+          "ngram": "POP PUSH",
+          "shap_contribution": 0.008157,
+          "assessment": "Stack register shuffling, common in prologue/epilogue code and in obfuscated or packed code. Low specificity."
+        },
+        {
+          "ngram": "CALL PUSH",
+          "shap_contribution": 0.008131,
+          "assessment": "Call followed by a push is ordinary calling-convention behavior. It adds little specificity, though the model weights it toward malware."
+        },
+        {
+          "ngram": "SUB ADC",
+          "shap_contribution": 0.007132,
+          "assessment": "Mixed subtraction and add-with-carry, indicating multi-word arithmetic. It supports a bignum or hash-style computation hypothesis."
+        },
+        {
+          "ngram": "MOVZX ROL",
+          "shap_contribution": 0.007081,
+          "assessment": "Zero-extended byte or word values being rotated, resembling byte-oriented hash or cipher mixing. It reinforces the rotation-heavy pattern."
+        },
+        {
+          "ngram": "XOR PUSH",
+          "shap_contribution": 0.006679,
+          "assessment": "XOR followed by a push may be register zeroing or a mixing step before a call. Mildly consistent with cipher or hash operations, but ambiguous."
+        },
+        {
+          "ngram": "ADD PUSH",
+          "shap_contribution": 0.006228,
+          "assessment": "Generic arithmetic followed by argument pushing. Low specificity, and it contributes to the model's malware lean only in aggregate."
+        },
+        {
+          "ngram": "ADD POP",
+          "shap_contribution": 0.005943,
+          "assessment": "Typical of stack cleanup or epilogue code. Low specificity, though it can occur in obfuscated stack manipulation."
+        },
+        {
+          "ngram": "PUSH AND",
+          "shap_contribution": 0.005923,
+          "assessment": "A push followed by a bitmask is a rare sequence that may involve masking operations in data transforms. Ambiguous."
+        },
+        {
+          "ngram": "ADD OR",
+          "shap_contribution": 0.005883,
+          "assessment": "Arithmetic plus bitwise combination, as in mixing or flag and bit-field construction. Weakly consistent with hash-like operations."
+        },
+        {
+          "ngram": "CMOVZ MOV",
+          "shap_contribution": 0.00564,
+          "assessment": "Observed frequency is 0.0, so the contribution reflects the model's learned pattern rather than a visible code feature. It cannot support a concrete behavioral claim."
+        },
+        {
+          "ngram": "MOV ADC",
+          "shap_contribution": 0.005514,
+          "assessment": "Add-with-carry after a move, indicating carry-propagating multi-word addition. It is consistent with bignum or hash arithmetic and occurs at a fairly high frequency (0.002015)."
+        },
+        {
+          "ngram": "CALL ADD",
+          "shap_contribution": 0.005443,
+          "assessment": "A call followed by an arithmetic adjustment, such as stack cleanup after a cdecl call. Low specificity."
+        },
+        {
+          "ngram": "ROL ADD",
+          "shap_contribution": 0.005329,
+          "assessment": "A rotate followed by an add is the classic rotate-add-xor mixing step of hash and cipher rounds. It supports the cryptographic-computation hypothesis."
+        },
+        {
+          "ngram": "MOV SHRD",
+          "shap_contribution": 0.005296,
+          "assessment": "Double-precision shift, used for 64-bit shifts on 32-bit code or multi-word bignum shifts. It reinforces the multi-precision arithmetic theme."
+        },
+        {
+          "ngram": "ADD ADC",
+          "shap_contribution": 0.005295,
+          "assessment": "A canonical 64-bit addition pair on 32-bit code. Together with the SBB and ADC n-grams, it shows substantial multi-word arithmetic."
+        }
+      ],
+      "confidence_score": 0.55,
+      "key_indicators": [
+        "Rotate-centric n-grams (MOV ROL, MOVZX ROL, ROL ADD) consistent with hash and cipher round functions",
+        "Multi-precision carry/borrow arithmetic (SUB SBB, SUB ADC, MOV ADC, ADD ADC, MOV SHRD)",
+        "Stack-manipulation idioms (PUSH RET, POP PUSH) that could indicate obfuscation or packing",
+        "All 20 top features have positive SHAP toward cryptojacking, and the model probability is 0.925",
+        "No function-level attribution, and most n-grams are very low frequency, so the evidence is not mining-specific"
+      ],
+      "recommended_action": "Treat the sample as suspicious and prioritize it for deeper analysis. Locate the code containing the ROL and ADC/SBB/SHRD sequences and check whether it implements a known mining hash or a generic crypto/bignum library. Check for packing or obfuscation around the PUSH RET and POP PUSH patterns. Run it in a sandbox and look for sustained CPU load or mining-pool network activity before making a final determination."
+    },
+    "token_usage": {
+      "input_tokens": 1763,
+      "output_tokens": 3352,
+      "source": "claude"
+    },
+    "result_path": "graph_aware_classifier/llm_results/ce12f3d1380ed3d7c5ad18d0a6b9ccbaf77a312eaeeb89884cbe720f77e217b9.exe_llm_result.json"
+  }
+}
