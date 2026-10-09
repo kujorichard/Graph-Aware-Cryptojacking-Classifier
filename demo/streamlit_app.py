@@ -49,6 +49,14 @@ OCCURRENCES_DIR = PACKAGE_DIR / "occurences"  # Keep the notebook's existing spe
 NGRAM_SIZE = 2
 SHAP_TOP_FEATURES = 20
 
+CLASSIFICATION_THRESHOLDS = {
+    2: 0.51,
+    3: 0.4571,
+    4: 0.5489,
+}
+
+CLASSIFICATION_THRESHOLD = CLASSIFICATION_THRESHOLDS[NGRAM_SIZE]
+
 st.set_page_config(
     page_title="Cryptojacking Detection",
     page_icon="",
@@ -160,16 +168,55 @@ def run_detection(uploaded_name: str, uploaded_bytes: bytes) -> dict[str, Any]:
 
         with st.status("Stage 3/5 — Inspecting model output", expanded=True) as status:
             rf_model, vocabulary = load_model_and_vocabulary(NGRAM_SIZE)
+
             probabilities = rf_model.predict_proba(transformed_sample)[0]
-            # Match the notebook's convention: class 1 is the cryptojacking class.
+
+            # Get the probability corresponding to class 1 (cryptojacking).
             try:
                 malware_class_index = list(rf_model.classes_).index(1)
                 rf_probability = float(probabilities[malware_class_index])
             except ValueError:
                 rf_probability = float(probabilities[1])
-            status.write(f"Cryptojacking-class probability: {rf_probability:.4f}.")
-            status.write("The displayed decision tree is one tree within the Random Forest, not the entire ensemble.")
-            status.update(label="Stage 3/5 — Model output ready", state="complete")
+
+            # Apply the threshold for the selected n-gram size.
+            classification_threshold = {
+                2: 0.51,
+                3: 0.4571,
+                4: 0.5489,
+            }[NGRAM_SIZE]
+
+            predicted_class = int(
+                rf_probability >= classification_threshold
+            )
+
+            class_name = {
+                0: "Benign",
+                1: "Cryptojacking",
+            }[predicted_class]
+
+            # Keep the returned prediction consistent with the threshold.
+            prediction = [predicted_class]
+
+            status.write(
+                f"Cryptojacking probability: {rf_probability:.4f}."
+            )
+            status.write(
+                f"Classification threshold ({NGRAM_SIZE}-gram): "
+                f"{classification_threshold:.4f}."
+            )
+            status.write(
+                f"Threshold-based prediction: {class_name} "
+                f"(class {predicted_class})."
+            )
+            status.write(
+                "The displayed decision tree is one tree within the Random Forest, "
+                "not the entire ensemble."
+            )
+
+            status.update(
+                label="Stage 3/5 — Model output ready",
+                state="complete",
+            )
 
         with st.status("Stage 4/5 — Mapping influential n-grams to functions", expanded=True) as status:
             status.write(f"Looking for occurrence data at `{occurrences_path}`.")
@@ -255,6 +302,20 @@ def render_results(results: dict[str, Any]) -> None:
             st.write(f"Transformed representation shape: `{results['transformed_shape']}`")
         try:
             st.write(f"Non-zero feature count: `{int(results['transformed_sample'].nnz)}`")
+
+            transformed_sample = results["transformed_sample"]
+            feature_df = pd.DataFrame({
+                "Vocabulary Index": transformed_sample.indices,
+                "N-Gram": [
+                    " ".join(
+                        vocabulary.get_entry(int(feature_id)).ngram
+                    )
+                    for feature_id in transformed_sample.indices
+                ],
+                "Frequency": transformed_sample.data,
+            })
+
+            st.dataframe(feature_df, hide_index=True, width="stretch")
         except Exception:
             st.caption("The transformer did not expose a sparse-matrix non-zero count.")
 
